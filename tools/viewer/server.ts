@@ -185,6 +185,51 @@ async function handleGraph(): Promise<unknown> {
   }
 }
 
+// ---------- skillopt endpoints (read-only) ----------
+
+async function handleSkillOptRuns(limit: number): Promise<unknown> {
+  const runsFile = join(REPO_ROOT, ".context", "skillopt", "runs.jsonl");
+  if (!existsSync(runsFile)) return { runs: [], hint: "no .context/skillopt/runs.jsonl" };
+  const raw = await readFile(runsFile, "utf8");
+  const lines = raw.split("\n").filter(Boolean);
+  const runs: unknown[] = [];
+  for (let i = lines.length - 1; i >= 0 && runs.length < limit; i--) {
+    try { runs.push(JSON.parse(lines[i])); } catch { /* skip */ }
+  }
+  return { runs };
+}
+
+async function handleSkillOptRunSummary(runId: string): Promise<unknown> {
+  const summaryPath = join(REPO_ROOT, ".context", "skillopt", runId, "summary.json");
+  if (!existsSync(summaryPath)) return null;
+  const summary = JSON.parse(await readFile(summaryPath, "utf8"));
+  // Список traces
+  const tracesDir = join(REPO_ROOT, ".context", "skillopt", runId, "traces");
+  let traces: unknown[] = [];
+  if (existsSync(tracesDir)) {
+    const files = await readdir(tracesDir);
+    for (const f of files) {
+      if (!f.endsWith(".json")) continue;
+      const t = JSON.parse(await readFile(join(tracesDir, f), "utf8"));
+      traces.push({
+        case_id: t.case_id, skill: t.skill, passed: t.passed,
+        score: t.score, latency_ms: t.latency_ms, error: t.error,
+        output_preview: t.output ? String(t.output).slice(0, 300) : null,
+      });
+    }
+  }
+  // Список proposals (если есть)
+  const proposalsDir = join(REPO_ROOT, ".context", "skillopt", runId, "proposals");
+  let proposals: string[] = [];
+  if (existsSync(proposalsDir)) {
+    const pFiles = await readdir(proposalsDir);
+    proposals = pFiles
+      .filter((f) => f.endsWith(".md") && !f.endsWith(".rationale.md"))
+      .map((f) => f.replace(/\.md$/, ""));
+  }
+  return { runId, summary, traces, proposals };
+}
+
 function handleSearch(query: string, mode = "hybrid", top = 10): Promise<unknown> {
   return new Promise((res) => {
     const script = join(REPO_ROOT, "scripts", "semantic", "search.mjs");
@@ -227,6 +272,16 @@ const server = createServer(async (req, res) => {
       const mode = url.searchParams.get("mode") || "hybrid";
       const top = Number(url.searchParams.get("top") || 10);
       return sendJson(res, 200, await handleSearch(q, mode, top));
+    }
+    if (url.pathname === "/api/skillopt/runs") {
+      const limit = Number(url.searchParams.get("limit") || 30);
+      return sendJson(res, 200, await handleSkillOptRuns(limit));
+    }
+    if (url.pathname.startsWith("/api/skillopt/run/")) {
+      const runId = decodeURIComponent(url.pathname.slice("/api/skillopt/run/".length));
+      const info = await handleSkillOptRunSummary(runId);
+      if (!info) return sendJson(res, 404, { error: "run not found", runId });
+      return sendJson(res, 200, info);
     }
     return sendText(res, 404, "not found");
   } catch (e) {

@@ -1,7 +1,7 @@
 // Header.tsx — верхняя панель: breadcrumb + nav + theme toggle.
 
 import { Link, useLocation } from "react-router-dom";
-import { Search, Network, Home, HelpCircle } from "lucide-react";
+import { Search, Network, Home, HelpCircle, Activity } from "lucide-react";
 import { ThemeToggle } from "@/v2/layout/ThemeToggle";
 
 export function Header() {
@@ -28,6 +28,13 @@ export function Header() {
           active={loc.pathname.startsWith("/open-questions")}
         >
           Открытые вопросы
+        </Crumb>
+        <Crumb
+          to="/skillopt"
+          icon={<Activity className="h-3.5 w-3.5" />}
+          active={loc.pathname.startsWith("/skillopt")}
+        >
+          SkillOpt
         </Crumb>
       </nav>
       {breadcrumb ? (

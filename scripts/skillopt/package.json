@@ -8,6 +8,7 @@
     "skill": "node cli.mjs"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "cosmiconfig": "^9.0.0",
     "diff": "^7.0.0",
     "js-yaml": "^4.1.0",

@@ -245,7 +245,26 @@ tags: [regression, happy-path]
 
 **Phase 2** (в разработке): `reflect` (LLM анализирует traces и предлагает правки в `proposals/<skill>.md` с метками AGENTS.md), `diff`/`apply` (human-in-the-loop коммит), llm-judge и json-schema graders, `generic-cli` adapter (sgpt, llm Simon Willison, gemini).
 
-**Phase 3** (опционально): read-only MCP tools (`skill_list_runs`, `skill_get_trace`) — агент в Claude Code сможет смотреть историю оптимизации, но мутации остаются за CLI (human pulls the trigger).
+**Phase 2** (готово): полный цикл оптимизации:
+
+```bash
+pnpm skill rollout skill-foo            # собрать traces (Phase 1)
+pnpm skill reflect <run-id>             # 2-й LLM-pass предлагает правки
+pnpm skill diff <run-id>                # unified diff proposal vs current
+pnpm skill apply <run-id>               # overwrite skills/, git add, backup
+git diff --staged skills/               # человек смотрит и решает
+git commit -m "skill-foo: optimized [run <id>]"
+# или откат:
+pnpm skill revert <run-id>
+pnpm skill runs                         # последние runs из metrics
+```
+
+Защита от ошибок: `reflect` отказывается работать если <5 кейсов (overfit) или pass_rate=100%. `apply` отказывается если working tree грязный — не теряет ручные правки. Backup в `.context/skillopt/<run>/backups/`. Новые graders: `llm-judge` (рубрика + LLM в качестве судьи) и `json-schema` (валидация JSON output). Adapter `generic-cli` — для sgpt/llm/gemini/любого CLI с config-driven argv + stdin.
+
+**Phase 3** (готово):
+
+- **MCP-сервер** `scripts/skillopt/mcp-server.mjs` (зарегистрирован в `.mcp.json` рядом с `kb-local`). Read-only tools: `skill_list_runs`, `skill_get_trace`, `skill_get_proposal`, `skill_list_evals`, `skill_get_eval`. Агент в Claude Code/Desktop может смотреть историю оптимизации, но **мутации** (`rollout`/`reflect`/`apply`) остаются за CLI — human pulls the trigger.
+- **Страница `/skillopt` в viewer**: список runs с pass-rate и стоимостью, drill-down в traces, ссылки на `pnpm skill diff/apply <run-id>`. Видна по `pnpm viewer:dev` → `http://localhost:5173/skillopt`.
 
 ---
 

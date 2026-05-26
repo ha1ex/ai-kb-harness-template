@@ -16,6 +16,7 @@ import { KbLayer } from "@/routes/KbLayer";
 import { Search } from "@/routes/Search";
 import { GraphPage } from "@/routes/Graph";
 import { OpenQuestions } from "@/routes/OpenQuestions";
+import { SkillOpt } from "@/routes/SkillOpt";
 
 export default function App() {
   const { isDark } = useTheme();
@@ -44,6 +45,7 @@ export default function App() {
             <Route path="/search" element={<Search />} />
             <Route path="/graph" element={<GraphPage />} />
             <Route path="/open-questions" element={<OpenQuestions />} />
+            <Route path="/skillopt" element={<SkillOpt />} />
             <Route
               path="*"
               element={
