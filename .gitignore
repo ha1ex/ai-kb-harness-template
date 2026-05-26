@@ -3,6 +3,10 @@ node_modules/
 *.log
 .DS_Store
 
+# Viewer build output
+tools/viewer/dist/
+tools/viewer/.vite/
+
 # Semantic index (генерируется локально, переиндексируется по mtime)
 .semantic-index.sqlite
 .semantic-index.sqlite-wal

@@ -45,10 +45,17 @@ ai-kb-harness-template/
 │   ├── check-decisions.mjs    ← PreToolUse hook для /05_decisions/
 │   ├── check-md-frontmatter.mjs  ← PreToolUse hook на frontmatter в значимых слоях
 │   └── session-start-context.mjs ← SessionStart hook с git/.remember-выдержкой
+├── tools/viewer/              ← локальный веб-интерфейс KB (Vite + React)
+│   ├── server.ts              ← минимальный API (tree, doc, graph, search)
+│   ├── src/v2/styles/v2.css   ← дизайн-система: токены + 13 KB-блоков + callouts
+│   ├── src/v2/components/MarkdownDoc.tsx  ← рендер любого .md со всеми KB-блоками
+│   ├── src/components/Sidebar.tsx  ← data-driven навигация по структуре каталогов
+│   ├── src/routes/Index, KbLayer, DocumentView, Search, Graph, OpenQuestions
+│   └── package.json           ← React 19 + Tailwind 4 + Sigma 3 + radix-ui
 └── 00_context..06_outputs/    ← слои KB (см. AGENTS.md)
 ```
 
-### Шесть ключевых инструментов
+### Семь ключевых инструментов
 
 | Инструмент | Зачем | Закрытая боль |
 |---|---|---|
@@ -58,6 +65,7 @@ ai-kb-harness-template/
 | **MCP-сервер** (`scripts/semantic/mcp-server.mjs`) | Tools `kb_search`, `kb_think`, `kb_backlinks` доступны любому MCP-клиенту | Чтобы агент в другой сессии работал с KB — приходилось пересылать файлы вручную |
 | **kb-doctor** (`scripts/kb-doctor.mjs`) | Health-check: missing frontmatter, broken `related:`, orphans, stale synthesis | KB накапливала скрытый долг; никто не замечал |
 | **Dream cycle** (`scripts/dream-cycle.mjs`) | Еженедельный LLM-аудит: что устарело, новые противоречия, что синтезировать. Никогда не пишет в KB сам — только дроп-зона | Open questions месяцами висели закрытыми, никто не проверял |
+| **Viewer** (`tools/viewer/`) | Локальное веб-приложение: главная с обзором слоёв, рендер любого `.md` со всей дизайн-системой, страница поиска, интерактивный граф связей, страница open-questions/contradictions. `pnpm dev` → `localhost:5173` | KB видна только через текстовый редактор; коллегам тяжело ориентироваться; нет единого UI для поиска/графа |
 
 Плюс **дисциплина утверждений**: каждое нетривиальное высказывание помечается `FACT/INFERENCE/ASSUMPTION/UNKNOWN/RISK/DECISION/RECOMMENDATION` с цитатой `[source: /path]`. Эти правила живут в `AGENTS.md` и проверяются хуками `check-decisions.mjs` / `check-md-frontmatter.mjs`.
 
@@ -143,6 +151,26 @@ node scripts/kb-doctor.mjs                # health-check
 ### MCP — для подключения в Claude Code
 
 `.mcp.json` в корне уже настроен. Перезапустите Claude Code в этом проекте — появятся tools `kb_search` / `kb_think` / `kb_backlinks`. Дальше агент будет вызывать их сам, без передачи файлов вручную.
+
+### 6. Поднять веб-приложение для коллег
+
+Для людей, которые не лазят в командную строку — есть локальный веб-интерфейс KB (`tools/viewer/`):
+
+```bash
+cd tools/viewer
+pnpm install     # ~15 секунд
+pnpm dev         # API на :3001 + клиент на :5173
+```
+
+Открыть `http://localhost:5173` — будет:
+- **Главная** — обзор всех слоёв KB с счётчиками и последними изменениями.
+- **Sidebar** — data-driven дерево по структуре каталогов (читает `/api/tree`).
+- **Любой документ** — `/doc/<path>` рендерит markdown через единый компонент с дизайн-системой v2 (13 KB-блоков, callouts, типографика). Внизу — backlinks (кто ссылается).
+- **Поиск** — `/search` вызывает hybrid retrieval из `scripts/semantic/`. Режимы: hybrid / vector / bm25.
+- **Граф связей** — `/graph` рисует интерактивный граф (Sigma + ForceAtlas2): ноды = файлы, рёбра = `related:` из frontmatter. Клик по ноде → открыть документ.
+- **Открытые вопросы** — `/open-questions` показывает `04_synthesis/open-questions.md` + `contradictions.md` в едином виде.
+
+Для деплоя коллегам — `pnpm build`, выложить `dist/` куда угодно (Vercel, Netlify, S3, любой статик-хостинг). Для прода с динамическими данными — поднять `server.ts` рядом.
 
 ---
 

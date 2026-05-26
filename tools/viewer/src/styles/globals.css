@@ -1,0 +1,46 @@
+/* globals.css — базовая тема + Tailwind. Конкретная дизайн-система — в src/v2/styles/v2.css */
+
+@import "tailwindcss";
+@import "highlight.js/styles/github.css" layer(base);
+@import "../v2/styles/v2.css";
+
+/* Базовые fallback-токены для legacy-зон (если есть страницы вне /v2-обёртки).
+ * Дизайн-система /v2 (см. v2.css) задаёт свои токены через .v2 / .v2.dark классы. */
+
+:root {
+  --color-fg: oklch(0.147 0.004 49.25);
+  --color-bg: oklch(0.985 0.001 106.423);
+  --color-panel: oklch(0.97 0.001 106.423);
+  --color-border: oklch(0.923 0.003 48.717);
+  --color-subtle: oklch(0.553 0.013 58.071);
+}
+
+[data-theme="dark"] {
+  --color-fg: oklch(0.985 0.001 106.423);
+  --color-bg: oklch(0.147 0.004 49.25);
+  --color-panel: oklch(0.216 0.006 56.043);
+  --color-border: oklch(0.268 0.007 34.298);
+  --color-subtle: oklch(0.709 0.01 56.259);
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Корневой layout: высота окна */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
