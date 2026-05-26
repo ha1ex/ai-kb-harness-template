@@ -2,9 +2,109 @@
 
 > Стартовая оснастка для проектов, где **markdown-репозиторий = knowledge base**, а вы (или ваша команда) пользуетесь AI-агентами (Claude Code, Claude Desktop, Cursor, любые MCP-клиенты) как ежедневным рабочим инструментом.
 
-**В одной фразе:** превращает обычный git-репозиторий с markdown'ом в **persistent memory с дисциплиной утверждений**, к которой можно адресоваться из любого AI-клиента, и которая сама замечает деградацию.
+**В одной фразе:** клонируешь — и через 10 минут у тебя свой проект, где Claude / GPT / Gemini / Ollama / любая нейронка работает с твоим контентом как с базой знаний, а не как с чёрным ящиком. Полностью **on-device**: ничего не уходит во внешние API, нет платных эмбеддингов, не нужен Docker.
 
-Полностью **on-device**: ничего не уходит во внешние API, нет платных эмбеддингов, не нужен Docker. Запускается через `pnpm install` + `node ...` за пару минут.
+`Phase 1 ✓` `Phase 2 ✓` `Phase 3 ✓` · `Universal LLM (claude/openai/ollama/sgpt/llm/gemini)` · `MCP-ready` · `MIT`
+
+---
+
+## TL;DR — что вы получаете
+
+Четыре слоя, расположены по росту сложности. Каждый работает независимо, можно остановиться на любом.
+
+### 1. KB-слои + правила дисциплины
+
+Базовая структура — всё знание разложено по слоям `00_context → 02_sources → 03_wiki → 04_synthesis → 05_decisions → 06_outputs`. Это иерархия от сырого до финального.
+
+**`AGENTS.md` — это «контракт» для агента**: правило что каждое утверждение помечается меткой (`FACT:` / `INFERENCE:` / `UNKNOWN:` / `RISK:` / `DECISION:` / `RECOMMENDATION:`) и сопровождается ссылкой `[source: /02_sources/...]`. Хук `check-decisions.mjs` блокирует запись в `/05_decisions/` если правило нарушено. `check-md-frontmatter.mjs` валидирует обязательные поля frontmatter.
+
+### 2. Семантический поиск + синтез
+
+Локальная ONNX-модель (`multilingual-e5-small`) индексирует все ваши `.md`. Один раз построил — дальше доступны три инструмента:
+
+- `pnpm kb:search "запрос"` — гибридный поиск (vector + BM25 + RRF), точно находит нужный файл
+- `pnpm kb:think "вопрос"` — собирает промпт с цитатами и правилами AGENTS.md; вставляешь в любую модель → получаешь ответ с обязательными метками
+- `pnpm kb:doctor` — health-check: что без frontmatter, какие ссылки битые, какие orphans, что устарело
+
+Через **MCP-сервер** эти же три tool'а (`kb_search`, `kb_think`, `kb_backlinks`) доступны напрямую Claude Code / Desktop / Cursor — агент ищет в вашей KB **без копипасты**.
+
+### 3. Веб-витрина (`tools/viewer/`)
+
+Локальный Vite + React + Tailwind 4 сайт с дизайн-системой v2 (13 KB-блоков, callouts, типографика, light/dark). `pnpm viewer:dev` → `http://localhost:5173`:
+
+| Страница | Что показывает |
+|---|---|
+| `/` | Счётчики по слоям + последние изменения |
+| Sidebar | Автогенерация по структуре каталогов (никакого захардкоженного меню) |
+| `/doc/<path>` | Рендер любого `.md` с дизайн-системой + backlinks внизу |
+| `/search` | Тот же hybrid retrieval, но в UI |
+| `/graph` | Интерактивный граф связей (Sigma + ForceAtlas2), клик → открыть документ |
+| `/open-questions` | Свод `04_synthesis/open-questions.md` + `contradictions.md` |
+| `/skillopt` | Дашборд экспериментов с улучшением скиллов (слой 4) |
+
+Это для **коллег**, которые не лезут в командную строку. `pnpm viewer:build` → статический сайт, можно деплоить куда угодно.
+
+### 4. SkillOpt — самообучение инструкций (`scripts/skillopt/`)
+
+Если вы написали `skills/skill-ingest.md` (пошаговая процедура «как обработать новый артефакт»), как понять, что Claude её правильно следует? Раньше — никак, только глазами. Теперь:
+
+```bash
+pnpm skill rollout skill-ingest    # прогоняет тест-кейсы через LLM
+pnpm skill reflect <run-id>        # LLM смотрит провалы, предлагает улучшения skill.md
+pnpm skill diff <run-id>           # показывает unified diff
+pnpm skill apply <run-id>          # копирует улучшенную версию + git add (НЕ commit)
+git diff --staged && git commit    # вы ревьюите и фиксируете (или pnpm skill revert)
+```
+
+**Работает с любой нейронкой** — auto-detect: если есть `claude` CLI — берёт его, если есть `OPENAI_API_KEY` — идёт по HTTP, через `--base-url http://localhost:11434/v1` подключается к локальной Ollama. Adapter `generic-cli` покрывает sgpt / llm Simon Willison / gemini / codex / любой CLI.
+
+**Защита от ошибок**: `reflect` отказывается работать при <5 кейсах (overfit prevention) или 100% pass-rate (нет повода); `apply` отказывается если working tree грязный (защита ручных правок); backup в `.context/skillopt/<run>/backups/` + `pnpm skill revert <run-id>`.
+
+Идея вдохновлена [microsoft/SkillOpt](https://microsoft.github.io/SkillOpt/), но реализация **без привязки к Azure OpenAI** — работает с любой LLM.
+
+---
+
+## Четыре типичных сценария
+
+**A. Начинаю новый проект.**
+```bash
+gh repo create my-research --template ha1ex/ai-kb-harness-template --public --clone
+cd my-research
+# Поправь AGENTS.md (TODO: цель проекта), CLAUDE.md (язык, workflow)
+# Положи первый файл в 01_raw/research/
+cd scripts/semantic && pnpm install && cd ../..
+node scripts/semantic/index.mjs     # построить индекс (~3 минуты для ~200 файлов)
+```
+
+**B. Я задал агенту вопрос по KB.**
+Claude в IDE видит MCP-tools (`.mcp.json` подхвачен). Сначала вызывает `kb_search` — находит топ-10 чанков. Потом `kb_think` — собирает промпт с цитатами и правилами AGENTS.md. Отвечает уже с метками: `FACT: ARR в Q1 = 12М ₽ [source: /02_sources/2026-04-finance.md]. UNKNOWN: retention за 12 месяцев — нет источника`. Никаких выдумок.
+
+**C. Я правлю важный wiki-файл.**
+```bash
+pnpm kb:search "тема" --explain                   # точно ли я правлю нужный файл?
+node scripts/semantic/backlinks.mjs 03_wiki/foo.md  # кто на меня ссылается (5 файлов)
+# меняю аккуратно, понимая blast radius
+node scripts/semantic/index.mjs                   # инкрементальная переиндексация (~1 сек)
+```
+
+**D. AI плохо следует моему скиллу.**
+```bash
+pnpm skill rollout skill-ingest        # 2 из 3 кейсов провалились
+pnpm skill reflect <run-id>            # модель смотрит провалы, предлагает правку skill.md
+pnpm skill diff <run-id>               # вижу что добавилась секция «всегда проверяй frontmatter»
+pnpm skill apply <run-id>              # копирует + git add (НЕ commit)
+pnpm skill rollout skill-ingest        # 3 из 3 ✓
+git commit -m "skill-ingest v0.2"
+```
+
+---
+
+## Что шаблон **не** делает за вас
+
+- **Не пишет KB вместо вас** — это ваше содержание, шаблон только наводит порядок.
+- **Не платит за LLM** — токены OpenAI/Anthropic из вашего кармана. Можно вообще без LLM: `kb:search` локальный, `kb:doctor` локальный, eval-suites работают как regression-тесты (`pnpm skill score <run-id>` офлайн).
+- **Не коммитит за вас** — `skill apply` только `git add`, человек смотрит diff и решает commit/revert.
+- **Не лезет в облако** — embedder, БД, поиск, граф, MCP — всё на вашей машине.
 
 ---
 
