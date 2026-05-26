@@ -31,6 +31,9 @@ scripts/semantic/.transformers-cache/
 .remember/now.md
 .remember/today.md
 
+# Служебные локи Claude (ScheduleWakeup, hooks)
+.claude/scheduled_tasks.lock
+
 # IDE
 .vscode/
 .idea/
