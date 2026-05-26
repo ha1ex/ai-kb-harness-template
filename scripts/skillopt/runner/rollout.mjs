@@ -15,6 +15,7 @@ import { join, dirname } from "node:path";
 import PQueue from "p-queue";
 import { discoverEvals, readSkillFile, REPO_ROOT } from "../evals/loader.mjs";
 import { getGrader } from "../evals/graders/index.mjs";
+import { appendRun, estimateCost } from "../storage/metrics.mjs";
 
 function makeRunId() {
   const iso = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
@@ -44,8 +45,9 @@ function buildSystem(agentsMd, skillText) {
  * @param {string|null} opts.skillFilter
  * @param {string|null} opts.caseFilter
  * @param {boolean} opts.ci                exit code 1 при regression (для CI)
+ * @param {object|null} opts.judgeAdapter  отдельный adapter для llm-judge (если grader=llm-judge)
  */
-export async function runRollout({ adapter, config, skillFilter = null, caseFilter = null, ci = false } = {}) {
+export async function runRollout({ adapter, config, skillFilter = null, caseFilter = null, ci = false, judgeAdapter = null } = {}) {
   const cases = await discoverEvals({ skillFilter, caseFilter });
   if (cases.length === 0) {
     return { runId: null, summary: { error: "no eval cases found" }, traces: [] };
@@ -66,7 +68,7 @@ export async function runRollout({ adapter, config, skillFilter = null, caseFilt
   await Promise.all(
     cases.map((c) =>
       queue.add(async () => {
-        const trace = await runOneCase({ c, adapter, agentsMd, skillCache, tracesDir });
+        const trace = await runOneCase({ c, adapter, judgeAdapter, agentsMd, skillCache, tracesDir });
         traces.push(trace);
       }),
     ),
@@ -77,13 +79,29 @@ export async function runRollout({ adapter, config, skillFilter = null, caseFilt
   summary.adapter = adapter.name;
   summary.model = config.model ?? null;
   summary.started_at = new Date(Date.now()).toISOString();
+  summary.cost_usd = estimateCost({
+    model: config.model,
+    input_tokens: summary.tokens_in,
+    output_tokens: summary.tokens_out,
+    pricing: config.pricing,
+  });
 
   await writeFile(join(runDir, "summary.json"), JSON.stringify(summary, null, 2));
+
+  await appendRun({
+    kind: "rollout",
+    run_id: runId,
+    started_at: summary.started_at,
+    adapter: adapter.name,
+    model: config.model ?? null,
+    summary,
+    cost_usd: summary.cost_usd,
+  });
 
   return { runId, summary, traces, runDir };
 }
 
-async function runOneCase({ c, adapter, agentsMd, skillCache, tracesDir }) {
+async function runOneCase({ c, adapter, judgeAdapter, agentsMd, skillCache, tracesDir }) {
   const startedAt = Date.now();
 
   // Кейс мог быть с ошибкой парсинга
@@ -142,8 +160,10 @@ async function runOneCase({ c, adapter, agentsMd, skillCache, tracesDir }) {
   let graderResult = null;
   if (llmResult) {
     try {
-      const grader = getGrader(c.frontmatter.grader);
-      graderResult = grader.grade(llmResult.text, c.expected);
+      const grader = getGrader(c.frontmatter.grader, { judgeAdapter });
+      const ctx = { input: c.input, frontmatter: c.frontmatter };
+      // grader.grade может быть sync или async (llm-judge всегда async)
+      graderResult = await grader.grade(llmResult.text, c.expected, ctx);
     } catch (e) {
       graderResult = { passed: false, score: 0, details: { error: e.message } };
     }
@@ -223,12 +243,17 @@ export async function runScore(runId) {
       continue;
     }
     try {
-      const g = getGrader(c.frontmatter.grader);
-      const r = g.grade(t.output, c.expected);
-      t.passed = r.passed;
-      t.score = r.score;
-      t.grader_details = r.details;
-      await writeFile(join(runDir, "traces", f), JSON.stringify(t, null, 2));
+      if (c.frontmatter.grader === "llm-judge") {
+        // offline rescoring невозможен — judge требует LLM
+        t.grader_details = { skipped: "llm-judge нельзя пересчитать офлайн" };
+      } else {
+        const g = getGrader(c.frontmatter.grader);
+        const r = await g.grade(t.output, c.expected, { input: c.input, frontmatter: c.frontmatter });
+        t.passed = r.passed;
+        t.score = r.score;
+        t.grader_details = r.details;
+        await writeFile(join(runDir, "traces", f), JSON.stringify(t, null, 2));
+      }
     } catch (e) {
       t.grader_details = { error: e.message };
     }

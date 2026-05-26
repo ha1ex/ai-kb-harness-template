@@ -12,11 +12,17 @@
 
 import { makeClaudeCliAdapter } from "./claude-cli.mjs";
 import { makeOpenAiHttpAdapter } from "./openai-http.mjs";
+import { makeGenericCliAdapter } from "./generic-cli.mjs";
 
 const REGISTRY = {
   "claude-cli": makeClaudeCliAdapter,
   "openai-http": makeOpenAiHttpAdapter,
-  // 'generic-cli', 'ollama' — Phase 2
+  "generic-cli": makeGenericCliAdapter,
+  // alias: ollama — это openai-http с дефолтным base_url
+  ollama: (cfg) => makeOpenAiHttpAdapter({
+    ...cfg,
+    base_url: cfg.base_url ?? "http://localhost:11434/v1",
+  }),
 };
 
 /**
