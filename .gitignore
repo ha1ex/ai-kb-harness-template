@@ -1,0 +1,24 @@
+# Node
+node_modules/
+*.log
+.DS_Store
+
+# Semantic index (генерируется локально, переиндексируется по mtime)
+.semantic-index.sqlite
+.semantic-index.sqlite-wal
+.semantic-index.sqlite-shm
+
+# Кэш моделей transformers.js (~120 MB)
+scripts/semantic/.transformers-cache/
+
+# Рабочая зона: черновики, attachments, dream-reports
+.context/
+
+# Сессионная working memory (core.md коммитим, остальное нет)
+.remember/now.md
+.remember/today.md
+
+# IDE
+.vscode/
+.idea/
+*.swp

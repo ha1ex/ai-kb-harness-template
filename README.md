@@ -1,0 +1,264 @@
+# AI KB Harness — шаблон
+
+> Стартовая оснастка для проектов, где **markdown-репозиторий = knowledge base**, а вы (или ваша команда) пользуетесь AI-агентами (Claude Code, Claude Desktop, Cursor, любые MCP-клиенты) как ежедневным рабочим инструментом.
+
+**В одной фразе:** превращает обычный git-репозиторий с markdown'ом в **persistent memory с дисциплиной утверждений**, к которой можно адресоваться из любого AI-клиента, и которая сама замечает деградацию.
+
+Полностью **on-device**: ничего не уходит во внешние API, нет платных эмбеддингов, не нужен Docker. Запускается через `pnpm install` + `node ...` за пару минут.
+
+---
+
+## Зачем это нужно
+
+Когда вы работаете с AI-агентом по живому проекту больше пары недель, появляются три повторяющиеся боли:
+
+1. **Агент галлюцинирует** про содержимое вашего проекта. Он не знает, что в `04_synthesis/migration-risks.md` уже есть ответ — потому что вы не положили этот файл в контекст. И сам он его не найдёт без явных инструментов.
+2. **Дисциплина рассуждений плывёт**. Агент путает факты, гипотезы и решения. Через месяц у вас в репозитории `RECOMMENDATION`-ы, выданные за `FACT`, и никто уже не помнит, какой был source.
+3. **KB накапливает скрытый долг**. Файлы без frontmatter, ссылки `related:` указывают в никуда, orphan-страницы, на которые никто не ссылается. Найти руками — никто не будет.
+
+Этот шаблон закрывает эти три боли пятью независимыми инструментами, которые работают вместе.
+
+---
+
+## Что внутри
+
+```
+ai-kb-harness-template/
+├── AGENTS.md                  ← системный промпт для агентов (метки, citation, ingest workflow)
+├── CLAUDE.md                  ← operational rules (язык, дисциплина, артефакты)
+├── .mcp.json                  ← конфиг MCP-сервера, подхватывается Claude Code
+├── .claude/settings.json      ← permissions + pre/post-tool-use hooks
+├── .remember/core.md          ← semantic invariant проекта (коммитится)
+├── skills/                    ← рабочие процедуры с триггерами
+│   ├── skill-ingest.md
+│   └── skill-decision-log.md
+├── scripts/
+│   ├── semantic/              ← гибридный поиск + синтез + MCP-сервер
+│   │   ├── index.mjs          ← индексатор (e5-small + sqlite-vec + FTS5)
+│   │   ├── search.mjs         ← hybrid search (vector + BM25 + RRF)
+│   │   ├── think.mjs          ← синтез-промпт с системной частью из AGENTS.md
+│   │   ├── backlinks.mjs      ← кто ссылается на файл
+│   │   ├── mcp-server.mjs     ← stdio MCP с tools kb_search/kb_think/kb_backlinks
+│   │   └── lib.mjs            ← всё ядро
+│   ├── kb-doctor.mjs          ← health-check KB (missing fm, broken related, orphans, stale)
+│   ├── dream-cycle.mjs        ← еженедельный LLM-аудит (drop-zone в .context/)
+│   ├── check-decisions.mjs    ← PreToolUse hook для /05_decisions/
+│   ├── check-md-frontmatter.mjs  ← PreToolUse hook на frontmatter в значимых слоях
+│   └── session-start-context.mjs ← SessionStart hook с git/.remember-выдержкой
+└── 00_context..06_outputs/    ← слои KB (см. AGENTS.md)
+```
+
+### Шесть ключевых инструментов
+
+| Инструмент | Зачем | Закрытая боль |
+|---|---|---|
+| **Hybrid search** (`scripts/semantic/search.mjs`) | Vector + BM25 + RRF, локально через ONNX-модель `multilingual-e5-small` | Агент не находил нужный файл (vector промахивался на аббревиатурах, BM25 — на перифразах) |
+| **`think`** (`scripts/semantic/think.mjs`) | Собирает промпт-контекст с **системной частью из `AGENTS.md`** + цитатами + возрастом источников | Агент путал FACT/INFERENCE/UNKNOWN; ответы без ссылок |
+| **`backlinks`** (`scripts/semantic/backlinks.mjs`) | Кто ссылается на файл (через frontmatter `related:`) — видишь blast radius перед правкой | Правка wiki ломала связи в /04_synthesis/ и /05_decisions/, никто не замечал |
+| **MCP-сервер** (`scripts/semantic/mcp-server.mjs`) | Tools `kb_search`, `kb_think`, `kb_backlinks` доступны любому MCP-клиенту | Чтобы агент в другой сессии работал с KB — приходилось пересылать файлы вручную |
+| **kb-doctor** (`scripts/kb-doctor.mjs`) | Health-check: missing frontmatter, broken `related:`, orphans, stale synthesis | KB накапливала скрытый долг; никто не замечал |
+| **Dream cycle** (`scripts/dream-cycle.mjs`) | Еженедельный LLM-аудит: что устарело, новые противоречия, что синтезировать. Никогда не пишет в KB сам — только дроп-зона | Open questions месяцами висели закрытыми, никто не проверял |
+
+Плюс **дисциплина утверждений**: каждое нетривиальное высказывание помечается `FACT/INFERENCE/ASSUMPTION/UNKNOWN/RISK/DECISION/RECOMMENDATION` с цитатой `[source: /path]`. Эти правила живут в `AGENTS.md` и проверяются хуками `check-decisions.mjs` / `check-md-frontmatter.mjs`.
+
+---
+
+## Кому полезно
+
+**Подходит, если у вас:**
+- Содержательный проект, где знание копится: исследование, продуктовое решение, due diligence, миграция, расследование инцидента, написание книги/статьи.
+- Markdown — основной формат (или вы готовы конвертировать в него).
+- Используете AI-агента не для одноразовых задач, а как ежедневный инструмент.
+
+**Конкретные сценарии:**
+- **Продуктовый ресёрч** (наш исходный кейс — pricing redesign). Десятки источников, противоречия, evidence в постоянной ревизии.
+- **M&A / Due diligence**. Куча документов, нужна дисциплина «факт vs гипотеза», структура «источник → wiki → synthesis → decision».
+- **Архитектурные decisions**. ADR-формат с явной дисциплиной evidence, поиском по истории решений, backlinks от decision к источникам.
+- **Расследования / постмортемы**. Хронология + противоречивые показания + явное выделение `UNKNOWN`.
+
+**Не подходит, если:**
+- Знание живёт в коде, не в документах.
+- Нужна real-time коллаборация (Notion/Confluence-стиль). Этот шаблон — про solo или small-team с git-workflow.
+- Объём KB > 50K страниц. SQLite + on-device embedder упрётся в потолок; нужен Postgres+pgvector.
+
+---
+
+## Quick start (5 шагов, ~5 минут)
+
+### 1. Создать проект из шаблона
+
+В GitHub UI: кнопка **«Use this template»** → новый репозиторий.
+Или через CLI:
+
+```bash
+gh repo create my-project --template ha1ex/ai-kb-harness-template --public --clone
+cd my-project
+```
+
+### 2. Поставить зависимости семантик-индекса
+
+```bash
+cd scripts/semantic
+pnpm install   # ~10 секунд
+cd ../..
+```
+
+(При первом запуске индексатора качается ONNX-модель `multilingual-e5-small` ~120 MB в `scripts/semantic/.transformers-cache/`, gitignored.)
+
+### 3. Заполнить персонализированные плейсхолдеры
+
+Откройте и поправьте:
+
+- `AGENTS.md` — заменить блок `Project purpose` (TODO внутри).
+- `CLAUDE.md` — поправить язык / workflow / запуск проекта (TODO внутри).
+- `.remember/core.md` — заполнить «Цель проекта», «Контекст», «Hard rules».
+
+Лицензия: `LICENSE` (MIT). Замените copyright-holder при необходимости.
+
+### 4. Положить первый артефакт
+
+Простейший сценарий — кладёте свой первый источник:
+
+```bash
+mkdir -p 01_raw/research
+cp ~/your-document.md 01_raw/research/2026-XX-XX-first-source.md
+```
+
+Потом просите Claude обработать его по skill-ingest (этот скилл создан в `skills/skill-ingest.md`):
+
+```
+Привет. Обработай новый артефакт /01_raw/research/2026-XX-XX-first-source.md по skill-ingest.
+```
+
+Claude пройдёт по 11 шагам и создаст файлы в `/02_sources/`, `/03_wiki/`, `/04_synthesis/`.
+
+### 5. Запустить индекс и убедиться, что всё работает
+
+```bash
+node scripts/semantic/index.mjs           # построить hybrid-индекс (vector + BM25 + links)
+node scripts/semantic/search.mjs "тема"   # проверить поиск
+node scripts/kb-doctor.mjs                # health-check
+```
+
+### MCP — для подключения в Claude Code
+
+`.mcp.json` в корне уже настроен. Перезапустите Claude Code в этом проекте — появятся tools `kb_search` / `kb_think` / `kb_backlinks`. Дальше агент будет вызывать их сам, без передачи файлов вручную.
+
+---
+
+## Архитектура (как куски связаны)
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│                  AI-агент (Claude Code, Desktop, ...)          │
+└──────────┬─────────────────────────────────────┬───────────────┘
+           │                                     │
+   читает прямо файлы                  вызывает через MCP
+           │                                     │
+           ▼                                     ▼
+   ┌─────────────────┐              ┌─────────────────────────┐
+   │ markdown KB     │              │ scripts/semantic/       │
+   │ 00..06_*/       │              │  mcp-server.mjs         │
+   │ AGENTS.md       │              │  └─ kb_search           │
+   │ CLAUDE.md       │              │  └─ kb_think            │
+   │ .remember/      │              │  └─ kb_backlinks        │
+   └────────┬────────┘              └────────┬────────────────┘
+            │                                │
+            │ индексируется ───────────────▶ │
+            │                                ▼
+            │                       ┌──────────────────────┐
+            │                       │ .semantic-index      │
+            │                       │   .sqlite            │
+            │                       │ ├─ chunks (text)     │
+            │                       │ ├─ vec_chunks (e5)   │
+            │                       │ ├─ fts_chunks (BM25) │
+            │                       │ ├─ files (mtime)     │
+            │                       │ └─ links (related:)  │
+            │                       └──────────────────────┘
+            │
+   правка в KB ──▶ hooks из .claude/settings.json:
+                    • SessionStart: session-start-context.mjs (контекст)
+                    • PreToolUse:   check-decisions.mjs       (dec-карточки)
+                                    check-md-frontmatter.mjs  (frontmatter)
+```
+
+**Ключевые abstractions:**
+- **Слои KB** (`00..06_*`) — каноническая иерархия `evidence → summary → wiki → synthesis → decision → output`. Определяется в `AGENTS.md`, проверяется хуками, индексируется семантик-поиском.
+- **Метки утверждений** — `FACT/INFERENCE/ASSUMPTION/UNKNOWN/RISK/DECISION/RECOMMENDATION`. Жёсткое правило в `AGENTS.md`, инжектится в системный промпт `think` / `kb_think`, проверяется `check-decisions.mjs`.
+- **Frontmatter `related:`** — единственный источник связей между файлами. Парсится в `index.mjs`, питает `backlinks.mjs`, валидируется `kb-doctor.mjs`.
+- **MCP как мост** — `scripts/semantic/mcp-server.mjs` экспонирует те же три операции (`search`, `think`, `backlinks`), что CLI, но через JSON-RPC. Один индекс — несколько клиентов.
+
+---
+
+## Параметризация под свой проект
+
+Большинство кода — generic. Что обычно надо подкрутить:
+
+| Файл | Что менять |
+|---|---|
+| `AGENTS.md` § Project purpose | Цель и контекст проекта (TODO внутри) |
+| `CLAUDE.md` § Язык | Если у вас English-команда — переведите |
+| `CLAUDE.md` § Дисциплина веток | Workflow вашей команды (rebase / squash / ff-merge) |
+| `CLAUDE.md` § Запуск проекта | Команды разработки, если репозиторий не чисто-KB |
+| `.remember/core.md` | Hard rules, инвариант проекта |
+| `scripts/semantic/lib.mjs` → `INDEXABLE_LAYERS` | Если у вас другая структура слоёв (например, добавили `07_phase3/` или `08_launch/`) |
+| `scripts/semantic/lib.mjs` → `SKIP_DIRS` | Если внутри слоёв есть подкаталоги, которые не нужно индексировать |
+| `scripts/kb-doctor.mjs` → `LAYERS` | Обязательные frontmatter-поля для каждого слоя |
+| `scripts/check-md-frontmatter.mjs` → `LAYER_RULES` | То же — для блокирующего hook'а |
+| `.mcp.json` → имя сервера | Опционально — переименовать с `kb-local` на что-то проектное |
+| `LICENSE` | Copyright holder |
+
+Что **не нужно** менять:
+- Алгоритмы поиска (`searchVec`, `searchBM25`, `fuseRRF` в `lib.mjs`).
+- MCP-handler'ы в `mcp-server.mjs`.
+- Логику kb-doctor.
+
+---
+
+## Как обновляться от upstream
+
+Шаблон-репо не обновляет ваши клоны автоматически — это сознательное ограничение GitHub templates.
+
+Чтобы догонять улучшения:
+
+```bash
+git remote add upstream https://github.com/ha1ex/ai-kb-harness-template.git
+git fetch upstream
+git diff upstream/main -- scripts/   # посмотреть что изменилось в скриптах
+git checkout upstream/main -- scripts/semantic/lib.mjs   # цеплять конкретные файлы
+```
+
+Чтобы получить уведомление о новых релизах — Watch → Custom → Releases на странице репо.
+
+---
+
+## FAQ
+
+**Зачем on-device, а не OpenAI/Anthropic embeddings?**
+Нулевая стоимость, нулевая задержка после первого запуска, никаких leak'ов вашей KB в чужие сервисы. `multilingual-e5-small` (384-dim) для русского/английского достаточен — на enterprise-объёмах (~10K страниц) разница с топовыми моделями в качестве retrieval незначима, а стоимость 0 vs $300/мес.
+
+**Почему sqlite-vec, а не Qdrant/Chroma/Postgres+pgvector?**
+Один файл, нет процесса, нет порта, нет миграций. До ~50K чанков работает молниеносно. Если упрётесь — `lib.mjs` написан так, что миграция на другой бекенд = переписать `openDb` и три функции поиска.
+
+**Почему MCP-сервер, а не CLI с Bash-allowlist?**
+MCP-tools видны агенту как first-class инструменты с типизированной схемой. Bash-allowlist менее надёжен (escaping, прав доступа, агенту проще ошибиться с флагами). MCP — стандарт, поддерживается Claude Code, Claude Desktop, Cursor, Windsurf, ChatGPT.
+
+**Это работает с GPT-5 / Gemini / open-source LLM?**
+Шаблон не привязан к Claude. CLI-команды (`search`, `think`, `backlinks`, `kb-doctor`) работают везде — выводят stdout/JSON. MCP — открытый стандарт, его поддерживают многие клиенты. Хуки `.claude/settings.json` специфичны для Claude Code, но их можно адаптировать (Cursor использует `.cursor/`, Windsurf — свой формат).
+
+**Можно ли использовать без AI-агента, как обычный поиск по markdown?**
+Да — `search.mjs` работает сам по себе как CLI hybrid-поиск с цитатами. Это уже полезнее `grep -r`.
+
+---
+
+## Происхождение и кредиты
+
+- Идея «brain = markdown-репо + структурированный AI-доступ» вдохновлена [gbrain](https://github.com/garrytan/gbrain) Garry Tan. Этот шаблон — другая реализация той же идеи: без платных embeddings, без миграции на Postgres, без BunSDK — только Node + sqlite-vec + on-device ONNX.
+- Концепция AI harness как 7 building blocks (System Prompt, Tools, Context, Skills, Hooks, Permissions, Memory) — см. [статью «AI Harness, Skills, Context: Orchestration Guide»](https://www.youngju.dev/blog/culture/2026-03-23-ai-harness-skills-context-orchestration-guide.en).
+- `multilingual-e5-small` (Microsoft, MIT) для эмбеддингов; `sqlite-vec` (Alex Garcia, MIT) для vector storage; MCP SDK от Anthropic.
+
+---
+
+## Лицензия
+
+MIT — см. [LICENSE](./LICENSE).

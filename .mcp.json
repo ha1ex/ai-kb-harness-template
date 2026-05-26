@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "kb-local": {
+      "command": "node",
+      "args": ["scripts/semantic/mcp-server.mjs"],
+      "description": "Локальный semantic-индекс KB. Tools: kb_search (hybrid retrieval), kb_think (синтез с цитатами через AGENTS.md), kb_backlinks (кто ссылается на файл)."
+    }
+  }
+}

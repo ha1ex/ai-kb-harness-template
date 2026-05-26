@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "_comment": "AI harness template. Принцип: безопасное чтение и Bash-сборка — allow; запись в immutable-слои — ask. Hooks обеспечивают дисциплину утверждений и frontmatter.",
+  "permissions": {
+    "allow": [
+      "Read",
+      "Grep",
+      "Glob",
+      "WebFetch",
+      "Bash(pnpm install:*)",
+      "Bash(node scripts/*:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)"
+    ],
+    "ask": [
+      "Edit(00_context/**)",
+      "Write(00_context/**)",
+      "Edit(01_raw/**)",
+      "Write(01_raw/**)",
+      "Edit(AGENTS.md)",
+      "Edit(README.md)",
+      "Bash(rm:*)",
+      "Bash(git push:*)",
+      "Bash(git reset:*)",
+      "Bash(git rebase:*)"
+    ],
+    "deny": []
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node $CLAUDE_PROJECT_DIR/scripts/session-start-context.mjs"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node $CLAUDE_PROJECT_DIR/scripts/check-decisions.mjs"
+          },
+          {
+            "type": "command",
+            "command": "node $CLAUDE_PROJECT_DIR/scripts/check-md-frontmatter.mjs"
+          }
+        ]
+      }
+    ]
+  }
+}
