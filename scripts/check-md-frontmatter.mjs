@@ -38,14 +38,23 @@ const filePath = input.file_path || '';
 
 if (!/^(Write|Edit|MultiEdit)$/.test(tool)) process.exit(0);
 if (!filePath) process.exit(0);
-if (!/\.md$/i.test(filePath)) process.exit(0);
+const isMd = /\.md$/i.test(filePath);
+const isEvalYaml = /\/skills\/[^/]+\/evals\/[^/]+\.ya?ml$/i.test(filePath);
+if (!isMd && !isEvalYaml) process.exit(0);
 
-// Подбираем слой
-let layerKey = null;
-for (const key of Object.keys(LAYER_RULES)) {
-  if (filePath.includes(`/${key}/`)) { layerKey = key; break; }
+// Eval-case: жёсткие правила, отдельная ветка.
+if (isEvalYaml) {
+  // Будем валидировать ниже после чтения candidateText.
 }
-if (!layerKey) process.exit(0);
+
+// Подбираем слой (только для .md)
+let layerKey = null;
+if (isMd) {
+  for (const key of Object.keys(LAYER_RULES)) {
+    if (filePath.includes(`/${key}/`)) { layerKey = key; break; }
+  }
+  if (!layerKey) process.exit(0);
+}
 
 const basename = filePath.split('/').pop().toLowerCase();
 if (EXEMPT_BASENAMES.has(basename)) process.exit(0);
@@ -69,9 +78,34 @@ if (tool === 'Write' && typeof input.content === 'string') {
 
 // Без frontmatter — пропускаем (свободный документ)
 const fmMatch = candidateText.match(/^---\n([\s\S]*?)\n---/);
-if (!fmMatch) process.exit(0);
+if (!fmMatch) {
+  if (isEvalYaml) {
+    process.stderr.write(`[check-md-frontmatter] ${filePath}: eval-case требует frontmatter с type/version/skill/grader.\n`);
+    process.exit(2);
+  }
+  process.exit(0);
+}
 
 const fm = fmMatch[1];
+
+// Для eval-case — фиксированный набор требований
+if (isEvalYaml) {
+  const EVAL_REQUIRED = ['type', 'version', 'skill', 'grader'];
+  const missing = EVAL_REQUIRED.filter((f) => !new RegExp(`^\\s*${f}\\s*:`, 'm').test(fm));
+  const typeMatch = fm.match(/^\s*type\s*:\s*(\S+)/m);
+  if (typeMatch && typeMatch[1] !== 'eval-case') {
+    process.stderr.write(
+      `[check-md-frontmatter] ${filePath}: eval-case должен иметь type: eval-case (найдено: ${typeMatch[1]}).\n`,
+    );
+    process.exit(2);
+  }
+  if (missing.length === 0) process.exit(0);
+  process.stderr.write(
+    `[check-md-frontmatter] ${filePath}: eval-case требует ${EVAL_REQUIRED.join(', ')}. Отсутствуют: ${missing.join(', ')}.\n`,
+  );
+  process.exit(2);
+}
+
 const required = LAYER_RULES[layerKey];
 const missing = required.filter((f) => !new RegExp(`^\\s*${f}\\s*:`, 'm').test(fm));
 

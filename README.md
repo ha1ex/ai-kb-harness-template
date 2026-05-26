@@ -172,6 +172,81 @@ pnpm dev         # API на :3001 + клиент на :5173
 
 Для деплоя коллегам — `pnpm build`, выложить `dist/` куда угодно (Vercel, Netlify, S3, любой статик-хостинг). Для прода с динамическими данными — поднять `server.ts` рядом.
 
+### 7. SkillOpt — регрессионные тесты и оптимизация SKILL.md (опционально)
+
+Превращает скиллы из статических `SKILL.md` в эволюционирующие документы с метриками. Идея вдохновлена [microsoft/SkillOpt](https://microsoft.github.io/SkillOpt/) — `rollout → reflect → edit → gate` — но реализована **без привязки к конкретной нейронке**: claude CLI, OpenAI HTTP API, Ollama, LiteLLM, любой OpenAI-compatible endpoint.
+
+**Установка:**
+
+```bash
+cd scripts/skillopt
+pnpm install        # cosmiconfig + p-queue + zod + js-yaml
+cd ../..
+```
+
+**Phase 1 (уже работает) — regression-тесты скиллов:**
+
+```bash
+pnpm skill list                              # обзор: какие скиллы, сколько eval'ов
+pnpm skill rollout skill-ingest              # прогнать все eval'ы скилла через LLM
+pnpm skill rollout skill-ingest --case happy-path
+pnpm skill score <run-id>                    # офлайн: пересчитать graders без LLM
+pnpm skill rollout skill-ingest --ci         # exit 1 если pass-rate < 100%
+```
+
+Результат каждого прогона — в `.context/skillopt/<run-id>/`:
+- `summary.json` — pass/fail/score, токены, по-скильному breakdown
+- `traces/<skill>__<case>.json` — полный trace (prompt, response, grader details)
+
+**Подключение нейронки.** По умолчанию `provider=auto`: пробует `claude` CLI → fallback на `openai-http` если `OPENAI_API_KEY` задан → иначе actionable error. Явно:
+
+```bash
+# OpenAI
+export OPENAI_API_KEY=sk-...
+pnpm skill rollout skill-ingest --provider openai-http --model gpt-4o-mini
+
+# Локальный Ollama (OpenAI-совместимый)
+ollama serve &
+pnpm skill rollout skill-ingest \
+  --provider openai-http \
+  --base-url http://localhost:11434/v1 \
+  --model llama3
+
+# Или через .skillopt.json в корне репо
+cat > .skillopt.json <<EOF
+{
+  "provider": "openai-http",
+  "model": "gpt-4o-mini",
+  "concurrency": 2
+}
+EOF
+```
+
+**Формат eval-кейса** (`skills/<skill-name>/evals/<case-id>.yaml`):
+
+```yaml
+---
+type: eval-case
+version: v0.1
+skill: skill-ingest
+grader: label-presence       # contains | label-presence (phase 2: + llm-judge + json-schema)
+tags: [regression, happy-path]
+---
+# Input
+Текст промпта. Поддержка {{file:fixture.md}} для подгрузки фикстур
+из skills/<name>/evals/_fixtures/.
+
+# Expected
+- required labels: FACT, INFERENCE
+- at least: 2 distinct
+```
+
+Готовые примеры — `skills/skill-ingest/evals/happy-path.yaml` (label-presence), `skills/skill-ingest/evals/no-fabrication.yaml` (contains, проверка что модель отвечает `UNKNOWN:` а не выдумывает retention rate), `skills/skill-decision-log/evals/decision-with-source.yaml`.
+
+**Phase 2** (в разработке): `reflect` (LLM анализирует traces и предлагает правки в `proposals/<skill>.md` с метками AGENTS.md), `diff`/`apply` (human-in-the-loop коммит), llm-judge и json-schema graders, `generic-cli` adapter (sgpt, llm Simon Willison, gemini).
+
+**Phase 3** (опционально): read-only MCP tools (`skill_list_runs`, `skill_get_trace`) — агент в Claude Code сможет смотреть историю оптимизации, но мутации остаются за CLI (human pulls the trigger).
+
 ---
 
 ## Архитектура (как куски связаны)

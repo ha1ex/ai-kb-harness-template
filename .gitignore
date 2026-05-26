@@ -12,6 +12,15 @@ tools/viewer/.vite/
 .semantic-index.sqlite-wal
 .semantic-index.sqlite-shm
 
+# SkillOpt metrics
+.skillopt-metrics.sqlite
+.skillopt-metrics.sqlite-wal
+.skillopt-metrics.sqlite-shm
+
+# SkillOpt local overrides (если пользователь не хочет коммитить настройку)
+.skillopt.local.json
+.env
+
 # Кэш моделей transformers.js (~120 MB)
 scripts/semantic/.transformers-cache/
 
