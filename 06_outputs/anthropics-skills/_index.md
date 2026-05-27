@@ -2,19 +2,19 @@
 type: index
 title: Anthropic Agent Skills (https://github.com/anthropics/skills) — каталог
 ingested: 2026-05-27
-total: 12
+total: 16
 version: v0.1
 ---
 
 # Anthropic Agent Skills (https://github.com/anthropics/skills) — каталог
 
-> Импорт из upstream-источника на 2026-05-27. Всего **12** единиц в **3** категориях.
+> Импорт из upstream-источника на 2026-05-27. Всего **16** единиц в **3** категориях.
 
 ## По категориям
 
 | Категория | Единиц | Папка |
 | - | -: | - |
-| Engineering productivity | 5 | [`01-engineering-productivity/`](./01-engineering-productivity/) |
+| Engineering productivity | 9 | [`01-engineering-productivity/`](./01-engineering-productivity/) |
 | Operations | 2 | [`06-operations/`](./06-operations/) |
 | Design | 5 | [`12-design/`](./12-design/) |
 
@@ -34,3 +34,7 @@ version: v0.1
 | `ANT-010` | Design | [Canvas Design](./12-design/ANT-010-canvas-design.md) | Apache-2.0 | [canvas-design](https://github.com/anthropics/skills/blob/main/skills/canvas-design/SKILL.md) |
 | `ANT-011` | Design | [Frontend Design](./12-design/ANT-011-frontend-design.md) | Apache-2.0 | [frontend-design](https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md) |
 | `ANT-012` | Design | [Theme Factory Skill](./12-design/ANT-012-theme-factory.md) | Apache-2.0 | [theme-factory](https://github.com/anthropics/skills/blob/main/skills/theme-factory/SKILL.md) |
+| `ANT-013` | Engineering productivity | [DOCX (Microsoft Word) creation, editing, and analysis](./01-engineering-productivity/ANT-013-docx.md) | source-available | [docx](https://github.com/anthropics/skills/blob/main/skills/docx/SKILL.md) |
+| `ANT-014` | Engineering productivity | [PDF processing — extract, merge, split, OCR, fill forms](./01-engineering-productivity/ANT-014-pdf.md) | source-available | [pdf](https://github.com/anthropics/skills/blob/main/skills/pdf/SKILL.md) |
+| `ANT-015` | Engineering productivity | [PPTX (PowerPoint) — create, read, edit slide decks](./01-engineering-productivity/ANT-015-pptx.md) | source-available | [pptx](https://github.com/anthropics/skills/blob/main/skills/pptx/SKILL.md) |
+| `ANT-016` | Engineering productivity | [XLSX (Excel) — read, edit, create spreadsheets with formulas](./01-engineering-productivity/ANT-016-xlsx.md) | source-available | [xlsx](https://github.com/anthropics/skills/blob/main/skills/xlsx/SKILL.md) |

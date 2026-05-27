@@ -7,7 +7,7 @@ version: v0.1
 
 # Anthropic Agent Skills (https://github.com/anthropics/skills) — по категориям
 
-## Engineering productivity · 5 единиц · [`01-engineering-productivity/`](./01-engineering-productivity/)
+## Engineering productivity · 9 единиц · [`01-engineering-productivity/`](./01-engineering-productivity/)
 
 | ID | Title | Subtitle |
 | - | - | - |
@@ -16,6 +16,10 @@ version: v0.1
 | `ANT-003` | [Skill Creator](./01-engineering-productivity/ANT-003-skill-creator.md) | Create new skills, modify and improve existing skills, and measure skill performance |
 | `ANT-004` | [Web Artifacts Builder](./01-engineering-productivity/ANT-004-web-artifacts-builder.md) | Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind C… |
 | `ANT-005` | [Web Application Testing](./01-engineering-productivity/ANT-005-webapp-testing.md) | Toolkit for interacting with and testing local web applications using Playwright |
+| `ANT-013` | [DOCX (Microsoft Word) creation, editing, and analysis](./01-engineering-productivity/ANT-013-docx.md) | Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files). |
+| `ANT-014` | [PDF processing — extract, merge, split, OCR, fill forms](./01-engineering-productivity/ANT-014-pdf.md) | Use this skill whenever the user wants to do anything with PDF files. |
+| `ANT-015` | [PPTX (PowerPoint) — create, read, edit slide decks](./01-engineering-productivity/ANT-015-pptx.md) | Use this skill any time a .pptx file is involved in any way — as input, output, or both. |
+| `ANT-016` | [XLSX (Excel) — read, edit, create spreadsheets with formulas](./01-engineering-productivity/ANT-016-xlsx.md) | Use this skill any time a spreadsheet file is the primary input or output. |
 
 ## Operations · 2 единиц · [`06-operations/`](./06-operations/)
 
