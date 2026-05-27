@@ -1,24 +1,24 @@
 ---
 type: index
-title: Anthropic Agent Skills — каталог
+title: Anthropic Agent Skills (https://github.com/anthropics/skills) — каталог
 ingested: 2026-05-27
 total: 12
 version: v0.1
 ---
 
-# Anthropic Agent Skills — каталог
+# Anthropic Agent Skills (https://github.com/anthropics/skills) — каталог
 
-> Импорт из upstream-источника на 2026-05-27. Всего **12** скилов в **3** категориях.
+> Импорт из upstream-источника на 2026-05-27. Всего **12** единиц в **3** категориях.
 
 ## По категориям
 
-| Категория | Скилов | Папка |
+| Категория | Единиц | Папка |
 | - | -: | - |
 | Engineering productivity | 5 | [`01-engineering-productivity/`](./01-engineering-productivity/) |
 | Operations | 2 | [`06-operations/`](./06-operations/) |
 | Design | 5 | [`12-design/`](./12-design/) |
 
-## Все скилы
+## Все единицы
 
 | ID | Категория | Title | License | Upstream |
 | - | - | - | - | - |

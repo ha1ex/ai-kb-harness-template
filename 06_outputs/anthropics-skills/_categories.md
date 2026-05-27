@@ -1,13 +1,13 @@
 ---
 type: index
-title: Anthropic Agent Skills — по категориям
+title: Anthropic Agent Skills (https://github.com/anthropics/skills) — по категориям
 ingested: 2026-05-27
 version: v0.1
 ---
 
-# Anthropic Agent Skills — по категориям
+# Anthropic Agent Skills (https://github.com/anthropics/skills) — по категориям
 
-## Engineering productivity · 5 скилов · [`01-engineering-productivity/`](./01-engineering-productivity/)
+## Engineering productivity · 5 единиц · [`01-engineering-productivity/`](./01-engineering-productivity/)
 
 | ID | Title | Subtitle |
 | - | - | - |
@@ -17,14 +17,14 @@ version: v0.1
 | `ANT-004` | [Web Artifacts Builder](./01-engineering-productivity/ANT-004-web-artifacts-builder.md) | Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind C… |
 | `ANT-005` | [Web Application Testing](./01-engineering-productivity/ANT-005-webapp-testing.md) | Toolkit for interacting with and testing local web applications using Playwright |
 
-## Operations · 2 скилов · [`06-operations/`](./06-operations/)
+## Operations · 2 единиц · [`06-operations/`](./06-operations/)
 
 | ID | Title | Subtitle |
 | - | - | - |
 | `ANT-006` | [Internal Comms](./06-operations/ANT-006-internal-comms.md) | A set of resources to help me write all kinds of internal communications, using the formats that my company likes to use |
 | `ANT-007` | [Slack GIF Creator](./06-operations/ANT-007-slack-gif-creator.md) | Knowledge and utilities for creating animated GIFs optimized for Slack |
 
-## Design · 5 скилов · [`12-design/`](./12-design/)
+## Design · 5 единиц · [`12-design/`](./12-design/)
 
 | ID | Title | Subtitle |
 | - | - | - |
