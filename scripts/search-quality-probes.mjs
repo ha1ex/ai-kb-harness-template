@@ -17,45 +17,103 @@ import {
 } from './semantic/lib.mjs';
 
 const PROBES = [
-  // ---- core engineering ----
-  { q: 'build mcp server claude tools',          expect_provider: 'anthropic|fabric|cybos',  expect_cat: 'Engineering productivity' },
+  // ============================================================
+  // 01-engineering-productivity (4 probes)
+  // ============================================================
+  { q: 'build mcp server claude tools',            expect_provider: 'anthropic|fabric|cybos',  expect_cat: 'Engineering productivity' },
   { q: 'prompt caching cost reduction claude api', expect_provider: 'anthropic-cookbooks|cybos', expect_cat: 'Engineering productivity' },
-  { q: 'code review skill for pull requests',     expect_provider: 'fabric|cybos',             expect_cat: 'Engineering productivity' },
+  { q: 'code review skill for pull requests',      expect_provider: 'fabric|cybos',             expect_cat: 'Engineering productivity' },
+  { q: 'parallel multi-agent dev workflow worktrees', expect_provider: 'cybos|fabric',          expect_cat: 'Engineering productivity' },
 
-  // ---- marketing & content ----
-  { q: 'write essay in paul graham style',        expect_provider: 'fabric',                   expect_cat: 'Marketing & content' },
-  { q: 'newsletter writing prompts',              expect_provider: 'fabric|cybos',             expect_cat: 'Marketing & content' },
+  // ============================================================
+  // 02-marketing-content (3 probes)
+  // ============================================================
+  { q: 'write essay in paul graham style',         expect_provider: 'fabric',                   expect_cat: 'Marketing & content' },
+  { q: 'newsletter writing prompts',               expect_provider: 'fabric|cybos',             expect_cat: 'Marketing & content' },
+  { q: 'blog post landing page conversion copy',   expect_provider: 'cybos|fabric',             expect_cat: 'Marketing & content' },
 
-  // ---- sales ----
-  { q: 'analyze sales call transcript scoring',   expect_provider: 'fabric|cybos',             expect_cat: 'Sales & outbound' },
+  // ============================================================
+  // 03-strategy-leadership (3 probes — was 0)
+  // ============================================================
+  { q: 'competitive positioning swot analysis framework', expect_provider: 'fabric|cybos',      expect_cat: 'Strategy & leadership' },
+  { q: 'prepare 7s mckinsey strategy',             expect_provider: 'fabric',                   expect_cat: 'Strategy & leadership' },
+  { q: 'analyze business risk decision',           expect_provider: 'fabric|cybos',             expect_cat: 'Strategy & leadership' },
 
-  // ---- knowledge management ----
-  { q: 'extract wisdom from podcast or video',    expect_provider: 'fabric',                   expect_cat: 'Knowledge management' },
-  { q: 'summarize research paper academic',       expect_provider: 'fabric|cybos',             expect_cat: 'Knowledge management' },
+  // ============================================================
+  // 04-infrastructure (2 probes — was 0)
+  // ============================================================
+  { q: 'terraform plan iac infrastructure analysis', expect_provider: 'fabric|cybos',           expect_cat: 'Infrastructure' },
+  { q: 'self-installable claude code skill via http server', expect_provider: 'cybos',          expect_cat: 'Infrastructure' },
 
-  // ---- design (anthropic-only category) ----
-  { q: 'apply anthropic brand colors typography', expect_provider: 'anthropic',                expect_cat: 'Design' },
-  { q: 'design system tokens for frontend',       expect_provider: 'anthropic|cybos',          expect_cat: 'Design' },
+  // ============================================================
+  // 05-sales-outbound (3 probes — was 1)
+  // ============================================================
+  { q: 'analyze sales call transcript scoring',    expect_provider: 'fabric|cybos',             expect_cat: 'Sales & outbound' },
+  { q: 'cold outbound email prospect personalize', expect_provider: 'cybos|fabric',             expect_cat: 'Sales & outbound' },
+  { q: 'create hormozi grand slam offer',          expect_provider: 'fabric',                   expect_cat: 'Sales & outbound' },
 
-  // ---- cybersecurity (fabric-only category) ----
-  { q: 'analyze malware threat report',           expect_provider: 'fabric',                   expect_cat: 'Cybersecurity' },
-  { q: 'write hackerone bug bounty report',       expect_provider: 'fabric',                   expect_cat: 'Cybersecurity' },
+  // ============================================================
+  // 06-operations (3 probes — was 1)
+  // ============================================================
+  { q: 'meeting summary auto crm slack',           expect_provider: 'cybos|fabric',             expect_cat: 'Operations|Sales & outbound' },
+  { q: 'transcribe minutes board meeting',         expect_provider: 'fabric|cybos',             expect_cat: 'Operations' },
+  { q: 'agility user story epic agile',            expect_provider: 'fabric|cybos',             expect_cat: 'Operations' },
 
-  // ---- ops ----
-  { q: 'meeting summary auto crm slack',          expect_provider: 'cybos|fabric',             expect_cat: 'Operations|Sales & outbound' },
+  // ============================================================
+  // 07-knowledge-management (3 probes — was 2)
+  // ============================================================
+  { q: 'extract wisdom from podcast or video',     expect_provider: 'fabric',                   expect_cat: 'Knowledge management' },
+  { q: 'summarize research paper academic',        expect_provider: 'fabric|cybos',             expect_cat: 'Knowledge management' },
+  { q: 'extract book ideas highlights reading',    expect_provider: 'fabric',                   expect_cat: 'Knowledge management' },
 
-  // ---- HR ----
-  { q: 'candidate cv resume analysis hire',       expect_provider: 'fabric|cybos',             expect_cat: 'HR & hiring' },
+  // ============================================================
+  // 08-hr-hiring (3 probes — was 1)
+  // ============================================================
+  { q: 'candidate cv resume analysis hire',        expect_provider: 'fabric|cybos',             expect_cat: 'HR & hiring' },
+  { q: 'interview question preparation answer',    expect_provider: 'fabric|cybos',             expect_cat: 'HR & hiring' },
+  { q: 'analyze personality from text behavior',   expect_provider: 'fabric',                   expect_cat: 'HR & hiring' },
 
-  // ---- founder productivity / coaching ----
-  { q: 'tony robbins year in review self reflection', expect_provider: 'fabric',                expect_cat: 'Founder productivity' },
+  // ============================================================
+  // 09-founder-productivity (3 probes — was 1)
+  // ============================================================
+  { q: 'tony robbins year in review self reflection', expect_provider: 'fabric|cybos',          expect_cat: 'Founder productivity' },
+  { q: 'find blindspots dunning kruger thinking',  expect_provider: 'fabric',                   expect_cat: 'Founder productivity' },
+  { q: 'daily focus top priorities founder',       expect_provider: 'cybos|fabric',             expect_cat: 'Founder productivity' },
 
-  // ---- reference-only (source-available) ----
-  { q: 'create powerpoint deck from data',        expect_provider: 'anthropic|cybos',          expect_cat: 'Engineering productivity|Operations' },
-  { q: 'extract tables from pdf form',            expect_provider: 'anthropic',                expect_cat: 'Engineering productivity' },
+  // ============================================================
+  // 10-customer-success (2 probes — was 0)
+  // ============================================================
+  { q: 'analyze product feedback users complaints', expect_provider: 'fabric|cybos',            expect_cat: 'Customer success' },
+  { q: 'saas churn prevention retention onboarding', expect_provider: 'cybos',                  expect_cat: 'Customer success' },
 
-  // ---- data & BI ----
-  { q: 'build dashboard chart with claude',       expect_provider: 'cybos|fabric',             expect_cat: 'Data & BI' },
+  // ============================================================
+  // 11-data-bi (3 probes — was 1)
+  // ============================================================
+  { q: 'build dashboard chart with claude',        expect_provider: 'cybos|fabric',             expect_cat: 'Data & BI' },
+  { q: 'natural language analytics over warehouse', expect_provider: 'cybos',                   expect_cat: 'Data & BI' },
+  { q: 'classification embeddings text categories', expect_provider: 'anthropic-cookbooks',     expect_cat: 'Engineering productivity|Data & BI' },
+
+  // ============================================================
+  // 12-design (3 probes — was 2)
+  // ============================================================
+  { q: 'apply anthropic brand colors typography',  expect_provider: 'anthropic',                expect_cat: 'Design' },
+  { q: 'design system tokens for frontend',        expect_provider: 'anthropic|cybos',          expect_cat: 'Design' },
+  { q: 'algorithmic art generative design pattern', expect_provider: 'anthropic',               expect_cat: 'Design' },
+
+  // ============================================================
+  // 13-cybersecurity (3 probes — was 2)
+  // ============================================================
+  { q: 'analyze malware threat report',            expect_provider: 'fabric',                   expect_cat: 'Cybersecurity' },
+  { q: 'write hackerone bug bounty report',        expect_provider: 'fabric',                   expect_cat: 'Cybersecurity' },
+  { q: 'stride threat model security review',      expect_provider: 'fabric',                   expect_cat: 'Cybersecurity' },
+
+  // ============================================================
+  // Source-available reference cards (2 probes)
+  // ============================================================
+  { q: 'create powerpoint deck slides from data',  expect_provider: 'anthropic|cybos',          expect_cat: 'Engineering productivity|Operations' },
+  { q: 'extract tables from pdf form fill',        expect_provider: 'anthropic',                expect_cat: 'Engineering productivity' },
+  { q: 'edit excel spreadsheet formulas xlsx',     expect_provider: 'anthropic',                expect_cat: 'Engineering productivity' },
+  { q: 'word document docx generate report',       expect_provider: 'anthropic',                expect_cat: 'Engineering productivity' },
 ];
 
 function parseFm(text) {
