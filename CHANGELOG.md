@@ -16,6 +16,11 @@
 - **Документация ingest-слоя.** `scripts/README.md` (назначение и запуск каждого
   ingest/scrape-скрипта) и `scripts/requirements.txt` (фиксирует, что Python-скрипты
   используют только stdlib).
+- **Каталог базовых MCP** (`06_outputs/mcp-catalog/`) — 12 dev-core MCP-серверов
+  (7 reference + Playwright, Chrome DevTools, Context7, GitHub, Brave Search): карточки
+  с frontmatter, `_index.md` и готовый `baseline.mcp.json` (keyless-набор для копирования
+  в `.mcp.json`). Отобрано по deep-research (май 2026) с учётом архивации reference-серверов
+  Anthropic; индексируется семантическим поиском.
 
 ### Security
 - **Supply chain.** Добавлен `pnpm.overrides` на `protobufjs>=7.5.8` в

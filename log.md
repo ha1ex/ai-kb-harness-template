@@ -23,3 +23,4 @@
 
 - 06_outputs/_audit-report-2026-05-29.md | всесторонний аудит (двойная оптика «шаблон / реальная KB»), 6 измерений, scorecard + backlog.
 - harness + контент | фиксы аудита: supply chain (`protobufjs` override), viewer security (allowlist .md + bind 127.0.0.1), сужены permissions + наполнен deny, онбординг (`.nvmrc`/`engines`/`setup`/CI), таймауты на `spawnSync`, path-guard в skillopt MCP, заполнен semantic invariant, задокументирован external-corpus, cybos licensing (provider/license ×418), помечены 7 fabric-стабов. Детали — в `CHANGELOG.md`.
+- 06_outputs/mcp-catalog/ | каталог базовых MCP — 12 серверов (7 reference + Playwright, Chrome DevTools, Context7, GitHub, Brave Search) + `baseline.mcp.json` (keyless-набор). Отобрано по deep-research май 2026.

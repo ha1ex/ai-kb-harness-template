@@ -29,6 +29,7 @@
 
 - [Финальные артефакты](./06_outputs/)
 - [Каталог навыков — external corpus, 736 карточек](./06_outputs/_skills-index.md)
+- [Каталог базовых MCP — 12 серверов](./06_outputs/mcp-catalog/_index.md)
 - [Отчёт аудита 2026-05-29](./06_outputs/_audit-report-2026-05-29.md)
 - [CHANGELOG](./CHANGELOG.md)
 
