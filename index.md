@@ -5,7 +5,8 @@
 
 ## Контекст
 
-- [Цель проекта](./00_context/) — TODO: добавьте сюда `product.md`, `glossary.md` и т.п.
+- [Цель проекта](./00_context/) — собственный контекст проекта (`product.md`, `glossary.md` по мере наполнения)
+- [Semantic invariant](./.remember/core.md) — цель, контекст, hard rules
 
 ## Источники
 
@@ -27,6 +28,9 @@
 ## Outputs
 
 - [Финальные артефакты](./06_outputs/)
+- [Каталог навыков — external corpus, 736 карточек](./06_outputs/_skills-index.md)
+- [Отчёт аудита 2026-05-29](./06_outputs/_audit-report-2026-05-29.md)
+- [CHANGELOG](./CHANGELOG.md)
 
 ---
 

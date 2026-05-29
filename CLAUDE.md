@@ -62,9 +62,18 @@
 - Перед мержем большой ветки → `node scripts/kb-doctor.mjs`.
 - Раз в неделю → `node scripts/dream-cycle.mjs` для генерации аудита.
 
-## Запуск проекта (TODO)
+## Запуск проекта
 
-<!-- ЗАМЕНИТЕ под свой проект.
-Пример: «Frontend: `pnpm --filter viewer dev`, билд: `pnpm --filter viewer build`.» -->
+Требования: Node 22 (`.nvmrc`), pnpm через `corepack enable`.
 
-TODO: команды запуска, сборки, тестов.
+```bash
+pnpm run setup           # установка трёх под-пакетов (semantic, skillopt, viewer)
+pnpm kb:index            # построить семантический индекс (первый раз качает ONNX-модель ~120 MB)
+pnpm kb:search "запрос"   # гибридный поиск (vector + BM25 + RRF)
+pnpm kb:think "вопрос"    # промпт-синтез с цитатами по правилам AGENTS.md
+pnpm kb:doctor           # health-check KB (frontmatter, broken related, orphans)
+pnpm viewer:dev          # локальный viewer (граф/поиск), API на 127.0.0.1:3001 + Vite
+pnpm skill               # SkillOpt CLI (rollout/reflect/diff/apply)
+```
+
+Перед коммитом значимых правок KB — `pnpm kb:doctor` (должен быть EXIT 0).

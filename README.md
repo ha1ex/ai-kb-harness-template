@@ -2,7 +2,7 @@
 
 > Стартовая оснастка для проектов, где **markdown-репозиторий = knowledge base**, а вы (или ваша команда) пользуетесь AI-агентами (Claude Code, Claude Desktop, Cursor, любые MCP-клиенты) как ежедневным рабочим инструментом.
 
-**В одной фразе:** клонируешь — и через 10 минут у тебя свой проект, где Claude / GPT / Gemini / Ollama / любая нейронка работает с твоим контентом как с базой знаний, а не как с чёрным ящиком. Полностью **on-device**: ничего не уходит во внешние API, нет платных эмбеддингов, не нужен Docker.
+**В одной фразе:** клонируешь — и через 10 минут у тебя свой проект, где Claude / GPT / Gemini / Ollama / любая нейронка работает с твоим контентом как с базой знаний, а не как с чёрным ящиком. Полностью **on-device** после установки: единственная сетевая операция — разовая загрузка модели эмбеддингов (~120 MB) при первом индексировании; дальше ничего не уходит во внешние API, нет платных эмбеддингов, не нужен Docker.
 
 `Phase 1 ✓` `Phase 2 ✓` `Phase 3 ✓` · `Universal LLM (claude/openai/ollama/sgpt/llm/gemini)` · `MCP-ready` · `MIT`
 
@@ -203,15 +203,25 @@ gh repo create my-project --template ha1ex/ai-kb-harness-template --public --clo
 cd my-project
 ```
 
-### 2. Поставить зависимости семантик-индекса
+### 2. Поставить зависимости
+
+Требования: **Node 22** (в репо есть `.nvmrc` — `nvm use` подхватит), **pnpm** через `corepack enable`.
+
+Одной командой (ставит все три под-пакета — semantic, skillopt, viewer):
 
 ```bash
-cd scripts/semantic
-pnpm install   # ~10 секунд
-cd ../..
+pnpm run setup
 ```
 
-(При первом запуске индексатора качается ONNX-модель `multilingual-e5-small` ~120 MB в `scripts/semantic/.transformers-cache/`, gitignored.)
+Или только семантик-индекс:
+
+```bash
+cd scripts/semantic && pnpm install && cd ../..
+```
+
+(При первом запуске индексатора качается ONNX-модель `multilingual-e5-small` ~120 MB в `scripts/semantic/.transformers-cache/`, gitignored — единственная сетевая операция, дальше всё локально.)
+
+> **Supply chain:** запускайте `pnpm audit`. В шаблоне применён `pnpm.overrides` на `protobufjs>=7.5.8` (закрывает critical-RCE из транзитивной ONNX-зависимости). Viewer-API по умолчанию слушает только `127.0.0.1` (для доступа из сети — `VIEWER_HOST=0.0.0.0`).
 
 ### 3. Заполнить персонализированные плейсхолдеры
 
