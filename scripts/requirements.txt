@@ -1,0 +1,20 @@
+# Python-зависимости ingest/scrape-скриптов KB.
+#
+# На текущий момент ВСЕ скрипты (import-*.py, scrape-cybos.py, *-manifest.py)
+# используют только стандартную библиотеку Python 3:
+#   argparse, collections, html, json, os, pathlib, re, sys, time, typing,
+#   urllib.request
+#
+# Внешних пакетов (requests, beautifulsoup4 и т.п.) НЕТ:
+#   - HTTP-загрузка идёт через stdlib urllib.request (см. scrape-cybos.py)
+#   - HTML → Markdown парсится руками через регэкспы (без bs4/lxml)
+#
+# Поэтому установка зависимостей не требуется — достаточно Python 3.9+.
+# Файл оставлен как точка расширения: если в будущем скрипт добавит внешнюю
+# зависимость, закрепляйте её здесь с версией, например:
+#   requests==2.32.3
+#   beautifulsoup4==4.12.3
+#
+# Запуск (см. scripts/README.md):
+#   python3 -m venv .venv && source .venv/bin/activate
+#   pip install -r scripts/requirements.txt   # сейчас no-op

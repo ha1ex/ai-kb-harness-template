@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "description": "Skill-optimization loop (rollout/reflect/edit/gate) для SKILL.md файлов. Multi-provider LLM. См. README.md в корне репо.",
+  "engines": {
+    "node": ">=20 <23"
+  },
   "scripts": {
     "skill": "node cli.mjs"
   },

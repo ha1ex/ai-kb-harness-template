@@ -2,8 +2,13 @@
   "name": "ai-kb-harness-template",
   "version": "0.2.0",
   "private": true,
-  "description": "Стартовая оснастка для проектов где markdown-репо = knowledge base, а AI-агенты — ежедневный инструмент. Перед использованием: cd scripts/semantic && pnpm install; cd scripts/skillopt && pnpm install; cd tools/viewer && pnpm install.",
+  "description": "Стартовая оснастка для проектов где markdown-репо = knowledge base, а AI-агенты — ежедневный инструмент. Перед использованием: pnpm run setup (или вручную: cd scripts/semantic && pnpm install; cd scripts/skillopt && pnpm install; cd tools/viewer && pnpm install).",
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20 <23"
+  },
   "scripts": {
+    "setup": "pnpm -C scripts/semantic install && pnpm -C scripts/skillopt install && pnpm -C tools/viewer install",
     "skill": "node scripts/skillopt/cli.mjs",
     "kb:index": "node scripts/semantic/index.mjs",
     "kb:search": "node scripts/semantic/search.mjs",

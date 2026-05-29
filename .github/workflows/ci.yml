@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  kb-doctor:
+    name: KB health-check (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable corepack (pnpm)
+        run: corepack enable
+
+      - name: Setup Node ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+          cache-dependency-path: scripts/semantic/pnpm-lock.yaml
+
+      - name: Install semantic deps
+        run: pnpm -C scripts/semantic install
+
+      # Syntax-check ключевых .mjs (без загрузки 120MB ONNX-модели).
+      - name: Syntax check (node --check)
+        run: |
+          node --check scripts/kb-doctor.mjs
+          node --check scripts/dream-cycle.mjs
+          node --check scripts/semantic/index.mjs
+          node --check scripts/semantic/search.mjs
+
+      # KB health-check: frontmatter, broken related:, orphans, stale synthesis.
+      # search-quality-probes НЕ запускаем в CI — требуют загрузки ONNX-модели (~120MB).
+      - name: Run kb-doctor
+        run: node scripts/kb-doctor.mjs
