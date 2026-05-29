@@ -6,6 +6,9 @@ kind: framework
 title: "Multi-framework compliance and audit-readiness engine"
 subtitle: "Problem solved: A B2B SaaS founder facing a first enterprise deal that requires SOC 2 (then GDPR, then ISO 27001) needs a multi-framework program plan with cost anchors, control-mapping tables, and a readiness score before committing to a $20–80K audit."
 source: https://www.cybos.ai/cases/A-093
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "XL · Half-year+"

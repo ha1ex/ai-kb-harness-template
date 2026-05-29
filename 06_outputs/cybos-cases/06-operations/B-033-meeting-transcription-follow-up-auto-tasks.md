@@ -6,6 +6,9 @@ kind: workflow
 title: "Meeting transcription + follow-up auto-tasks"
 subtitle: "\"Who's taking the notes?\" tax on every meeting. Transcript → AI summary → tasks in the tracker with owners; commitments stop slipping."
 source: https://www.cybos.ai/cases/B-033
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

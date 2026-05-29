@@ -6,6 +6,9 @@ kind: skill
 title: "Prospect-stack detection + per-competitor battle cards from one slash command"
 subtitle: "Problem solved: AEs stop walking into competitive calls blind — one command on a prospect URL produces detected stack, per-competitor battle cards, and a switching-cost matrix."
 source: https://www.cybos.ai/cases/B-158
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

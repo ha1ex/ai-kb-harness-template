@@ -6,6 +6,9 @@ kind: strategy
 title: "Multi-tenant personal-agent fleet — 5-minute VM provisioning, Guardian self-heal, AI-audited skill marketplace"
 subtitle: "Problem solved: Prosumers want a personal AI agent in their messenger but can't operate DevOps; a fleet platform provisions a fully-isolated GCP VM with a personal-agent harness in ~5 minutes, self-heals via a Guardian control plane, and gates the skill marketplace through an AI audit pipeline."
 source: https://www.cybos.ai/cases/A-075
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "XL · Half-year+"

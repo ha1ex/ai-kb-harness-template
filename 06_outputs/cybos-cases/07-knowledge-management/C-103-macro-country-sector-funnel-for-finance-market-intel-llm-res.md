@@ -6,6 +6,9 @@ kind: pattern
 title: "Macro → country → sector funnel for finance / market-intel LLM research"
 subtitle: "Problem solved: Asking an LLM stock/market-intel questions cold returns \"average internet opinion\" — answers converge to the median."
 source: https://www.cybos.ai/cases/C-103
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

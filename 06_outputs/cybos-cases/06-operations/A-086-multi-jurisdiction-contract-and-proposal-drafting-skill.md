@@ -6,6 +6,9 @@ kind: skill
 title: "Multi-jurisdiction contract and proposal drafting skill"
 subtitle: "Problem solved: Founders signing dev, consulting, and partnership deals across US, EU, UK, and DACH need jurisdiction-correct first drafts in minutes instead of paying $200–2,000 per document for paralegal time."
 source: https://www.cybos.ai/cases/A-086
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

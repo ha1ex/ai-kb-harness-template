@@ -6,6 +6,9 @@ kind: pattern
 title: "Skip community MCPs — have Claude write a thin CLI over the vendor API"
 subtitle: "Problem solved: Community MCP servers break on the 2nd or 3rd retry, leak keys into the agent context, and add a token tax for tool descriptions; a Claude-authored thin CLI wrapper over the same vendor API is more reliable, auditable, and cheaper to run."
 source: https://www.cybos.ai/cases/B-128
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

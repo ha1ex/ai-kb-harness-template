@@ -6,6 +6,9 @@ kind: pattern
 title: "Pick a multi-agent orchestrator from a side-by-side benchmark"
 subtitle: "Problem solved: A dozen Claude-Code orchestrators exist; operators waste days picking one."
 source: https://www.cybos.ai/cases/B-134
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

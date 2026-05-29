@@ -6,6 +6,9 @@ kind: workflow
 title: "Voice profile plus content engine — one source, four to five platform-native outputs"
 subtitle: "Problem solved: Repurposing one asset across X, LinkedIn, short video, YouTube, and a newsletter eats 1–3 hours per asset and the LLM smooths every output into the same paste; a derived voice profile plus atomic-claim extraction ships native outputs that still sound like the operator."
 source: https://www.cybos.ai/cases/A-083
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

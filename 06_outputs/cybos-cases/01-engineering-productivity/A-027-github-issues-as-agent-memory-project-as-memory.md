@@ -6,6 +6,9 @@ kind: pattern
 title: "GitHub Issues as agent memory — \"project as memory\""
 subtitle: "Problem solved: Agents forget mid-task and you re-explain every session. State lives on GitHub Issues; any agent picks up from the last comment — and on engineering-heavy teams, the gh CLI gives agents native, MCP-free access."
 source: https://www.cybos.ai/cases/A-027
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

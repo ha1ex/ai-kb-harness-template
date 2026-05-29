@@ -6,6 +6,9 @@ kind: workflow
 title: "AI sales-meeting auto-processor (transcript → dual prompts → Notion + Slack)"
 subtitle: "Reps lose 10 minutes per call typing notes into Slack and CRM. Both get written for them in 90 seconds."
 source: https://www.cybos.ai/cases/A-001
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

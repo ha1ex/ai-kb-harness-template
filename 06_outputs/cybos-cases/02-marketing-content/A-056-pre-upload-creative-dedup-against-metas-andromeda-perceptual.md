@@ -6,6 +6,9 @@ kind: workflow
 title: "Pre-upload creative dedup against Meta's Andromeda — perceptual hashing + 70% similarity cutoff"
 subtitle: "Problem solved: Meta's Andromeda auction silently demotes ad creatives that look like minor variations of existing ones; a pre-upload pipeline exports current creatives via the Marketing API, computes pairwise perceptual-hash similarity, and ships only assets above a 70% novelty cutoff."
 source: https://www.cybos.ai/cases/A-056
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

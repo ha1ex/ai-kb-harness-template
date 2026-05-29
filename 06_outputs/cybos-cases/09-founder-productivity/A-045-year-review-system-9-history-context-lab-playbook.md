@@ -6,6 +6,9 @@ kind: workflow
 title: "Year-review system — 9-history Context Lab playbook"
 subtitle: "Personal annual reviews die in 5 hours of Notion journaling. Nine prompts over a weekend produce a System Prompt next year's agent inherits."
 source: https://www.cybos.ai/cases/A-045
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

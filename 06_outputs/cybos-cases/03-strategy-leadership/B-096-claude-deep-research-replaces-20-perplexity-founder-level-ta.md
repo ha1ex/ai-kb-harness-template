@@ -6,6 +6,9 @@ kind: workflow
 title: "Claude deep-research replaces $20 Perplexity (founder-level TAM research)"
 subtitle: "A consultant + multi-week effort for a single TAM slide. 4 hours: 2 of agent research + 2 of absorbing the citations; holds up to VC scrutiny."
 source: https://www.cybos.ai/cases/B-096
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

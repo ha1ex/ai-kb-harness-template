@@ -6,6 +6,9 @@ kind: pattern
 title: "Self-improving skills — agent reviews each session and proposes skill/rule updates"
 subtitle: "Problem solved: Lessons learned in a session evaporate unless captured; three cadences (post-task, weekly, nightly \"dream\") turn session history into compounding skill updates without manual curation."
 source: https://www.cybos.ai/cases/B-131
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

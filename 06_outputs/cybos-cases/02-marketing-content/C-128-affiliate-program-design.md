@@ -6,6 +6,9 @@ kind: workflow
 title: "Affiliate-program design"
 subtitle: "Problem solved: SaaS founders ignore affiliate as a low-CAC channel; a CPS playbook with commission tiers, competitor-affiliate reverse-research, and brand-bidding guardrails opens it."
 source: https://www.cybos.ai/cases/C-128
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"

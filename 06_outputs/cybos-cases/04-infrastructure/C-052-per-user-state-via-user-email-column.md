@@ -6,6 +6,9 @@ kind: pattern
 title: "Per-user state via `user_email` column"
 subtitle: "Multi-user vibe-coded tools spawn per-tenant DBs and auth gymnastics. One user_email column on every table; works fine at sub-1000-user scale."
 source: https://www.cybos.ai/cases/C-052
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

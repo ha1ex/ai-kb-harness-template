@@ -6,6 +6,9 @@ kind: pattern
 title: "Three-tier skill organization for context-window economy"
 subtitle: "30+ skills load 40% context before any work starts. Router + bundles + atoms drop it under 10% and recover the planning budget."
 source: https://www.cybos.ai/cases/B-077
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

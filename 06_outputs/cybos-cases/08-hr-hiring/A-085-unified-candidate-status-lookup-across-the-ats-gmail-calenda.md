@@ -6,6 +6,9 @@ kind: workflow
 title: "Unified candidate-status lookup across the ATS, Gmail, Calendar, and the internal candidate platform"
 subtitle: "Problem solved: Answering \"what's the status of this candidate?\" means tab-switching across the ATS, three Gmail searches, Calendar, and an internal platform; one prompt collapses six tabs into one verdict — and never says \"scheduled\" when the invite was only sent."
 source: https://www.cybos.ai/cases/A-085
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

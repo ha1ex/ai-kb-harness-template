@@ -6,6 +6,9 @@ kind: workflow
 title: "Value-based pricing playbook — pre-call briefing, tiered packages, 100-point call score"
 subtitle: "Problem solved: Services teams selling on hourly rates stop leaving retainer on the table — anchored value-pricing tiers and a scored call rubric capture multiples of the current deal size."
 source: https://www.cybos.ai/cases/B-160
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

@@ -6,6 +6,9 @@ kind: framework
 title: "Founder's plain-language security FAQ template for AI-native SaaS"
 subtitle: "Problem solved: Cuts the per-inbound hours founders burn writing bespoke security replies for an AI-native SaaS down to a copy-paste-then-customize template."
 source: https://www.cybos.ai/cases/B-147
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

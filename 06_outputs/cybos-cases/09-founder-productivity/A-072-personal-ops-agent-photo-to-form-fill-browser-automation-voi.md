@@ -6,6 +6,9 @@ kind: workflow
 title: "Personal-ops agent — photo-to-form-fill + browser automation + voice-call chores"
 subtitle: "Problem solved: Founders drown in admin paperwork — insurance forms, parking tickets, hotel bookings, food orders, voice calls to service providers, quarterly tax filings. A personal agent with vision OCR + browser automation + voice-call orchestration parses tasks, explains them, and on approval executes — reclaiming minutes per task across dozens per month."
 source: https://www.cybos.ai/cases/A-072
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

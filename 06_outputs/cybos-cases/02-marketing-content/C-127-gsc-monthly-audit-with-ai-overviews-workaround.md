@@ -6,6 +6,9 @@ kind: workflow
 title: "GSC monthly audit with AI-Overviews workaround"
 subtitle: "Problem solved: Google Search Console retains limited history and does not separate AI-Overview clicks; a monthly export workflow plus a query-regex filter estimates AI-driven visibility and surfaces high-impression / low-CTR pages."
 source: https://www.cybos.ai/cases/C-127
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

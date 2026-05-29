@@ -6,6 +6,9 @@ kind: skill
 title: "All-in-one HR skill for small teams"
 subtitle: "A 1-2 person ops layer runs hiring + onboarding + reviews + offers for 30 people without an HRIS stack."
 source: https://www.cybos.ai/cases/A-013
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

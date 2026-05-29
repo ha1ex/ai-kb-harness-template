@@ -6,6 +6,9 @@ kind: workflow
 title: "Hook-driven cold outreach as a managed program"
 subtitle: "Problem solved: \"Stood out\", \"resonated\", \"would love to\" get deleted. A gated, warmed, hook-anchored, SLA-backed cold-email program gets answered — and you fix volume before you fix copy."
 source: https://www.cybos.ai/cases/A-007
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

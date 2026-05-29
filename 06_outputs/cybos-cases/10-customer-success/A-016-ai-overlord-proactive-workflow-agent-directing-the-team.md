@@ -6,6 +6,9 @@ kind: workflow
 title: "AI Overlord — proactive workflow agent directing the team"
 subtitle: "CS managers don't know what to focus on this morning. An agent ranks 3-5 actions per client using a prompt the head of CS edits."
 source: https://www.cybos.ai/cases/A-016
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

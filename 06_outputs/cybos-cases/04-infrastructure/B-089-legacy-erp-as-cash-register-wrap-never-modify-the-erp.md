@@ -6,6 +6,9 @@ kind: pattern
 title: "Legacy ERP as cash register — wrap, never modify the ERP"
 subtitle: "ERP specialists charge hourly rates and ship in weeks. Build everything outside the ERP at LLM cost; the ERP becomes a thin data sink."
 source: https://www.cybos.ai/cases/B-089
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

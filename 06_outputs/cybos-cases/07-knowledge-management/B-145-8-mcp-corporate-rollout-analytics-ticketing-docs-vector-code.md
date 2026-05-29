@@ -6,6 +6,9 @@ kind: strategy
 title: "8-MCP corporate rollout — analytics, ticketing, docs vector, codebase vector"
 subtitle: "Problem solved: Non-engineers can't safely query company data; a corporate rollout of 8 internal MCPs over analytics + ticketing + vector-indexed docs and codebase, fronted by corp SSO, halves L2 support load and lets commercial staff one-shot reports that previously took an hour."
 source: https://www.cybos.ai/cases/B-145
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

@@ -6,6 +6,9 @@ kind: pattern
 title: "State-machine capability check (7-state)"
 subtitle: "\"Why is the integration broken?\" eats 20-minute Slack threads. Seven precise states, each with the exact fix and time cost printed."
 source: https://www.cybos.ai/cases/B-076
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

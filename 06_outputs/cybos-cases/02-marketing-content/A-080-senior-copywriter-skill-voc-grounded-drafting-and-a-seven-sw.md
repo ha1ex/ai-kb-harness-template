@@ -6,6 +6,9 @@ kind: skill
 title: "Senior copywriter skill — VoC-grounded drafting and a Seven Sweeps editing pass"
 subtitle: "Problem solved: Founder-written copy reads like AI marketing voice — feature dumps, vague value props, weak CTAs; a VoC-grounded skill drafts from positioning and edits in seven single-purpose passes instead of \"make it better\" in one swing."
 source: https://www.cybos.ai/cases/A-080
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

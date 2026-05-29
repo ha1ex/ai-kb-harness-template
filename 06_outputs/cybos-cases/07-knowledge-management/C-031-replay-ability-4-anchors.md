@@ -6,6 +6,9 @@ kind: pattern
 title: "Replay-ability — 4 anchors"
 subtitle: "\"Why did the agent do X last month?\" Four anchors (source hash, prompt version, tool contract, evidence) make any decision replayable."
 source: https://www.cybos.ai/cases/C-031
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

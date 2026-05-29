@@ -6,6 +6,9 @@ kind: pattern
 title: "Data Warehouse + lineage graph (foundation)"
 subtitle: "Every downstream AI initiative breaks because the agent can't resolve \"is this the same customer?\" across billing + CRM + support."
 source: https://www.cybos.ai/cases/B-053
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

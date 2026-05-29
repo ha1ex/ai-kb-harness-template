@@ -6,6 +6,9 @@ kind: tactic
 title: "Telegram personal-account warm-up rules for proactive outreach bots"
 subtitle: "Problem solved: Personal Telegram accounts used for proactive outreach get banned within days without ramp-up discipline."
 source: https://www.cybos.ai/cases/C-070
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

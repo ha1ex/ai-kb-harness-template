@@ -6,6 +6,9 @@ kind: strategy
 title: "Small-cohort AI training program — 5 weeks, 7-10 students, active-recall + Socratic"
 subtitle: "Problem solved: Standard corporate AI training programs see ~15% retention; a small-cohort, high-touch design with active recall + Socratic + 1:1 instructor reaches ~100% completion on AI literacy."
 source: https://www.cybos.ai/cases/B-108
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

@@ -6,6 +6,9 @@ kind: skill
 title: "Remotion-video-director skill — explainer/infographic video from a brief"
 subtitle: "Problem solved: Founders pay $500–2k per freelance explainer; a Claude Code skill on top of Remotion generates the full video from a content brief end to end."
 source: https://www.cybos.ai/cases/B-100
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

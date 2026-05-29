@@ -6,6 +6,9 @@ kind: pattern
 title: "Agent rules / Hooks as safety rails"
 subtitle: "Rules in AGENTS.md don't stop the agent from making the repo public after deploy. Git hooks hard-block what rules only nudge against."
 source: https://www.cybos.ai/cases/B-049
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

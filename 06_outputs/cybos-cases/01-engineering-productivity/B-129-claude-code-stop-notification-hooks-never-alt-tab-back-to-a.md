@@ -6,6 +6,9 @@ kind: pattern
 title: "Claude Code Stop / Notification hooks — never alt-tab back to a frozen CC again"
 subtitle: "Problem solved: Claude Code stalls silently mid-task waiting for a permission prompt; users lose minutes per context switch checking on it; native macOS notifications fire the moment CC needs attention."
 source: https://www.cybos.ai/cases/B-129
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

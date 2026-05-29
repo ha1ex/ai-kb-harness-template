@@ -6,6 +6,9 @@ kind: pattern
 title: "Router-bot pattern — one orchestrator agent, many deterministic worker bots"
 subtitle: "Problem solved: Exposing multiple independent LLM agents directly to clients is risky and expensive; concentrate all decisioning in one owner-only orchestrator, and use plain deterministic bots as execution surfaces inside client chats."
 source: https://www.cybos.ai/cases/B-115
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

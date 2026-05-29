@@ -6,6 +6,9 @@ kind: framework
 title: "MEDDPICC + Challenger + SPIN persona — refuses to advise without CRM data"
 subtitle: "Problem solved: Founder-sellers know the frameworks but don't apply them — a persona skill enforces MEDDPICC discipline and refuses to advise on unsourced deal data."
 source: https://www.cybos.ai/cases/B-164
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

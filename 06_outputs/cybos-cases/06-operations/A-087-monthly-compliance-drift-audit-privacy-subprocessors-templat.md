@@ -6,6 +6,9 @@ kind: workflow
 title: "Monthly compliance-drift audit — privacy, subprocessors, template freshness"
 subtitle: "Problem solved: Privacy-policy drift, undisclosed subprocessors, and stale contract templates create silent regulatory exposure that surfaces only under a customer security review or a regulator inquiry — usually at the worst possible moment."
 source: https://www.cybos.ai/cases/A-087
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

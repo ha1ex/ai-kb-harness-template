@@ -6,6 +6,9 @@ kind: tactic
 title: "Dark-traffic attribution hygiene"
 subtitle: "Problem solved: \"Direct traffic\" inflates because TikTok / Slack / Discord / WhatsApp referrals strip referrer headers and land in Direct; a UTM-hygiene + GA4 channel-grouping protocol surfaces the real source."
 source: https://www.cybos.ai/cases/C-131
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

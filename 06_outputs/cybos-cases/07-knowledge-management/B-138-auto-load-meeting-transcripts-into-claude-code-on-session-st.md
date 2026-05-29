@@ -6,6 +6,9 @@ kind: workflow
 title: "Auto-load meeting transcripts into Claude Code on session start (SessionStart hook)"
 subtitle: "Problem solved: Founders re-paste meeting context every Claude session; a SessionStart hook extracts the day's transcripts and injects them at boot so the agent already knows what the calls were about."
 source: https://www.cybos.ai/cases/B-138
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

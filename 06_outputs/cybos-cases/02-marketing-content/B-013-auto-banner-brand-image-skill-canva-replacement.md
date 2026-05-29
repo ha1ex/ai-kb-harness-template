@@ -6,6 +6,9 @@ kind: skill
 title: "Auto-banner / brand-image skill (Canva replacement)"
 subtitle: "Marketers wait on a designer for routine banners. A markdown brand-style file plus an agent ships them on demand."
 source: https://www.cybos.ai/cases/B-013
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

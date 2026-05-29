@@ -6,6 +6,9 @@ kind: workflow
 title: "Internal dev dashboard with per-dev AI signals + change failure rate"
 subtitle: "Problem solved: Eng leaders running 10+ dev teams can't tell whether the AI rollout is helping; per-dev dashboards with PR counts, fixes-per-feature, and change failure rate surface bottlenecks — often not the ones leadership expected."
 source: https://www.cybos.ai/cases/B-123
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

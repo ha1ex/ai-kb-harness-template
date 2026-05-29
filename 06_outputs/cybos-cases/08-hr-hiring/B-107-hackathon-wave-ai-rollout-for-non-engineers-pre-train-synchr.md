@@ -6,6 +6,9 @@ kind: strategy
 title: "Hackathon-wave AI rollout for non-engineers — pre-train + synchronous + repeat"
 subtitle: "Problem solved: Seminars and lectures don't move non-engineer AI adoption; multi-wave hackathons with structured prep do — but you need 2-3 waves to capture second-tier adopters, not one."
 source: https://www.cybos.ai/cases/B-107
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

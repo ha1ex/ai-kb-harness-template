@@ -6,6 +6,9 @@ kind: framework
 title: "AI-driven product-idea funnel — 1000 → 50 → 10 → 1 via a 3-category rubric"
 subtitle: "Problem solved: Founders running idea-factories or evaluating dozens of product candidates manually burn weeks on the sort; an AI scoring framework over a 3-category rubric collapses the funnel into hours and surfaces a credible top-10."
 source: https://www.cybos.ai/cases/B-148
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

@@ -6,6 +6,9 @@ kind: workflow
 title: "Hire-vs-AI decision + paid-trial protocol for a first contractor"
 subtitle: "Problem solved: Non-technical founders over-hire or mis-hire their first contractor; a 5-step gate (try AI first → paid trial → milestoned pay → AI code review) prevents the most expensive mistake."
 source: https://www.cybos.ai/cases/B-184
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

@@ -6,6 +6,9 @@ kind: skill
 title: "Documentation skill — Minto + BFO + MECE + DRY with ground-truth citations"
 subtitle: "Every author writes docs in a different shape, so wikis rot. One enforced shape: conclusion first, claims cited, readable in 15 seconds."
 source: https://www.cybos.ai/cases/A-033
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

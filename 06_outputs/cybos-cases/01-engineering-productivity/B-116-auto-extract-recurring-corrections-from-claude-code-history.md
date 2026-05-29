@@ -6,6 +6,9 @@ kind: skill
 title: "Auto-extract recurring corrections from Claude Code history into CLAUDE.md (claude-reflect / `/insights`)"
 subtitle: "Problem solved: Operators correct the agent on the same things every week; a session-mining plugin proposes claude.md edits so the corrections stop recurring."
 source: https://www.cybos.ai/cases/B-116
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

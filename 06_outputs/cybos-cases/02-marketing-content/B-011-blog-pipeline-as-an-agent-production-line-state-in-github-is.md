@@ -6,6 +6,9 @@ kind: workflow
 title: "Blog pipeline as an agent production line (state in GitHub Issue comments)"
 subtitle: "Multi-step content pipelines lose state between sessions. Issue comments are the state machine; any agent resumes any step."
 source: https://www.cybos.ai/cases/B-011
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

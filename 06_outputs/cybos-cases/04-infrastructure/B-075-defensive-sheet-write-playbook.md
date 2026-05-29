@@ -6,6 +6,9 @@ kind: pattern
 title: "Defensive sheet-write playbook"
 subtitle: "\"Wrote to row 412 instead of 109\" because a stray cell shifted append(). Four explicit defences against the classic shared-sheet failure modes."
 source: https://www.cybos.ai/cases/B-075
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

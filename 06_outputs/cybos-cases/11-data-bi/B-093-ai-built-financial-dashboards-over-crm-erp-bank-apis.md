@@ -6,6 +6,9 @@ kind: workflow
 title: "AI-built financial dashboards over CRM + ERP + bank APIs"
 subtitle: "Outsourced finance shops take months to produce a P&L drill-down. The founder ships it in two weeks; surfaces variance worth months of margin."
 source: https://www.cybos.ai/cases/B-093
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

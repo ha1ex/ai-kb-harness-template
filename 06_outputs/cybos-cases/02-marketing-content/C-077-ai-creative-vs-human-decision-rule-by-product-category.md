@@ -6,6 +6,9 @@ kind: pattern
 title: "AI-creative-vs-human decision rule by product category"
 subtitle: "Problem solved: CMOs over-invest in AI ad creative for categories where authenticity outranks volume — wasting budget and creative-team trust."
 source: https://www.cybos.ai/cases/C-077
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

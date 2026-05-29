@@ -6,6 +6,9 @@ kind: strategy
 title: "AI Transformation Office — Sponsor + Core Champions + Extended + external partner"
 subtitle: "Transformation stalls when no one owns it. Four named roles run it; first quarter hits 87% IT adoption + 50% YoY productivity."
 source: https://www.cybos.ai/cases/A-039
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

@@ -6,6 +6,9 @@ kind: pattern
 title: "Run an agent as a real Telegram user account (gramjs / MTProto)"
 subtitle: "Problem solved: Telegram bots can't sit invisibly in arbitrary group chats and can't see message history — limiting any agent that should \"live\" in work chats."
 source: https://www.cybos.ai/cases/B-155
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

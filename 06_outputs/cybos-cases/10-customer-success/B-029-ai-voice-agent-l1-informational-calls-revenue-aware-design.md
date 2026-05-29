@@ -6,6 +6,9 @@ kind: workflow
 title: "AI Voice Agent — L1 informational calls (revenue-aware design)"
 subtitle: "\"Automate all voice\" cannibalizes upsell revenue (85% prefer voice). Split: AI on L1 informational; humans on revenue calls."
 source: https://www.cybos.ai/cases/B-029
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

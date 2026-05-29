@@ -6,6 +6,9 @@ kind: workflow
 title: "Per-client AI agent in a 3-way Telegram chat — consultant / coach delivery"
 subtitle: "Problem solved: Solo consultants, coaches, and trackers scale poorly past 5 clients; a dedicated agent per client inside a 3-party Telegram group runs the recurring touchpoints while the founder stays in the loop."
 source: https://www.cybos.ai/cases/B-098
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

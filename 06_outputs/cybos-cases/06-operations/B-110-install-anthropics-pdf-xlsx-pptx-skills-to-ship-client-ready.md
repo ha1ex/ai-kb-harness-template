@@ -6,6 +6,9 @@ kind: skill
 title: "Install Anthropic's pdf / xlsx / pptx skills to ship client-ready deliverables from Claude Code"
 subtitle: "Problem solved: Claude Code happily renders HTML, but consultants, ops teams, and founders need real PDF / XLSX / PPTX files for clients; pre-built Anthropic skills bridge the gap."
 source: https://www.cybos.ai/cases/B-110
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

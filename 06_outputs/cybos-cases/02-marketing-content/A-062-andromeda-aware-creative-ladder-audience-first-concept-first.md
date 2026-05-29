@@ -6,6 +6,9 @@ kind: framework
 title: "Andromeda-aware creative ladder — audience-first, concept-first, no micro-variations"
 subtitle: "Problem solved: Performance marketers still designing creative variations the old way (swap hook, change button color) get demoted by Meta Andromeda audience-segment auctions; this is the framework Meta itself describes for how to ship creative that survives the new auction."
 source: https://www.cybos.ai/cases/A-062
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

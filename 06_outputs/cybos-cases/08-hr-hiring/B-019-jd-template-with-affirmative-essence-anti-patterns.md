@@ -6,6 +6,9 @@ kind: pattern
 title: "JD template with affirmative essence + anti-patterns"
 subtitle: "Generic JDs attract generic candidates. Affirmative essence + \"who we're NOT looking for\" filters before they apply."
 source: https://www.cybos.ai/cases/B-019
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

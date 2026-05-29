@@ -6,6 +6,9 @@ kind: workflow
 title: "Churn prediction — start rule-based, mature into ML"
 subtitle: "\"We need ML to predict churn\" is a multi-quarter project. Rule-based v1 (volume drop, tickets up, logins declining) captures most of the 1% lift today."
 source: https://www.cybos.ai/cases/B-052
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

@@ -6,6 +6,9 @@ kind: skill
 title: "200-line end-to-end client-onboarding workflow skill"
 subtitle: "Onboarding a new client takes six weeks because every step lives in someone's head. One file walks the agent through all of them."
 source: https://www.cybos.ai/cases/A-020
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

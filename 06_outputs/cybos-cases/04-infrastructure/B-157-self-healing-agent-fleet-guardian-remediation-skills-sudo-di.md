@@ -6,6 +6,9 @@ kind: pattern
 title: "Self-healing agent fleet — Guardian, remediation skills, sudo discipline"
 subtitle: "Problem solved: Personal-agent fleets running 24/7 break in predictable ways (compaction failures, dead heartbeats, broken harness); a Guardian agent on a separate VM plus sudo-disabled customer VMs keep the fleet alive without human pages."
 source: https://www.cybos.ai/cases/B-157
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

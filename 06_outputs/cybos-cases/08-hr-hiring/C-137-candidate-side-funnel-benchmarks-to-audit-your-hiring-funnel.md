@@ -6,6 +6,9 @@ kind: framework
 title: "Candidate-side funnel benchmarks to audit your hiring funnel"
 subtitle: "Problem solved: Hiring-funnel benchmarks live on the candidate side; mirroring a candidate-OS surfaces what good response rates look like and what AI-assisted applications look like to a recruiter on the receiving end."
 source: https://www.cybos.ai/cases/C-137
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "L · Quarter"

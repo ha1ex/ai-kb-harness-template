@@ -6,6 +6,9 @@ kind: workflow
 title: "Knowledge extraction from departing employee"
 subtitle: "Senior departures cost six weeks of \"wait, how did they do X?\" Slack archaeology. Structured exit-interview turns tacit knowledge into versioned skills."
 source: https://www.cybos.ai/cases/B-020
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

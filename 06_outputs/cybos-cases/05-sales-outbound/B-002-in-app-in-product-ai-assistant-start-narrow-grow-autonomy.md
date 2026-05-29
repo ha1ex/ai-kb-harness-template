@@ -6,6 +6,9 @@ kind: strategy
 title: "In-app / in-product AI assistant (start narrow, grow autonomy)"
 subtitle: "Mass-segment users wait for business hours or leave for ChatGPT. An in-app advisor handles 33.6% of inquiries at CSAT 4.66."
 source: https://www.cybos.ai/cases/B-002
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

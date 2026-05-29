@@ -6,6 +6,9 @@ kind: workflow
 title: "Vibe-coding playbook — from blank page to deployed artefact (and back)"
 subtitle: "Problem solved: Non-engineers stare at a blank prompt and never ship. Nine ordered phases get them to a deployed tool in one afternoon — now with the post-2025 design stack and a research-first guardrail."
 source: https://www.cybos.ai/cases/A-025
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

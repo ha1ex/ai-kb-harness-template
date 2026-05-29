@@ -6,6 +6,9 @@ kind: skill
 title: "Landing-page audit for paid ads — 5-dimension weighted health score"
 subtitle: "Problem solved: Performance marketers waste budget on landing pages with hidden conversion leaks; a fixed 5-dimension rubric scores any page in 10 minutes and outputs ranked fixes with impact ranges per fix."
 source: https://www.cybos.ai/cases/A-078
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

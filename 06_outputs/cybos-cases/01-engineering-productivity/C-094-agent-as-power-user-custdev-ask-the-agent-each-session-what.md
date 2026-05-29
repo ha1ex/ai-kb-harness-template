@@ -6,6 +6,9 @@ kind: tactic
 title: "Agent-as-power-user CustDev — ask the agent each session what to improve about your tools"
 subtitle: "Problem solved: Internal MCPs, CLIs, and skills accumulate friction that human users never report because the friction shows up at agent-tool-call boundaries the human never sees."
 source: https://www.cybos.ai/cases/C-094
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

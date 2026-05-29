@@ -6,6 +6,9 @@ kind: skill
 title: "Synthetic buyer-persona builder — 4–6 personas with skepticism profile"
 subtitle: "Problem solved: Persona workshops eat days and produce vague archetypes; a 30-minute web-research pass produces 4–6 named personas with concrete deal-breakers, language patterns, and reusable JSON for downstream skills."
 source: https://www.cybos.ai/cases/A-079
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

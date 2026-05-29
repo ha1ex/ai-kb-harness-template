@@ -6,6 +6,9 @@ kind: pattern
 title: "Honest PPC field report — multi-agent feels like a real IT team but burns $470 + 75% rework"
 subtitle: "Problem solved: Operators evaluating multi-agent orchestration platforms see the marketing demos and don't see the day-3 reality."
 source: https://www.cybos.ai/cases/C-113
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

@@ -6,6 +6,9 @@ kind: pattern
 title: "SQLite as shared bus (single DB for all state)"
 subtitle: "Small teams default to Postgres + Redis + Kafka before they have 100 users. One SQLite file in WAL mode handles cron + web app + bots concurrently."
 source: https://www.cybos.ai/cases/C-057
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

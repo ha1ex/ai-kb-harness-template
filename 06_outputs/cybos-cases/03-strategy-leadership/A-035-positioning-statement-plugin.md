@@ -6,6 +6,9 @@ kind: skill
 title: "Positioning-statement plugin"
 subtitle: "A consultant charges $5-25K and three weeks to write your positioning. This does it in 90 minutes with team alignment built in."
 source: https://www.cybos.ai/cases/A-035
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

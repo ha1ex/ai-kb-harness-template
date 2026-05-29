@@ -6,6 +6,9 @@ kind: pattern
 title: "Handoffs as the unit of agent memory — wave-numbered per-project handoff docs"
 subtitle: "Long projects die when the agent's context window resets. Each session ends with a structured handoff; the next session reads it in 30 seconds."
 source: https://www.cybos.ai/cases/A-048
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

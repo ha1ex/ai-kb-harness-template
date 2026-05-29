@@ -6,6 +6,9 @@ kind: workflow
 title: "Daily 12-agent news scan → per-product client-hook summaries"
 subtitle: "AEs have nothing to call clients about today. Twice a day, 12 agents find a news hook per client tied to your products."
 source: https://www.cybos.ai/cases/B-082
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

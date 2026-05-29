@@ -6,6 +6,9 @@ kind: tactic
 title: "Skills knowledge-graph visualization"
 subtitle: "By month six you have 60+ skills, four of which nobody knows exist. A graph shows which to keep, kill, or merge in 10 minutes a week."
 source: https://www.cybos.ai/cases/A-030
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

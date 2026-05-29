@@ -6,6 +6,9 @@ kind: pattern
 title: "Twitter → LinkedIn matching via LLM disambiguation over Harmonic"
 subtitle: "Same X handle matches three Harmonic profiles. Two-call disambiguation grounded in the returned candidate IDs stops the model inventing a name."
 source: https://www.cybos.ai/cases/C-004
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"

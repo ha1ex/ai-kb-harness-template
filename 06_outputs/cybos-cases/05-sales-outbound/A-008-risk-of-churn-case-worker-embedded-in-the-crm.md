@@ -6,6 +6,9 @@ kind: workflow
 title: "Risk-of-churn case worker embedded in the CRM"
 subtitle: "Clients say \"I'm thinking of leaving\" on calls and nobody acts. Now a case lands on their card within hours."
 source: https://www.cybos.ai/cases/A-008
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

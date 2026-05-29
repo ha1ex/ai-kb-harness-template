@@ -6,6 +6,9 @@ kind: tactic
 title: "Pre-validate paid Meta creatives via TikTok organic — with correlation caveat"
 subtitle: "Problem solved: burning Meta paid budget on creative concepts you could have killed for free."
 source: https://www.cybos.ai/cases/C-074
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

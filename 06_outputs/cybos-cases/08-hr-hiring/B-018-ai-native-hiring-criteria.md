@@ -6,6 +6,9 @@ kind: pattern
 title: "AI-native hiring criteria"
 subtitle: "\"Nice if they know AI\" gets you incumbents who watched a webinar. Daily-user-last-year as deal-breaker filters in real builders."
 source: https://www.cybos.ai/cases/B-018
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

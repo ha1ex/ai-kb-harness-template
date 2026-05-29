@@ -6,6 +6,9 @@ kind: pattern
 title: "MCP Data Layer for product teams"
 subtitle: "PMs queue for analyst time to test hypotheses. MCP exposes warehouse + DB + key SaaS to any agent; 5-10× speedup on hypothesis testing."
 source: https://www.cybos.ai/cases/B-050
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

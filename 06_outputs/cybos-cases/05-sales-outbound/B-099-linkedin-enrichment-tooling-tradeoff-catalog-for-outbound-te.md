@@ -6,6 +6,9 @@ kind: pattern
 title: "LinkedIn enrichment tooling — tradeoff catalog for outbound teams"
 subtitle: "Problem solved: Sales teams enriching outbound lists pick the wrong tool for the need (anonymous-volume vs structured-CRM vs sales-tech focus); a four-option catalog matches tool to use case in one decision."
 source: https://www.cybos.ai/cases/B-099
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

@@ -6,6 +6,9 @@ kind: framework
 title: "SaaS finance metrics quick-ref — 33 formulas, benchmarks, decision frameworks"
 subtitle: "Problem solved: Founders Google \"what's the NRR formula\" mid-board-prep; a single skill loads 33 metrics with formulas, benchmarks, red flags, and four stage-gated decision frameworks."
 source: https://www.cybos.ai/cases/B-200
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

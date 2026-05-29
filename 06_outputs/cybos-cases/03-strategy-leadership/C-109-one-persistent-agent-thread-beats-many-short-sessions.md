@@ -6,6 +6,9 @@ kind: pattern
 title: "One persistent agent thread beats many short sessions"
 subtitle: "Problem solved: Operators spin up a fresh chat for every task and lose the agent's continuous context — every session starts at zero."
 source: https://www.cybos.ai/cases/C-109
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

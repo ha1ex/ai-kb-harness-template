@@ -6,6 +6,9 @@ kind: workflow
 title: "Company-wide context-graph via LMS video-survey of employees"
 subtitle: "Diagnostic interviews don't scale to every employee. Push a short video question through the LMS; transcribe; ingest into the context-graph."
 source: https://www.cybos.ai/cases/C-062
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "L · Quarter"

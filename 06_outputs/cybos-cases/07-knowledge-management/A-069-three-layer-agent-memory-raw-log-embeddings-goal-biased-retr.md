@@ -6,6 +6,9 @@ kind: framework
 title: "Three-layer agent memory — raw log + embeddings + goal-biased retrieval"
 subtitle: "Problem solved: Stateless agents lose every conversation on context compaction; a three-layer memory architecture gives bots persistent identity, recallable history, and goal-aware retrieval."
 source: https://www.cybos.ai/cases/A-069
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

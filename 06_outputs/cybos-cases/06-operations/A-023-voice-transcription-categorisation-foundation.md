@@ -6,6 +6,9 @@ kind: pattern
 title: "Voice transcription + categorisation foundation"
 subtitle: "Every voice-AI case (QA, churn signals, copilots) breaks without a transcript layer underneath. This is the layer."
 source: https://www.cybos.ai/cases/A-023
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

@@ -6,6 +6,9 @@ kind: pattern
 title: "Claude Max subprocess as zero-cost LLM runtime"
 subtitle: "Per-token API billing distorts what's worth building internally. Subprocess to Claude Max ($200/mo flat) runs unlimited L1/L2/L3 at zero marginal cost."
 source: https://www.cybos.ai/cases/B-065
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

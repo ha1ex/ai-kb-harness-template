@@ -6,6 +6,9 @@ kind: pattern
 title: "Planner/executor split between two coding agents"
 subtitle: "One agent can't both research the web cheaply and run your build. Split: a planner with web/search access; an executor with IDE/repo access; state on GitHub between them."
 source: https://www.cybos.ai/cases/B-039
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

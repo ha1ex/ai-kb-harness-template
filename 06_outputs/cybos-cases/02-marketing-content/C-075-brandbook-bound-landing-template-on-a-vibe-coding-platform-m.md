@@ -6,6 +6,9 @@ kind: tactic
 title: "Brandbook-bound landing template on a vibe-coding platform — marketers self-edit per campaign"
 subtitle: "Problem solved: Non-technical marketing teams can't ship campaign-specific landers without a dev sprint."
 source: https://www.cybos.ai/cases/C-075
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

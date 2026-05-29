@@ -6,6 +6,9 @@ kind: framework
 title: "Leadership-communication reference frameworks"
 subtitle: "Three framing devices (McKinsey 4-quadrant, 3-axes operating model, 10-projects-in-3-vectors) — pick whichever lands for the executive audience."
 source: https://www.cybos.ai/cases/C-036
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

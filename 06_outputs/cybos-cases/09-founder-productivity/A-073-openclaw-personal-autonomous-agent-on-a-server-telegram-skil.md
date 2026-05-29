@@ -6,6 +6,9 @@ kind: framework
 title: "OpenClaw — personal autonomous agent on a server (Telegram + skills + cron)"
 subtitle: ""
 source: https://www.cybos.ai/cases/A-073
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

@@ -6,6 +6,9 @@ kind: tactic
 title: "5-minute rule — agent dev-day estimate → 5 min reality"
 subtitle: "Problem solved: Founders take coding-agent time estimates literally (\"4 days for the auth refactor\") and over-allocate calendar; the actual ratio in agent-driven vibe-coding is roughly 5 minutes per estimated day."
 source: https://www.cybos.ai/cases/C-088
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

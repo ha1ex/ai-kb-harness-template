@@ -6,6 +6,9 @@ kind: workflow
 title: "AI Code Review v2 — full repo context, not just diff"
 subtitle: "Diff-only review bots produce 90% irrelevant comments. Full repo context (architecture + history + checklist) becomes the second reviewer."
 source: https://www.cybos.ai/cases/B-047
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

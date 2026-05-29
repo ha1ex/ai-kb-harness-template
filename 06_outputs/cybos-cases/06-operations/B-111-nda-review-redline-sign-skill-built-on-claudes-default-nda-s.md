@@ -6,6 +6,9 @@ kind: skill
 title: "NDA review-redline-sign skill — built on Claude's default NDA skill, ships signed PDF"
 subtitle: "Problem solved: Founders and fundraising ops drown in incoming NDAs; a custom Claude skill (on top of Anthropic's default NDA-review skill) analyzes each NDA, generates a redline .docx with tracked changes per company standards, and outputs a clean PDF with the founder's signature inserted."
 source: https://www.cybos.ai/cases/B-111
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

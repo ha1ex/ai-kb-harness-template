@@ -6,6 +6,9 @@
 // against indexed chunks, filter only cybos hits, keep best. Reports pairs
 // with cosine >= THRESHOLD (default 0.85).
 //
+// NB (метрика): проверяется ТОЛЬКО ось external→cybos. Внутрикорпусные дубли
+// (external↔external, cybos↔cybos) НЕ покрыты — «0 дублей» относится к этой оси.
+//
 // Writes:
 //   - 06_outputs/_dedup-report.md       — human-readable top-N report
 //   - .context/dedup-fabric-cybos.json  — raw matches (every external file)

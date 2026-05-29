@@ -6,6 +6,9 @@ kind: framework
 title: "Clay GTM outbound engineering — 4-step data workflow, 4-signal taxonomy, ABM three-table pattern"
 subtitle: "Problem solved: Clay-using GTM teams stop shipping one-shot AI emails and paying for unconditional waterfall enrichment — modular construction + signal stacking + cheap-first conditional enrichment recovers reply rate and credits."
 source: https://www.cybos.ai/cases/B-165
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

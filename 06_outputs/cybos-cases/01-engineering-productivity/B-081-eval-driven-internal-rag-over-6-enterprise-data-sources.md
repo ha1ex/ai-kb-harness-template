@@ -6,6 +6,9 @@ kind: workflow
 title: "Eval-driven internal RAG over 6+ enterprise data sources"
 subtitle: "Internal Q&A across billing, sheets, chat, Jira, GitHub, KB needs one pipeline per question class — not one universal RAG."
 source: https://www.cybos.ai/cases/B-081
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

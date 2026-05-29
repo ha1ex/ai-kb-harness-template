@@ -6,6 +6,9 @@ kind: pattern
 title: "Browser-agent stack — assign Arc / Comet / Atlas / Claude-for-Chrome by task type"
 subtitle: "Problem solved: No single agentic browser is good at everything; operators waste time discovering which one fails on research vs. logged-in scraping. A simple role assignment per browser captures the working stack."
 source: https://www.cybos.ai/cases/B-114
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

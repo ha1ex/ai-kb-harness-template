@@ -6,6 +6,9 @@ kind: tactic
 title: "Native Mac meeting recorder with raw-audio retention (Granola alternative)"
 subtitle: "Problem solved: Granola/Krisp delete raw audio after transcription — non-starter for finance, healthcare, M&A. Local recorder keeps the audio for dispute resolution. Plus: the 2026 ecosystem now has half a dozen capture-and-pipe variants worth choosing between."
 source: https://www.cybos.ai/cases/B-080
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

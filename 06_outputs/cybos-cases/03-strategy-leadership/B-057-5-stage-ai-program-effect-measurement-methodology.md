@@ -6,6 +6,9 @@ kind: framework
 title: "5-stage AI program effect measurement methodology"
 subtitle: "\"What's the ROI of this AI thing?\" gets answered with model accuracy. Measure financial increment vs. the best non-AI alternative instead."
 source: https://www.cybos.ai/cases/B-057
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

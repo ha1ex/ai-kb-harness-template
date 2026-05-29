@@ -6,6 +6,9 @@ kind: workflow
 title: "Mobile-app paid user-acquisition planner"
 subtitle: "Problem solved: Mobile founders spread paid budget across every channel and lose money; a budget-tiered allocation with per-channel campaign structure prevents the waste."
 source: https://www.cybos.ai/cases/B-178
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

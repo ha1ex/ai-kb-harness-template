@@ -6,6 +6,9 @@ kind: pattern
 title: "Plan mode plus hidden Claude Code model aliases for long sessions"
 subtitle: "Problem solved: Long, multi-step engineering tasks lose context or under-plan unless the right model and plan mode are selected up front."
 source: https://www.cybos.ai/cases/B-133
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

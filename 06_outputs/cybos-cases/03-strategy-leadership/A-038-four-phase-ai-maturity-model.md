@@ -6,6 +6,9 @@ kind: framework
 title: "Four-phase AI maturity model"
 subtitle: "Teams skip to Phase 3 features before Phase 1 daily usage is solid. A four-phase map names which one you're actually in."
 source: https://www.cybos.ai/cases/A-038
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

@@ -6,6 +6,9 @@ kind: workflow
 title: "Real-time design review — live call transcript to Figma node comments"
 subtitle: "Problem solved: Verbal design feedback given on a call is lost or hand-re-typed onto the canvas afterward; a background agent posts each comment onto the exact Figma node as you speak."
 source: https://www.cybos.ai/cases/A-095
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

@@ -6,6 +6,9 @@ kind: pattern
 title: "Prompt files as the only \"config that matters\""
 subtitle: "Classifier prompts buried in Python need a deploy to iterate. Move to prompts/*.txt and an inline /context editor; iterate daily without a deploy."
 source: https://www.cybos.ai/cases/C-047
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

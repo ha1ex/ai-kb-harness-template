@@ -6,6 +6,9 @@ kind: workflow
 title: "Brand-consistent slide-deck pipeline — Figma Team Library + custom MCP + plugin bridge"
 subtitle: "Problem solved: Agencies and consultancies shipping client decks at 70+ slides need brand-consistent layout without days of manual production; the design system + Figma + custom MCP + companion plugin + canvas-comments loop collapses production from days to hours."
 source: https://www.cybos.ai/cases/A-060
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "XL · Half-year+"

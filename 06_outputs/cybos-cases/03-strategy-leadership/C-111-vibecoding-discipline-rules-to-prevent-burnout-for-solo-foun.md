@@ -6,6 +6,9 @@ kind: pattern
 title: "Vibecoding-discipline rules to prevent burnout for solo founders"
 subtitle: "Problem solved: Solo founders running 12-hour vibecoding days for weeks burn out and produce worse code while neglecting the actual business."
 source: https://www.cybos.ai/cases/C-111
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

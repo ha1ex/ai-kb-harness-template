@@ -6,6 +6,9 @@ kind: skill
 title: "Franchise / team onboarding skill (first-day Claude Code skill)"
 subtitle: "New hires sit in onboarding limbo for 1-4 weeks. A Day-1 skill provisions everything and ends with a real shipped task."
 source: https://www.cybos.ai/cases/B-091
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

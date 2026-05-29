@@ -6,6 +6,9 @@ kind: pattern
 title: "Agent passport + blast-radius guardrail"
 subtitle: "\"Who runs this agent?\" devolves into a Slack guess when something breaks. A passport + per-action blast-radius classification makes policy concrete."
 source: https://www.cybos.ai/cases/B-074
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

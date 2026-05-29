@@ -6,6 +6,9 @@ kind: tactic
 title: "codexbar — macOS menu bar showing live Claude Max / Codex token usage"
 subtitle: "Problem solved: Heavy parallel-agent operators burn through Claude Max / Codex daily limits without warning; a menu-bar widget makes remaining quota visible at a glance."
 source: https://www.cybos.ai/cases/C-090
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

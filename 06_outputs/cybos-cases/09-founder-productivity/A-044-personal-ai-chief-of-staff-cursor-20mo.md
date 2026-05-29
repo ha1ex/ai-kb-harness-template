@@ -6,6 +6,9 @@ kind: workflow
 title: "Personal AI Chief of Staff — Cursor + $20/mo"
 subtitle: "A real chief of staff costs $200K. This runs inbox triage + schedule defrag + Telegram aggregation for $20/mo."
 source: https://www.cybos.ai/cases/A-044
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

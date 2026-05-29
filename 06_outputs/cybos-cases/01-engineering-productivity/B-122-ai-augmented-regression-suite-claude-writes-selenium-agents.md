@@ -6,6 +6,9 @@ kind: workflow
 title: "AI-augmented regression suite — Claude writes Selenium, agents validate output"
 subtitle: "Problem solved: Hand-written regression tests rot faster than dev velocity allows; letting an agent walk the UI live each release is brittle; the middle path is agent-authored deterministic tests plus agent-driven output validators."
 source: https://www.cybos.ai/cases/B-122
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

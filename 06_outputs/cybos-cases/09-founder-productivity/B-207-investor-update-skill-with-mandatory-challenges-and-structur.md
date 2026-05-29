@@ -6,6 +6,9 @@ kind: tactic
 title: "Investor-update skill with mandatory challenges and structured asks"
 subtitle: "Problem solved: Founders ship fluffy monthly updates that hide bad news; a structured template forces period-over-period metrics, an honest challenges section, and specific actionable asks."
 source: https://www.cybos.ai/cases/B-207
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

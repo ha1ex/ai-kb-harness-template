@@ -6,6 +6,9 @@ kind: strategy
 title: "Founder-as-portfolio-manager — App Factory with 16 specialized agents + one orchestrator"
 subtitle: "Problem solved: Founders shifting from \"build one product\" to \"manage a portfolio of agent-built products\" need a concrete architecture covering idea sourcing, scoring, parallel build, deploy, paid-ads launch, and kill-criterion — running solo, with the founder acting as portfolio manager rather than IC."
 source: https://www.cybos.ai/cases/A-071
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "XL · Half-year+"

@@ -6,6 +6,9 @@ kind: tactic
 title: "Workspace SSO for company-internal dashboards"
 subtitle: "A vibe-coded internal dashboard is public-by-default and unsafe to share. \"Add Google Workspace SSO, domain X only\" — agent wires it."
 source: https://www.cybos.ai/cases/C-015
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

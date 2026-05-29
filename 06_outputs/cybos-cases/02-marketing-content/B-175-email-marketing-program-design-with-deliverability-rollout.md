@@ -6,6 +6,9 @@ kind: workflow
 title: "Email marketing program design with deliverability rollout"
 subtitle: "Problem solved: Marketing email lands in spam after the Feb 2024 Gmail/Yahoo bulk-sender rules; a program-design skill sequences the subdomain split, the SPF→DKIM→DMARC rollout, the content mix, and an SEO-synergy article cadence."
 source: https://www.cybos.ai/cases/B-175
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

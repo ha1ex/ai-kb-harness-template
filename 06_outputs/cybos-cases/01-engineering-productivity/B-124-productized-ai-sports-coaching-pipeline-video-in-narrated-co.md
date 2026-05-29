@@ -6,6 +6,9 @@ kind: workflow
 title: "Productized AI sports-coaching pipeline — video in, narrated coaching out"
 subtitle: "Problem solved: Consumer-product founders need an end-to-end video analysis pipeline cheap enough to support $20–30/mo SaaS pricing; this stack ships at ~$2.79/hr to analyze 5fps 1080p video."
 source: https://www.cybos.ai/cases/B-124
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

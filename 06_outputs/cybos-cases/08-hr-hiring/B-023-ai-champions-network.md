@@ -6,6 +6,9 @@ kind: strategy
 title: "AI Champions Network"
 subtitle: "Top-down \"everyone use Claude\" stalls at 15% real usage. Peer-led champion network lifts adoption to 60-80% in 6-12 months."
 source: https://www.cybos.ai/cases/B-023
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

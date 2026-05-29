@@ -6,6 +6,9 @@ kind: skill
 title: "Brazilian-law commercial-document drafting skill (PT-BR)"
 subtitle: "Problem solved: Brazilian founders signing PJ×PJ or PF×PJ engagements need PT-BR contracts with employment-link (vínculo empregatício / CLT) guardrails, MEI / Simples Nacional tax flags, and LGPD addendum templates."
 source: https://www.cybos.ai/cases/C-138
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"

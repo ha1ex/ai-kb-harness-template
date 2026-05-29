@@ -6,6 +6,9 @@ kind: framework
 title: "Six-pattern delegation framework with a two-tier light/full rule"
 subtitle: "Problem solved: Operators burn agent-spawn overhead on one-shot extraction tasks and stand up multi-agent teams for single-file work; a six-pattern catalog plus a two-tier light/full rule routes each task to the right delegation shape."
 source: https://www.cybos.ai/cases/A-089
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

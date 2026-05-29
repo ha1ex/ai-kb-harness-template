@@ -6,6 +6,9 @@ kind: workflow
 title: "Long-context analytical synthesis over a transcript corpus — skip RAG"
 subtitle: "Problem solved: Teams sitting on hundreds of sales-call or interview transcripts default to building a RAG pipeline; for global synthesis (patterns, fears, triggers), a 20-minute summarize-then-load workflow beats it."
 source: https://www.cybos.ai/cases/B-139
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

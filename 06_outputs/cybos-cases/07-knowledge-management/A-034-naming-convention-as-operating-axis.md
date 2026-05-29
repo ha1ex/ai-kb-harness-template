@@ -6,6 +6,9 @@ kind: pattern
 title: "Naming convention as operating axis"
 subtitle: "Vault search returns 200 results because every file is named differently. One filename schema; agents and humans find anything in two clicks."
 source: https://www.cybos.ai/cases/A-034
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

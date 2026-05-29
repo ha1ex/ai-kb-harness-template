@@ -6,6 +6,9 @@ kind: workflow
 title: "Morning brief"
 subtitle: "\"What should I work on today?\" anxiety. Five overnight workflows produce one consolidated brief with risks, prep, and follow-ups."
 source: https://www.cybos.ai/cases/B-063
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

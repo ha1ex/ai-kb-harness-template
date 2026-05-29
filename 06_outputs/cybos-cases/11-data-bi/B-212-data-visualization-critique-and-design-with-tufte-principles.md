@@ -6,6 +6,9 @@ kind: skill
 title: "Data-visualization critique and design with Tufte principles"
 subtitle: "Problem solved: Chart and dashboard review is vibes-based (\"looks fine\"); a skill turns it into a principled, repeatable critique with a falsifiable integrity metric."
 source: https://www.cybos.ai/cases/B-212
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

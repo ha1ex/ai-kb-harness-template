@@ -6,6 +6,9 @@ kind: skill
 title: "Google Drive image-share skill — rclone-based inline-link captures"
 subtitle: "Problem solved: Read-tool inline thumbnails are illegible at chat resolution; a Claude Code skill uploads PNG/MP4 artifacts to Google Drive via rclone and pastes a lh3.googleusercontent.com link that renders inline in the chat."
 source: https://www.cybos.ai/cases/B-117
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

@@ -6,6 +6,9 @@ kind: tactic
 title: "Forked Warp terminal wired to OpenRouter for multi-SSH ops"
 subtitle: "Problem solved: DevOps engineers juggling ~20 SSH machines need terminal + agent in one pane without vendor lock-in on the AI backend."
 source: https://www.cybos.ai/cases/C-095
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"

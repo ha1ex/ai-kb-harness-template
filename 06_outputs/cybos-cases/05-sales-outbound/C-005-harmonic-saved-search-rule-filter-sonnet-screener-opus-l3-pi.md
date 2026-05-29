@@ -6,6 +6,9 @@ kind: workflow
 title: "Harmonic saved-search → rule filter → Sonnet screener → Opus L3 pipeline"
 subtitle: "Twitter-dependent sourcing breaks when accounts get banned. Saved-search → rule filter → cheap screener → Opus only on survivors."
 source: https://www.cybos.ai/cases/C-005
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "L · Quarter"

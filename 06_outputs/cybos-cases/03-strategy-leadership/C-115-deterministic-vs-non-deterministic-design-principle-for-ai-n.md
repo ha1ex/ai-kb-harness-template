@@ -6,6 +6,9 @@ kind: framework
 title: "Deterministic vs non-deterministic — design principle for AI-native operations"
 subtitle: "Problem solved: Operators wrap every recurring task in a fresh agent call and burn tokens on work a 20-line script could do once and reuse forever."
 source: https://www.cybos.ai/cases/C-115
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

@@ -6,6 +6,9 @@ kind: workflow
 title: "Natural-language analytics over your warehouse"
 subtitle: "Every product or marketing decision waits three days for analytics. Type a sentence; dashboard renders against real data in seconds."
 source: https://www.cybos.ai/cases/B-051
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

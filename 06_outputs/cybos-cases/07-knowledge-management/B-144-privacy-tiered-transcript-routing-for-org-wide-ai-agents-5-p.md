@@ -6,6 +6,9 @@ kind: pattern
 title: "Privacy-tiered transcript routing for org-wide AI agents — 5 patterns"
 subtitle: "Problem solved: Teams want AI agents queryable against meeting transcripts but need to keep exec / salary / strategy discussions private; five concrete routing patterns solve it without bespoke RBAC."
 source: https://www.cybos.ai/cases/B-144
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

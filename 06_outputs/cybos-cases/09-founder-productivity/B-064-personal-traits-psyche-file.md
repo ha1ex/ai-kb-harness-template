@@ -6,6 +6,9 @@ kind: tactic
 title: "Personal traits / psyche file"
 subtitle: "Agents give generic best-practice advice because they don't know how you operate. Feed your psyche file; partnership and hiring decisions improve."
 source: https://www.cybos.ai/cases/B-064
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

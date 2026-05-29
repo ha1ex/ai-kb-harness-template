@@ -6,6 +6,9 @@ kind: tactic
 title: "Keep Claude Code sessions warm — KV-cache expiry burns tokens"
 subtitle: "Problem solved: constantly opening fresh CC sessions makes you re-prefill 100-300k tokens of context, each at full uncached price."
 source: https://www.cybos.ai/cases/C-081
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

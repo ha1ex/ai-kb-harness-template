@@ -6,6 +6,9 @@ kind: workflow
 title: "Reply-back generator grounded in conversation history + voice doc"
 subtitle: "Operators spend 30 minutes writing each reply. Generator drafts in the founder's voice; operator approves in 2 minutes."
 source: https://www.cybos.ai/cases/B-006
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

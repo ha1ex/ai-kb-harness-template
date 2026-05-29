@@ -6,6 +6,9 @@ kind: pattern
 title: "Use API keys, not consumer setup-token, for any agent automation"
 subtitle: "Problem solved: Operators discover the subscription-token loophole, run agents on it, and lose the underlying account when Anthropic enforces ToS."
 source: https://www.cybos.ai/cases/B-153
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

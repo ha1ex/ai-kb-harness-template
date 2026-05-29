@@ -6,6 +6,9 @@ kind: workflow
 title: "Solo-founder PLG playbook — fix activation before acquisition"
 subtitle: "Problem solved: Solo SaaS founders pour money into acquisition before fixing activation; a strict Activation→Retention→Acquisition order with per-step \"Tell AI\" prompts wires the funnel inside the codebase."
 source: https://www.cybos.ai/cases/B-179
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

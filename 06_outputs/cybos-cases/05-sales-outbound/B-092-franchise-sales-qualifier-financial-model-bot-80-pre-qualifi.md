@@ -6,6 +6,9 @@ kind: workflow
 title: "Franchise sales qualifier + financial model bot (80 % pre-qualification)"
 subtitle: "\"Can I afford this in city X?\" eats 3-6 senior hours per prospect. A bot answers P&L questions deeper than a 3-month-tenure manager."
 source: https://www.cybos.ai/cases/B-092
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

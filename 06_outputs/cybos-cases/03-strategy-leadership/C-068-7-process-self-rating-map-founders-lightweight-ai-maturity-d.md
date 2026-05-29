@@ -6,6 +6,9 @@ kind: framework
 title: "7-process self-rating map — founder's lightweight AI-maturity diagnostic"
 subtitle: "Full Diagnostic-to-Dashboard takes 21 interviews. 30 minutes: rate 7 processes 1-10; mark a Champion per process; flag the ones with no Champion."
 source: https://www.cybos.ai/cases/C-068
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

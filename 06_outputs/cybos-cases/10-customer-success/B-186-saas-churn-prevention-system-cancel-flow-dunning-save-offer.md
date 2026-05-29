@@ -6,6 +6,9 @@ kind: workflow
 title: "SaaS churn-prevention system — cancel flow + dunning + save-offer map"
 subtitle: "Problem solved: SaaS teams lose 25–35% of cancellations they could save; a structured cancel flow, an offer-to-reason map, and a dunning stack recover voluntary and involuntary churn."
 source: https://www.cybos.ai/cases/B-186
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

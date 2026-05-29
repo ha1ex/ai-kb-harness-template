@@ -6,6 +6,9 @@ kind: workflow
 title: "Google Ads bulk campaign launcher — competitor keywords → landing-page mapping → CSV → Ads Editor"
 subtitle: "Problem solved: Performance-marketing teams launching 5-10 keyword-themed Google Ads campaigns per week burn hours per campaign on manual setup; this workflow compresses 7 new campaigns into ~1 hour by piping SemRush competitor exports through Claude Code into Google Ads Editor's CSV bulk-import path."
 source: https://www.cybos.ai/cases/A-055
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

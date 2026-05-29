@@ -6,6 +6,9 @@ kind: skill
 title: "HIPAA compliance reviewer — 45 CFR-cited findings + BAA/NPP/breach-plan generator"
 subtitle: "Problem solved: Healthcare-software founders need a structured HIPAA review citing 45 CFR with risk levels before paying $400/hr compliance counsel."
 source: https://www.cybos.ai/cases/B-190
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

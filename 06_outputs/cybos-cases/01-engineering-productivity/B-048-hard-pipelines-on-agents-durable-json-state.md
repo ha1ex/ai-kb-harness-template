@@ -6,6 +6,9 @@ kind: pattern
 title: "Hard pipelines on agents — durable JSON state"
 subtitle: "\"Agent forgot mid-pipeline\" bugs are universal. Externalise state to JSON; agents are workers; swap models per step; retry only the failed one."
 source: https://www.cybos.ai/cases/B-048
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

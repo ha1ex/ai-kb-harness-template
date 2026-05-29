@@ -6,6 +6,9 @@ kind: skill
 title: "Retro Shaper — convert retrospective into prioritized Linear tasks"
 subtitle: "Miro retros lose 40% of action items because nobody re-types them into Linear. One web UI does the impact/effort sort and the ticket creation."
 source: https://www.cybos.ai/cases/B-034
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

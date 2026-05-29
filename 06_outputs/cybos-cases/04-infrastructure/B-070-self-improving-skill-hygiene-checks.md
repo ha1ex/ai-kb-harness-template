@@ -6,6 +6,9 @@ kind: pattern
 title: "Self-improving skill-hygiene checks"
 subtitle: "Skills accumulate cruft and new people break conventions. A bash block in SKILL.md grep-checks for past anti-patterns; extends from real failures."
 source: https://www.cybos.ai/cases/B-070
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

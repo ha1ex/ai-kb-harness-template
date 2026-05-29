@@ -6,6 +6,9 @@ kind: tactic
 title: "Show the magic — sit non-technical leaders in the terminal"
 subtitle: "Slide decks and \"AI literacy\" workshops don't move skeptical executives. One hour at the keyboard does."
 source: https://www.cybos.ai/cases/A-051
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

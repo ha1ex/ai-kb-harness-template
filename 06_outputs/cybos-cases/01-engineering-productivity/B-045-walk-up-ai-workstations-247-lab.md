@@ -6,6 +6,9 @@ kind: tactic
 title: "Walk-up AI workstations — 24/7 lab"
 subtitle: "People with \"almost installed\" tools never experiment. Pre-loaded office terminals make adoption a 30-second walk-up decision."
 source: https://www.cybos.ai/cases/B-045
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

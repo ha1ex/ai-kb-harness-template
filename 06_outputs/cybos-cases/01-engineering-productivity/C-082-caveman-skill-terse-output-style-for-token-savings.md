@@ -6,6 +6,9 @@ kind: skill
 title: "Caveman skill — terse output style for token savings"
 subtitle: "Problem solved: Claude Code chat responses burn tokens on prose the operator doesn't read."
 source: https://www.cybos.ai/cases/C-082
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

@@ -6,6 +6,9 @@ kind: framework
 title: "AI adoption baseline + target measurement framework"
 subtitle: "\"Are we more AI-native than last quarter?\" gets vibes for an answer. Four metrics per team (adoption %, heavy %, workflows, hours saved) replace vibes."
 source: https://www.cybos.ai/cases/C-032
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"

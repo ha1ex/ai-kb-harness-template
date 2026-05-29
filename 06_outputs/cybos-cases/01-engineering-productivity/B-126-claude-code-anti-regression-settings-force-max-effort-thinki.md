@@ -6,6 +6,9 @@ kind: tactic
 title: "Claude Code anti-regression settings — force max-effort thinking when the agent \"gets dumber\""
 subtitle: "Problem solved: Mid-2026 Claude Code regression dropped read/edit ratio from 6.6 → 2.0 and doubled loop rate; settings + env vars restore quality at 2–4× token cost until upstream patches."
 source: https://www.cybos.ai/cases/B-126
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

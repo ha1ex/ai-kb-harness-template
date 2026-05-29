@@ -6,6 +6,9 @@ kind: skill
 title: "Voice profiler — analyse an X account, output a tone guide"
 subtitle: "Six months of A/B posting to find your voice. One hour parsing 1,000 of your own tweets gets you a content calendar."
 source: https://www.cybos.ai/cases/B-012
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

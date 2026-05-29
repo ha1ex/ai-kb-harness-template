@@ -6,6 +6,9 @@ kind: strategy
 title: "Microservices replace the task tracker as the company's operating system"
 subtitle: "24,000 open tasks in Jira and growing. Replace recurring work with code; abandon the tracker."
 source: https://www.cybos.ai/cases/A-049
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

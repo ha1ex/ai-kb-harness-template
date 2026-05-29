@@ -6,6 +6,9 @@ kind: workflow
 title: "Session-open / session-close skills — accumulate institutional gotchas across Claude Code sessions"
 subtitle: "Problem solved: Fresh Claude Code sessions start cold and re-learn the same operational lessons; a paired open + close skill loads relevant context at start and appends session learnings + a handoff doc at end — producing a compounding gotcha index over time."
 source: https://www.cybos.ai/cases/B-141
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

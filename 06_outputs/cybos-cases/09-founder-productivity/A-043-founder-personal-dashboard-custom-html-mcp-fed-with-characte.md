@@ -6,6 +6,9 @@ kind: workflow
 title: "Founder personal dashboard — custom HTML, MCP-fed, with character variants"
 subtitle: "Morning standups mean opening 8 apps. One screen shows calendar + inbox + tasks + transcripts + sessions."
 source: https://www.cybos.ai/cases/A-043
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

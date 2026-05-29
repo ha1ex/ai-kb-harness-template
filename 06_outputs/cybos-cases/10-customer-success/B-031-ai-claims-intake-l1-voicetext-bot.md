@@ -6,6 +6,9 @@ kind: workflow
 title: "AI Claims Intake — L1 voice/text bot"
 subtitle: "Claims volume grew 182% but each one needs structured fields by SLA. L1 intake bot captures the fields and flags compliance to humans."
 source: https://www.cybos.ai/cases/B-031
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

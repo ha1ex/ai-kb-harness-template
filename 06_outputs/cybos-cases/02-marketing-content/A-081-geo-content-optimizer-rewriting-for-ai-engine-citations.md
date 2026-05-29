@@ -6,6 +6,9 @@ kind: workflow
 title: "GEO content optimizer — rewriting for AI-engine citations"
 subtitle: "Problem solved: AI answer engines (ChatGPT, Perplexity, AI Overviews, Gemini) cannibalize clicks; a rewrite playbook makes the page the source those engines cite, with before/after scoring and a 4-phase recovery plan for queries already losing traffic."
 source: https://www.cybos.ai/cases/A-081
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

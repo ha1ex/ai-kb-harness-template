@@ -6,6 +6,9 @@ kind: framework
 title: "Type 1 vs Type 2 work — when AI is a game-changer vs only a brainstorm aid"
 subtitle: "Problem solved: Operators apply AI everywhere and get disappointed on creative tasks; they apply it nowhere and miss the wins."
 source: https://www.cybos.ai/cases/C-114
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

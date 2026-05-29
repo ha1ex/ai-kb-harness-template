@@ -6,6 +6,9 @@ kind: workflow
 title: "Cyber Essentials / SOC 2 questionnaire automation — Claude Code + Playwright + Vanta"
 subtitle: "Problem solved: Annual SOC 2 / Cyber Essentials renewals burn ops-lead weeks reconciling Vanta evidence against customer portal forms; Claude Code with browser MCPs fills the questionnaire from Vanta autonomously, gated by human review."
 source: https://www.cybos.ai/cases/B-112
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

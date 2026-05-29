@@ -6,6 +6,9 @@ kind: framework
 title: "Founder Chief of Staff orchestrator across 10 C-suite role agents"
 subtitle: "Problem solved: Ad-hoc \"act as my CFO/CTO\" prompting balloons into circular, owner-less advice; a routed Chief of Staff agent enforces complexity scoring, board-meeting depth limits, named-conflict synthesis, and an auto decision log."
 source: https://www.cybos.ai/cases/A-092
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

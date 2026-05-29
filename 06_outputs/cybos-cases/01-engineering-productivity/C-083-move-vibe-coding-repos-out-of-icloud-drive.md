@@ -6,6 +6,9 @@ kind: tactic
 title: "Move vibe-coding repos out of iCloud Drive"
 subtitle: "Problem solved: High-velocity agent-driven coding produces file changes faster than iCloud can sync; stale files get pushed to git and break the working tree."
 source: https://www.cybos.ai/cases/C-083
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

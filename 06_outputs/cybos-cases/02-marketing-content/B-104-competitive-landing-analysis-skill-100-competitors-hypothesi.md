@@ -6,6 +6,9 @@ kind: workflow
 title: "Competitive-landing-analysis skill — 100 competitors → hypothesis-ranked recommendations"
 subtitle: "Problem solved: Marketing leads need defensible landing-page hypotheses backed by competitor evidence; a skill that auto-analyzes ~100 competitors and ranks recommendations produces 3–4 adopted changes per cycle."
 source: https://www.cybos.ai/cases/B-104
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

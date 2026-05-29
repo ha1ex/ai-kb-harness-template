@@ -6,6 +6,9 @@ kind: workflow
 title: "Page-type mismatch diagnosis via reverse-engineered SERPs"
 subtitle: "Problem solved: A technically perfect page (95/100 SEO) still won't rank because it is the wrong page type for the SERP; a SERP-backwards analysis classifies the top 10's dominant type and flags mismatches with severity."
 source: https://www.cybos.ai/cases/B-177
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

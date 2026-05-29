@@ -6,6 +6,9 @@ kind: strategy
 title: "Honest \"elite / cutting-edge\" framing replaces KPI motivation"
 subtitle: "Bonus programs and KPI trees engineer compliance, not commitment. Honest \"we're at the frontier; run with us or part on good terms\" hits <10% refusal."
 source: https://www.cybos.ai/cases/B-088
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

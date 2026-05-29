@@ -6,6 +6,9 @@ kind: framework
 title: "Marketing campaign manager with a 140-tactic menu"
 subtitle: "Problem solved: \"What marketing tactic should we try next?\" defaults to ad-hoc research; a 140-tactic menu by funnel stage plus a buyer-bias playbook and strategic-frame selector collapses the decision to one skill invocation."
 source: https://www.cybos.ai/cases/B-181
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

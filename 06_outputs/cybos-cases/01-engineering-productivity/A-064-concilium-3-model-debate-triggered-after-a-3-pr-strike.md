@@ -6,6 +6,9 @@ kind: skill
 title: "Concilium — 3-model debate triggered after a 3-PR strike"
 subtitle: "Problem solved: After 3 failed PRs on a single problem, operator and agent are locked in shared assumptions; running the same problem through 3 model families blind to each other, then a Meta-Analyst pass, breaks the lock."
 source: https://www.cybos.ai/cases/A-064
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

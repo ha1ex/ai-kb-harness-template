@@ -6,6 +6,9 @@ kind: pattern
 title: "Telegram as universal interaction surface"
 subtitle: "Notifications in Slack, approvals in email, feedback in Intercom — small teams context-switch all day. One Telegram bot routes everything."
 source: https://www.cybos.ai/cases/B-068
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

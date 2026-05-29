@@ -6,6 +6,9 @@ kind: workflow
 title: "HubSpot sales-narrative bot — daily timeline of events as motivation feed"
 subtitle: "Problem solved: Dashboards summarize sales but don't read like a story; the team scrolls past them."
 source: https://www.cybos.ai/cases/C-073
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

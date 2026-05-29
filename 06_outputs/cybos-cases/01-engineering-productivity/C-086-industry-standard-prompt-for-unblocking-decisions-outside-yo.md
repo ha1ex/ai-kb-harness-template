@@ -6,6 +6,9 @@ kind: tactic
 title: "\"Industry standard\" prompt for unblocking decisions outside your expertise"
 subtitle: "Problem solved: Non-technical founders freeze on auth/deploy/secrets/infra choices; a one-line standing prompt converts every such decision into a researched recommendation instead of an \"ask the senior engineer\" pause."
 source: https://www.cybos.ai/cases/C-086
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

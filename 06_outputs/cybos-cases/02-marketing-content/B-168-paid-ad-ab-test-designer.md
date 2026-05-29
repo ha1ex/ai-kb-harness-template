@@ -6,6 +6,9 @@ kind: skill
 title: "Paid-ad A/B test designer"
 subtitle: "Problem solved: Marketers declare winners before significance and confuse learning-phase noise with a real treatment effect; a forced hypothesis plus a sample-size lookup prevents both."
 source: https://www.cybos.ai/cases/B-168
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

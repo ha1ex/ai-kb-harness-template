@@ -6,6 +6,9 @@ kind: strategy
 title: "Merchant Self-Service Portal (avoid linear support scaling)"
 subtitle: "Support headcount grows linearly with customer count. A self-service portal breaks the dependency and saves $600K-1.2M/yr at 4,800 merchants."
 source: https://www.cybos.ai/cases/B-030
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

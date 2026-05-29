@@ -6,6 +6,9 @@ kind: workflow
 title: "Anonymous-visitor → outbound pipeline with suppression, revival, and ICP learner"
 subtitle: "Problem solved: B2B teams running cold email plus website tracking waste anonymous web traffic and a graveyard of closed-lost deals; an integrated pipeline routes identified visitors into sequences, revives champions at their new company, and learns ICP from approve/reject patterns."
 source: https://www.cybos.ai/cases/A-077
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

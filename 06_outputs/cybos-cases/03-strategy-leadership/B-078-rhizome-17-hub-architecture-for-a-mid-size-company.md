@@ -6,6 +6,9 @@ kind: pattern
 title: "Rhizome / 17-hub architecture for a mid-size company"
 subtitle: "Monolith-rewrite IT projects consume the budget and ship nothing. 17 small hubs with declared inputs/outputs let one go live per week."
 source: https://www.cybos.ai/cases/B-078
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

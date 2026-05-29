@@ -6,6 +6,9 @@ kind: pattern
 title: "Personal OS / personal vault architecture"
 subtitle: "Problem solved: Company-wide tools fail because each person works differently. Federate sovereign personal vaults; share what needs sharing in a common subtree — and treat the vault as a 10-year migration target, not a clean-slate project."
 source: https://www.cybos.ai/cases/B-054
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

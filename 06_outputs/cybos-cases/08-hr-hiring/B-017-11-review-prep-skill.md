@@ -6,6 +6,9 @@ kind: skill
 title: "1:1 & review prep skill"
 subtitle: "1:1s start with \"what should we talk about?\" Pre-filled agenda from role card + tasks + history; raise-evaluation overlay for the hard calls."
 source: https://www.cybos.ai/cases/B-017
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

@@ -6,6 +6,9 @@ kind: strategy
 title: "100% AI adoption in engineering — VPN + agent CLI + CLAUDE.md unlock chain"
 subtitle: "10-30% of devs use AI in shadow because the firewall blocks Claude. A $30K VPN unlocks 165 devs in two weeks."
 source: https://www.cybos.ai/cases/A-028
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

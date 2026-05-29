@@ -6,6 +6,9 @@ kind: tactic
 title: "Reclaim 30–90K context tokens with Claude Code's MCP Tool Search (`ENABLE_TOOL_SEARCH=true`)"
 subtitle: "Problem solved: Each MCP server registered in Claude Code injects 10–30K tokens of tool descriptions up-front; flipping one env var defers those descriptions until needed, recovering a large slice of the context window."
 source: https://www.cybos.ai/cases/B-125
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

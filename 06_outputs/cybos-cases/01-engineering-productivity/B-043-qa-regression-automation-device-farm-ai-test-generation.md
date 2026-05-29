@@ -6,6 +6,9 @@ kind: workflow
 title: "QA / Regression Automation — device farm + AI test generation"
 subtitle: "Hardware regression eats 2-3 weeks of a 3-week release cycle. Device farm + AI-generated tests cut it to 2 days."
 source: https://www.cybos.ai/cases/B-043
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

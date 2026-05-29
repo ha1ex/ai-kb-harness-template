@@ -6,6 +6,9 @@ kind: workflow
 title: "Vibecoded household finance tracker with spouse-collaboration via Telegram inbox"
 subtitle: "Problem solved: Family finance apps either expose too much or too little to a spouse; founders want full transparency without dumping raw bank feeds."
 source: https://www.cybos.ai/cases/C-106
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

@@ -6,6 +6,9 @@ kind: pattern
 title: "Vercel + Neon Postgres + GitHub as the DevOps-free serverless default"
 subtitle: "Problem solved: Solo founders shipping AI-generated apps without learning Ansible / Terraform / AWS need a default stack that handles deploy, DB, and CI on git push — and stays inside one person's mental model."
 source: https://www.cybos.ai/cases/B-154
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

@@ -6,6 +6,9 @@ kind: pattern
 title: "Outer-loop autonomy — Stop hook + promise tag (Ralph) until the task is done"
 subtitle: "Problem solved: Multi-criteria coding tasks stall when the agent decides \"good enough\"; a Stop hook re-prompts until a completion sentinel appears, so well-specified work finishes overnight without supervision."
 source: https://www.cybos.ai/cases/B-130
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

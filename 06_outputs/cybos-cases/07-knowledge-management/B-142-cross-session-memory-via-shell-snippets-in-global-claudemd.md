@@ -6,6 +6,9 @@ kind: tactic
 title: "Cross-session memory via shell snippets in global CLAUDE.md"
 subtitle: "Problem solved: Claude Code doesn't know about its own past session files; three bash snippets in the global claude.md let every new conversation list, grep, and read prior sessions across all projects."
 source: https://www.cybos.ai/cases/B-142
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

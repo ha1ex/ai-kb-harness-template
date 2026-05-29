@@ -6,6 +6,9 @@ kind: tactic
 title: "Paid test as a hiring filter ($100–300 working sample)"
 subtitle: "Senior candidates refuse unpaid take-homes. A 1-2 day paid test ($100-300 if no offer) raises senior response rate and surfaces real work."
 source: https://www.cybos.ai/cases/B-026
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

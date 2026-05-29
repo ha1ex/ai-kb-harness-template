@@ -6,6 +6,9 @@ kind: workflow
 title: "Auto-orchestration on call end (six systems updated, zero clicks)"
 subtitle: "Every customer call needs Jira, Notion, Slack, CRM, and a health score updated. One webhook does all six."
 source: https://www.cybos.ai/cases/A-004
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

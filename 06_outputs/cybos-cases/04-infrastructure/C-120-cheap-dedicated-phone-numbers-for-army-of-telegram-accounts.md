@@ -6,6 +6,9 @@ kind: tactic
 title: "Cheap dedicated phone numbers for army-of-Telegram-accounts agents"
 subtitle: "Problem solved: running multiple agent personas on Telegram requires distinct phone numbers; Google Voice is US-only and one-per-real-number; commercial SIM management is overkill."
 source: https://www.cybos.ai/cases/C-120
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

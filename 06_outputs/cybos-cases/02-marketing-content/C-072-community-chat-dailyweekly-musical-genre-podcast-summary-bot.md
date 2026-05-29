@@ -6,6 +6,9 @@ kind: workflow
 title: "Community-chat → daily/weekly musical-genre podcast summary bot"
 subtitle: "Problem solved: active Telegram communities generate too much volume for members to keep up; static digests feel like a chore to read."
 source: https://www.cybos.ai/cases/C-072
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

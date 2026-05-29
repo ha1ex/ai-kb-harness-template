@@ -6,6 +6,9 @@ kind: workflow
 title: "B2B SMB SaaS sales-org-as-agents playbook"
 subtitle: "Problem solved: B2B SMB SaaS sales teams at 30-100 person scale want to replace headcount with agents, but lack a single playbook covering the full funnel — cold outreach, enrichment, scoring, and follow-up across multiple channels."
 source: https://www.cybos.ai/cases/A-054
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

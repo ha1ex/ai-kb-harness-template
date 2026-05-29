@@ -6,6 +6,9 @@ kind: workflow
 title: "Brand-style ingestion into Claude Design (2-month maturation)"
 subtitle: "Problem solved: Routine social/franchise designs eat designer hours. After 2 months of training, the model produces 80% on-brand at $200/mo total. Cross-reference: the canonical 2026 framing of this pattern lives in the new Tier A case on AI-driven design with claude.ai/design + frontend-design + Magic Patterns; this case stays as the focused 2-month-maturation sub-case."
 source: https://www.cybos.ai/cases/B-094
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

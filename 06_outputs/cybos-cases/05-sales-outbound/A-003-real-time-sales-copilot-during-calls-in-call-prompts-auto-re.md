@@ -6,6 +6,9 @@ kind: workflow
 title: "Real-time sales copilot during calls (in-call prompts + auto-recap)"
 subtitle: "New reps wait 4 hours for senior answers and miss objections live. Both fixed during the call, not after."
 source: https://www.cybos.ai/cases/A-003
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

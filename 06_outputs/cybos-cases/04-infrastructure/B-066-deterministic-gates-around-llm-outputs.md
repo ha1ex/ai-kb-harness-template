@@ -6,6 +6,9 @@ kind: pattern
 title: "Deterministic gates around LLM outputs"
 subtitle: "\"Stood out\", \"resonated\", em-dashes — LLMs ship them despite prompt instructions. A regex gate auto-rejects and retries with errors appended."
 source: https://www.cybos.ai/cases/B-066
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

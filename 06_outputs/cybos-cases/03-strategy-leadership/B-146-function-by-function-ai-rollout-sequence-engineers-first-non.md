@@ -6,6 +6,9 @@ kind: pattern
 title: "Function-by-function AI rollout sequence — engineers first, non-eng last"
 subtitle: "Problem solved: Org-wide AI tooling rollouts that try \"everyone at once\" fail; an empirical migration order (engineers → QA → SRE → non-eng) absorbs resistance and exposes the real wall — git literacy for non-technical roles."
 source: https://www.cybos.ai/cases/B-146
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

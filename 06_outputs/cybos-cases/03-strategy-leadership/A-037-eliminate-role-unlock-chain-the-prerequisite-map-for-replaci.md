@@ -6,6 +6,9 @@ kind: strategy
 title: "Eliminate-role unlock chain — the prerequisite map for replacing a function with agents"
 subtitle: "Most role-replacement attempts fail because the knowledge graph isn't dense enough. Map shows what to build first, role by role."
 source: https://www.cybos.ai/cases/A-037
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "XL · Half-year+"

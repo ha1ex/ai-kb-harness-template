@@ -6,6 +6,9 @@ kind: skill
 title: "Daily Focus skill — intentional manual morning ritual"
 subtitle: "Mornings start with inbox triage instead of priorities. One typed command produces the day's top three before email opens."
 source: https://www.cybos.ai/cases/A-019
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

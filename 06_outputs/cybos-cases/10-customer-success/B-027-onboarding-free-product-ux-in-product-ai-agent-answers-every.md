@@ -6,6 +6,9 @@ kind: strategy
 title: "Onboarding-free product UX (in-product AI agent answers everything)"
 subtitle: "Wizard onboarding has 30-60% drop-off. An in-product agent that knows the user's actual state cuts time-to-value from days to minutes."
 source: https://www.cybos.ai/cases/B-027
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

@@ -6,6 +6,9 @@ kind: pattern
 title: "Universal custom-instructions prompt — first-principles, anti-sycophancy, structured outputs"
 subtitle: "Problem solved: Default Claude / ChatGPT answers are sycophantic and shallow; a persistent custom-instructions prompt forces expert framing, internal rubric self-reflection, and \"don't sugarcoat\" critique on every reply."
 source: https://www.cybos.ai/cases/B-152
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

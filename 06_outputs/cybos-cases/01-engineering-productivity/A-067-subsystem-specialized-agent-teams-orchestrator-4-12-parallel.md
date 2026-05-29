@@ -6,6 +6,9 @@ kind: framework
 title: "Subsystem-specialized agent teams — orchestrator + 4-12 parallel agents"
 subtitle: "Problem solved: Naive multi-agent setups copy the human org chart (CEO → GM → Tech-Lead → Builder) and burn half their token budget on routing chatter without merging code. Specialize agents by subsystem boundary (~10 source files each) with one Claude orchestrator using Schedule task self-pinging, no heartbeat on the workers."
 source: https://www.cybos.ai/cases/A-067
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

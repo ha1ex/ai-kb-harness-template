@@ -6,6 +6,9 @@ kind: workflow
 title: "Investor-grade financial-model review with sub-agent dispatch"
 subtitle: "Problem solved: Founders pitch with models that fail investor scrutiny; a 46-criteria automated review replaces a paid CFO-advisor pass and emits a stage-appropriate diagnostic report plus an interactive HTML explorer."
 source: https://www.cybos.ai/cases/A-091
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "XL · Half-year+"

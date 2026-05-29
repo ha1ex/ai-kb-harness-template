@@ -6,6 +6,9 @@ kind: workflow
 title: "Quarterly OKR ritual + auto-status collection"
 subtitle: "\"I'll update the status doc Friday\" rarely happens. Agent reads trackers + Git + chat; owners review instead of writing from scratch."
 source: https://www.cybos.ai/cases/B-038
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

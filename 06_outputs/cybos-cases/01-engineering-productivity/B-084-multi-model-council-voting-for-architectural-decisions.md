@@ -6,6 +6,9 @@ kind: workflow
 title: "Multi-model council voting for architectural decisions"
 subtitle: "Problem solved: Whichever model the operator happened to use that hour decides the architecture. Run the same input through Claude + Codex + Gemini; consensus matters — and a Meta-Analyst pass finds the assumption all three missed."
 source: https://www.cybos.ai/cases/B-084
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

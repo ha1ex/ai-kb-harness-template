@@ -6,6 +6,9 @@ kind: tactic
 title: "Bootstrap personal context from Telegram + Notion export"
 subtitle: "New vault is empty on Day 1 — agent has nothing to work with. Export Telegram + Notion + ChatGPT/Gemini history; ingestion seeds it in one hour."
 source: https://www.cybos.ai/cases/C-041
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

@@ -6,6 +6,9 @@ kind: workflow
 title: "AI Onboarding Bot (vibe-coded MVP)"
 subtitle: "New hires ask \"what's our Slack convention?\" for the first month. A chatbot over the Welcome Package + tool docs answers it."
 source: https://www.cybos.ai/cases/B-024
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

@@ -6,6 +6,9 @@ kind: strategy
 title: "Shared Workspace as Second Brain"
 subtitle: "AI on top of Notion + Slack + Drive never has the full picture. Collapse everything to one Git folder; deprecate the wikis."
 source: https://www.cybos.ai/cases/A-031
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

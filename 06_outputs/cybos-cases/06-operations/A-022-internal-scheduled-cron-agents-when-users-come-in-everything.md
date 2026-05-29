@@ -6,6 +6,9 @@ kind: workflow
 title: "Internal scheduled cron agents — \"when users come in, everything is updated\""
 subtitle: "Every employee runs 4-5 morning agent jobs by hand. A VM runs them overnight so the workspace is fresh at 9am."
 source: https://www.cybos.ai/cases/A-022
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

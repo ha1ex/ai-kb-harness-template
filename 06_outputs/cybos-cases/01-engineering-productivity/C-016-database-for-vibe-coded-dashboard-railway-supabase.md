@@ -6,6 +6,9 @@ kind: pattern
 title: "Database for vibe-coded dashboard (Railway / Supabase)"
 subtitle: "Persistent data for a weekend dashboard turns into self-hosted Postgres. Two defaults (Railway paid, Supabase free) skip the infra rabbit hole."
 source: https://www.cybos.ai/cases/C-016
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

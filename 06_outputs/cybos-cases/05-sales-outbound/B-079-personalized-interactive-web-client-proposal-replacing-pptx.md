@@ -6,6 +6,9 @@ kind: workflow
 title: "Personalized interactive web client proposal (replacing PPTX portfolio)"
 subtitle: "Consultants build 40-slide PowerPoint decks per client over 4-6 hours. An interactive web page generated in 5 minutes tests better."
 source: https://www.cybos.ai/cases/B-079
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

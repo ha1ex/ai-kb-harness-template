@@ -6,6 +6,9 @@ kind: workflow
 title: "Persona-modeled investor reviewer — deep-research → deck-generator → reviewer loop"
 subtitle: "Problem solved: Founders preparing pitch decks wait weeks for generic investor feedback; synthesize the target investor's persona from public talks, tweets, and LinkedIn, then run that persona as an adversarial reviewer agent that bounces a deck-generator until the deck survives the kinds of questions the real investor asks."
 source: https://www.cybos.ai/cases/A-057
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

@@ -6,6 +6,9 @@ kind: skill
 title: "Pricing-change financial impact advisor"
 subtitle: "Problem solved: Founders compute \"30% price hike = 30% more revenue\" and ignore accelerating churn; a structured 4-question advisor produces a defensible go/no-go memo with sensitivity scenarios."
 source: https://www.cybos.ai/cases/A-090
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

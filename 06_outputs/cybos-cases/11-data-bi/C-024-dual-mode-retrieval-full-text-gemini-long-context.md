@@ -6,6 +6,9 @@ kind: pattern
 title: "Dual-mode retrieval (full-text + Gemini long-context)"
 subtitle: "RAG embedding pipelines drift and miss context. Brute-force everything into Gemini 2.5 Flash's 1M context at 3¢/M tokens often wins on quality."
 source: https://www.cybos.ai/cases/C-024
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"

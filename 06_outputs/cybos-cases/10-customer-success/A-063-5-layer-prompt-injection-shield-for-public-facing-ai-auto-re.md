@@ -6,6 +6,9 @@ kind: framework
 title: "5-layer prompt-injection shield for public-facing AI auto-responders"
 subtitle: "Problem solved: Any AI auto-responder on a public Telegram or WhatsApp account faces industrial-scale prompt injection. Five layers — contacts allowlist, strike-based blocklist, sandboxed classifier, sandboxed responder, output sanitization — push the attack surface from \"credentials leak in one DM\" to \"two AIs, one guards, one talks; the guard never talks, the talker never sees attacks.\""
 source: https://www.cybos.ai/cases/A-063
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

@@ -6,6 +6,9 @@ kind: workflow
 title: "Suno v5 + ChatGPT co-producer loop with personal style dictionary"
 subtitle: "Problem solved: vanilla Suno generations miss the operator's intended sound; raw lyric prompts under-specify style."
 source: https://www.cybos.ai/cases/C-071
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

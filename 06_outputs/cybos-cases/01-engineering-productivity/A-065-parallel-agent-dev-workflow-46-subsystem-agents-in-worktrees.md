@@ -6,6 +6,9 @@ kind: workflow
 title: "Parallel-agent dev workflow — 4–6 subsystem agents in worktrees"
 subtitle: "Problem solved: Solo founders and small engineering teams hit single-agent throughput limits; running 4–6 specialized Claude/Codex agents in isolated worktrees compresses weeks of work into days."
 source: https://www.cybos.ai/cases/A-065
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

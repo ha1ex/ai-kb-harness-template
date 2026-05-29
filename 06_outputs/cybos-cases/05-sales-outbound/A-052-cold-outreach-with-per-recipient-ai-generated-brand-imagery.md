@@ -6,6 +6,9 @@ kind: workflow
 title: "Cold outreach with per-recipient AI-generated brand imagery — collapses the Apollo-tier value-add"
 subtitle: "Problem solved: Apollo, Outreach, and similar B2B sequencing tools charge $300-1000/mo for personalization the recipient barely notices; a vibecoded pipeline buys Apollo only for raw contacts ($59 / 2,800 leads), generates a per-recipient branded image (BrandFetch logo + gpt-image), and drafts a one-image Gmail message at 6-7¢/email all-in."
 source: https://www.cybos.ai/cases/A-052
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

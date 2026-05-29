@@ -6,6 +6,9 @@ kind: tactic
 title: "Founder financial-model skill (12-month projection + unit economics + 3-scenario runway)"
 subtitle: "Problem solved: Founders ship fantasy projections to investors; a description-keyed skill produces a structured, guardrailed model in roughly 90 seconds."
 source: https://www.cybos.ai/cases/B-206
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

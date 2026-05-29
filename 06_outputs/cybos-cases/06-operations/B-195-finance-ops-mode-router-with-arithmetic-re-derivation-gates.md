@@ -6,6 +6,9 @@ kind: framework
 title: "Finance-ops mode-router with arithmetic re-derivation gates"
 subtitle: "Problem solved: LLM-assisted accountants hallucinate balances and GAAP citations; a mode-router with explicit debit/credit gates and per-mode failure-mode catalogs blocks the \"looks correct but breaks the audit\" output."
 source: https://www.cybos.ai/cases/B-195
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

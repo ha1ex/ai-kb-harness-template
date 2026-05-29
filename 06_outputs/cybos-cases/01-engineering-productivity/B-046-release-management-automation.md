@@ -6,6 +6,9 @@ kind: workflow
 title: "Release Management Automation"
 subtitle: "Release-notes prep takes 2-3 hours per ship. Agent drafts notes + runs pre-release checks; -93% time and the FTE goes away."
 source: https://www.cybos.ai/cases/B-046
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

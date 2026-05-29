@@ -6,6 +6,9 @@ kind: workflow
 title: "Marketing Commitment Card workshop"
 subtitle: "Founders run random marketing for years. 20 minutes of forced choices produces one ICP, one channel, one metric."
 source: https://www.cybos.ai/cases/A-009
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

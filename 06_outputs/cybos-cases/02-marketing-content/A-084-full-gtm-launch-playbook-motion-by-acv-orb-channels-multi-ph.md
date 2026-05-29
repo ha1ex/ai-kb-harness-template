@@ -6,6 +6,9 @@ kind: framework
 title: "Full GTM launch playbook — motion by ACV, ORB channels, multi-phase sequence"
 subtitle: "Problem solved: First-time launches default to a single-day burst then silence — no audience built, wrong channels, no success metric defined; a five-phase playbook turns the launch into a six-week campaign with the motion chosen by ACV and channels chosen by ORB."
 source: https://www.cybos.ai/cases/A-084
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

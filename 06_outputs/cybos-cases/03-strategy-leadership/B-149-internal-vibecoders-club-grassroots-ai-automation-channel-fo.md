@@ -6,6 +6,9 @@ kind: strategy
 title: "Internal \"vibecoders club\" — grassroots AI automation channel for 100+ employee orgs"
 subtitle: "Problem solved: Founders at larger orgs often fail to scale AI adoption via top-down mandate; a bottom-up model — internal vibecode platform + open community channel — produces \"epidemic\" self-service AI within months."
 source: https://www.cybos.ai/cases/B-149
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

@@ -6,6 +6,9 @@ kind: strategy
 title: "Knowledge-graph + Quality-as-a-Service stack (judge-LLM + GEPA + DeepEval)"
 subtitle: "Advanced operators want eval + prompt optimization + hallucination checks across every internal tool. One QaaS API any tool can call."
 source: https://www.cybos.ai/cases/C-060
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "XL · Half-year+"

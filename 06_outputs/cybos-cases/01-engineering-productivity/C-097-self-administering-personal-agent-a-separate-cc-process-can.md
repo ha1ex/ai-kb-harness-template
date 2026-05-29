@@ -6,6 +6,9 @@ kind: pattern
 title: "Self-administering personal agent — a separate CC process can repair the bot it lives with"
 subtitle: "Problem solved: Long-running personal agents (Telegram bots, daemons) periodically wedge themselves — compaction failures, dead heartbeats, broken sessions — and need a hands-on operator to restart them."
 source: https://www.cybos.ai/cases/C-097
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

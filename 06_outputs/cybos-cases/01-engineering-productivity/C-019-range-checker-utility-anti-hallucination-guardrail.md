@@ -6,6 +6,9 @@ kind: pattern
 title: "Range-checker utility (anti-hallucination guardrail)"
 subtitle: "LLMs confidently flunk \"is 47 between 40 and 50?\" 20 lines of Python + one rule in.cursorrules eliminates a whole class of bugs."
 source: https://www.cybos.ai/cases/C-019
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

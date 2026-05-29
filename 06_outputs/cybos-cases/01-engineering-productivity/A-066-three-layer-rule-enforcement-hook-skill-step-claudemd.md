@@ -6,6 +6,9 @@ kind: pattern
 title: "Three-layer rule enforcement — hook + skill step + CLAUDE.md"
 subtitle: "Problem solved: Rules in CLAUDE.md alone get forgotten within ~40 minutes of context; rules inside a SKILL.md are still bypassable; only a PreToolUse hook with exit 2 can actually block. Layer all three and AI drift on critical invariants disappears."
 source: https://www.cybos.ai/cases/A-066
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

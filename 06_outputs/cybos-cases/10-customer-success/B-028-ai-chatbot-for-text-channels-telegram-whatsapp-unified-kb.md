@@ -6,6 +6,9 @@ kind: workflow
 title: "AI Chatbot for text channels (Telegram + WhatsApp + unified KB)"
 subtitle: "Earlier button-based bots handled 20-25%; that's the cap. LLM + unified KB lifts text-channel deflection to 40-60%."
 source: https://www.cybos.ai/cases/B-028
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

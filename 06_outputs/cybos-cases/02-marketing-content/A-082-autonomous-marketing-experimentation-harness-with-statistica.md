@@ -6,6 +6,9 @@ kind: workflow
 title: "Autonomous marketing experimentation harness with statistical auto-promotion"
 subtitle: "Problem solved: Marketers run \"experiments\" by feel and call a winner after a week of eyeballing dashboards; an experiment engine logs every variant, applies real statistics, and only promotes a winner when it clears both significance and lift thresholds."
 source: https://www.cybos.ai/cases/A-082
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

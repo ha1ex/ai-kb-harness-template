@@ -6,6 +6,9 @@ kind: framework
 title: "Mobile-app onboarding optimization — activation event + permission-timing rubric"
 subtitle: "Problem solved: Mobile apps confuse activation with sign-up and prompt for permissions on cold open; an explicit activation-event map plus a permission-timing rubric lifts Day-1 retention."
 source: https://www.cybos.ai/cases/B-187
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

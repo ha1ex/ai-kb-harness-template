@@ -6,6 +6,9 @@ kind: pattern
 title: "Markdown analysis → branded PDF deliverable"
 subtitle: "Problem solved: AI contract-review (and other analysis) outputs ship as bare Markdown; consultants and ops teams need a polished PDF that sells the work product to a non-technical signatory."
 source: https://www.cybos.ai/cases/C-139
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"

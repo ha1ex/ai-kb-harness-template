@@ -6,6 +6,9 @@ kind: workflow
 title: "Auto-update project docs from merged PRs via a scheduled Claude job"
 subtitle: "Problem solved: Docs drift from code because \"we never have time to update them\"; a daily scheduled Claude job rereads each merged PR and rewrites affected docs without human intervention."
 source: https://www.cybos.ai/cases/B-137
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

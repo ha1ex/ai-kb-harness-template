@@ -6,6 +6,9 @@ kind: skill
 title: "superflow — Claude + Codex parallel orchestration with markdown state"
 subtitle: "Problem solved: Heavier orchestrators (DB, trackers) are overkill for a solo founder running multi-hour parallel agent runs."
 source: https://www.cybos.ai/cases/B-118
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

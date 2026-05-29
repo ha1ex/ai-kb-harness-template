@@ -6,6 +6,9 @@ kind: tactic
 title: "tmux with persisted named tabs for ~50 simultaneous Claude sessions"
 subtitle: "Problem solved: Operators running 30–50 parallel projects lose them faster than they ship. Persistent named tabs survive reboots; weeks-old projects resume in seconds — and there's now a small ecosystem of community-built variants."
 source: https://www.cybos.ai/cases/B-097
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

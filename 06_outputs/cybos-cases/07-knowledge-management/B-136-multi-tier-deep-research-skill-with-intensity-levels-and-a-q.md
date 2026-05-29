@@ -6,6 +6,9 @@ kind: skill
 title: "Multi-tier deep-research skill with intensity levels and a quality gate"
 subtitle: "Problem solved: Some research questions deserve a one-shot agent; others need fan-out plus a quality verdict — operators waste tokens by always running the heavy version."
 source: https://www.cybos.ai/cases/B-136
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

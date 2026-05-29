@@ -6,6 +6,9 @@ kind: workflow
 title: "Reverse-engineered business-process diagram"
 subtitle: "Documented process and real process diverge sharply. Point an agent at Slack + tickets + code paths and get the actual flow as Mermaid."
 source: https://www.cybos.ai/cases/B-035
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

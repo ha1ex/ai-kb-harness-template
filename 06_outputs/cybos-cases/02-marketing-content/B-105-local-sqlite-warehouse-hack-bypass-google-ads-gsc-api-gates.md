@@ -6,6 +6,9 @@ kind: tactic
 title: "Local SQLite warehouse hack — bypass Google Ads / GSC API gates"
 subtitle: "Problem solved: Founders shut out of the Google Ads API (multi-week approval) or unwilling to pay $5k/yr for SemRush can edit campaigns directly via the local SQLite DB that Google Ads Editor keeps on disk."
 source: https://www.cybos.ai/cases/B-105
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

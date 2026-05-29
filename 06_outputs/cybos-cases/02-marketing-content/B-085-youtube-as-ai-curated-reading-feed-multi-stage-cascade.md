@@ -6,6 +6,9 @@ kind: workflow
 title: "YouTube-as-AI-curated-reading-feed (multi-stage cascade)"
 subtitle: "Hour-long videos are the most under-leveraged input for busy operators. Three-model cascade turns each into a 5-minute illustrated read."
 source: https://www.cybos.ai/cases/B-085
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

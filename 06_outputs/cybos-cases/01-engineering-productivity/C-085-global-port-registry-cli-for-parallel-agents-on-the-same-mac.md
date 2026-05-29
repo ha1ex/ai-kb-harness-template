@@ -6,6 +6,9 @@ kind: tactic
 title: "Global port-registry CLI for parallel agents on the same machine"
 subtitle: "Problem solved: When 4-6 agents run dev servers in parallel worktrees, agent B happily kills agent A's process to reclaim:3000; a shared registry hands out unique ports per project so they stop fighting."
 source: https://www.cybos.ai/cases/C-085
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

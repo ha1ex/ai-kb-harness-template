@@ -6,6 +6,9 @@ kind: workflow
 title: "Headless deck unwrapping (DocSend / Pitch / Notion → PDF → summary)"
 subtitle: "20 decks a week need analyst review. Forward the share link; structured JSON summary in the tracker in 60 seconds."
 source: https://www.cybos.ai/cases/B-008
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

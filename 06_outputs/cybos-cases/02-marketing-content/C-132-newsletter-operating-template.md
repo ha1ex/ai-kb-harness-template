@@ -6,6 +6,9 @@ kind: framework
 title: "Newsletter operating template"
 subtitle: "Problem solved: Founder-run newsletters drift into \"company updates\"; a template enforces value-first content with retention benchmarks and UTM hygiene."
 source: https://www.cybos.ai/cases/C-132
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

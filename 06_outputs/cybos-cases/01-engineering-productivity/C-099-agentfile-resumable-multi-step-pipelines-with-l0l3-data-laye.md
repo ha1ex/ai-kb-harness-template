@@ -6,6 +6,9 @@ kind: framework
 title: "agentfile — resumable multi-step pipelines with L0–L3 data layers"
 subtitle: "Problem solved: Ad-hoc multi-step LLM pipelines aren't resumable or debuggable; when step 7 fails you re-run from zero and lose the L0 raw data plus all intermediate state."
 source: https://www.cybos.ai/cases/C-099
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"

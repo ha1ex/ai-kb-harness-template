@@ -2,6 +2,9 @@
 // search-quality-probes.mjs — batch a curated set of search queries to gauge
 // whether the KB finds the right skills across all 4 sources / 14 categories.
 // Writes 06_outputs/_search-quality-report.md and prints a TL;DR.
+//
+// NB (метрика): PASS = релевантное в top-3 по OR-логике (expected_category ИЛИ
+// provider). Это recall@3, НЕ precision@1 — top-1 не всегда самый релевантный.
 
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { relative, join } from 'node:path';
@@ -218,6 +221,9 @@ const lines = [
     `в ожидаемую категорию и провайдер.`,
   '',
   `**Итог:** ✅ ${passCount} pass · ⚠️ ${warnCount} partial · ❌ ${missCount} miss из ${PROBES.length}.`,
+  '',
+  '> **Метрика (честно):** PASS = релевантное в **top-3** по OR-логике (категория ИЛИ провайдер) — ' +
+    'это **recall@3**, а не **precision@1**.',
   '',
   '## Probes',
   '',

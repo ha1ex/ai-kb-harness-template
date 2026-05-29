@@ -6,6 +6,9 @@ kind: strategy
 title: "Token metabolism — knowledge graph as company memory"
 subtitle: "\"Ask the company\" only works when Slack + CRM + Git + transcripts are one queryable memory. This makes them one."
 source: https://www.cybos.ai/cases/A-032
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "XL · Half-year+"

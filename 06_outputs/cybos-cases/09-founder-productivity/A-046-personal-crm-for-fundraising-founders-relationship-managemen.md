@@ -6,6 +6,9 @@ kind: workflow
 title: "Personal CRM for fundraising — founder's relationship management as a private repo"
 subtitle: "Founders manage hundreds of VC/LP/angel relationships in their head. One private repo + Telegram bridge replaces the assistant."
 source: https://www.cybos.ai/cases/A-046
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

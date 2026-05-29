@@ -6,6 +6,9 @@ kind: tactic
 title: "Subscription ROAS via ccusage to size your plan"
 subtitle: "Problem solved: Founders pay $100-$200/month for Claude/Cursor/Codex plans with no idea whether they're overpaying or undersubscribed."
 source: https://www.cybos.ai/cases/B-113
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

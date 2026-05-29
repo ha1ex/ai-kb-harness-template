@@ -6,6 +6,9 @@ kind: pattern
 title: "Local LLM stack — when to invest, what hardware, what fits"
 subtitle: "Problem solved: Founders weighing a $5k–$20k local-inference rig against cloud API spend need an honest economics + hardware-fit map before buying."
 source: https://www.cybos.ai/cases/B-156
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

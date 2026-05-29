@@ -6,6 +6,9 @@ kind: workflow
 title: "AI-simulated team validation harness — run hundreds of usage scenarios before paid traffic"
 subtitle: "Problem solved: Founders shipping team-collaboration software can't cheaply expose an MVP to real 5–20 person teams; a simulation harness running parallel to the product surfaces logic bugs before any paid acquisition spend."
 source: https://www.cybos.ai/cases/B-151
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

@@ -6,6 +6,9 @@ kind: pattern
 title: "PRD → Rule → Skill → Pipeline (increasing abstraction)"
 subtitle: "Every shipped artifact teaches the same lesson the next one. Distil each finish into a rule file; the next agent doesn't repeat dead ends."
 source: https://www.cybos.ai/cases/C-030
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

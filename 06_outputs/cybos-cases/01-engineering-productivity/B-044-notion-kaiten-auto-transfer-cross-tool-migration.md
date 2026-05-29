@@ -6,6 +6,9 @@ kind: tactic
 title: "Notion → Kaiten auto-transfer (cross-tool migration)"
 subtitle: "PMs spend 30 minutes per epic copying spec into ticket fields. Auto-sync removes the entry tax and the dual-source-of-truth trap."
 source: https://www.cybos.ai/cases/B-044
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

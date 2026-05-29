@@ -6,6 +6,9 @@ kind: workflow
 title: "Call scoring (sales + QA): same engine, two consumers"
 subtitle: "Managers listen to 5 of 200 calls per rep per month. This scores all 200, in both sales and support flavours."
 source: https://www.cybos.ai/cases/A-006
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

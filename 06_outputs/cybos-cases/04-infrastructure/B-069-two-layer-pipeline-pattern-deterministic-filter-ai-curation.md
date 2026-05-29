@@ -6,6 +6,9 @@ kind: pattern
 title: "Two-layer pipeline pattern (deterministic filter → AI curation)"
 subtitle: "Pure-LLM curation over 2,000 items burns budget and produces noise. Deterministic filter first; LLM judgement only on a qualified small pool."
 source: https://www.cybos.ai/cases/B-069
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

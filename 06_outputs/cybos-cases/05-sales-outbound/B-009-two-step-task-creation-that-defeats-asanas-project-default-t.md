@@ -6,6 +6,9 @@ kind: pattern
 title: "Two-step task creation that defeats Asana's project default-template"
 subtitle: "Asana's project default-template silently overwrites your task body. Two API calls per task and the right HTML tags fix it."
 source: https://www.cybos.ai/cases/B-009
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

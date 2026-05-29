@@ -6,6 +6,9 @@ kind: strategy
 title: "Absolute mandate as precondition for transformation"
 subtitle: "Every microservice becomes a 4-week political negotiation. One conversation with co-owners replaces consensus-per-move with \"we report progress.\""
 source: https://www.cybos.ai/cases/B-087
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

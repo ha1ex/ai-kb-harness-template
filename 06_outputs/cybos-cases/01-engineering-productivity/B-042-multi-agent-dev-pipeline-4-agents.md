@@ -6,6 +6,9 @@ kind: pattern
 title: "Multi-Agent Dev Pipeline (4 agents)"
 subtitle: "A single agent writes mediocre code, mediocre tests, no review. Four sequential agents (analyze → code → test → review) ship 5-10× faster."
 source: https://www.cybos.ai/cases/B-042
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

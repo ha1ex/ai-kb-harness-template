@@ -6,6 +6,9 @@ kind: tactic
 title: "Mobile Claude Code via Telegram"
 subtitle: "Problem solved: Walks, airports, school pickup — the founder's AI is laptop-only. A Telegram bridge makes the full vault phone-reachable, and 2026 produced a full catalog of ready-to-use bridges."
 source: https://www.cybos.ai/cases/A-042
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

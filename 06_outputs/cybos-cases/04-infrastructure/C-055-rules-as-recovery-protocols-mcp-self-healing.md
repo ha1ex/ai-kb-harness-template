@@ -6,6 +6,9 @@ kind: pattern
 title: "Rules-as-recovery-protocols (MCP self-healing)"
 subtitle: "MCP breaks at 3am and the agent has no path forward. Each integration has a recovery-protocol rule file; agent finds it by phrase."
 source: https://www.cybos.ai/cases/C-055
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

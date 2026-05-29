@@ -6,6 +6,9 @@ kind: tactic
 title: "Linters as agent guardrails"
 subtitle: "Iterations are wasted on lint-class errors the agent then has to fix. Add \"use a linter\" to the kickoff prompt; auto-fix on every edit."
 source: https://www.cybos.ai/cases/C-017
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

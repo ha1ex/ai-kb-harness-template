@@ -6,6 +6,9 @@ kind: tactic
 title: "Founder must code — the diploma-project pattern"
 subtitle: "\"Founders should code\" is rhetoric until someone ships a real internal system. 120 staff hours saved per event proves the thesis."
 source: https://www.cybos.ai/cases/A-050
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

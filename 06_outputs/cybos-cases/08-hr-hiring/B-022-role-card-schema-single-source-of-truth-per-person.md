@@ -6,6 +6,9 @@ kind: pattern
 title: "Role card schema — single source of truth per person"
 subtitle: "\"Who owns X?\" is a daily Slack question. One file per person with Owns / Co-owns / NOT-owns + running 1:1 history answers it."
 source: https://www.cybos.ai/cases/B-022
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

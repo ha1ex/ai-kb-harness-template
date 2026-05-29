@@ -6,6 +6,9 @@ kind: strategy
 title: "Three-level AI Academy"
 subtitle: "Generic AI training hits 40% try, 15% keep. Three tiers — basics / sales-specific / Claude Code builders — get adoption past 80%."
 source: https://www.cybos.ai/cases/B-025
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

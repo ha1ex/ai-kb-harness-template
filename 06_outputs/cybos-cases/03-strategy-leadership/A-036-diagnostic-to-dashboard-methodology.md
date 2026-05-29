@@ -6,6 +6,9 @@ kind: framework
 title: "Diagnostic-to-Dashboard methodology"
 subtitle: "\"Where do we start with AI?\" turns into 18 months of scattered experiments. 21 interviews; 4-week plan; named owners."
 source: https://www.cybos.ai/cases/A-036
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

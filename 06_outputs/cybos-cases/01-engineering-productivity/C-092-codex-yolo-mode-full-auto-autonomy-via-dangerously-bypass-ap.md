@@ -6,6 +6,9 @@ kind: tactic
 title: "Codex YOLO mode — full-auto autonomy via `--dangerously-bypass-approvals-and-sandbox`"
 subtitle: "Problem solved: Codex's default approval prompts kill overnight autonomous runs; three escalating flags trade safety for un-paused throughput on isolated machines."
 source: https://www.cybos.ai/cases/C-092
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

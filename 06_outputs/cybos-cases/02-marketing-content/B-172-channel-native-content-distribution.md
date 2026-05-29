@@ -6,6 +6,9 @@ kind: workflow
 title: "Channel-native content distribution"
 subtitle: "Problem solved: Cross-posted content dies on day one; a channel-selection matrix plus per-channel native framing and a 6-day cadence extends one piece's reach over 2+ months."
 source: https://www.cybos.ai/cases/B-172
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

@@ -6,6 +6,9 @@ kind: tactic
 title: "Unified Knowledge Base"
 subtitle: "Three parallel KBs (site FAQ + internal + helpdesk) contradict each other. AI chatbots hallucinate until they're one source."
 source: https://www.cybos.ai/cases/B-032
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

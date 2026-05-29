@@ -6,6 +6,9 @@ kind: workflow
 title: "Podcast-to-Reels content factory"
 subtitle: "A 3-person Reels team costs several thousand a month. Cut 20 candidate clips per podcast automatically; one operator picks 5-10."
 source: https://www.cybos.ai/cases/B-095
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

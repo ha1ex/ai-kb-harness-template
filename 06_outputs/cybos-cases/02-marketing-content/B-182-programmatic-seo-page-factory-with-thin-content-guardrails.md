@@ -6,6 +6,9 @@ kind: framework
 title: "Programmatic SEO page factory with thin-content guardrails"
 subtitle: "Problem solved: Programmatic SEO defaults to thin city-swap pages and gets penalized; a 12-playbook selector plus data-source mapping and CMS provisioning enforces quality over quantity."
 source: https://www.cybos.ai/cases/B-182
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

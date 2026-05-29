@@ -6,6 +6,9 @@ kind: skill
 title: "Weekly Sync skill — partnership sync prep (edit-existing-card discipline)"
 subtitle: "Recurring partner syncs need prep nobody does. Agent edits the same card with last week's chat + commitments — history stays in one file."
 source: https://www.cybos.ai/cases/B-037
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

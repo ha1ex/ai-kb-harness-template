@@ -6,6 +6,9 @@ kind: pattern
 title: "\"AI beta\" — embed feedback instructions in platform docs so agents auto-file friction reports"
 subtitle: "Problem solved: AI-built apps hit your API friction silently; you only find out when humans manually report bugs."
 source: https://www.cybos.ai/cases/C-079
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

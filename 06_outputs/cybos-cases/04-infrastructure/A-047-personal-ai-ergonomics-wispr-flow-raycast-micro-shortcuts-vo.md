@@ -6,6 +6,9 @@ kind: tactic
 title: "Personal AI ergonomics — Wispr Flow, Raycast micro-shortcuts, voice-driven install, path-copy"
 subtitle: "Typing prompts is the throttle on adoption. Voice (150 wpm vs 40), one-key launcher, voice-install — under $30/mo total."
 source: https://www.cybos.ai/cases/A-047
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

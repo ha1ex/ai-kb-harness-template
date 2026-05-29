@@ -6,6 +6,9 @@ kind: tactic
 title: "PM Vibe-Coding — Cursor / Lovable for PMs"
 subtitle: "PMs write text specs engineers have to interpret. Train PMs to ship clickable prototypes; ambiguity dies before code starts."
 source: https://www.cybos.ai/cases/B-041
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

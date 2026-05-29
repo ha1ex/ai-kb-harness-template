@@ -6,6 +6,9 @@ kind: pattern
 title: "Rules > Prompts — portable rule files"
 subtitle: "Switching from Claude Code to Codex breaks every prompt embedded in tool configs. Logic in markdown rule files survives the vendor churn."
 source: https://www.cybos.ai/cases/B-055
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

@@ -6,6 +6,9 @@ kind: workflow
 title: "Self-improving Telegram sales bot with 30-conversation eval-rewrite loop"
 subtitle: "Problem solved: Founders selling courses, B2C info products, or SMB SaaS need to qualify and warm hundreds of leads concurrently in Telegram without hiring SDRs; a multi-user OpenClaw bot with RAG over methodology docs runs as the salesperson, an eval-agent every 30 conversations rewrites its system prompt, and warm leads route to the founder."
 source: https://www.cybos.ai/cases/A-053
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

@@ -6,6 +6,9 @@ kind: pattern
 title: "Five-parallel-subagent review with a weighted safety score"
 subtitle: "Problem solved: Operators want a single 0–100 decision score on inbound documents that aggregates several independent expert reviews into one ranked, actionable artifact — instead of one shallow pass or an unaffordable expert."
 source: https://www.cybos.ai/cases/A-088
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

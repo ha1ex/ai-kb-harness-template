@@ -6,6 +6,9 @@ kind: framework
 title: "AI risk-management framework"
 subtitle: "Board wants the AI-risk slide. Six universal risks + 1-line mitigations, ready to drop in; operational scaffold lives in B-061."
 source: https://www.cybos.ai/cases/C-038
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"

@@ -6,6 +6,9 @@ kind: tactic
 title: "Claude-in-PowerPoint to reformat rough decks against a corporate style spec"
 subtitle: "Problem solved: Hand-formatting a 20-slide technical deck into the corporate style template eats half a day."
 source: https://www.cybos.ai/cases/C-076
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

@@ -6,6 +6,9 @@ kind: skill
 title: "Weekly retro skill — surface candidates for packaging into skills"
 subtitle: "Same prompt typed 4 times this week. Agent flags repeated sequences as skill candidates so personal automation compounds."
 source: https://www.cybos.ai/cases/B-036
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

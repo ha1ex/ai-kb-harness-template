@@ -6,6 +6,9 @@ kind: workflow
 title: "Async dev via Slack-mentioned agent (Codex/Claude in a dedicated channel)"
 subtitle: "Problem solved: Feedback piles up faster during client calls and stand-ups than anyone can implement; mentioning an agent in Slack converts that backlog into ready-to-merge PRs by the end of the meeting."
 source: https://www.cybos.ai/cases/B-119
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

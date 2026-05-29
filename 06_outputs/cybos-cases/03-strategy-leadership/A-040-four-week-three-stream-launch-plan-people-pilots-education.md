@@ -6,6 +6,9 @@ kind: strategy
 title: "Four-week three-stream launch plan (People / Pilots / Education)"
 subtitle: "\"We'll figure the program out later\" turns into 18 months of nothing. Three parallel streams force the first month's wins."
 source: https://www.cybos.ai/cases/A-040
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

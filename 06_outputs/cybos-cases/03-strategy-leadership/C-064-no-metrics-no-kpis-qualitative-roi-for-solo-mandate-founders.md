@@ -6,6 +6,9 @@ kind: strategy
 title: "No metrics / no KPIs — qualitative ROI for solo-mandate founders"
 subtitle: "Building KPI scaffolding when nobody needs convincing wastes time. Under absolute mandate, trust headcount + spend + qualitative signal."
 source: https://www.cybos.ai/cases/C-064
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

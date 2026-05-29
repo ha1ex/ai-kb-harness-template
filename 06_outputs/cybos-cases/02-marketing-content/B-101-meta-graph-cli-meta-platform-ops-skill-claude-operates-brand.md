@@ -6,6 +6,9 @@ kind: skill
 title: "meta-graph-cli + meta-platform-ops skill — Claude operates brand Instagram and Facebook"
 subtitle: "Problem solved: SMB brand-social is a full-time job; a thin Python wrapper around the Meta Graph API plus a Claude Code skill lets agents handle routine posting, comment ops, and insights."
 source: https://www.cybos.ai/cases/B-101
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

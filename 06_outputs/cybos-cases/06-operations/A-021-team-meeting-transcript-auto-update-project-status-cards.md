@@ -6,6 +6,9 @@ kind: workflow
 title: "Team-meeting transcript → auto-update project status cards"
 subtitle: "Weekly status meetings get notes nobody updates. The transcript writes the updates into 20 per-project cards automatically."
 source: https://www.cybos.ai/cases/A-021
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

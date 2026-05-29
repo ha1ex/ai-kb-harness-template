@@ -6,6 +6,9 @@ kind: tactic
 title: "Pre-load a language-specific `BESTPRACTICE.md` before vibe-coding niche languages"
 subtitle: "Problem solved: Coding agents produce mediocre first-shot output in less-mainstream languages (anything outside the top tier of training-data coverage); a pre-loaded best-practices doc lifts first-pass quality dramatically."
 source: https://www.cybos.ai/cases/C-084
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

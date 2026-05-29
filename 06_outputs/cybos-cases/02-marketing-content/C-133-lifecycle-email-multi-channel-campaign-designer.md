@@ -6,6 +6,9 @@ kind: framework
 title: "Lifecycle email / multi-channel campaign designer"
 subtitle: "Problem solved: Startups without a lifecycle marketer ship one-off campaigns; a segment matrix produces day-by-day drip plans across SaaS / digital-goods / services."
 source: https://www.cybos.ai/cases/C-133
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

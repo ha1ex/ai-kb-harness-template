@@ -6,6 +6,9 @@ kind: workflow
 title: "Closed-loop user feedback → code change automation"
 subtitle: "\"The buttons are too small\" sits in a backlog for three weeks. Now it's a deployed PR in 30 minutes with a human approval."
 source: https://www.cybos.ai/cases/A-024
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

@@ -6,6 +6,9 @@ kind: workflow
 title: "Self-improving research pipeline — methodologist-spawn-evaluate loop with A/B-tested prompts"
 subtitle: "Problem solved: Manual prompt tuning for deep-research tasks is slow and the prompts go stale. A methodologist sub-agent proposes new prompts, fans out 5 parallel research teams, two methodologist agents A/B-test the outputs, and the winning template propagates."
 source: https://www.cybos.ai/cases/B-140
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

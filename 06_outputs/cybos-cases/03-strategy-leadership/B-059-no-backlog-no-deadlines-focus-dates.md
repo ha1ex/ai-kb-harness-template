@@ -6,6 +6,9 @@ kind: strategy
 title: "No backlog / no deadlines / focus dates"
 subtitle: "Backlogs grow faster than they ship. Once one-prompt changes work, the queue itself is the bottleneck — kill it; commit to start-dates instead."
 source: https://www.cybos.ai/cases/B-059
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

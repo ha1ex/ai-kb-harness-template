@@ -6,6 +6,9 @@ kind: tactic
 title: "Visible Chrome on a headless VPS — Xvfb + Fluxbox + x11vnc + noVNC"
 subtitle: "Problem solved: Playwright headless \"worked every other time\" for some flows; agents need to drive a real visible browser on a Linux VPS with a window manager and live human observability."
 source: https://www.cybos.ai/cases/C-119
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

@@ -6,6 +6,9 @@ kind: workflow
 title: "Support Agent Copilot (single-pane multi-system context)"
 subtitle: "Support agents switch across 12 systems per ticket. One pane pulls every system + drafts the reply."
 source: https://www.cybos.ai/cases/A-017
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

@@ -6,6 +6,9 @@ kind: pattern
 title: "Physical phone in the loop — ADB + screenshots + xdotool for app automation"
 subtitle: "Problem solved: some workflows live entirely inside mobile apps (food delivery, mobile QA of your own product) where no web API exists."
 source: https://www.cybos.ai/cases/C-124
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"

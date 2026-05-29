@@ -6,6 +6,9 @@ kind: workflow
 title: "Flat-file ATS for small teams"
 subtitle: "Sub-30-person teams pay $50–200/mo per recruiter for an ATS. One markdown file per candidate does the same job."
 source: https://www.cybos.ai/cases/A-012
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

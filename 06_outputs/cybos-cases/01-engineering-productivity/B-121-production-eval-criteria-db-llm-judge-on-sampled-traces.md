@@ -6,6 +6,9 @@ kind: workflow
 title: "Production eval — criteria DB + LLM judge on sampled traces"
 subtitle: "Problem solved: Non-deterministic AI workflows in production drift silently; without a continuous eval pipeline, regressions only surface in customer complaints."
 source: https://www.cybos.ai/cases/B-121
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

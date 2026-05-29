@@ -6,6 +6,9 @@ kind: workflow
 title: "App Farm — concept-anchored creative factory for paid-ads platforms"
 subtitle: "Problem solved: Growth teams running paid acquisition on platforms with creative-deduplication ranking (Meta's Andromeda, similar) need 1,000+ distinct creatives per quarter; manual production caps out at 5% of demand and cosmetic variations get de-prioritized server-side."
 source: https://www.cybos.ai/cases/A-059
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

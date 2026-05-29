@@ -6,6 +6,9 @@ kind: workflow
 title: "Content calendar with Linear as source of truth + custom UI"
 subtitle: "Linear's flat list is unusable for a content team that thinks in calendar grids. Vibe-code the calendar UI; keep Linear as the data."
 source: https://www.cybos.ai/cases/B-014
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

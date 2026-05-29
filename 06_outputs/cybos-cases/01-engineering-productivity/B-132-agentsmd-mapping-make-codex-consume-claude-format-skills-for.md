@@ -6,6 +6,9 @@ kind: pattern
 title: "AGENTS.md mapping — make Codex consume Claude-format skills for cross-provider hedging"
 subtitle: "Problem solved: Teams want one skill library that works across Claude and Codex; an AGENTS.md mapping file at project root lets Codex discover and consume skills authored in Claude's format."
 source: https://www.cybos.ai/cases/B-132
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

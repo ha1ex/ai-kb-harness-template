@@ -6,6 +6,9 @@ kind: workflow
 title: "Recursive 10-expert-panel cold-email optimizer"
 subtitle: "Problem solved: AI-written cold-email sequences pass surface review but stall on reply rate; a 10-persona scoring loop with explicit weakness lists forces drafts past the LLM-flattery failure mode before any send."
 source: https://www.cybos.ai/cases/A-076
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

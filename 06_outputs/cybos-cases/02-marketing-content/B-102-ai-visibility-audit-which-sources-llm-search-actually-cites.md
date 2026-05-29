@@ -6,6 +6,9 @@ kind: workflow
 title: "AI-visibility audit — which sources LLM-search actually cites"
 subtitle: "Problem solved: Founders pre-GEO are still budgeting against SEO heuristics; a one-day citation-source audit reveals YouTube, Reddit, and Wikipedia dominate (varies by vertical) and reallocates spend accordingly."
 source: https://www.cybos.ai/cases/B-102
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

@@ -6,6 +6,9 @@ kind: pattern
 title: "Tiered model strategy — Opus / Haiku / Gemini long-context"
 subtitle: "Running everything on Opus is the largest single cost in any LLM pipeline. Cheap classifier, mid synthesis, long-context retrieval — 10× savings."
 source: https://www.cybos.ai/cases/B-073
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

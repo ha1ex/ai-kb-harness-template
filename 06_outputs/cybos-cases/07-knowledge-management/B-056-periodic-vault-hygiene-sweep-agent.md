@@ -6,6 +6,9 @@ kind: skill
 title: "Periodic vault-hygiene sweep agent"
 subtitle: "Vaults past 5K files quietly rot (broken links, naming drift, duplicates). A periodic agent sweep proposes hygiene moves to confirm."
 source: https://www.cybos.ai/cases/B-056
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

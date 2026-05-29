@@ -6,6 +6,9 @@ kind: pattern
 title: "GitHub repo as zero-infra distributed log for multi-bot coordination"
 subtitle: "Problem solved: Two bots added to the same Telegram group can't see each other's messages through the Telegram API; without a coordination layer they talk past each other forever."
 source: https://www.cybos.ai/cases/C-096
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

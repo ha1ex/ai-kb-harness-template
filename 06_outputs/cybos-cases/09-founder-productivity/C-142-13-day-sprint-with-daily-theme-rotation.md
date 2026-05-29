@@ -6,6 +6,9 @@ kind: pattern
 title: "13-day sprint with daily theme rotation"
 subtitle: "Problem solved: Fixed-day-of-week sprint cadence routinizes work into a Groundhog Day loop; a 13-day rotation forces different task-types onto different weekdays sprint-to-sprint."
 source: https://www.cybos.ai/cases/C-142
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

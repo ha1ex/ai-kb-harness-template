@@ -6,6 +6,9 @@ kind: workflow
 title: "Performance marketing copilot + commercial-proposal (KP) generator"
 subtitle: "$1M ad budgets get spent on creative the team can't analyse by Friday. Copilot answers ad-hoc questions; KP generator writes proposals tailored to the customer."
 source: https://www.cybos.ai/cases/B-007
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

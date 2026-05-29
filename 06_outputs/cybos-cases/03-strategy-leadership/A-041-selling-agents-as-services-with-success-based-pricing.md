@@ -6,6 +6,9 @@ kind: strategy
 title: "Selling agents as services with success-based pricing"
 subtitle: "Per-seat SaaS gets ripped out when customers build their own agent. Charging on outcomes (claims resolved, deals won) flips the math."
 source: https://www.cybos.ai/cases/A-041
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

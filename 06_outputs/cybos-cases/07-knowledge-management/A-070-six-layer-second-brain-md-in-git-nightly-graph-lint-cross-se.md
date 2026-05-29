@@ -6,6 +6,9 @@ kind: framework
 title: "Six-layer Second Brain — md-in-git + nightly graph-lint + cross-session watcher"
 subtitle: "Problem solved: Knowledge across parallel agent sessions drifts; static docs go stale; trackers don't merge cleanly with documents. Six layers — md-in-git as source of truth, nightly graph-lint, session-start brief, cross-session watcher, /help advisor command, PostToolUse DECISIONS-INBOX runner — turn an agency's knowledge into a substrate agents can actually rely on."
 source: https://www.cybos.ai/cases/A-070
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

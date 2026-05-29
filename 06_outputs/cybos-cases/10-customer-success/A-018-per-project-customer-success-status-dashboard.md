@@ -6,6 +6,9 @@ kind: workflow
 title: "Per-project Customer Success status dashboard"
 subtitle: "CS leads sit in 20 silent client calls a week to \"smell\" project health. Replace with one auto-refreshed card per account."
 source: https://www.cybos.ai/cases/A-018
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

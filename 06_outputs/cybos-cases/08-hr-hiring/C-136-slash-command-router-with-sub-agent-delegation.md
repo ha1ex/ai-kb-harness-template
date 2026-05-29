@@ -6,6 +6,9 @@ kind: pattern
 title: "Slash-command router with sub-agent delegation"
 subtitle: "Problem solved: Multi-step candidate-side workflows (tailored CV / application tracker / interview prep / follow-up) fan out across tools; one slash-command router with sub-agent delegation runs the long-running modes headlessly."
 source: https://www.cybos.ai/cases/C-136
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"

@@ -6,6 +6,9 @@ kind: pattern
 title: "Cookie-auth Twitter scraping (free, ban-aware)"
 subtitle: "Twitter API costs $5K/mo at sub-100K-tweet scale. Cookie-auth + rate guards + multi-account round-robin keeps it free without account bans."
 source: https://www.cybos.ai/cases/C-003
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"

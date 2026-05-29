@@ -6,6 +6,9 @@ kind: pattern
 title: "AI-driven design — claude.ai/design + design-system input + frontend-design skill"
 subtitle: "Problem solved: Naked Claude Code or Cursor on a blank lander produces \"AI slop\" — identical ShadCN-default layouts. Feeding a real design system (Figma library or React kit) into claude.ai/design, or invoking the Anthropic frontend-design skill on top of a reference, yields production-grade output one-shot."
 source: https://www.cybos.ai/cases/A-061
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

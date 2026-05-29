@@ -6,6 +6,9 @@ kind: pattern
 title: "Session-ID hook stamps every artifact with its session identifier"
 subtitle: "Problem solved: months later, you can open a doc, find a session ID inside, and rehydrate the exact agent session that produced it."
 source: https://www.cybos.ai/cases/C-098
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

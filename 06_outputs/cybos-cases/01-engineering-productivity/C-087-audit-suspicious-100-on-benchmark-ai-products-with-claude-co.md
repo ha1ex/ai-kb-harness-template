@@ -6,6 +6,9 @@ kind: tactic
 title: "Audit suspicious \"100% on benchmark\" AI products with Claude Code"
 subtitle: "Problem solved: Viral AI products often inflate benchmark claims; before trusting one, point an agent at the source code and ask it to surface benchmark manipulation, eval cheating, or hardcoded answers."
 source: https://www.cybos.ai/cases/C-087
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

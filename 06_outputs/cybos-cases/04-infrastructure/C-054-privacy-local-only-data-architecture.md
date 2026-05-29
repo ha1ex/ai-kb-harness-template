@@ -6,6 +6,9 @@ kind: pattern
 title: "Privacy / local-only data architecture"
 subtitle: "\"Where does my CLI's data go?\" Single root directory; nothing uploaded;.gitignore blocks secrets. Revoke = rm -rf."
 source: https://www.cybos.ai/cases/C-054
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

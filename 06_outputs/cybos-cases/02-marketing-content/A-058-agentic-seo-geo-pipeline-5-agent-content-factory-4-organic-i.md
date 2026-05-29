@@ -6,6 +6,9 @@ kind: workflow
 title: "Agentic SEO + GEO pipeline — 5-agent content factory, 4× organic in 30 days"
 subtitle: "Problem solved: SEO writing-and-fix loop is the slowest founder bottleneck; an agent team multiplies organic traffic 4× in 30 days when the site is code — and a CORE-EEAT scorer plus a hard editorial bar keep the volume from being slop."
 source: https://www.cybos.ai/cases/A-058
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

@@ -6,6 +6,9 @@ kind: framework
 title: "Five proven principles for AI adoption"
 subtitle: "70% of AI pilots burn six months before being shelved. A 5-item go/no-go checklist kills them at the pitch, not at month 6."
 source: https://www.cybos.ai/cases/B-058
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

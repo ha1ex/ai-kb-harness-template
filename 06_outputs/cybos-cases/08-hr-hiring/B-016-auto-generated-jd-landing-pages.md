@@ -6,6 +6,9 @@ kind: skill
 title: "Auto-generated JD landing pages"
 subtitle: "Job boards charge per listing and OG previews are ugly. One CLI command turns your JD markdown into a shareable branded page."
 source: https://www.cybos.ai/cases/B-016
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

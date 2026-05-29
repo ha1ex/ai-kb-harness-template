@@ -6,6 +6,9 @@ kind: workflow
 title: "Tier-based founder grading using named-companies registry"
 subtitle: "Same candidate scores GO Monday and PASS Tuesday — fuzzy criteria roulette. A named registry turns the judgement into a deterministic lookup."
 source: https://www.cybos.ai/cases/B-072
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

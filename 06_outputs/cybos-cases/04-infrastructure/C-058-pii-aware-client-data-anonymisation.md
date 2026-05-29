@@ -6,6 +6,9 @@ kind: pattern
 title: "PII-aware client-data anonymisation"
 subtitle: "Regulated industries can't send raw HR/client data to cloud LLMs. Deterministic anonymisation pre-flight; never rely on the model to redact."
 source: https://www.cybos.ai/cases/C-058
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "L · Quarter"

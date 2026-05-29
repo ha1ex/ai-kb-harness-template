@@ -6,6 +6,9 @@ kind: skill
 title: "End-to-end network outreach builder (Telegram + Gmail → curated workbook)"
 subtitle: "A year of DMs hides 70 worth-emailing contacts. Stop spending three days finding them by hand."
 source: https://www.cybos.ai/cases/A-002
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

@@ -6,6 +6,9 @@ kind: pattern
 title: "Sales pipeline data extraction — durable entities"
 subtitle: "Same call gets re-analysed dozens of times — paid tokens plus drift risk each time. Extract decisions + commitments once, reuse forever."
 source: https://www.cybos.ai/cases/B-062
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

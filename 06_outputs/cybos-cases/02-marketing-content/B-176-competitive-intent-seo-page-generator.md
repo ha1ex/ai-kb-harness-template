@@ -6,6 +6,9 @@ kind: workflow
 title: "Competitive-intent SEO page generator"
 subtitle: "Problem solved: Bottom-of-funnel \"X vs Y\" and \"alternatives to X\" pages are either fabricated or unfair; a 4-format generator produces 1,500+ word pages with structured data, a conversion layout, and a verifiable-claims discipline."
 source: https://www.cybos.ai/cases/B-176
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

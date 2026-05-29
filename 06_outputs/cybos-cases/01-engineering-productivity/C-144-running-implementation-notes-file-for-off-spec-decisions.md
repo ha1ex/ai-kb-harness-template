@@ -6,6 +6,9 @@ kind: tactic
 title: "Running implementation-notes file for off-spec decisions"
 subtitle: "Problem solved: Coding agents make silent judgment calls implementing a spec; a running notes file surfaces every off-spec decision so you review the log, not the whole diff."
 source: https://www.cybos.ai/cases/C-144
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

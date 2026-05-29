@@ -6,6 +6,9 @@ kind: framework
 title: "Six-mode productivity skill with per-mode pass-gates"
 subtitle: "Problem solved: AI productivity assistants produce aspirational plans, agendaless meetings, and activity-based status updates; a mode-router with an explicit exit gate per mode prevents each of those failures."
 source: https://www.cybos.ai/cases/A-094
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

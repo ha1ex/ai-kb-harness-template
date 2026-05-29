@@ -6,6 +6,9 @@ kind: workflow
 title: "Personal LinkedIn + Telegram network scorer (bidirectional usefulness)"
 subtitle: "2-10K contacts; \"who can help me\" is the only direction you think in. Score both ways; warm \"who can I help\" intros convert better than cold."
 source: https://www.cybos.ai/cases/B-086
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

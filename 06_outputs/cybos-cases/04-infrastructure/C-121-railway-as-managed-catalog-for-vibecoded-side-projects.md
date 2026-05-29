@@ -6,6 +6,9 @@ kind: tactic
 title: "Railway as managed catalog for vibecoded side-projects"
 subtitle: "Problem solved: a single operator accumulates dozens of small AI-built services and loses track of what's running where."
 source: https://www.cybos.ai/cases/C-121
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

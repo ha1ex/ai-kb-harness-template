@@ -6,6 +6,9 @@ kind: tactic
 title: "Screenshot → microservice — opportunistic learning loop"
 subtitle: "Operators who've never opened a terminal stall on the disciplined kickoff prompt. Watch a video; screenshot a concept; agent builds it."
 source: https://www.cybos.ai/cases/B-090
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

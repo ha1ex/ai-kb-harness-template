@@ -6,6 +6,9 @@ kind: workflow
 title: "Live presentation → article → channel pipeline"
 subtitle: "Every talk you give could be an article. Most aren't, because rewriting takes 6 hours. This cuts it to 5 minutes."
 source: https://www.cybos.ai/cases/A-010
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

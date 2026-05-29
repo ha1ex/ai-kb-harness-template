@@ -6,6 +6,9 @@ kind: pattern
 title: "Auto-Eval T/R/C binary-pass discipline"
 subtitle: "\"Score 1-5\" evals drift toward \"3 — meh\". Pass/fail/n-a only; three fails trigger a new rule; \"is this passing?\" gets one answer."
 source: https://www.cybos.ai/cases/C-048
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

@@ -6,6 +6,9 @@ kind: workflow
 title: "Telegram bot as universal deal intake (five input types, one conversation)"
 subtitle: "\"Forward this to me, I'll look next week\" loses deals. Forward to bot; researched task lands in the tracker in 90 seconds."
 source: https://www.cybos.ai/cases/B-003
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

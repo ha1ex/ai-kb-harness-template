@@ -6,6 +6,9 @@ kind: strategy
 title: "Solo-founder marketing stack on autopilot — Claude Code + MCPs across 6 platforms"
 subtitle: "Problem solved: A solo founder running their own marketing context-switches across 6-8 platforms daily; a Claude Code stack with one MCP per platform compresses the work to weekly review-and-decide."
 source: https://www.cybos.ai/cases/B-106
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

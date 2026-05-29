@@ -6,6 +6,9 @@ kind: framework
 title: "Defense-in-depth for personal AI agents — 5 layers (prompt / OS / exec / DLP / blast radius)"
 subtitle: ""
 source: https://www.cybos.ai/cases/A-074
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

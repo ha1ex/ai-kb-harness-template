@@ -6,6 +6,9 @@ kind: skill
 title: "Plain-English contract translator — 5-flag taxonomy + per-section rewrite"
 subtitle: "Problem solved: Operators sign contracts they don't fully understand; a clause-by-clause plain-English rewrite with explicit surprise-flags makes the hidden terms visible before signing."
 source: https://www.cybos.ai/cases/B-189
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

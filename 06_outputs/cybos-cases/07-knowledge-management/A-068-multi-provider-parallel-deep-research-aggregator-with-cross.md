@@ -6,6 +6,9 @@ kind: workflow
 title: "Multi-provider parallel deep-research aggregator with cross-reference synthesis"
 subtitle: "Problem solved: Any single deep-research provider has blind spots — Gemini misses what OpenAI catches, Perplexity surfaces what Parallel doesn't. Fan the same query out to four providers in parallel, then run a synthesis pass that surfaces consensus, unique findings, and contradictions. Reported uplift: +120% findings vs the best single provider on an ICP study."
 source: https://www.cybos.ai/cases/A-068
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

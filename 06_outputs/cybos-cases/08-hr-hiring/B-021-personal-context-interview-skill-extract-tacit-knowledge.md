@@ -6,6 +6,9 @@ kind: skill
 title: "Personal-context interview skill — extract tacit knowledge"
 subtitle: "Tacit working knowledge takes 3 months to absorb by osmosis. An agent-driven interview extracts it in a 2-hour onboarding session — now scanner-driven and phased so the corpus refreshes without firehose-prompting."
 source: https://www.cybos.ai/cases/B-021
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

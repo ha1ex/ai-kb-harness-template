@@ -6,6 +6,9 @@ kind: framework
 title: "AI Governance Framework"
 subtitle: "A CEO showed API tokens via DM in front of 40 people. Four artifacts (policy + registry + approval + review) prevent the embarrassing class of incidents."
 source: https://www.cybos.ai/cases/B-061
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "L · Quarter"

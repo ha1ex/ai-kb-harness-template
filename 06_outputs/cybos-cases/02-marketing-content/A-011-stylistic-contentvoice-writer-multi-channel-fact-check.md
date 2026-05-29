@@ -6,6 +6,9 @@ kind: workflow
 title: "Stylistic ContentVoice writer (multi-channel + fact-check)"
 subtitle: "Founder content stalls because typing is slow. Three channels publish in the founder's voice with no embarrassing wrong stats."
 source: https://www.cybos.ai/cases/A-011
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

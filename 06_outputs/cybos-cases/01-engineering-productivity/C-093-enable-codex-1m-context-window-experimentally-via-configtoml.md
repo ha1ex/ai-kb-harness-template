@@ -6,6 +6,9 @@ kind: tactic
 title: "Enable Codex 1M context window experimentally via `config.toml`"
 subtitle: "Problem solved: Codex defaults to a 270k context window even on GPT-5.4, which forces splitting large codebases into microservice-shaped chunks; the 1M window is available but opt-in."
 source: https://www.cybos.ai/cases/C-093
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

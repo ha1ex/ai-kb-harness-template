@@ -6,6 +6,9 @@ kind: pattern
 title: "Per-department Notion API token scoping for company-wide AI agents"
 subtitle: "Problem solved: Notion is the company KB but a single shared API token lets any agent overwrite any department's pages; per-department scoped tokens plus one global read-only token keep the source-of-truth from sprawling."
 source: https://www.cybos.ai/cases/B-143
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

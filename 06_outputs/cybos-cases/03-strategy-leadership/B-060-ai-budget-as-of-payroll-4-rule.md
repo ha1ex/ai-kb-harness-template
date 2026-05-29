@@ -6,6 +6,9 @@ kind: strategy
 title: "AI budget as % of payroll (4% rule)"
 subtitle: "Reimbursement workflows kill experimentation. Cap centrally at ~4% of payroll; let power users burn $300-600/mo without approval."
 source: https://www.cybos.ai/cases/B-060
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

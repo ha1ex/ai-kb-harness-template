@@ -6,6 +6,9 @@ kind: pattern
 title: "Repo-as-Skill packaging pattern"
 subtitle: "Skill repos conflate three audiences in one README. Three docs + two folders split runtime instructions, install steps, and architecture cleanly."
 source: https://www.cybos.ai/cases/B-071
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

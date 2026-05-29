@@ -6,6 +6,9 @@ kind: strategy
 title: "Three-tier AI bonus program (adoption / champion / transformation-protection)"
 subtitle: "Employees hide AI use because they fear it threatens their job. Pay them for using it; guarantee 18 months if they automate themselves."
 source: https://www.cybos.ai/cases/A-015
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

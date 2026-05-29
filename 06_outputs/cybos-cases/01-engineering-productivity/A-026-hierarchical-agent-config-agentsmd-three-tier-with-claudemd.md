@@ -6,6 +6,9 @@ kind: tactic
 title: "Hierarchical agent config — AGENTS.md three-tier (with CLAUDE.md bridge)"
 subtitle: "Problem solved: Same prompt, same model, mediocre output because the agent can't find your context. A short hierarchy of agent-config files unlocks 50–70% quality gains — provided you cap them and refuse to bloat them."
 source: https://www.cybos.ai/cases/A-026
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

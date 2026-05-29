@@ -6,6 +6,9 @@ kind: workflow
 title: "Solo PR pipeline — Claude finds editors, drafts multilingual articles, sends them"
 subtitle: "Problem solved: Indie founders and hobby-project owners can't afford a PR agency; Claude with email access can run targeted-region placement end to end and land real published articles."
 source: https://www.cybos.ai/cases/B-103
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

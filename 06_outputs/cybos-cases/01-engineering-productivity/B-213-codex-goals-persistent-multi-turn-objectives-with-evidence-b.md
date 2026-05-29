@@ -6,6 +6,9 @@ kind: workflow
 title: "Codex Goals — persistent multi-turn objectives with evidence-based completion"
 subtitle: "Problem solved: Long-horizon coding tasks make you restate the objective after every turn; a persistent goal lets the agent work to a verified finish line on its own."
 source: https://www.cybos.ai/cases/B-213
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

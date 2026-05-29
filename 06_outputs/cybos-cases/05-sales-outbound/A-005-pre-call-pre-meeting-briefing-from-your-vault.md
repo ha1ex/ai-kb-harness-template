@@ -6,6 +6,9 @@ kind: workflow
 title: "Pre-call / pre-meeting briefing from your vault"
 subtitle: "Problem solved: \"Has anyone here ever talked to this account?\" gets answered in 30 seconds instead of a 30-minute Slack hunt — and the brief now carries a structured discovery framework, not just history."
 source: https://www.cybos.ai/cases/A-005
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "S · Days"

@@ -6,6 +6,9 @@ kind: pattern
 title: "Anti-hallucination tags `[CANONICAL]` / `[REF:]`"
 subtitle: "\"Where did this fact come from?\" has no answer six weeks later. Every statement is either canonical or a pointer; traceable provenance always."
 source: https://www.cybos.ai/cases/C-027
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

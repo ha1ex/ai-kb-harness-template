@@ -6,6 +6,9 @@ kind: pattern
 title: "Self-installable Claude Code skill via HTTP"
 subtitle: "Internal tools need a UI you don't have time to build. Ship a curl-pipe-bash skill; teammates onboard in 30 seconds; LLM is the frontend."
 source: https://www.cybos.ai/cases/B-067
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

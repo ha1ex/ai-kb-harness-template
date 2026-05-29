@@ -6,6 +6,9 @@ kind: strategy
 title: "Weekly thematic automation sprints — 13-person SaaS to 3 + freelancers in 6 months"
 subtitle: "Problem solved: Founders running 10–20 person SaaS teams want a concrete, time-bounded playbook for compressing headcount via AI without breaking the product."
 source: https://www.cybos.ai/cases/B-150
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "XL · Half-year+"

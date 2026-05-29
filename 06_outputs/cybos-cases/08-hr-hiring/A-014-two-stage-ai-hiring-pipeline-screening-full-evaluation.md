@@ -6,6 +6,9 @@ kind: workflow
 title: "Two-stage AI hiring pipeline (screening + full evaluation)"
 subtitle: "80%+ of CVs are mis-fits and every reviewer scores them differently. Same rubric, every candidate, with cited quotes."
 source: https://www.cybos.ai/cases/A-014
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "M · Weeks"

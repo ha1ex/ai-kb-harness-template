@@ -6,6 +6,9 @@ kind: workflow
 title: "Internal mascot bot for non-technical staff — read-only MCP + Gmail-draft-only write"
 subtitle: "Problem solved: Production-floor and non-technical staff at small / mid orgs flood the founder / CTO with how-to questions. A branded mascot bot in Telegram and WhatsApp, running on the founder's own Claude subscription, with strictly read-only MCP tooling (cannot write to CRM / inventory; can only create Gmail drafts), absorbs the question flow."
 source: https://www.cybos.ai/cases/B-109
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "M · Weeks"

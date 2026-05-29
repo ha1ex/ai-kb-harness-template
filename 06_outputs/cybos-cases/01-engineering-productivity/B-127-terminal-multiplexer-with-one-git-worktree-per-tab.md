@@ -6,6 +6,9 @@ kind: tactic
 title: "Terminal multiplexer with one git-worktree per tab"
 subtitle: "Problem solved: Running 5+ Claude Code sessions against the same repo causes file conflicts unless each gets its own worktree."
 source: https://www.cybos.ai/cases/B-127
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

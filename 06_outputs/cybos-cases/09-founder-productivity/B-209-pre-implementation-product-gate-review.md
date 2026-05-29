@@ -6,6 +6,9 @@ kind: tactic
 title: "Pre-implementation product-gate review"
 subtitle: "Problem solved: Coding agents build the literal request without challenging the premise; a 3-mode review command forces scope-up, hold, or scope-down before any code is written."
 source: https://www.cybos.ai/cases/B-209
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

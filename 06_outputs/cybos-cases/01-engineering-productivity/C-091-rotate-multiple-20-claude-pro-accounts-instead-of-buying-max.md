@@ -6,6 +6,9 @@ kind: tactic
 title: "Rotate multiple $20 Claude Pro accounts instead of buying Max"
 subtitle: "Problem solved: A single $200 Claude Max plan is overkill for many solo operators; rotating 2-3 $20 Pro accounts via an account-switcher costs less and survives daily-limit hits without a re-auth dance."
 source: https://www.cybos.ai/cases/C-091
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "S · Days"

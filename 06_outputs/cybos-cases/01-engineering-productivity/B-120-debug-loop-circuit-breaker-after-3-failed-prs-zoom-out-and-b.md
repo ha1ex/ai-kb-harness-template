@@ -6,6 +6,9 @@ kind: workflow
 title: "Debug-loop circuit breaker — after 3 failed PRs, zoom out and brainstorm hypotheses"
 subtitle: "Problem solved: Coding agents thrash on stuck bugs by repeatedly applying the same wrong-layer fix; an explicit 3-PR strike rule forces an architecture-level re-think before another fix attempt."
 source: https://www.cybos.ai/cases/B-120
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

@@ -6,6 +6,9 @@ kind: workflow
 title: "Document automation across ERP + e-signature portal"
 subtitle: "Invoice → contract → e-sign → back to CRM is hand-passed. End-to-end automation; QR-code on every invoice for one-tap re-pay."
 source: https://www.cybos.ai/cases/C-065
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"

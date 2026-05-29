@@ -6,6 +6,9 @@ kind: workflow
 title: "Apollo two-phase prospecting — free search, human approval, then paid enrich"
 subtitle: "Problem solved: Sales ops stop burning Apollo credits on leads that would have failed manual review — search free at scale, eyeball a sample, enrich only after explicit approval."
 source: https://www.cybos.ai/cases/B-159
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 type: case
 version: v0.1

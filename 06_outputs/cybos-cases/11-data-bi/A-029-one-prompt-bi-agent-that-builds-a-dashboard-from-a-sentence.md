@@ -6,6 +6,9 @@ kind: workflow
 title: "One-prompt BI agent that builds a dashboard from a sentence"
 subtitle: "A BI analyst takes 2-10 days per dashboard. An agent over your warehouse does it in 30 seconds with the same KPI definitions."
 source: https://www.cybos.ai/cases/A-029
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "A Deep — Full research, prompts, gotchas, demo-ready"
 effort: "L · Quarter"

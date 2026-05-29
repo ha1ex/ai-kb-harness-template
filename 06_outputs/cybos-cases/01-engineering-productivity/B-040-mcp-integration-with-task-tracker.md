@@ -6,6 +6,9 @@ kind: tactic
 title: "MCP integration with task tracker"
 subtitle: "\"Read ticket → find file → context-switch → code\" round-trip eats most of small fixes. MCP collapses it into one command. 3-5× speedup."
 source: https://www.cybos.ai/cases/B-040
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "B Medium — Solid coverage with concrete examples"
 effort: "S · Days"

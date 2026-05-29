@@ -6,6 +6,9 @@ kind: pattern
 title: "Embedded RAG-style chatbot over a consulting deliverable"
 subtitle: "A static HTML deliverable can't answer follow-up questions. Embed an MD_CHUNKS array + chat widget; one-off becomes queryable."
 source: https://www.cybos.ai/cases/C-044
+provider: cybos
+license: source-available
+license_source: "https://www.cybos.ai/cases"
 ingested: 2026-05-26
 meta_tier: "C Catalog — Pattern outlined, candidates for deeper work"
 effort: "M · Weeks"
