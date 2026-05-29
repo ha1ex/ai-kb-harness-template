@@ -21,6 +21,9 @@ import matter from "gray-matter";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(process.env.REPO_ROOT || join(__dirname, "..", ".."));
 const PORT = Number(process.env.VIEWER_PORT) || 3001;
+// Безопасность: по умолчанию слушаем только loopback. Для доступа из сети
+// явно задайте VIEWER_HOST=0.0.0.0 (на свой риск — API читает файлы и спавнит node).
+const HOST = process.env.VIEWER_HOST || "127.0.0.1";
 
 // Слои KB. Подстройте под свой проект (должны совпадать с INDEXABLE_LAYERS в scripts/semantic/lib.mjs).
 const INDEXABLE_LAYERS = [
@@ -113,19 +116,24 @@ async function handleTree(): Promise<unknown> {
 }
 
 async function handleDoc(relPath: string): Promise<unknown | null> {
-  // защита от ".." в пути
-  const safe = relPath.replace(/^\/+/, "").replace(/\.\.+/g, ".");
-  const abs = join(REPO_ROOT, safe);
+  // Безопасность: отдаём ТОЛЬКО .md строго внутри REPO_ROOT.
+  // resolve() нормализует "..", relative() ловит выход за корень; dot-сегменты
+  // (.git/.claude/.remember/.context) запрещены полностью.
+  const safe = relPath.replace(/^\/+/, "");
+  if (extname(safe) !== ".md") return null;
+  const abs = resolve(REPO_ROOT, safe);
+  const rel = relative(REPO_ROOT, abs);
+  if (rel === "" || rel.startsWith("..") || rel.startsWith("/")) return null;
+  if (rel.split("/").some((seg) => seg.startsWith("."))) return null;
   if (!existsSync(abs)) return null;
-  if (!abs.startsWith(REPO_ROOT)) return null;
   const raw = await readFile(abs, "utf8");
   const { data, content } = matter(raw);
-  const layerMatch = safe.match(/^([^/]+)\//);
+  const layerMatch = rel.match(/^([^/]+)\//);
   const layer = layerMatch ? layerMatch[1] : "";
   // backlinks через sqlite-индекс, если он есть
-  const backlinks = await loadBacklinks(safe);
+  const backlinks = await loadBacklinks(rel);
   return {
-    path: safe,
+    path: rel,
     layer,
     raw,
     body: content,
@@ -289,6 +297,6 @@ const server = createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
-  console.log(`[viewer-server] http://localhost:${PORT}   REPO_ROOT=${REPO_ROOT}`);
+server.listen(PORT, HOST, () => {
+  console.log(`[viewer-server] http://${HOST}:${PORT}   REPO_ROOT=${REPO_ROOT}`);
 });
