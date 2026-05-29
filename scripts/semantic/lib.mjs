@@ -169,7 +169,14 @@ function splitLong(text, maxChars) {
     }
   }
   if (buf) out.push(buf);
-  return out;
+  // Жёсткий резорт: кусок без переносов длиннее лимита (напр. одно слово/URL) — режем по символам,
+  // иначе модель молча обрежет хвост на 512 токенах при индексации.
+  const hard = [];
+  for (const piece of out) {
+    if (piece.length <= maxChars) { hard.push(piece); continue; }
+    for (let i = 0; i < piece.length; i += maxChars) hard.push(piece.slice(i, i + maxChars));
+  }
+  return hard;
 }
 
 // ---------- embedder ----------
@@ -345,7 +352,11 @@ export function searchBM25(db, queryText, { topK = 10, layer = null } = {}) {
       'SELECT rowid, bm25(fts_chunks) AS rank FROM fts_chunks WHERE fts_chunks MATCH ? ORDER BY rank LIMIT ?',
     ).all(ftsQuery, overhead);
   } catch (e) {
-    // Невалидный FTS-запрос (например, спецсимвол) — fallback на пустой результат.
+    // Невалидный FTS-запрос (спецсимвол) ожидаем → []; прочие ошибки (повреждённый индекс,
+    // ошибка схемы) логируем в stderr, чтобы деградация hybrid→vector не была невидимой.
+    if (!/fts5|syntax|match|malformed|near /i.test(String(e && e.message))) {
+      console.error(`[bm25] FTS5 error: ${e && e.message}`);
+    }
     return [];
   }
   if (matches.length === 0) return [];
@@ -372,10 +383,14 @@ export function searchBM25(db, queryText, { topK = 10, layer = null } = {}) {
 // Каждый токен оборачиваем в "..." — это в FTS5 значит «литеральная фраза», что снимает
 // проблемы со спецсимволами (-, /, : etc.). Длина < 2 символов отбрасывается (стоп-шум).
 function buildFtsOrQuery(text) {
-  const tokens = text
+  const clean = text
     .split(/\s+/)
     .map((t) => t.replace(/^["'`]+|["'`]+$/g, '').trim())
-    .filter((t) => t.length >= 2);
+    .filter(Boolean);
+  // Обычно отбрасываем 1-символьный шум; но если ВЕСЬ запрос состоит из коротких
+  // токенов (RU-буква, аббревиатура) — не теряем BM25-канал целиком.
+  let tokens = clean.filter((t) => t.length >= 2);
+  if (tokens.length === 0) tokens = clean;
   if (tokens.length === 0) return '';
   return tokens.map((t) => `"${t.replace(/"/g, '""')}"`).join(' OR ');
 }

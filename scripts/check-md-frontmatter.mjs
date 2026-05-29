@@ -42,10 +42,7 @@ const isMd = /\.md$/i.test(filePath);
 const isEvalYaml = /\/skills\/[^/]+\/evals\/[^/]+\.ya?ml$/i.test(filePath);
 if (!isMd && !isEvalYaml) process.exit(0);
 
-// Eval-case: жёсткие правила, отдельная ветка.
-if (isEvalYaml) {
-  // Будем валидировать ниже после чтения candidateText.
-}
+// Eval-case (жёсткие правила) валидируется ниже после чтения candidateText.
 
 // Подбираем слой (только для .md)
 let layerKey = null;

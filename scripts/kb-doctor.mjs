@@ -218,6 +218,9 @@ for (const [src, meta] of allFiles) {
 // 3. orphan — только для wiki/synthesis/decisions, файл без backlinks И без forward-links
 for (const [rel, meta] of allFiles) {
   if (!ORPHAN_CHECK_LAYERS.has(meta.layer)) continue;
+  // Living-документы (status: living) — точки входа/журналы (open-questions, contradictions):
+  // на них не обязаны ссылаться, это не осиротевшие узлы.
+  if (String(meta.fields?.status || '').toLowerCase() === 'living') continue;
   const hasBacklinks = backlinksByDst.has(rel) && backlinksByDst.get(rel).size > 0;
   const hasForward = meta.related.length > 0;
   // README/index/_toc уже отфильтрованы выше.

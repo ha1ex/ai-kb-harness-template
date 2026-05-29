@@ -80,9 +80,9 @@ server.registerTool(
       "Если case_id не задан — возвращает summary.json. " +
       "Если задан — возвращает полный trace (prompt size, output, grader details, latency).",
     inputSchema: {
-      run_id: z.string().min(1).describe("Run-id формата YYYY-MM-DDTHH-MM-SS-hex."),
-      case_id: z.string().optional().describe("Если задан — конкретный trace вместо summary."),
-      skill: z.string().optional().describe("Нужен в паре с case_id для уникальности имени файла."),
+      run_id: z.string().min(1).regex(/^[\w.-]+$/, "только буквы, цифры, _ . -").describe("Run-id формата YYYY-MM-DDTHH-MM-SS-hex."),
+      case_id: z.string().regex(/^[\w.-]+$/, "только буквы, цифры, _ . -").optional().describe("Если задан — конкретный trace вместо summary."),
+      skill: z.string().regex(/^[\w.-]+$/, "только буквы, цифры, _ . -").optional().describe("Нужен в паре с case_id для уникальности имени файла."),
     },
   },
   async ({ run_id, case_id, skill }) => {
@@ -149,8 +149,8 @@ server.registerTool(
       "Предложенная версия SKILL.md из reflect-run'а + rationale с метками AGENTS.md. " +
       "Только READ — не применяет. Чтобы применить — используй CLI: pnpm skill apply <run-id>.",
     inputSchema: {
-      run_id: z.string().min(1).describe("Run-id с уже выполненным reflect."),
-      skill: z.string().min(1).describe("Имя скилла (например skill-ingest)."),
+      run_id: z.string().min(1).regex(/^[\w.-]+$/, "только буквы, цифры, _ . -").describe("Run-id с уже выполненным reflect."),
+      skill: z.string().min(1).regex(/^[\w.-]+$/, "только буквы, цифры, _ . -").describe("Имя скилла (например skill-ingest)."),
     },
   },
   async ({ run_id, skill }) => {

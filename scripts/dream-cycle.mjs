@@ -213,7 +213,12 @@ if (execute) {
     console.log('[dream] скопируйте файл в любой LLM, ответ положите рядом как dream-answer-YYYY-MM-DD.md');
     process.exit(0);
   }
-  const res = spawnSync('claude', ['-p', promptText], { encoding: 'utf8' });
+  const res = spawnSync('claude', ['-p', promptText], { encoding: 'utf8', timeout: 300_000, killSignal: 'SIGTERM' });
+  if (res.error || res.signal === 'SIGTERM') {
+    writeFileSync(outPath, promptText);
+    console.log(`[dream] claude не ответил за 5 мин (${res.error?.code || res.signal}); сохранил промпт в ${relative(REPO_ROOT, outPath)}`);
+    process.exit(0);
+  }
   const answer = res.stdout || '(пусто)';
   const combined = [
     `# Dream cycle ${todayISO} — ответ Claude`,

@@ -144,7 +144,11 @@ if (execute) {
     process.exit(0);
   }
   // Передаём промпт через stdin: claude -p "" --print
-  const res = spawnSync('claude', ['-p', promptText], { stdio: ['ignore', 'inherit', 'inherit'] });
+  const res = spawnSync('claude', ['-p', promptText], { stdio: ['ignore', 'inherit', 'inherit'], timeout: 300_000, killSignal: 'SIGTERM' });
+  if (res.error) {
+    console.error(`[think] claude не ответил за 5 мин: ${res.error.code || res.error.message}. Запусти без --execute (или с --json), чтобы получить промпт.`);
+    process.exit(1);
+  }
   process.exit(res.status ?? 0);
 }
 

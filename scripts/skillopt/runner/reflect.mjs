@@ -133,7 +133,7 @@ export async function runReflect({ runId, adapter, config, force = false } = {})
   }
 
   const cost = results.reduce(
-    (s, r) => s + estimateCost({ model: config.model, ...r.usage }),
+    (s, r) => s + estimateCost({ model: config.model, ...(r.usage ?? {}) }),
     0,
   );
 
