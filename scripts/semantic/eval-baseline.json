@@ -1,0 +1,90 @@
+{
+  "generated_at": "2026-06-17",
+  "probe_count": 42,
+  "overall": {
+    "recall_at_3": 1,
+    "recall_at_5": 1,
+    "mrr": 0.9484,
+    "n": 42
+  },
+  "by_category": {
+    "Engineering productivity": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 1,
+      "n": 9
+    },
+    "Marketing & content": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 0.8333,
+      "n": 3
+    },
+    "Strategy & leadership": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 0.8333,
+      "n": 3
+    },
+    "Infrastructure": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 1,
+      "n": 2
+    },
+    "Sales & outbound": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 1,
+      "n": 3
+    },
+    "Operations": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 1,
+      "n": 3
+    },
+    "Knowledge management": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 1,
+      "n": 3
+    },
+    "HR & hiring": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 1,
+      "n": 3
+    },
+    "Founder productivity": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 0.7778,
+      "n": 3
+    },
+    "Customer success": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 1,
+      "n": 2
+    },
+    "Data & BI": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 1,
+      "n": 2
+    },
+    "Design": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 0.8333,
+      "n": 3
+    },
+    "Cybersecurity": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 1,
+      "n": 3
+    }
+  }
+}

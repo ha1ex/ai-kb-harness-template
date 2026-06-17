@@ -20,6 +20,7 @@
 //   • kb_search    — гибридный поиск (vector + BM25 + RRF), JSON-результат
 //   • kb_think     — собрать промпт-синтез по правилам AGENTS.md
 //   • kb_backlinks — кто ссылается на файл (по frontmatter related:)
+//   • kb_verify    — механическая проверка цитат [source: /path] (Tier-1 gate + FACT-advisory)
 //
 // Реализация переиспользует ./lib.mjs — никакой дубликации логики.
 
@@ -42,6 +43,8 @@ import {
   REPO_ROOT,
   INDEXABLE_LAYERS,
 } from './lib.mjs';
+import { verifyText } from './verify.mjs';
+import { appendJournal, compactResults } from '../lib/journal.mjs';
 
 if (!existsSync(DB_PATH)) {
   console.error(`[mcp-kb] БД не найдена: ${DB_PATH}. Запустите: node scripts/semantic/index.mjs`);
@@ -147,6 +150,11 @@ server.registerTool(
       snippet: r.text.length > 400 ? r.text.slice(0, 400) + '…' : r.text,
     }));
 
+    await appendJournal({
+      kind: 'search', ts: new Date().toISOString(),
+      query, mode, layer, result_count: out.length, top_results: compactResults(results),
+    });
+
     return {
       content: [
         { type: 'text', text: `Найдено ${out.length} чанков (mode=${mode}${layer ? `, layer=${layer}` : ''}):` },
@@ -223,6 +231,11 @@ server.registerTool(
     lines.push('\n# Используй ровно эти пути в [source: ...]:');
     for (const f of uniqueFiles) lines.push(`- /${f}`);
 
+    await appendJournal({
+      kind: 'think', ts: new Date().toISOString(),
+      query: question, layer, result_count: fused.length, top_results: compactResults(fused),
+    });
+
     return {
       content: [{ type: 'text', text: lines.join('\n') }],
     };
@@ -254,6 +267,45 @@ server.registerTool(
       content: [
         { type: 'text', text: `${path}  ${direction}` },
         { type: 'text', text: JSON.stringify(out, null, 2) },
+      ],
+    };
+  },
+);
+
+// ---------- kb_verify ----------
+
+server.registerTool(
+  'kb_verify',
+  {
+    description:
+      'Механическая проверка цитат [source: /path] в готовом ответе. ' +
+      'Запусти ПОСЛЕ составления ответа с цитатами: подтверждает, что каждый путь существует, ' +
+      'лежит в допустимом слое KB и не указывает на external-corpus (где цитата = source:-URL во frontmatter). ' +
+      'Для FACT-меток добавляет advisory-балл семантического совпадения (НЕ блокирует, не entailment). ' +
+      'Возвращает summary + per-citation JSON. passed зависит только от Tier-1 (существование/слой).',
+    inputSchema: {
+      text: z.string().min(1).describe('Текст ответа/синтеза с цитатами [source: /path].'),
+      threshold: z.number().min(0).max(1).optional().describe('Порог advisory strong-band (default 0.82).'),
+      allow_corpus: z.boolean().optional().describe('Разрешить цитаты на external-corpus карточки (default false).'),
+    },
+  },
+  async ({ text, threshold, allow_corpus = false }) => {
+    const result = await verifyText(text, {
+      db: db(), embed: await embedder(), threshold, allowCorpus: allow_corpus,
+    });
+    const s = result.summary;
+    await appendJournal({
+      kind: 'verify', ts: new Date().toISOString(),
+      verify: { citations_total: s.citations_total, citations_ok: s.citations_ok, passed: s.passed },
+    });
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `Цитат: ${s.citations_total} · Tier-1 ok: ${s.citations_ok} · ${s.passed ? 'PASSED' : 'FAILED'} ` +
+            `(advisory FACT: strong=${s.advisory.strong} weak=${s.advisory.weak} none=${s.advisory.none})`,
+        },
+        { type: 'text', text: JSON.stringify(result, null, 2) },
       ],
     };
   },

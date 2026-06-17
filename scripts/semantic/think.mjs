@@ -32,6 +32,7 @@ import {
   REPO_ROOT,
   INDEXABLE_LAYERS,
 } from './lib.mjs';
+import { appendJournal, compactResults } from '../lib/journal.mjs';
 
 const argv = process.argv.slice(2);
 if (argv.length === 0) {
@@ -109,6 +110,11 @@ const openQuestionsHit = fused.find((r) => r.file === '04_synthesis/open-questio
 const contradictionsHit = fused.find((r) => r.file === '04_synthesis/contradictions.md');
 
 const promptText = buildPrompt(question, fused, fileMeta, { allStale, openQuestionsHit, contradictionsHit });
+
+await appendJournal({
+  kind: 'think', ts: new Date().toISOString(),
+  query: question, layer, result_count: fused.length, top_results: compactResults(fused),
+});
 
 if (asJson) {
   console.log(JSON.stringify({

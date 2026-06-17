@@ -25,6 +25,7 @@ import {
   DB_PATH,
   INDEXABLE_LAYERS,
 } from './lib.mjs';
+import { appendJournal, compactResults } from '../lib/journal.mjs';
 
 const argv = process.argv.slice(2);
 if (argv.length === 0) {
@@ -103,6 +104,11 @@ if (mode === 'bm25') {
 }
 
 db.close();
+
+await appendJournal({
+  kind: 'search', ts: new Date().toISOString(),
+  query, mode, layer, result_count: results.length, top_results: compactResults(results),
+});
 
 if (asJson) {
   console.log(JSON.stringify(

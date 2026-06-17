@@ -1,7 +1,7 @@
 ---
 type: report
 title: Skills search — quality probes
-ingested: 2026-05-29
+ingested: 2026-06-17
 version: v0.1
 ---
 
@@ -12,6 +12,7 @@ version: v0.1
 **Итог:** ✅ 42 pass · ⚠️ 0 partial · ❌ 0 miss из 42.
 
 > **Метрика (честно):** PASS = релевантное в **top-3** по OR-логике (категория ИЛИ провайдер) — это **recall@3**, а не **precision@1**.
+> Для recall@5 / MRR / разбивки по категориям и детекции регрессий — `node scripts/semantic/eval.mjs`.
 
 ## Probes
 
@@ -347,8 +348,8 @@ Expected: provider ∈ {cybos|fabric}, category ∈ {Data & BI}
 | - | - | - | - | - | - |
 | 1 | `B-093` | cybos | Data & BI | AI-built financial dashboards over CRM + ERP + bank APIs | End-to-end |
 | 2 | `A-084` | cybos | Marketing & content | Full GTM launch playbook — motion by ACV, ORB channels, mult | Tools |
-| 3 | `A-043` | cybos | Founder productivity | Founder personal dashboard — custom HTML, MCP-fed, with char | Prompts |
-| 4 | `B-212` | cybos | Data & BI | Data-visualization critique and design with Tufte principles | Tools |
+| 3 | `B-212` | cybos | Data & BI | Data-visualization critique and design with Tufte principles | Tools |
+| 4 | `A-043` | cybos | Founder productivity | Founder personal dashboard — custom HTML, MCP-fed, with char | Prompts |
 | 5 | `COB-045` | anthropic-cookbooks | Engineering productivity | Giving Claude a Crop Tool for Better Image Analysis | Demo: Chart Analysis |
 
 ### ✅ PASS — `natural language analytics over warehouse`
@@ -380,8 +381,8 @@ Expected: provider ∈ {anthropic}, category ∈ {Design}
 | # | ID | Provider | Category | Title | Heading |
 | - | - | - | - | - | - |
 | 1 | `ANT-009` | anthropic | Design | Anthropic Brand Styling | Anthropic Brand Styling |
-| 2 | `COB-056` | anthropic-cookbooks | Engineering productivity | Building Custom Skills for Claude | Test Brand Guidelines skill with PowerPo |
-| 3 | `FAB-197` | fabric | Design | Create Design System | End-to-end |
+| 2 | `FAB-197` | fabric | Design | Create Design System | End-to-end |
+| 3 | `COB-056` | anthropic-cookbooks | Engineering productivity | Building Custom Skills for Claude | Test Brand Guidelines skill with PowerPo |
 | 4 | `ANT-008` | anthropic | Design | Algorithmic Art | ⚠️ STEP 0: READ THE TEMPLATE FIRST ⚠️ |
 | 5 | `B-094` | cybos | Marketing & content | Brand-style ingestion into Claude Design (2-month maturation | End-to-end |
 

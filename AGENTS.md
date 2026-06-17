@@ -11,6 +11,9 @@
 claude-cookbooks, cybos-cases, fabric-patterns). On-device hybrid RAG (e5-small + sqlite-vec +
 FTS5 + RRF) + MCP-сервер дают агенту поиск и синтез по KB без копипаста.
 
+> Внутреннее устройство оснастки (измерения харнесса, петля Compose → Adapt → Evolve) —
+> `docs/architecture.md`. Это карта инструментов, не входит в порядок чтения контента ниже.
+
 ## Canonical reading order
 
 Перед ответом на любой содержательный вопрос:

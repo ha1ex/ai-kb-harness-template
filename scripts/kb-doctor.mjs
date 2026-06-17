@@ -18,6 +18,7 @@
 import { existsSync, statSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve, relative, extname, dirname, normalize as pnormalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { appendJournal } from './lib/journal.mjs';
 
 const here = fileURLToPath(new URL('.', import.meta.url));
 const REPO_ROOT = resolve(here, '..');
@@ -264,6 +265,8 @@ const summary = {
   stale_synthesis: issues.staleSynthesis.length,
   ghost_in_index: issues.ghostInIndex.length,
 };
+
+await appendJournal({ kind: 'doctor', ts: new Date().toISOString(), summary });
 
 if (asJson) {
   console.log(JSON.stringify({ summary, issues }, null, 2));

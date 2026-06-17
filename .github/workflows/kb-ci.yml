@@ -1,0 +1,54 @@
+# KB CI — детерминированный health-check + retrieval-eval с гейтом на регрессию.
+#
+# Закрывает backlog аудита P2 #13 (CI-матрица index → doctor → eval).
+# LLM не вызывается: всё воспроизводимо (vector+BM25+RRF + механические проверки).
+# Регрессия recall@k > порога vs коммитнутый scripts/semantic/eval-baseline.json → красный билд.
+
+name: kb-ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kb-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  health-and-eval:
+    runs-on: ubuntu-latest
+    env:
+      KB_JOURNAL: '0' # журнал операций в CI не нужен (живёт в gitignored .context/)
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable corepack (pnpm)
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      # Кэш ONNX-модели multilingual-e5-small (~120 MB) — без него каждый прогон качал бы заново.
+      - name: Cache embedding model
+        uses: actions/cache@v4
+        with:
+          path: scripts/semantic/.transformers-cache
+          key: transformers-cache-e5-small-v1
+
+      - name: Install semantic deps
+        run: pnpm -C scripts/semantic install
+
+      # Свежий checkout = свежие mtime → индекс надо собрать заново (он gitignored).
+      - name: Build semantic index
+        run: node scripts/semantic/index.mjs
+
+      - name: KB doctor (EXIT 0 contract)
+        run: node scripts/kb-doctor.mjs
+
+      - name: Retrieval eval (gate on recall@k regression vs baseline)
+        run: node scripts/semantic/eval.mjs

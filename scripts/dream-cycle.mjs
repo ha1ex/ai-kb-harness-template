@@ -25,6 +25,7 @@ import { existsSync, statSync, readFileSync, readdirSync, mkdirSync, writeFileSy
 import { join, resolve, relative, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { readJournal, summarizeJournal } from './lib/journal.mjs';
 
 const here = fileURLToPath(new URL('.', import.meta.url));
 const REPO_ROOT = resolve(here, '..');
@@ -42,6 +43,11 @@ if (!Number.isFinite(days) || days <= 0) {
 const today = new Date();
 const todayISO = today.toISOString().slice(0, 10);
 const sinceISO = new Date(today.getTime() - days * 86_400_000).toISOString().slice(0, 10);
+
+// Журнал операций KB за окно (search/think/eval/verify/doctor) — фактическое поведение,
+// а не только git-история. Раскрывает пробелы: что искали и не нашли, какие verify провалились.
+const journalRecords = await readJournal({ since: sinceISO, limit: 2000 });
+const journal = summarizeJournal(journalRecords);
 
 // ---------- 1. Изменённые файлы за окно (git log) ----------
 
@@ -151,6 +157,12 @@ lines.push('### 3. Synthesis к обновлению');
 lines.push('Перечисли 3–5 файлов из `/04_synthesis/`, которые с учётом новых коммитов следует обновить.');
 lines.push('Для каждого: какой раздел, что добавить, ссылка на свежий источник.');
 lines.push('');
+lines.push('### 4. Сигналы из операций (kb-journal)');
+lines.push('Посмотри журнал операций ниже (раздел «Контекст: журнал операций»).');
+lines.push('  - Какие запросы часто давали пустую выдачу — это пробелы KB; предложи `UNKNOWN:` пункты в open-questions.');
+lines.push('  - Какие цитаты провалили verify — это риск fabricated citations; пометь `RISK:` и назови файл.');
+lines.push('Если журнал пуст — скажи `FACT: журнал операций пуст за окно`.');
+lines.push('');
 lines.push('---');
 lines.push('');
 lines.push('## Контекст: коммиты за окно');
@@ -172,6 +184,32 @@ lines.push('## Контекст: 10 самых старых synthesis-файло
 lines.push('');
 for (const f of oldestSynthesis) lines.push(`- ${f.file}   возраст=${f.age_days}д`);
 lines.push('');
+lines.push('## Контекст: журнал операций (kb-journal)');
+lines.push('');
+if (journal.total === 0) {
+  lines.push('_(журнал пуст за окно — операции search/think/eval/verify ещё не логировались)_');
+} else {
+  const byKind = Object.entries(journal.by_kind)
+    .map(([k, v]) => `${k}=${v.count}${v.avg_timing_ms != null ? ` (avg ${v.avg_timing_ms}ms)` : ''}`)
+    .join(', ');
+  lines.push(`Всего операций за окно: **${journal.total}** — ${byKind}.`);
+  lines.push('');
+  if (journal.top_queries.length) {
+    lines.push('**Топ-запросы:**');
+    for (const q of journal.top_queries.slice(0, 10)) lines.push(`- «${q.query}» ×${q.count}`);
+    lines.push('');
+  }
+  if (journal.empty_queries.length) {
+    lines.push('**Запросы с пустой выдачей (пробелы KB):**');
+    for (const q of journal.empty_queries.slice(0, 15)) lines.push(`- «${q.query}» ×${q.count}`);
+    lines.push('');
+  }
+  if (journal.failed_verify.length) {
+    lines.push('**Проваленные verify (риск fabricated citations):**');
+    for (const v of journal.failed_verify) lines.push(`- ${v.citations_ok}/${v.citations_total} цитат ok @ ${v.ts || '?'}`);
+    lines.push('');
+  }
+}
 lines.push('---');
 lines.push('');
 lines.push('## /04_synthesis/open-questions.md');
