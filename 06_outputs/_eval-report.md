@@ -1,7 +1,7 @@
 ---
 type: report
 title: Retrieval eval — recall@k / MRR / regression
-ingested: 2026-06-17
+ingested: 2026-06-18
 version: v0.1
 ---
 

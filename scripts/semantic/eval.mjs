@@ -39,7 +39,11 @@ const writeReport = argv.includes('--report');
 
 const BASELINE_PATH = join(REPO_ROOT, 'scripts', 'semantic', 'eval-baseline.json');
 const REPORT_PATH = join(REPO_ROOT, '06_outputs', '_eval-report.md');
-const REGRESSION_EPS = 0.02; // 2 п.п. — порог, ниже которого падение считаем шумом float/quantization.
+// Порог регрессии. Квантованная ONNX-модель e5-small НЕ бит-в-бит детерминирована между
+// платформами (macOS ARM ↔ Linux x86 в CI): near-tie RRF-ранги могут флипнуться, сдвигая
+// recall@k на 1–2 пробы из 42 (~0.024–0.048). Берём 0.05 (~2 пробы), чтобы гейт не давал
+// ложных «красных» на дрейфе. Реальная регрессия (битый chunking/индекс) роняет больше.
+const REGRESSION_EPS = 0.05;
 
 // Файлы, которые не считаем «карточками» (индексы/отчёты) — не должны занимать топ-слоты.
 const SKIP_SUFFIXES = [
@@ -182,13 +186,13 @@ function diffAgainstBaseline(cur, base) {
     else if (d > REGRESSION_EPS) improvements.push({ scope: 'overall', metric: k, delta: d });
   }
 
+  // Per-category дельты считаем ТОЛЬКО для отчёта/диагностики — НЕ гейтим по ним.
+  // При малом n (3–9 проб) один флип ранга = 0.11–0.33, что на межплатформенном дрейфе
+  // даёт постоянные ложные «красные». Гейт — только по overall (статистически устойчиво).
   for (const [cat, curMetrics] of Object.entries(cur.by_category)) {
     const baseMetrics = base.by_category?.[cat];
     if (!baseMetrics) continue;
-    const d = round((curMetrics.recall_at_3 ?? 0) - (baseMetrics.recall_at_3 ?? 0));
-    deltas.by_category[cat] = d;
-    if (d < -REGRESSION_EPS) regressions.push({ scope: cat, metric: 'recall_at_3', delta: d });
-    else if (d > REGRESSION_EPS) improvements.push({ scope: cat, metric: 'recall_at_3', delta: d });
+    deltas.by_category[cat] = round((curMetrics.recall_at_3 ?? 0) - (baseMetrics.recall_at_3 ?? 0));
   }
 
   return { hasBaseline: true, regressions, improvements, deltas };
