@@ -2,7 +2,7 @@
 #
 # Закрывает backlog аудита P2 #13 (CI-матрица index → doctor → eval).
 # LLM не вызывается: всё воспроизводимо (vector+BM25+RRF + механические проверки).
-# Регрессия recall@k > порога vs коммитнутый scripts/semantic/eval-baseline.json → красный билд.
+# Регрессия overall recall@k / MRR > порога vs коммитнутый scripts/semantic/eval-baseline.json → красный билд.
 
 name: kb-ci
 
@@ -33,9 +33,12 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      # Кэш ONNX-модели multilingual-e5-small (~120 MB) — без него каждый прогон качал бы заново.
-      - name: Cache embedding model
-        uses: actions/cache@v4
+      # Restore/save разделены: модель (~120 MB ONNX e5-small) сохраняется СРАЗУ после успешной
+      # сборки индекса, независимо от исхода eval. С единым actions/cache@v4 (save в post-step
+      # только при успехе job) упавший eval оставлял бы каждый следующий прогон без кэша.
+      - name: Restore embedding model cache
+        id: model-cache
+        uses: actions/cache/restore@v4
         with:
           path: scripts/semantic/.transformers-cache
           key: transformers-cache-e5-small-v1
@@ -43,12 +46,32 @@ jobs:
       - name: Install semantic deps
         run: pnpm -C scripts/semantic install
 
-      # Свежий checkout = свежие mtime → индекс надо собрать заново (он gitignored).
-      - name: Build semantic index
-        run: node scripts/semantic/index.mjs
+      # Свежий checkout = свежие mtime → индекс собираем заново (он gitignored).
+      # Первый прогон тянет модель с HuggingFace — соединение бывает флаки (connect timeout),
+      # поэтому 3 попытки с очисткой частичного индекса между ними.
+      - name: Build semantic index (retry on transient HF download)
+        run: |
+          set +e
+          for i in 1 2 3; do
+            node scripts/semantic/index.mjs && { echo "index built on attempt $i"; exit 0; }
+            echo "::warning::index build attempt $i failed (likely HF download); cleaning partial DB, retry in 20s"
+            rm -f .semantic-index.sqlite*
+            sleep 20
+          done
+          echo "::error::index build failed after 3 attempts"
+          exit 1
+
+      # Сохраняем кэш модели только при успешной сборке (не отравить кэш частичной загрузкой)
+      # и только если его ещё не было. Стоит ПЕРЕД doctor/eval — модель закэшируется даже если eval упадёт.
+      - name: Save embedding model cache
+        if: success() && steps.model-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: scripts/semantic/.transformers-cache
+          key: transformers-cache-e5-small-v1
 
       - name: KB doctor (EXIT 0 contract)
         run: node scripts/kb-doctor.mjs
 
-      - name: Retrieval eval (gate on recall@k regression vs baseline)
+      - name: Retrieval eval (gate on overall recall@k / MRR regression vs baseline)
         run: node scripts/semantic/eval.mjs
