@@ -21,14 +21,12 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import {
   createEmbedder,
-  QUERY_PREFIX,
   openDb,
-  searchVec,
-  searchBM25,
-  fuseRRF,
+  searchHybrid,
   DB_PATH,
   REPO_ROOT,
 } from './lib.mjs';
+import { rerank } from './rerank.mjs';
 import { PROBES, primaryCategory, toAltRegex } from './probes.mjs';
 import { appendJournal } from '../lib/journal.mjs';
 
@@ -36,6 +34,10 @@ const argv = process.argv.slice(2);
 const asJson = argv.includes('--json');
 const updateBaseline = argv.includes('--update-baseline');
 const writeReport = argv.includes('--report');
+// Каналы: graph по умолчанию ВКЛ (отражает шиппинг-дефолт; на корпусе без related: — no-op,
+// поэтому baseline не сдвигается). rerank — opt-in для A/B; в дефолтный baseline не входит.
+const useGraph = !argv.includes('--no-graph');
+const useRerank = argv.includes('--rerank');
 
 const BASELINE_PATH = join(REPO_ROOT, 'scripts', 'semantic', 'eval-baseline.json');
 const REPORT_PATH = join(REPO_ROOT, '06_outputs', '_eval-report.md');
@@ -94,10 +96,10 @@ const embed = await createEmbedder();
 
 const perProbe = [];
 for (const probe of PROBES) {
-  const [emb] = await embed([QUERY_PREFIX + probe.q]);
-  const vec = searchVec(db, emb, { topK: 50 });
-  const bm = searchBM25(db, probe.q, { topK: 50 });
-  const fused = fuseRRF(vec, bm, { topK: 20 });
+  // overK:50 сохраняет паритет с историческим baseline (vector/BM25 топ-50 → RRF).
+  // graph-канал на корпусе без related: даёт [] (no-op), поэтому порядок не меняется.
+  const { results } = await searchHybrid(db, embed, probe.q, { topK: 20, graph: useGraph, overK: 50 });
+  const fused = useRerank ? await rerank(probe.q, results, { topN: 20 }) : results;
 
   // dedup по файлу, пропуская index/report-файлы; берём до 5 уникальных карточек.
   const seen = new Set();
@@ -267,12 +269,13 @@ await appendJournal({
 // ---------- вывод ----------
 
 if (asJson) {
-  console.log(JSON.stringify({ overall, by_category, diff }, null, 2));
+  console.log(JSON.stringify({ overall, by_category, diff, config: { graph: useGraph, rerank: useRerank } }, null, 2));
 } else {
   console.log('');
   console.log('─'.repeat(60));
   console.log('  Retrieval eval — recall@k / MRR');
   console.log('─'.repeat(60));
+  console.log(`  Каналы:      graph=${useGraph ? 'on' : 'off'} rerank=${useRerank ? 'on' : 'off'}`);
   console.log(`  Проб:        ${current.probe_count}`);
   console.log(`  recall@3:    ${overall.recall_at_3}`);
   console.log(`  recall@5:    ${overall.recall_at_5}`);

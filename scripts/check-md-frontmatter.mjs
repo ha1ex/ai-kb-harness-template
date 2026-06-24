@@ -106,18 +106,29 @@ if (isEvalYaml) {
 const required = LAYER_RULES[layerKey];
 const missing = required.filter((f) => !new RegExp(`^\\s*${f}\\s*:`, 'm').test(fm));
 
-if (missing.length === 0) process.exit(0);
+// Confidence-валидация: если поле есть — значение обязано быть high|medium|low (ловим опечатки).
+// Если поля нет — не требуем (soft). См. AGENTS.md § Confidence на уровне утверждения.
+const CONF_OK = new Set(['high', 'medium', 'low']);
+const confM = fm.match(/^\s*confidence\s*:\s*(.+?)\s*$/m);
+const confVal = confM ? confM[1].trim().replace(/^["']|["']$/g, '').toLowerCase() : null;
+const confBad = confVal != null && !CONF_OK.has(confVal);
+
+if (missing.length === 0 && !confBad) process.exit(0);
+
+const problems = [];
+if (missing.length) problems.push(`Слой /${layerKey}/ требует поля: ${required.join(', ')}. Отсутствуют: ${missing.join(', ')}.`);
+if (confBad) problems.push(`Поле confidence должно быть high|medium|low (найдено: «${confVal}»).`);
 
 const msg = [
   `[check-md-frontmatter] Блокировка ${filePath}.`,
   '',
-  `Слой /${layerKey}/ требует в frontmatter поля: ${required.join(', ')}.`,
-  `Отсутствуют: ${missing.join(', ')}.`,
+  ...problems,
   '',
   'Пример минимального frontmatter:',
   '  ---',
   '  type: spec | wiki | decision | synthesis | source-summary',
   required.includes('version') ? '  version: v0.1' : '',
+  '  confidence: high | medium | low   # опционально',
   '  ---',
   '',
   `Если это свободный документ без статуса артефакта — назовите файл одним из: ${[...EXEMPT_BASENAMES].join(', ')}.`,

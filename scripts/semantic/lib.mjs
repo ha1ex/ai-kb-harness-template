@@ -220,10 +220,12 @@ export function openDb(path = DB_PATH) {
       heading TEXT,
       line_start INTEGER,
       text TEXT NOT NULL,
-      layer TEXT
+      layer TEXT,
+      doc_date TEXT              -- 'YYYY-MM-DD' из frontmatter (date|ingested|updated) или mtime-дата. Для temporal-канала.
     );
     CREATE INDEX IF NOT EXISTS idx_chunks_file ON chunks(file);
     CREATE INDEX IF NOT EXISTS idx_chunks_layer ON chunks(layer);
+    CREATE INDEX IF NOT EXISTS idx_chunks_doc_date ON chunks(doc_date);
 
     CREATE VIRTUAL TABLE IF NOT EXISTS vec_chunks USING vec0(
       embedding float[${EMBED_DIM}]
@@ -256,6 +258,15 @@ export function openDb(path = DB_PATH) {
     CREATE INDEX IF NOT EXISTS idx_links_dst ON links(dst);
     CREATE INDEX IF NOT EXISTS idx_links_src ON links(src);
   `);
+
+  // Идемпотентная миграция: для индексов, созданных до появления doc_date, добавляем колонку.
+  // Старые чанки получат doc_date=NULL до ближайшей переиндексации файла (incremental по mtime).
+  const hasDocDate = db.prepare("PRAGMA table_info(chunks)").all().some((c) => c.name === 'doc_date');
+  if (!hasDocDate) {
+    db.exec('ALTER TABLE chunks ADD COLUMN doc_date TEXT');
+    db.exec('CREATE INDEX IF NOT EXISTS idx_chunks_doc_date ON chunks(doc_date)');
+  }
+
   return db;
 }
 
@@ -271,10 +282,10 @@ export function deleteFileChunks(db, file) {
   return ids.length;
 }
 
-export function insertChunk(db, { file, mtime, heading, lineStart, text, layer, embedding }) {
+export function insertChunk(db, { file, mtime, heading, lineStart, text, layer, embedding, docDate = null }) {
   const info = db.prepare(
-    'INSERT INTO chunks (file, mtime, heading, line_start, text, layer) VALUES (?,?,?,?,?,?)',
-  ).run(file, mtime, heading, lineStart, text, layer);
+    'INSERT INTO chunks (file, mtime, heading, line_start, text, layer, doc_date) VALUES (?,?,?,?,?,?,?)',
+  ).run(file, mtime, heading, lineStart, text, layer, docDate);
   // sqlite-vec 0.1.x требует rowid именно как BigInt при параметризованном INSERT (Number → ошибка).
   const rowid = BigInt(info.lastInsertRowid);
   const json = floatArrayToJson(embedding);
@@ -317,7 +328,7 @@ export function searchVec(db, queryEmbedding, { topK = 10, layer = null } = {}) 
   const ids = matches.map((m) => Number(m.rowid));
   const placeholders = ids.map(() => '?').join(',');
   const rows = db.prepare(
-    `SELECT id, file, heading, line_start, text, layer FROM chunks WHERE id IN (${placeholders})`,
+    `SELECT id, file, heading, line_start, text, layer, doc_date FROM chunks WHERE id IN (${placeholders})`,
   ).all(...ids);
   const byId = new Map(rows.map((r) => [r.id, r]));
 
@@ -364,7 +375,7 @@ export function searchBM25(db, queryText, { topK = 10, layer = null } = {}) {
   const ids = matches.map((m) => Number(m.rowid));
   const placeholders = ids.map(() => '?').join(',');
   const rows = db.prepare(
-    `SELECT id, file, heading, line_start, text, layer FROM chunks WHERE id IN (${placeholders})`,
+    `SELECT id, file, heading, line_start, text, layer, doc_date FROM chunks WHERE id IN (${placeholders})`,
   ).all(...ids);
   const byId = new Map(rows.map((r) => [r.id, r]));
 
@@ -407,7 +418,11 @@ function buildFtsOrQuery(text) {
  * embedder в одном вызове). Возвращает топ-K объединённых результатов с полем `fused`
  * (RRF score) и breakdown { vec_rank, bm25_rank, vec_sim, bm25_score }.
  */
-export function fuseRRF(vecResults, bm25Results, { topK = 10, k = 60, vecWeight = 1.0, bm25Weight = 1.0 } = {}) {
+export function fuseRRF(
+  vecResults,
+  bm25Results,
+  { topK = 10, k = 60, vecWeight = 1.0, bm25Weight = 1.0, graphResults = [], graphWeight = 0.5 } = {},
+) {
   const byId = new Map();
   vecResults.forEach((r, i) => {
     byId.set(r.id, {
@@ -416,6 +431,8 @@ export function fuseRRF(vecResults, bm25Results, { topK = 10, k = 60, vecWeight 
       _vec_sim: r.similarity,
       _bm25_rank: null,
       _bm25_score: null,
+      _graph_rank: null,
+      _graph_weight: null,
     });
   });
   bm25Results.forEach((r, i) => {
@@ -430,6 +447,27 @@ export function fuseRRF(vecResults, bm25Results, { topK = 10, k = 60, vecWeight 
         _vec_sim: null,
         _bm25_rank: i + 1,
         _bm25_score: r.score,
+        _graph_rank: null,
+        _graph_weight: null,
+      });
+    }
+  });
+  // Граф-канал: 1-hop соседи по related:. Чанк, уже найденный vector/BM25, лишь усиливается
+  // (добавляется graph-член); чанк только из графа — попадает в кандидаты со своим рангом.
+  graphResults.forEach((r, i) => {
+    const existing = byId.get(r.id);
+    if (existing) {
+      existing._graph_rank = i + 1;
+      existing._graph_weight = r._graph_weight ?? null;
+    } else {
+      byId.set(r.id, {
+        ...r,
+        _vec_rank: null,
+        _vec_sim: null,
+        _bm25_rank: null,
+        _bm25_score: null,
+        _graph_rank: i + 1,
+        _graph_weight: r._graph_weight ?? null,
       });
     }
   });
@@ -439,6 +477,7 @@ export function fuseRRF(vecResults, bm25Results, { topK = 10, k = 60, vecWeight 
     let score = 0;
     if (r._vec_rank !== null) score += vecWeight / (k + r._vec_rank);
     if (r._bm25_rank !== null) score += bm25Weight / (k + r._bm25_rank);
+    if (r._graph_rank !== null) score += graphWeight / (k + r._graph_rank);
     fused.push({
       id: r.id,
       file: r.file,
@@ -446,15 +485,126 @@ export function fuseRRF(vecResults, bm25Results, { topK = 10, k = 60, vecWeight 
       line_start: r.line_start,
       text: r.text,
       layer: r.layer,
+      doc_date: r.doc_date ?? null,
       fused: score,
       vec_rank: r._vec_rank,
       vec_sim: r._vec_sim,
       bm25_rank: r._bm25_rank,
       bm25_score: r._bm25_score,
+      graph_rank: r._graph_rank,
+      graph_weight: r._graph_weight,
     });
   }
   fused.sort((a, b) => b.fused - a.fused);
   return fused.slice(0, topK);
+}
+
+/**
+ * Граф-канал retrieval (TEMPR «graph»): по списку seed-файлов (обычно топ текущей выдачи)
+ * собирает их 1-hop соседей через таблицу links (related: в обе стороны) и возвращает по одному
+ * представительному чанку на файл-сосед. Вес соседа = число seed-файлов, связанных с ним.
+ *
+ * Представитель файла = чанк с минимальным line_start (лид-секция: заголовок H1 + meta-hint),
+ * этого достаточно, чтобы поднять файл в выдачу (метрика recall@k — файловая). Возвращает строки
+ * вида searchVec/searchBM25 (+ поле _graph_weight) для подачи в fuseRRF({ graphResults }).
+ *
+ * Если related:-связей нет (типично для свежего/корпусного KB) — возвращает []. Канал не вредит.
+ */
+export function searchGraph(db, seedFiles, { topK = 20, layer = null } = {}) {
+  if (!seedFiles || seedFiles.length === 0) return [];
+  const seeds = new Set(seedFiles.map(normalizeRelPath).filter(Boolean));
+  if (seeds.size === 0) return [];
+
+  const fwd = db.prepare('SELECT dst FROM links WHERE src = ?');
+  const back = db.prepare('SELECT src FROM links WHERE dst = ?');
+  const weight = new Map(); // file → число seed-связей
+  for (const s of seeds) {
+    for (const r of fwd.all(s)) if (!seeds.has(r.dst)) weight.set(r.dst, (weight.get(r.dst) || 0) + 1);
+    for (const r of back.all(s)) if (!seeds.has(r.src)) weight.set(r.src, (weight.get(r.src) || 0) + 1);
+  }
+  if (weight.size === 0) return [];
+
+  // Сортировка: по весу убыв., затем стабильно по имени (детерминизм для CI).
+  const ranked = [...weight.entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1));
+  const rep = db.prepare(
+    'SELECT id, file, heading, line_start, text, layer, doc_date FROM chunks WHERE file = ? ORDER BY line_start ASC LIMIT 1',
+  );
+  const out = [];
+  for (const [file, w] of ranked) {
+    const row = rep.get(file);
+    if (!row) continue;                       // dst указывает на несуществующий файл (kb-doctor словит)
+    if (layer && row.layer !== layer) continue;
+    out.push({ ...row, _graph_weight: w });
+    if (out.length >= topK) break;
+  }
+  return out;
+}
+
+/** Топ-N уникальных файлов из выдачи (seed для граф-канала). Сохраняет порядок. */
+export function topFiles(results, n = 5) {
+  const out = [];
+  const seen = new Set();
+  for (const r of results) {
+    if (seen.has(r.file)) continue;
+    seen.add(r.file);
+    out.push(r.file);
+    if (out.length >= n) break;
+  }
+  return out;
+}
+
+/**
+ * Полный гибридный retrieval: vector + BM25 + RRF, с опциональными graph- и temporal-каналами.
+ * Единая точка правды — переиспользуется search.mjs / think.mjs / eval.mjs / mcp-server.mjs,
+ * чтобы все каналы вели себя одинаково.
+ *
+ * Опции:
+ *   topK            — сколько результатов вернуть.
+ *   layer           — фильтр по слою KB.
+ *   graph           — включить граф-канал (1-hop related:). Default true; пустые links → no-op.
+ *   graphWeight     — вес граф-члена в RRF (default 0.5, слабее основных каналов).
+ *   since/until/asof— temporal-фильтр по doc_date ('YYYY-MM-DD'); asof = верхняя граница «на дату».
+ *   recency         — мягкий recency-boost поверх fused (по убыванию свежести). Default false.
+ *   recencyWeight / recencyHalfLife — параметры затухания (default 0.3 / 180 дней).
+ *
+ * Возвращает { results, queryEmbedding, vec, bm, graphResults } — queryEmbedding отдаём, чтобы
+ * rerank-стадия не эмбедила запрос повторно.
+ */
+export async function searchHybrid(db, embed, query, {
+  topK = 10, layer = null,
+  graph = true, graphWeight = 0.5,
+  since = null, until = null, asof = null,
+  recency = false, recencyWeight = 0.3, recencyHalfLife = 180,
+  overK = null,
+} = {}) {
+  const over = overK ?? Math.max(topK * 3, 20);
+  const dated = Boolean(since || until || asof);
+  // При активном date-фильтре кандидатов отсеивается много — берём с большим запасом.
+  const candK = dated ? Math.max(over * 4, 100) : over;
+
+  const [queryEmbedding] = await embed([QUERY_PREFIX + query]);
+  let vec = searchVec(db, queryEmbedding, { topK: candK, layer });
+  let bm = searchBM25(db, query, { topK: candK, layer });
+  if (dated) {
+    vec = applyDateFilter(vec, { since, until, asof });
+    bm = applyDateFilter(bm, { since, until, asof });
+  }
+
+  let graphResults = [];
+  if (graph) {
+    const prelim = fuseRRF(vec, bm, { topK: Math.max(over, 20) });
+    const seeds = topFiles(prelim, 5);
+    graphResults = searchGraph(db, seeds, { topK: over, layer });
+    if (dated) graphResults = applyDateFilter(graphResults, { since, until, asof });
+  }
+
+  const fuseTopK = recency ? Math.max(topK * 3, over) : topK;
+  let results = fuseRRF(vec, bm, { topK: fuseTopK, graphResults, graphWeight });
+  if (recency) {
+    applyRecencyBoost(results, { halfLifeDays: recencyHalfLife, asof, weight: recencyWeight });
+    results = results.slice(0, topK);
+  }
+  return { results, queryEmbedding, vec, bm, graphResults };
 }
 
 // ---------- links / backlinks ----------
@@ -516,6 +666,90 @@ function normalizeRelPath(p) {
   s = s.replace(/^\.\//, '');
   s = s.replace(/^\/+/, '');
   return s;
+}
+
+// Поля frontmatter, из которых берём дату документа (в порядке приоритета).
+// `date` — каноническое; `ingested` использует external-corpus (когда карточка попала в KB);
+// `updated` — если автор ведёт явную дату правки.
+const DATE_FM_KEYS = ['date', 'ingested', 'updated'];
+
+/**
+ * Достаёт дату документа из frontmatter в формате 'YYYY-MM-DD'.
+ * Возвращает строку 'YYYY-MM-DD' или '' если ни одного из DATE_FM_KEYS нет / формат не распознан.
+ * Используется индексатором для колонки chunks.doc_date (temporal-канал retrieval).
+ */
+export function parseFrontmatterDate(text) {
+  if (!text.startsWith('---')) return '';
+  const end = text.indexOf('\n---', 3);
+  if (end < 0) return '';
+  const fm = text.slice(3, end);
+  const map = {};
+  for (const line of fm.split('\n')) {
+    const m = line.match(/^([a-z_]+):\s*(.+)$/i);
+    if (m && DATE_FM_KEYS.includes(m[1].toLowerCase())) {
+      map[m[1].toLowerCase()] = m[2].trim().replace(/^["']|["']$/g, '');
+    }
+  }
+  for (const key of DATE_FM_KEYS) {
+    const v = map[key];
+    if (!v) continue;
+    const dm = /(\d{4})-(\d{2})-(\d{2})/.exec(v);
+    if (dm) return `${dm[1]}-${dm[2]}-${dm[3]}`;
+  }
+  return '';
+}
+
+// ---------- temporal helpers ----------
+
+/** 'YYYY-MM-DD' → число дней с эпохи (UTC), или null. Для фильтров и recency-затухания. */
+export function docDateToEpochDays(d) {
+  if (!d) return null;
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d);
+  if (!m) return null;
+  return Math.floor(Date.UTC(+m[1], +m[2] - 1, +m[3]) / 86_400_000);
+}
+
+/**
+ * Фильтр результатов по дате документа (doc_date). Границы — 'YYYY-MM-DD'.
+ *   since — нижняя (включительно), until/asof — верхняя (включительно).
+ * Документы без doc_date при активном фильтре отбрасываются (мы не знаем их дату → не можем гарантировать окно).
+ * Если ни одной границы нет — возвращает исходный массив без изменений.
+ */
+export function applyDateFilter(results, { since = null, until = null, asof = null } = {}) {
+  const lo = since ? docDateToEpochDays(since) : null;
+  const hi = (asof || until) ? docDateToEpochDays(asof || until) : null;
+  if (lo == null && hi == null) return results;
+  return results.filter((r) => {
+    const e = docDateToEpochDays(r.doc_date);
+    if (e == null) return false;
+    if (lo != null && e < lo) return false;
+    if (hi != null && e > hi) return false;
+    return true;
+  });
+}
+
+/**
+ * Мягкий recency-boost поверх RRF-score (поле `fused`). Свежесть = экспоненциальное затухание
+ * по возрасту относительно `asof` (или сегодня): score *= 1 + weight·0.5^(age/halfLife).
+ * Свежий документ получает максимум, документ возрастом в один период полураспада — половину.
+ * Документы без doc_date не штрафуются (recency=0, множитель=1). Пересортировывает по fused.
+ * Применять только к гибридным результатам (где есть fused); для vector/bm25 — no-op.
+ */
+export function applyRecencyBoost(results, { halfLifeDays = 180, asof = null, weight = 0.3 } = {}) {
+  if (!results.length || results[0].fused == null) return results;
+  const ref = asof ? docDateToEpochDays(asof) : Math.floor(Date.now() / 86_400_000);
+  for (const r of results) {
+    const e = docDateToEpochDays(r.doc_date);
+    let recency = 0;
+    if (e != null && ref != null) {
+      const age = Math.max(0, ref - e);
+      recency = Math.pow(0.5, age / halfLifeDays);
+    }
+    r.recency = Number(recency.toFixed(4));
+    r.fused = r.fused * (1 + weight * recency);
+  }
+  results.sort((a, b) => b.fused - a.fused);
+  return results;
 }
 
 /**

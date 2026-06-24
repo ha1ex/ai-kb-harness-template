@@ -30,6 +30,10 @@ node scripts/semantic/search.mjs "<тема артефакта>" --top 10
 
 Это покажет, какие существующие wiki/synthesis-страницы могут быть затронуты.
 
+Также проверь очередь кандидатов от агентов — `.context/inbox/` (туда пишет MCP-tool `kb_retain`,
+status `needs-review`). Если там есть заметки по теме — разбери их в этой же цепочке (они НЕ в git,
+их нужно либо разложить по слоям, либо удалить).
+
 ## Шаг 1 — Поместить raw файл
 
 ```
@@ -37,6 +41,17 @@ node scripts/semantic/search.mjs "<тема артефакта>" --top 10
 ```
 
 `<domain>` — категория (customer-research, sales-feedback, competitor-pricing, analytics, finance, win-loss, и т.п.).
+
+## Шаг 1.5 — Конвертация бинарных артефактов (опц.)
+
+Если raw-файл бинарный (PDF/docx/pptx/xlsx/html) — сконвертируй в md-черновик для `02_sources`:
+
+```bash
+node scripts/parse-raw.mjs 01_raw/<domain>/<file>.pdf --draft   # → 02_sources/<date>-<slug>.md (status: draft)
+```
+
+Нужен `markitdown` в PATH (`pipx install markitdown`); если его нет — шаг мягко пропускается,
+делай Шаг 2 вручную. Черновик всё равно нужно довести до 5–15 bullet-фактов с цитатами.
 
 ## Шаг 2 — Создать source summary
 
@@ -116,3 +131,15 @@ node scripts/kb-doctor.mjs
 ```
 
 Проверит, что новые файлы прошли frontmatter-валидацию и не оставили broken-related.
+
+## Шаг 12 — Предложения связей (опц.)
+
+После переиндексации можно получить advisory-предложения недостающих `related:`-связей
+(on-device, без LLM) — это усиливает graph-канал retrieval:
+
+```bash
+node scripts/suggest-links.mjs              # → .context/suggested-links-YYYY-MM-DD.md
+```
+
+Просмотри предложения и при согласии добавь пути в `related:` нужных файлов вручную, затем reindex.
+Связи `related:` питают и backlinks, и graph-канал гибридного поиска.

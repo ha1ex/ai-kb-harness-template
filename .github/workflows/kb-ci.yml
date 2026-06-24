@@ -46,6 +46,11 @@ jobs:
       - name: Install semantic deps
         run: pnpm -C scripts/semantic install
 
+      # Офлайн-юнит-тесты graph/temporal каналов (без модели и сети) — быстрый ранний гейт.
+      # Корпус без related:/date не упражняет эти каналы, поэтому логика проверяется на фикстурах.
+      - name: Retrieval channel unit tests (graph + temporal, offline)
+        run: node scripts/semantic/test-retrieval.mjs
+
       # Свежий checkout = свежие mtime → индекс собираем заново (он gitignored).
       # Первый прогон тянет модель с HuggingFace — соединение бывает флаки (connect timeout),
       # поэтому 3 попытки с очисткой частичного индекса между ними.

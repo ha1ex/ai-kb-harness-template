@@ -23,11 +23,8 @@ import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 import {
   createEmbedder,
-  QUERY_PREFIX,
   openDb,
-  searchVec,
-  searchBM25,
-  fuseRRF,
+  searchHybrid,
   DB_PATH,
   REPO_ROOT,
   INDEXABLE_LAYERS,
@@ -44,6 +41,7 @@ let topK = 12;
 let layer = null;
 let asJson = false;
 let execute = false;
+let graph = true;        // граф-канал (1-hop related:) по умолчанию вкл
 const queryParts = [];
 
 for (let i = 0; i < argv.length; i++) {
@@ -60,6 +58,8 @@ for (let i = 0; i < argv.length; i++) {
       console.error(`--layer должен быть одним из: ${INDEXABLE_LAYERS.join(', ')}`);
       process.exit(1);
     }
+  } else if (a === '--no-graph') {
+    graph = false;
   } else if (a === '--json') {
     asJson = true;
   } else if (a === '--execute') {
@@ -82,12 +82,8 @@ if (!existsSync(DB_PATH)) {
 
 const db = openDb();
 
-const overK = Math.max(topK * 3, 30);
 const embed = await createEmbedder();
-const [queryEmbedding] = await embed([QUERY_PREFIX + question]);
-const vecResults = searchVec(db, queryEmbedding, { topK: overK, layer });
-const bmResults = searchBM25(db, question, { topK: overK, layer });
-const fused = fuseRRF(vecResults, bmResults, { topK });
+const { results: fused } = await searchHybrid(db, embed, question, { topK, layer, graph });
 
 // Свежесть источников: уникальные файлы → их mtime из таблицы files (это секунды UNIX*1000).
 const uniqueFiles = Array.from(new Set(fused.map((r) => r.file)));

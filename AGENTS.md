@@ -77,6 +77,24 @@ FTS5 + RRF) + MCP-сервер дают агенту поиск и синтез 
 
 Смешение этих категорий без меток — lint failure.
 
+### Confidence на уровне утверждения
+
+Метка говорит про *природу* утверждения (факт/вывод/гипотеза), confidence — про *уверенность* в нём.
+Два уровня, второй переопределяет первый:
+
+- **Документный дефолт** — поле `confidence: high | medium | low` во frontmatter (вся уверенность файла).
+- **На уровне утверждения** — маркер `[conf: high|medium|low]` сразу после цитаты; переопределяет дефолт
+  для конкретного тезиса. Пример:
+
+  ```
+  FACT: NRR удержания вырос до 118%. [source: /02_sources/2026-05-q1-metrics.md] [conf: high]
+  INFERENCE: рост обеспечен сегментом enterprise. [source: /04_synthesis/retention.md] [conf: low]
+  ```
+
+`INFERENCE/ASSUMPTION/RISK` с `[conf: low]` — нормально и желательно; `FACT [conf: low]` — сигнал, что
+источник слабый (пометь это). **Эволюция уверенности** (как менялся confidence тезиса по мере поступления
+evidence) видна через `git log -p` файла synthesis/decision — отдельный реестр вести не нужно.
+
 ## Contradictions
 
 Если источники противоречат друг другу:
@@ -119,7 +137,9 @@ FTS5 + RRF) + MCP-сервер дают агенту поиск и синтез 
 | `05_decisions/` | `type` |
 | `06_outputs/` | `type`, `version` |
 
-Дополнительные поля по желанию: `owner`, `date`, `confidence`, `tags`, `related` (массив путей к связанным файлам — питает backlinks-индекс).
+Дополнительные поля по желанию: `owner`, `date`, `confidence` (только `high|medium|low` — проверяет
+`check-md-frontmatter.mjs`), `tags`, `related` (массив путей к связанным файлам — питает backlinks- и
+graph-канал retrieval). Поле `date` (или `ingested`/`updated`) питает temporal-канал (`--since/--until/--asof`).
 
 ## Что делать НЕ нужно
 

@@ -36,15 +36,18 @@ import {
   openDb,
   searchVec,
   searchBM25,
-  fuseRRF,
+  searchHybrid,
+  applyDateFilter,
   getBacklinks,
   getForwardLinks,
   DB_PATH,
   REPO_ROOT,
   INDEXABLE_LAYERS,
 } from './lib.mjs';
+import { rerank } from './rerank.mjs';
 import { verifyText } from './verify.mjs';
 import { appendJournal, compactResults } from '../lib/journal.mjs';
+import { mkdirSync, writeFileSync, readdirSync } from 'node:fs';
 
 if (!existsSync(DB_PATH)) {
   console.error(`[mcp-kb] БД не найдена: ${DB_PATH}. Запустите: node scripts/semantic/index.mjs`);
@@ -86,12 +89,15 @@ const server = new McpServer({
 
 // ---------- kb_search ----------
 
+const DATE_STR = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'дата в формате YYYY-MM-DD');
+
 server.registerTool(
   'kb_search',
   {
     description:
-      'Hybrid search в локальной KB (vector e5-small + BM25 FTS5 + RRF). ' +
-      'Возвращает топ-K чанков с file, line, layer, heading, snippet и score. ' +
+      'Hybrid search в локальной KB (vector e5-small + BM25 FTS5 + RRF, по умолчанию + graph-канал по related:). ' +
+      'Возвращает топ-K чанков с file, line, layer, heading, doc_date, snippet и score. ' +
+      'Опц.: temporal-фильтр (since/until/asof по doc_date), recency-boost, cross-encoder rerank. ' +
       'Используй ДО ответа пользователю по любому вопросу о содержимом KB. ' +
       'Без поиска сначала — ответы будут галлюцинировать.',
     inputSchema: {
@@ -99,42 +105,38 @@ server.registerTool(
       mode: z
         .enum(['hybrid', 'vector', 'bm25'])
         .optional()
-        .describe('Канал поиска. По умолчанию hybrid (RRF над vector и BM25).'),
-      top: z
-        .number()
-        .int()
-        .positive()
-        .max(50)
-        .optional()
-        .describe('Сколько результатов вернуть (default 10).'),
-      layer: z
-        .enum(INDEXABLE_LAYERS)
-        .optional()
-        .describe('Фильтр по слою KB. Опционально.'),
+        .describe('Канал поиска. По умолчанию hybrid (RRF над vector + BM25 + graph).'),
+      top: z.number().int().positive().max(50).optional().describe('Сколько результатов вернуть (default 10).'),
+      layer: z.enum(INDEXABLE_LAYERS).optional().describe('Фильтр по слою KB. Опционально.'),
+      graph: z.boolean().optional().describe('Граф-канал (1-hop related:). Default true; пустые links → no-op.'),
+      rerank: z.boolean().optional().describe('Cross-encoder rerank топ-кандидатов (точнее, но +модель ~90 MB). Default false.'),
+      recency: z.boolean().optional().describe('Мягкий boost свежих документов по doc_date. Default false.'),
+      since: DATE_STR.optional().describe('Только документы с doc_date ≥ since (YYYY-MM-DD).'),
+      until: DATE_STR.optional().describe('Только документы с doc_date ≤ until (YYYY-MM-DD).'),
+      asof: DATE_STR.optional().describe('Срез «на дату»: документы с doc_date ≤ asof.'),
     },
   },
-  async ({ query, mode = 'hybrid', top = 10, layer = null }) => {
+  async ({ query, mode = 'hybrid', top = 10, layer = null, graph = true, rerank: doRerank = false, recency = false, since = null, until = null, asof = null }) => {
+    const dated = Boolean(since || until || asof);
+    const wantK = doRerank ? Math.max(top, 20) : top;
+    const candK = dated ? Math.max(wantK * 6, 100) : wantK;
+
     let results;
     if (mode === 'bm25') {
-      results = searchBM25(db(), query, { topK: top, layer }).map((r) => ({
-        ...r,
-        _channel: 'bm25',
-      }));
+      const raw = searchBM25(db(), query, { topK: candK, layer });
+      results = dated ? applyDateFilter(raw, { since, until, asof }) : raw;
     } else if (mode === 'vector') {
       const embed = await embedder();
       const [qe] = await embed([QUERY_PREFIX + query]);
-      results = searchVec(db(), qe, { topK: top, layer }).map((r) => ({
-        ...r,
-        _channel: 'vector',
-      }));
+      const raw = searchVec(db(), qe, { topK: candK, layer });
+      results = dated ? applyDateFilter(raw, { since, until, asof }) : raw;
     } else {
-      const overK = Math.max(top * 3, 20);
       const embed = await embedder();
-      const [qe] = await embed([QUERY_PREFIX + query]);
-      const vecResults = searchVec(db(), qe, { topK: overK, layer });
-      const bmResults = searchBM25(db(), query, { topK: overK, layer });
-      results = fuseRRF(vecResults, bmResults, { topK: top });
+      const r = await searchHybrid(db(), embed, query, { topK: wantK, layer, graph, since, until, asof, recency });
+      results = r.results;
     }
+    if (doRerank) results = await rerank(query, results, { topN: 20 });
+    results = results.slice(0, top);
 
     const out = results.map((r, i) => ({
       rank: i + 1,
@@ -142,11 +144,14 @@ server.registerTool(
       line: r.line_start,
       layer: r.layer,
       heading: r.heading,
+      doc_date: r.doc_date ?? null,
       similarity: r.similarity != null ? Number(r.similarity.toFixed(4)) : null,
       bm25_score: r.score != null ? Number(r.score.toFixed(4)) : (r.bm25_score != null ? Number(r.bm25_score.toFixed(4)) : null),
       fused: r.fused != null ? Number(r.fused.toFixed(6)) : null,
       vec_rank: r.vec_rank ?? null,
       bm25_rank: r.bm25_rank ?? null,
+      graph_rank: r.graph_rank ?? null,
+      rerank_score: r.rerank_score ?? null,
       snippet: r.text.length > 400 ? r.text.slice(0, 400) + '…' : r.text,
     }));
 
@@ -157,7 +162,7 @@ server.registerTool(
 
     return {
       content: [
-        { type: 'text', text: `Найдено ${out.length} чанков (mode=${mode}${layer ? `, layer=${layer}` : ''}):` },
+        { type: 'text', text: `Найдено ${out.length} чанков (mode=${mode}${layer ? `, layer=${layer}` : ''}${graph && mode === 'hybrid' ? ', +graph' : ''}${dated ? ', +temporal' : ''}${doRerank ? ', +rerank' : ''}):` },
         { type: 'text', text: JSON.stringify(out, null, 2) },
       ],
     };
@@ -190,12 +195,8 @@ server.registerTool(
     },
   },
   async ({ question, top = 12, layer = null }) => {
-    const overK = Math.max(top * 3, 30);
     const embed = await embedder();
-    const [qe] = await embed([QUERY_PREFIX + question]);
-    const vecResults = searchVec(db(), qe, { topK: overK, layer });
-    const bmResults = searchBM25(db(), question, { topK: overK, layer });
-    const fused = fuseRRF(vecResults, bmResults, { topK: top });
+    const { results: fused } = await searchHybrid(db(), embed, question, { topK: top, layer, graph: true });
 
     const uniqueFiles = Array.from(new Set(fused.map((r) => r.file)));
     const now = Date.now();
@@ -306,6 +307,84 @@ server.registerTool(
             `(advisory FACT: strong=${s.advisory.strong} weak=${s.advisory.weak} none=${s.advisory.none})`,
         },
         { type: 'text', text: JSON.stringify(result, null, 2) },
+      ],
+    };
+  },
+);
+
+// ---------- kb_retain ----------
+
+const INBOX_DIR = join(REPO_ROOT, '.context', 'inbox');
+
+function slugify(s) {
+  return (s || 'note')
+    .toLowerCase()
+    .replace(/[^a-z0-9а-яё]+/giu, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 48) || 'note';
+}
+
+function nextInboxSeq() {
+  let max = 0;
+  try {
+    for (const name of readdirSync(INBOX_DIR)) {
+      const m = /^(\d{4})-/.exec(name);
+      if (m) max = Math.max(max, parseInt(m[1], 10));
+    }
+  } catch { /* dir absent yet */ }
+  return String(max + 1).padStart(4, '0');
+}
+
+server.registerTool(
+  'kb_retain',
+  {
+    description:
+      'Сохранить КАНДИДАТ-заметку (наблюдение/факт/находку) в очередь на ревью .context/inbox/ — ' +
+      'НЕ коммитит и НЕ пишет в слои KB. Это контролируемый write-path агента: память, которую ' +
+      'агент хочет зафиксировать, попадает в ingest-ревью (skill-ingest), а человек решает, ' +
+      'куда её разложить (02_sources/03_wiki/04_synthesis) и коммитить ли. Используй, когда в ходе ' +
+      'работы всплыл факт/инсайт, которого ещё нет в KB. Помечай claims как FACT/INFERENCE/ASSUMPTION.',
+    inputSchema: {
+      content: z.string().min(1).describe('Тело заметки в Markdown. Размечай утверждения метками AGENTS.md.'),
+      title: z.string().optional().describe('Короткий заголовок (станет слагом имени файла).'),
+      tags: z.array(z.string()).optional().describe('Теги для будущей классификации.'),
+      source: z.string().optional().describe('Откуда взято: URL, путь, «диалог с пользователем» и т.п.'),
+    },
+  },
+  async ({ content, title = '', tags = [], source = '' }) => {
+    mkdirSync(INBOX_DIR, { recursive: true });
+    const seq = nextInboxSeq();
+    const today = new Date().toISOString().slice(0, 10);
+    const slug = slugify(title || content.split('\n')[0]);
+    const fname = `${seq}-${slug}.md`;
+    const abs = join(INBOX_DIR, fname);
+    const fm = [
+      '---',
+      'type: inbox-candidate',
+      `title: ${(title || slug).replace(/\n/g, ' ')}`,
+      `created: ${today}`,
+      'status: needs-review',
+      source ? `source: ${source.replace(/\n/g, ' ')}` : null,
+      tags.length ? `tags: [${tags.map((t) => String(t).trim()).filter(Boolean).join(', ')}]` : null,
+      '---',
+      '',
+    ].filter((l) => l !== null).join('\n');
+    writeFileSync(abs, fm + content.trimEnd() + '\n');
+
+    await appendJournal({
+      kind: 'retain', ts: new Date().toISOString(),
+      retain: { file: `.context/inbox/${fname}`, title: title || slug, source: source || null },
+    });
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text:
+            `Кандидат сохранён в .context/inbox/${fname} (status: needs-review).\n` +
+            'НЕ закоммичено и НЕ в слоях KB. Разбор — через skill-ingest: человек решает, ' +
+            'куда разложить (02_sources/03_wiki/04_synthesis) и коммитить ли.',
+        },
       ],
     };
   },
