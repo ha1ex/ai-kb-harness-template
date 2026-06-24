@@ -9,11 +9,16 @@
 
 | Команда | Файл | Назначение |
 |---|---|---|
-| `pnpm kb:index` | `semantic/index.mjs` | построить/обновить гибридный индекс |
-| `pnpm kb:search` | `semantic/search.mjs` | hybrid-поиск (vector + BM25 + RRF) |
+| `pnpm kb:index` | `semantic/index.mjs` | построить/обновить гибридный индекс (+ `doc_date`) |
+| `pnpm kb:search` | `semantic/search.mjs` | hybrid-поиск (vector + BM25 + RRF + graph + temporal) |
 | `pnpm kb:think` | `semantic/think.mjs` | промпт-синтез с цитатами |
+| `pnpm kb:eval` | `semantic/eval.mjs` | retrieval-eval (recall@k/MRR) + регрессия vs baseline; A/B `--graph/--rerank` |
 | `pnpm kb:doctor` | `kb-doctor.mjs` | health-check KB |
-| `pnpm kb:dream` | `dream-cycle.mjs` | еженедельный LLM-аудит (пишет в `.context/`) |
+| `pnpm kb:dream` | `dream-cycle.mjs` | еженедельный LLM-аудит + fact-консолидация (пишет в `.context/`) |
+| — | `suggest-links.mjs` | advisory-предложения `related:` (on-device, в `.context/`) |
+| — | `parse-raw.mjs` | бинарный артефакт (PDF/docx) → черновик `02_sources` (markitdown, опц.) |
+| — | `semantic/rerank.mjs` | опц. cross-encoder rerank (подключается флагом `--rerank`) |
+| — | `semantic/test-retrieval.mjs` | офлайн-юнит-тесты graph/temporal (CI-гейт) |
 | `pnpm skill` | `skillopt/cli.mjs` | SkillOpt CLI (rollout/reflect/diff/apply) |
 | — | `check-decisions.mjs`, `check-md-frontmatter.mjs`, `session-start-context.mjs` | hook-скрипты (`.claude/settings.json`) |
 | — | `search-quality-probes.mjs`, `dedup-skills.mjs` | проверки качества корпуса |
