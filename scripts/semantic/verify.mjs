@@ -35,8 +35,10 @@ import {
   DB_PATH,
   REPO_ROOT,
   INDEXABLE_LAYERS,
+  walkMarkdown,
 } from './lib.mjs';
 import { appendJournal } from '../lib/journal.mjs';
+import { maskExamples, checkProvenance, EXTERNAL_CORPUS_DIRS as PROV_EXTERNAL_DIRS } from '../lib/provenance.mjs';
 
 export const VERIFY_THRESHOLD = 0.82;          // strong, если bestScore >= threshold
 const WEAK_DELTA = 0.08;                        // weak, если >= threshold - WEAK_DELTA
@@ -102,11 +104,14 @@ export async function verifyText(text, {
   const allowed = new Set(allowedLayers);
   const citations = [];
 
-  // Сбор всех цитат с позициями.
+  // Сбор всех цитат с позициями. Цитаты внутри HTML-комментариев <!-- ... --> игнорируем
+  // (это примеры формата, а не живые утверждения) — маскируем их пробелами той же длины,
+  // чтобы позиции остальных цитат остались валидны для claim-span ниже.
+  const scan = maskExamples(text);
   const raws = [];
   let mm;
   CITATION_RE.lastIndex = 0;
-  while ((mm = CITATION_RE.exec(text)) !== null) {
+  while ((mm = CITATION_RE.exec(scan)) !== null) {
     raws.push({ raw: mm[1], start: mm.index, end: mm.index + mm[0].length });
   }
 
@@ -179,7 +184,89 @@ export async function verifyText(text, {
     passed: citations.length === 0 ? true : citations.every((c) => c.tier1_ok),
     advisory: { fact_claims: factStrong + factWeak + factNone, strong: factStrong, weak: factWeak, none: factNone },
   };
-  return { citations, summary };
+  return { citations, summary, critique: buildCritique(citations) };
+}
+
+// ---------- critique (N1: verify → critique → revise) ----------
+
+// reason → конкретное действие правки и человекочитаемая подсказка.
+const REASON_FIX = {
+  'missing-file': {
+    action: 're-cite',
+    suggestion: 'Файл не существует. Найди верный путь (kb_search) и замени цитату, либо удали утверждение.',
+  },
+  'layer-not-allowed': {
+    action: 're-cite',
+    suggestion: 'Слой не индексируется/не цитируется. Сошлись на 00_context/02_sources/03_wiki/04_synthesis/05_decisions.',
+  },
+  'external-corpus-not-citable': {
+    action: 're-cite',
+    suggestion: 'External-corpus карточка цитируется через её frontmatter source:-URL, а не через [source: /…].',
+  },
+  'line-empty-or-out-of-range': {
+    action: 'fix-line',
+    suggestion: 'Номер строки пуст/вне диапазона. Убери :line или укажи непустую строку файла.',
+  },
+};
+
+/**
+ * Превращает результат проверки в actionable-критику (N1). Чистая функция над citations.
+ *   • Tier-1 fail  → severity:error, needsRevision=true (это и есть гейт);
+ *   • FACT с advisory band none/weak → severity:warn (advisory, НИКОГДА не форсит revision).
+ * @param {Array} citations  citations из verifyText
+ * @returns {{ needsRevision:boolean, errors:number, warns:number, items:Array }}
+ */
+export function buildCritique(citations) {
+  const items = [];
+  for (const c of citations) {
+    if (!c.tier1_ok) {
+      const fix = REASON_FIX[c.reason] || { action: 're-cite', suggestion: 'Цитата не прошла Tier-1 — исправь путь/слой или удали утверждение.' };
+      items.push({
+        severity: 'error', path: c.path, line: c.line ?? null, label: c.label,
+        reason: c.reason, action: fix.action, suggestion: fix.suggestion, claim: c.claim,
+      });
+    } else if (c.label === 'FACT' && c.advisory && (c.advisory.band === 'none' || c.advisory.band === 'weak')) {
+      items.push({
+        severity: 'warn', path: c.path, label: 'FACT', reason: `weak-support-${c.advisory.band}`,
+        band: c.advisory.band, bestScore: c.advisory.bestScore ?? null, action: 'downgrade-or-recite',
+        suggestion: 'Семантически источник слабо подтверждает FACT — понизь до INFERENCE/ASSUMPTION, перецитируй точный фрагмент или удали.',
+        claim: c.claim,
+      });
+    }
+  }
+  const errors = items.filter((i) => i.severity === 'error').length;
+  const warns = items.filter((i) => i.severity === 'warn').length;
+  return { needsRevision: errors > 0, errors, warns, items };
+}
+
+/**
+ * Сканировать слои KB и проверить Tier-1 (+ опц. provenance) по каждому .md-файлу.
+ * Используется CI-гейтом (N3/N4). Не грузит модель (semantic=false): детерминированно.
+ * @returns {{ files:number, failedFiles:number, problems:Array, exempted:number }}
+ */
+export async function scanLayers(layers, { provenance = false, allowCorpus = false } = {}) {
+  const problems = [];
+  let files = 0, failedFiles = 0, exempted = 0;
+  for (const f of walkMarkdown(REPO_ROOT, layers)) {
+    // external-corpus карточки в 06_outputs не несут внутренних цитат — пропускаем их явно
+    // (логируем счётчик, не молчим).
+    const second = f.relPath.split('/')[1] || '';
+    if (f.layer === '06_outputs' && PROV_EXTERNAL_DIRS.has(second)) { exempted++; continue; }
+    files++;
+    let text = '';
+    try { text = readFileSync(f.absPath, 'utf8'); } catch { continue; }
+    const { summary } = await verifyText(text, { semantic: false, allowCorpus });
+    const prov = provenance ? checkProvenance(f.relPath, text) : { violations: [] };
+    if (!summary.passed || prov.violations.length) {
+      failedFiles++;
+      problems.push({
+        file: f.relPath,
+        tier1_failed: summary.passed ? 0 : summary.citations_total - summary.citations_ok,
+        provenance_violations: prov.violations,
+      });
+    }
+  }
+  return { files, failedFiles, problems, exempted };
 }
 
 // ───────────────────────── CLI ─────────────────────────
@@ -193,6 +280,7 @@ if (isMain()) {
   let threshold = VERIFY_THRESHOLD;
   let asJson = false, allowCorpus = false, semantic = true;
   let fromStdin = false, file = null, layersArg = null;
+  let scan = false, provenance = false;
   const textParts = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -200,11 +288,41 @@ if (isMain()) {
     else if (a === '--allow-corpus') allowCorpus = true;
     else if (a === '--no-semantic') semantic = false;
     else if (a === '--stdin') fromStdin = true;
+    else if (a === '--scan') scan = true;
+    else if (a === '--provenance') provenance = true;
     else if (a === '--threshold') threshold = parseFloat(argv[++i]);
     else if (a === '--file') file = argv[++i];
     else if (a === '--layers') layersArg = argv[++i];
     else if (a === '--text') textParts.push(argv[++i]);
     else textParts.push(a);
+  }
+
+  // ── режим --scan: гейт по слоям (N3/N4). Детерминированный Tier-1 (+ опц. provenance),
+  //    без модели. Дефолтные слои = свои (не external) синтез/решения/аутпуты.
+  if (scan) {
+    const scanLayersList = layersArg
+      ? layersArg.split(',').map((s) => s.trim()).filter(Boolean)
+      : ['04_synthesis', '05_decisions', '06_outputs'];
+    const t0 = Date.now();
+    const res = await scanLayers(scanLayersList, { provenance, allowCorpus });
+    await appendJournal({
+      kind: 'verify-scan', ts: new Date(t0).toISOString(), timing_ms: Date.now() - t0,
+      scan: { layers: scanLayersList, provenance, files: res.files, failed: res.failedFiles },
+    });
+    if (asJson) {
+      console.log(JSON.stringify(res, null, 2));
+    } else {
+      console.log('');
+      console.log(`Скан слоёв [${scanLayersList.join(', ')}]${provenance ? ' +provenance' : ''}: ` +
+        `${res.files} файлов · external-пропущено ${res.exempted} · ${res.failedFiles ? `❌ ${res.failedFiles} с проблемами` : '✅ чисто'}`);
+      for (const p of res.problems) {
+        console.log(`  ❌ ${p.file}`);
+        if (p.tier1_failed) console.log(`       Tier-1: ${p.tier1_failed} битых цитат (запусти: verify.mjs --file ${p.file})`);
+        for (const v of p.provenance_violations) console.log(`       provenance: [source: /${v.path}] — ${v.reason}`);
+      }
+      console.log('');
+    }
+    process.exit(res.failedFiles ? 1 : 0);
   }
 
   let text = '';
@@ -240,6 +358,8 @@ if (isMain()) {
       citations_total: result.summary.citations_total,
       citations_ok: result.summary.citations_ok,
       passed: result.summary.passed,
+      critique_errors: result.critique.errors,
+      critique_warns: result.critique.warns,
     },
   });
 
@@ -257,6 +377,14 @@ if (isMain()) {
     }
     if (s.advisory.fact_claims > 0) {
       console.log(`\n  advisory (FACT-метки, НЕ гейт): strong=${s.advisory.strong} weak=${s.advisory.weak} none=${s.advisory.none}`);
+    }
+    if (result.critique.items.length) {
+      console.log(`\n  Критика (errors=${result.critique.errors} warns=${result.critique.warns}) — действия:`);
+      for (const it of result.critique.items) {
+        const icon = it.severity === 'error' ? '✗' : '⚠';
+        console.log(`    ${icon} [/${it.path}${it.line ? `:${it.line}` : ''}] ${it.action}: ${it.suggestion}`);
+      }
+      console.log('    → revision-промпт: node scripts/kb-critic.mjs --file <ответ>.md');
     }
     console.log('');
   }

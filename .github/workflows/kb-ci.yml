@@ -51,6 +51,11 @@ jobs:
       - name: Retrieval channel unit tests (graph + temporal, offline)
         run: node scripts/semantic/test-retrieval.mjs
 
+      # Control-логика (N1 critique + N4 provenance + маскирование примеров) — чистые функции,
+      # без модели/БД. Ранний детерминированный гейт.
+      - name: Control unit tests (verify critique + provenance, offline)
+        run: node scripts/semantic/test-control.mjs
+
       # Свежий checkout = свежие mtime → индекс собираем заново (он gitignored).
       # Первый прогон тянет модель с HuggingFace — соединение бывает флаки (connect timeout),
       # поэтому 3 попытки с очисткой частичного индекса между ними.
@@ -77,6 +82,12 @@ jobs:
 
       - name: KB doctor (EXIT 0 contract)
         run: node scripts/kb-doctor.mjs
+
+      # Цитатный + provenance-гейт (N3/N4): детерминированный Tier-1 (--no-semantic, без модели)
+      # по слоям, несущим цитаты. Живые [source:/path] обязаны разрешаться; synthesis/decisions —
+      # цитировать только более низкий слой пирамиды. Примеры в комментариях/коде игнорируются.
+      - name: Citation + provenance gate (verify --scan, deterministic Tier-1)
+        run: node scripts/semantic/verify.mjs --scan --provenance --no-semantic
 
       - name: Retrieval eval (gate on overall recall@k / MRR regression vs baseline)
         run: node scripts/semantic/eval.mjs
