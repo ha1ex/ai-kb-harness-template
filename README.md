@@ -1,521 +1,391 @@
 # AI KB Harness — шаблон
 
-> Стартовая оснастка для проектов, где **markdown-репозиторий = knowledge base**, а вы (или ваша команда) пользуетесь AI-агентами (Claude Code, Claude Desktop, Cursor, любые MCP-клиенты) как ежедневным рабочим инструментом.
+> Превращает обычный **markdown-репозиторий в базу знаний**, с которой AI-агент (Claude Code, Cursor,
+> Claude Desktop, любой MCP-клиент) работает аккуратно: ищет по смыслу, отвечает **со ссылками на
+> источник**, не выдумывает и сам поддерживает порядок.
 
-**В одной фразе:** клонируешь — и через 10 минут у тебя свой проект, где Claude / GPT / Gemini / Ollama / любая нейронка работает с твоим контентом как с базой знаний, а не как с чёрным ящиком. Полностью **on-device** после установки: единственная сетевая операция — разовая загрузка модели эмбеддингов (~120 MB) при первом индексировании; дальше ничего не уходит во внешние API, нет платных эмбеддингов, не нужен Docker.
+**В одной фразе:** клонируешь шаблон — и через 10 минут у тебя проект, где нейросеть работает с твоим
+контентом как с базой знаний, а не как с чёрным ящиком. Всё **локально**: единственная сетевая
+операция — разовая загрузка модели эмбеддингов (~120 MB) при первом индексировании. Нет облачных API,
+платных эмбеддингов и Docker.
 
-`Phase 1 ✓` `Phase 2 ✓` `Phase 3 ✓` · `Universal LLM (claude/openai/ollama/sgpt/llm/gemini)` · `MCP-ready` · `MIT`
+`on-device` · `MCP-ready` · `0 cloud` · `любая LLM (Claude/GPT/Gemini/Ollama)` · `MIT`
 
 ---
 
-## TL;DR — что вы получаете
+## Содержание
 
-Четыре слоя, расположены по росту сложности. Каждый работает независимо, можно остановиться на любом.
+1. [Что это и зачем](#что-это-и-зачем)
+2. [Как это работает](#как-это-работает)
+3. [Кому подходит — прикладные кейсы](#кому-подходит--прикладные-кейсы)
+4. [Быстрый старт](#быстрый-старт-5-минут)
+5. [Ключевые концепции (от общего к частному)](#ключевые-концепции-от-общего-к-частному)
+6. [Инструменты: CLI и MCP](#инструменты-cli-и-mcp)
+7. [Типичные рабочие сценарии](#типичные-рабочие-сценарии)
+8. [Что внутри](#что-внутри)
+9. [Веб-витрина для коллег](#веб-витрина-для-коллег)
+10. [SkillOpt — самообучение инструкций](#skillopt--самообучение-инструкций-опционально)
+11. [Параметризация, обновление, FAQ](#параметризация-под-свой-проект)
 
-### 1. KB-слои + правила дисциплины
+---
 
-Базовая структура — всё знание разложено по слоям `00_context → 02_sources → 03_wiki → 04_synthesis → 05_decisions → 06_outputs`. Это иерархия от сырого до финального.
+## Что это и зачем
 
-**`AGENTS.md` — это «контракт» для агента**: правило что каждое утверждение помечается меткой (`FACT:` / `INFERENCE:` / `UNKNOWN:` / `RISK:` / `DECISION:` / `RECOMMENDATION:`) и сопровождается ссылкой `[source: /02_sources/...]`. Хук `check-decisions.mjs` блокирует запись в `/05_decisions/` если правило нарушено. `check-md-frontmatter.mjs` валидирует обязательные поля frontmatter.
+Когда работаешь с AI-агентом по живому проекту дольше пары недель, появляются три повторяющиеся боли:
 
-### 2. Семантический поиск + синтез
+1. **Агент галлюцинирует** про содержимое твоего проекта — он просто не видит нужный файл, потому что
+   ты не положил его в контекст, а сам найти не может.
+2. **Дисциплина рассуждений плывёт** — факты, гипотезы и решения смешиваются; через месяц в репозитории
+   `RECOMMENDATION`, выданные за `FACT`, и непонятно, откуда что взялось.
+3. **База знаний копит скрытый долг** — файлы без метаданных, битые ссылки, осиротевшие страницы,
+   устаревшие выводы. Руками это никто не вычищает.
 
-Локальная ONNX-модель (`multilingual-e5-small`) индексирует все ваши `.md`. Один раз построил — дальше доступны инструменты:
+Шаблон закрывает эти боли **набором независимых инструментов**, которые работают вместе: локальный
+семантический поиск, дисциплина «утверждение → метка → ссылка на источник», механическая проверка
+цитат с автоисправлением, и health-check базы. Каждый инструмент полезен сам по себе — можно
+остановиться на любом уровне.
 
-- `pnpm kb:search "запрос"` — гибридный поиск (vector + BM25 + RRF), **+ граф-канал** (1-hop по `related:`) и **temporal** (`--since/--until/--asof` по дате документа). Точно находит нужный файл и связанные с ним.
-- `pnpm kb:think "вопрос"` — собирает промпт с цитатами и правилами AGENTS.md; вставляешь в любую модель → получаешь ответ с обязательными метками
-- `pnpm kb:doctor` — health-check: что без frontmatter, какие ссылки битые, какие orphans, что устарело
+> Подробный «почему именно так» и сравнение с похожими подходами — в [FAQ](#faq) и
+> [`docs/architecture.md`](docs/architecture.md).
 
-Через **MCP-сервер** пять tool'ов (`kb_search`, `kb_think`, `kb_backlinks`, `kb_verify` — проверка цитат, `kb_retain` — write-path: агент кладёт заметку в `.context/inbox/` на ревью) доступны напрямую Claude Code / Desktop / Cursor — агент ищет в вашей KB **без копипасты**.
+## Как это работает
 
-> Опционально: cross-encoder rerank (`--rerank`) — выключен по умолчанию, т.к. на встроенном корпусе наш же eval показал регрессию; включайте, только если ваш `pnpm kb:eval --rerank` даёт рост. Подробности — [`scripts/semantic/README.md`](scripts/semantic/README.md).
+Агент общается с базой знаний через MCP-инструменты (или читает файлы напрямую). Поиск — локальный
+гибридный (смысл + точные термины + связи + даты). Любой ответ обязан быть с метками и ссылками,
+а проверка цитат не даёт протащить выдумку:
 
-### 3. Веб-витрина (`tools/viewer/`)
+```mermaid
+flowchart LR
+    U["Вы / коллега"] --> A["AI-агент<br/>Claude Code · Cursor · Desktop"]
+    A -->|"MCP-инструменты"| M["kb_search · kb_think<br/>kb_verify · kb_promote"]
+    A -->|"читает напрямую"| KB["Markdown-база знаний<br/>слои 00 → 06"]
+    KB -->|"индексируется on-device"| IDX[("Локальный индекс<br/>вектор + BM25 + граф + даты")]
+    M --> IDX
+    IDX --> ANS["Ответ с метками<br/>FACT / INFERENCE + [source: …]"]
+    ANS --> V{"verify:<br/>цитаты валидны?"}
+    V -->|"да"| OK["✅ ответ или<br/>verified answer-card"]
+    V -->|"нет"| CR["kb-critic →<br/>исправить и перепроверить"]
+    CR --> ANS
+```
 
-Локальный Vite + React + Tailwind 4 сайт с дизайн-системой v2 (13 KB-блоков, callouts, типографика, light/dark). `pnpm viewer:dev` → `http://localhost:5173`:
+- **Только локально.** Эмбеддер, БД, поиск, граф, проверки — на твоей машине. В облако ничего не уходит.
+- **Любая LLM.** CLI и MCP отдают stdout/JSON — работает с Claude, GPT, Gemini, Ollama и др.
+- **Подключение в одну строку.** `.mcp.json` уже настроен — Claude Code подхватывает инструменты сам.
+- **Безопасно для git.** Агент пишет только в карантин (`.context/inbox/`) или в проверенные
+  answer-cards; решает и коммитит человек.
 
-| Страница | Что показывает |
+## Кому подходит — прикладные кейсы
+
+Шаблон не про конкретную профессию — он про **любой проект, где знание копится в документах**, а
+нейросеть нужна как ежедневный инструмент, а не для одноразовых задач.
+
+| Кому | Что даёт | Типичный поток |
+|---|---|---|
+| **Исследователь / аналитик** | Десятки источников, противоречия, evidence в ревизии — без хаоса | источник → саммари → wiki → синтез, ответы со ссылками |
+| **Продакт / стратегия** | Дисциплина «факт vs гипотеза vs решение», поиск по истории | ресёрч → open-questions → decisions с rationale |
+| **Консалтинг / due diligence** | Много документов, нужна прослеживаемость каждого вывода | ingest пакета → структура → отчёт с цитатами |
+| **Инженер (архитектура)** | ADR с явным evidence, backlinks от решения к источникам | decision-карточки + provenance-гейт |
+| **Автор (книга / лонгрид / курс)** | Заметки, цитаты, борьба с «я где-то это читал» | raw → wiki → черновики в 06_outputs |
+| **Внутренняя база / поддержка** | Переиспользуемые проверенные ответы, не дублирующие друг друга | verified answer-cards (`kb_promote`) |
+
+**Не подходит, если:**
+- знание живёт в коде, а не в документах;
+- нужна real-time коллаборация в стиле Notion/Confluence (это про solo / small-team с git-workflow);
+- объём базы > ~50K страниц (SQLite + on-device эмбеддер упрётся в потолок — нужен Postgres+pgvector).
+
+## Быстрый старт (5 минут)
+
+Требования: **Node 22** (есть `.nvmrc` — `nvm use`), **pnpm** через `corepack enable`.
+
+```bash
+# 1. Создать проект из шаблона (или кнопка «Use this template» в GitHub UI)
+gh repo create my-project --template ha1ex/ai-kb-harness-template --public --clone
+cd my-project
+
+# 2. Поставить зависимости (semantic + skillopt + viewer)
+pnpm run setup
+
+# 3. Положить первый источник
+mkdir -p 01_raw/research && cp ~/your-doc.md 01_raw/research/2026-01-01-first.md
+
+# 4. Построить индекс (первый раз скачает модель ~120 MB, дальше локально)
+pnpm kb:index
+
+# 5. Проверить, что всё живо
+pnpm kb:search "тема"        # гибридный поиск
+pnpm kb:doctor               # health-check (должен быть EXIT 0)
+```
+
+Дальше:
+- **Персонализация:** поправь `Project purpose` в [`AGENTS.md`](AGENTS.md), язык/workflow в
+  [`CLAUDE.md`](CLAUDE.md), инвариант в [`.remember/core.md`](.remember/core.md), при желании — ручки
+  формы ответа в [`.remember/preferences.md`](.remember/preferences.md).
+- **MCP в Claude Code:** `.mcp.json` уже настроен — перезапусти Claude Code в проекте, появятся
+  инструменты `kb_*`.
+- **Веб-витрина для коллег:** `pnpm viewer:dev` → `http://localhost:5173` (см. [ниже](#веб-витрина-для-коллег)).
+
+> **Supply chain:** запускай `pnpm audit`. В шаблоне зафиксирован `pnpm.overrides` на
+> `protobufjs>=7.5.8` (закрывает critical-RCE из транзитивной ONNX-зависимости). Viewer-API слушает
+> только `127.0.0.1` (наружу — `VIEWER_HOST=0.0.0.0`).
+
+## Ключевые концепции (от общего к частному)
+
+### 1. Слои базы знаний
+
+Всё знание разложено по слоям — от сырого к финальному. Это даёт прослеживаемость: любой вывод можно
+размотать до источника.
+
+```mermaid
+flowchart TD
+    C["00_context — постоянный контекст проекта"]
+    R["01_raw — сырьё, immutable"] --> S["02_sources — короткие саммари"]
+    S --> W["03_wiki — концепты из нескольких источников"]
+    W --> Y["04_synthesis — интерпретация, гипотезы, open-questions"]
+    Y --> D["05_decisions — решения с rationale"]
+    D --> O["06_outputs — артефакты для людей + внешний корпус"]
+    C -.контекст для всех слоёв.-> W
+```
+
+### 2. Дисциплина утверждений
+
+Каждое нетривиальное высказывание помечается одной из меток и сопровождается ссылкой на источник:
+
+```
+FACT: ARR в Q1 = 12М ₽. [source: /02_sources/2026-04-finance.md]
+UNKNOWN: retention за 12 месяцев — нет источника.
+```
+
+Метки: `FACT` · `INFERENCE` · `ASSUMPTION` · `UNKNOWN` · `RISK` · `DECISION` · `RECOMMENDATION`.
+Правила живут в [`AGENTS.md`](AGENTS.md) и **проверяются автоматически** (хуки + CI, см. ниже).
+
+### 3. Гибридный поиск
+
+Локальная ONNX-модель `multilingual-e5-small` индексирует все `.md`. Поиск объединяет несколько
+каналов через RRF:
+
+- **вектор** — ловит синонимы и перифразы;
+- **BM25** — точные термины и аббревиатуры (NRR, ARR…);
+- **граф** — подтягивает документы, связанные через frontmatter `related:` (выигрыш на multi-hop);
+- **temporal** — фильтр/буст по дате документа (`--since/--until/--asof/--recency`).
+
+### 4. Контроль качества: verify → critique → CI-гейт
+
+Главный механизм доверия. У базы знаний нет «компилятора», поэтому единственный детерминированный
+оракул — **проверка, что цитата ведёт на реально существующий источник нужного слоя**. Вокруг неё —
+петля исправления и блокирующий гейт в автосборке:
+
+```mermaid
+flowchart LR
+    Q["вопрос"] --> T["kb_think<br/>контекст + правила AGENTS.md"]
+    T --> ANS["ответ с цитатами"]
+    ANS --> VE["kb_verify<br/>Tier-1 + provenance"]
+    VE -->|"pass"| P["kb_promote →<br/>04_synthesis/_answers/"]
+    VE -->|"fail"| K["kb-critic →<br/>revision-промпт"]
+    K --> ANS
+    subgraph CI["автосборка (GitHub Actions)"]
+      G["verify --scan --provenance<br/>+ kb-doctor + eval"]
+    end
+    P --> G
+```
+
+- **verify** проверяет каждую цитату: файл существует, слой допустим, не указывает на внешний корпус;
+  для меток `FACT` добавляет advisory-балл семантического совпадения. Цитаты-примеры в комментариях и
+  коде игнорируются.
+- **provenance** следит за порядком пирамиды: `synthesis`/`decisions` могут ссылаться только на
+  **более низкий** слой (нельзя обосновать вывод ссылкой на свой же уровень).
+- **kb-critic** превращает провалы в готовый revision-промпт (`--execute` гоняет цикл «исправил →
+  перепроверил» через LLM-CLI, без неё — печатает промпт).
+- Всё это стоит **блокирующим шагом в CI** — битая цитата не попадёт в `main`.
+
+### 5. Память: working memory + проверенные answer-cards
+
+- `.remember/core.md` — инвариант проекта (коммитится), `now.md`/`today.md` — сессионные (gitignored).
+- `.remember/preferences.md` — ручки **формы ответа** (глубина, плотность цитат, агрессивность `UNKNOWN`),
+  подмешиваются в синтез.
+- **`kb_promote`** — gated write-path: проверенный ответ сохраняется как переиспользуемая answer-card
+  в `04_synthesis/_answers/`, но только если прошёл verify + provenance + не дублирует существующую.
+  Если источник потом изменится — `kb-doctor` пометит карту как устаревшую.
+
+### 6. Петля Compose → Adapt → Evolve
+
+Поведение собирается из 8 ортогональных измерений (Context · Memory · Retrieval · Tools · Evaluate ·
+Control · Observe · Evolve), а каждый прогон оставляет оценённый след, который возвращается в
+улучшение. Полная карта — в [`docs/architecture.md`](docs/architecture.md); разбор внешнего обзора,
+из которого пришли verify-петля и answer-cards — в
+[`04_synthesis/code-as-agent-harness-adoption.md`](04_synthesis/code-as-agent-harness-adoption.md).
+
+## Инструменты: CLI и MCP
+
+**CLI** (через `pnpm`, см. [`scripts/README.md`](scripts/README.md)):
+
+| Команда | Что делает |
 |---|---|
-| `/` | Счётчики по слоям + последние изменения |
-| Sidebar | Автогенерация по структуре каталогов (никакого захардкоженного меню) |
-| `/doc/<path>` | Рендер любого `.md` с дизайн-системой + backlinks внизу |
-| `/search` | Тот же hybrid retrieval, но в UI |
-| `/graph` | Интерактивный граф связей (Sigma + ForceAtlas2), клик → открыть документ |
-| `/open-questions` | Свод `04_synthesis/open-questions.md` + `contradictions.md` |
-| `/skillopt` | Дашборд экспериментов с улучшением скиллов (слой 4) |
+| `pnpm kb:index` | построить/обновить гибридный индекс |
+| `pnpm kb:search "запрос"` | гибридный поиск (вектор + BM25 + RRF + граф + temporal) |
+| `pnpm kb:think "вопрос"` | собрать промпт-синтез с цитатами и правилами AGENTS.md |
+| `pnpm kb:verify --scan --provenance` | проверка цитат + provenance по слоям (гейт CI) |
+| `pnpm kb:critic --file ans.md` | revision-промпт по битым цитатам (`--execute` — авто-цикл) |
+| `pnpm kb:doctor` | health-check базы (frontmatter, битые ссылки, orphans, stale) |
+| `pnpm kb:eval` | retrieval-бенчмарк (recall@k/MRR) + регрессия vs baseline |
+| `pnpm kb:dream` | еженедельный LLM-аудит + консолидация фактов (в `.context/`) |
+| `pnpm skill …` | SkillOpt CLI (rollout/reflect/diff/apply) |
 
-Это для **коллег**, которые не лезут в командную строку. `pnpm viewer:build` → статический сайт, можно деплоить куда угодно.
+**MCP-сервер** (`scripts/semantic/mcp-server.mjs`, см. [`scripts/semantic/README.md`](scripts/semantic/README.md)) —
+шесть инструментов любому MCP-клиенту:
 
-### 4. SkillOpt — самообучение инструкций (`scripts/skillopt/`)
+| Инструмент | Назначение |
+|---|---|
+| `kb_search` | гибридный поиск, JSON-результат |
+| `kb_think` | промпт-контекст под синтез (правила + цитаты + возраст источников) |
+| `kb_backlinks` | кто ссылается на файл (blast radius перед правкой) |
+| `kb_verify` | проверка цитат + `critique` (что и как исправить) |
+| `kb_retain` | write-path: кандидат-заметка → `.context/inbox/` на ревью (не коммит) |
+| `kb_promote` | gated write-path: проверенный ответ → `04_synthesis/_answers/` |
 
-Если вы написали `skills/skill-ingest.md` (пошаговая процедура «как обработать новый артефакт»), как понять, что Claude её правильно следует? Раньше — никак, только глазами. Теперь:
+## Типичные рабочие сценарии
 
+**A. Новый проект.** `gh repo create … --template …` → `pnpm run setup` → положить источник в
+`01_raw/` → `pnpm kb:index`.
+
+**B. Вопрос по базе.** Агент в IDE сам вызывает `kb_search` → `kb_think` и отвечает с метками и
+цитатами; `kb_verify` подтверждает, что ссылки настоящие.
+
+**C. Правка важного файла.**
 ```bash
-pnpm skill rollout skill-ingest    # прогоняет тест-кейсы через LLM
-pnpm skill reflect <run-id>        # LLM смотрит провалы, предлагает улучшения skill.md
-pnpm skill diff <run-id>           # показывает unified diff
-pnpm skill apply <run-id>          # копирует улучшенную версию + git add (НЕ commit)
-git diff --staged && git commit    # вы ревьюите и фиксируете (или pnpm skill revert)
+pnpm kb:search "тема" --explain
+node scripts/semantic/backlinks.mjs 03_wiki/foo.md   # кто на меня ссылается
+pnpm kb:index                                        # инкрементальная переиндексация
 ```
 
-**Работает с любой нейронкой** — auto-detect: если есть `claude` CLI — берёт его, если есть `OPENAI_API_KEY` — идёт по HTTP, через `--base-url http://localhost:11434/v1` подключается к локальной Ollama. Adapter `generic-cli` покрывает sgpt / llm Simon Willison / gemini / codex / любой CLI.
-
-**Защита от ошибок**: `reflect` отказывается работать при <5 кейсах (overfit prevention) или 100% pass-rate (нет повода); `apply` отказывается если working tree грязный (защита ручных правок); backup в `.context/skillopt/<run>/backups/` + `pnpm skill revert <run-id>`.
-
-Идея вдохновлена [microsoft/SkillOpt](https://microsoft.github.io/SkillOpt/), но реализация **без привязки к Azure OpenAI** — работает с любой LLM.
-
----
-
-## Четыре типичных сценария
-
-**A. Начинаю новый проект.**
+**D. Ответ оказался с битыми цитатами.**
 ```bash
-gh repo create my-research --template ha1ex/ai-kb-harness-template --public --clone
-cd my-research
-# Поправь AGENTS.md (TODO: цель проекта), CLAUDE.md (язык, workflow)
-# Положи первый файл в 01_raw/research/
-cd scripts/semantic && pnpm install && cd ../..
-node scripts/semantic/index.mjs     # построить индекс (~3 минуты для ~200 файлов)
+node scripts/kb-critic.mjs --file answer.md          # печатает revision-промпт
+node scripts/kb-critic.mjs --file answer.md --execute # авто-цикл verify→revise (если есть claude CLI)
 ```
 
-**B. Я задал агенту вопрос по KB.**
-Claude в IDE видит MCP-tools (`.mcp.json` подхвачен). Сначала вызывает `kb_search` — находит топ-10 чанков. Потом `kb_think` — собирает промпт с цитатами и правилами AGENTS.md. Отвечает уже с метками: `FACT: ARR в Q1 = 12М ₽ [source: /02_sources/2026-04-finance.md]. UNKNOWN: retention за 12 месяцев — нет источника`. Никаких выдумок.
+**E. Закрепить проверенный ответ как знание.** Через MCP-инструмент `kb_promote` (вопрос + ответ с
+цитатами) → карта в `04_synthesis/_answers/`, если прошла verify + provenance + не дубль.
 
-**C. Я правлю важный wiki-файл.**
+**F. AI плохо следует скиллу.**
 ```bash
-pnpm kb:search "тема" --explain                   # точно ли я правлю нужный файл?
-node scripts/semantic/backlinks.mjs 03_wiki/foo.md  # кто на меня ссылается (5 файлов)
-# меняю аккуратно, понимая blast radius
-node scripts/semantic/index.mjs                   # инкрементальная переиндексация (~1 сек)
+pnpm skill rollout skill-ingest    # 2 из 3 кейсов провалились
+pnpm skill reflect <run-id>        # LLM предлагает правку SKILL.md
+pnpm skill diff <run-id> && pnpm skill apply <run-id>   # human-in-the-loop
 ```
-
-**D. AI плохо следует моему скиллу.**
-```bash
-pnpm skill rollout skill-ingest        # 2 из 3 кейсов провалились
-pnpm skill reflect <run-id>            # модель смотрит провалы, предлагает правку skill.md
-pnpm skill diff <run-id>               # вижу что добавилась секция «всегда проверяй frontmatter»
-pnpm skill apply <run-id>              # копирует + git add (НЕ commit)
-pnpm skill rollout skill-ingest        # 3 из 3 ✓
-git commit -m "skill-ingest v0.2"
-```
-
----
-
-## Что шаблон **не** делает за вас
-
-- **Не пишет KB вместо вас** — это ваше содержание, шаблон только наводит порядок.
-- **Не платит за LLM** — токены OpenAI/Anthropic из вашего кармана. Можно вообще без LLM: `kb:search` локальный, `kb:doctor` локальный, eval-suites работают как regression-тесты (`pnpm skill score <run-id>` офлайн).
-- **Не коммитит за вас** — `skill apply` только `git add`, человек смотрит diff и решает commit/revert.
-- **Не лезет в облако** — embedder, БД, поиск, граф, MCP — всё на вашей машине.
-
----
-
-## Зачем это нужно
-
-Когда вы работаете с AI-агентом по живому проекту больше пары недель, появляются три повторяющиеся боли:
-
-1. **Агент галлюцинирует** про содержимое вашего проекта. Он не знает, что в `04_synthesis/migration-risks.md` уже есть ответ — потому что вы не положили этот файл в контекст. И сам он его не найдёт без явных инструментов.
-2. **Дисциплина рассуждений плывёт**. Агент путает факты, гипотезы и решения. Через месяц у вас в репозитории `RECOMMENDATION`-ы, выданные за `FACT`, и никто уже не помнит, какой был source.
-3. **KB накапливает скрытый долг**. Файлы без frontmatter, ссылки `related:` указывают в никуда, orphan-страницы, на которые никто не ссылается. Найти руками — никто не будет.
-
-Этот шаблон закрывает эти три боли пятью независимыми инструментами, которые работают вместе.
-
----
 
 ## Что внутри
 
 ```
 ai-kb-harness-template/
 ├── AGENTS.md                  ← системный промпт для агентов (метки, citation, ingest workflow)
-├── CLAUDE.md                  ← operational rules (язык, дисциплина, артефакты)
-├── .mcp.json                  ← конфиг MCP-сервера, подхватывается Claude Code
-├── .claude/settings.json      ← permissions + pre/post-tool-use hooks
-├── .remember/core.md          ← semantic invariant проекта (коммитится)
-├── skills/                    ← рабочие процедуры с триггерами
-│   ├── skill-ingest.md
-│   └── skill-decision-log.md
+├── CLAUDE.md                  ← operational rules (язык, дисциплина веток, артефакты)
+├── .mcp.json                  ← конфиг MCP-серверов (kb-local + skillopt-local)
+├── .claude/settings.json      ← permissions + hooks (session-start, pre-tool-use)
+├── .remember/
+│   ├── core.md                ← semantic invariant проекта (коммитится)
+│   └── preferences.md         ← ручки формы ответа (answer-policy)
+├── skills/                    ← рабочие процедуры с триггерами (skill-ingest, skill-decision-log)
 ├── scripts/
-│   ├── semantic/              ← гибридный поиск + синтез + MCP-сервер
-│   │   ├── index.mjs          ← индексатор (e5-small + sqlite-vec + FTS5 + doc_date)
-│   │   ├── search.mjs         ← hybrid search (vector + BM25 + RRF + graph + temporal)
-│   │   ├── think.mjs          ← синтез-промпт с системной частью из AGENTS.md
-│   │   ├── backlinks.mjs      ← кто ссылается на файл
-│   │   ├── rerank.mjs         ← опц. cross-encoder rerank (opt-in)
-│   │   ├── eval.mjs           ← retrieval-eval (recall@k/MRR) + регрессия vs baseline
-│   │   ├── test-retrieval.mjs ← офлайн-юнит-тесты graph/temporal (CI-гейт)
-│   │   ├── mcp-server.mjs     ← stdio MCP: kb_search/kb_think/kb_backlinks/kb_verify/kb_retain
-│   │   └── lib.mjs            ← всё ядро (searchVec/BM25/Graph/Hybrid, temporal-helpers)
-│   ├── kb-doctor.mjs          ← health-check KB (missing fm, broken related, orphans, stale)
-│   ├── dream-cycle.mjs        ← еженедельный LLM-аудит + fact-консолидация (drop-zone в .context/)
-│   ├── suggest-links.mjs      ← advisory-предложения related: (on-device, в .context/)
-│   ├── parse-raw.mjs          ← бинарный артефакт → черновик 02_sources (markitdown, опц.)
-│   ├── check-decisions.mjs    ← PreToolUse hook для /05_decisions/
-│   ├── check-md-frontmatter.mjs  ← PreToolUse hook на frontmatter + confidence в значимых слоях
-│   └── session-start-context.mjs ← SessionStart hook с git/.remember-выдержкой
-├── tools/viewer/              ← локальный веб-интерфейс KB (Vite + React)
-│   ├── server.ts              ← минимальный API (tree, doc, graph, search)
-│   ├── src/v2/styles/v2.css   ← дизайн-система: токены + 13 KB-блоков + callouts
-│   ├── src/v2/components/MarkdownDoc.tsx  ← рендер любого .md со всеми KB-блоками
-│   ├── src/components/Sidebar.tsx  ← data-driven навигация по структуре каталогов
-│   ├── src/routes/Index, KbLayer, DocumentView, Search, Graph, OpenQuestions
-│   └── package.json           ← React 19 + Tailwind 4 + Sigma 3 + radix-ui
-└── 00_context..06_outputs/    ← слои KB (см. AGENTS.md)
+│   ├── semantic/              ← ядро поиска/синтеза + MCP-сервер
+│   │   ├── lib.mjs            ← вектор/BM25/граф/гибрид, temporal, чанкер, схема БД
+│   │   ├── index.mjs · search.mjs · think.mjs · backlinks.mjs · rerank.mjs
+│   │   ├── verify.mjs         ← проверка цитат (Tier-1 gate + FACT-advisory + critique + --scan)
+│   │   ├── eval.mjs · test-retrieval.mjs · test-control.mjs   ← бенчмарк + офлайн-тесты (гейты CI)
+│   │   └── mcp-server.mjs     ← kb_search/think/backlinks/verify/retain/promote
+│   ├── lib/                   ← dependency-free утилиты
+│   │   ├── provenance.mjs     ← порядок пирамиды + маскирование примеров цитат
+│   │   └── journal.mjs        ← append-only журнал операций (.context/)
+│   ├── kb-doctor.mjs          ← health-check (+ advisory: stale inbox/answer-cards)
+│   ├── kb-critic.mjs          ← петля verify→critique→revise (N1)
+│   ├── check-decisions.mjs · check-md-frontmatter.mjs · check-provenance.mjs  ← PreToolUse hooks
+│   ├── dream-cycle.mjs · suggest-links.mjs · session-start-context.mjs · parse-raw.mjs
+│   └── skillopt/              ← самообучение SKILL.md (rollout/reflect/diff/apply) + MCP
+├── tools/viewer/              ← локальная веб-витрина базы (Vite + React + Tailwind)
+└── 00_context … 06_outputs/   ← слои базы знаний (см. AGENTS.md)
 ```
 
-### Ключевые инструменты
+## Веб-витрина для коллег
 
-| Инструмент | Зачем | Закрытая боль |
-|---|---|---|
-| **Hybrid search** (`scripts/semantic/search.mjs`) | Vector + BM25 + RRF локально через ONNX `multilingual-e5-small`, **+ граф-канал** (1-hop `related:`) и **temporal** (`--since/--until/--asof`, `--recency`) | Агент не находил нужный файл (vector промахивался на аббревиатурах, BM25 — на перифразах) и не подтягивал связанные / не учитывал время |
-| **`think`** (`scripts/semantic/think.mjs`) | Собирает промпт-контекст с **системной частью из `AGENTS.md`** + цитатами + возрастом источников | Агент путал FACT/INFERENCE/UNKNOWN; ответы без ссылок |
-| **`backlinks`** (`scripts/semantic/backlinks.mjs`) | Кто ссылается на файл (через frontmatter `related:`) — видишь blast radius перед правкой | Правка wiki ломала связи в /04_synthesis/ и /05_decisions/, никто не замечал |
-| **`suggest-links`** (`scripts/suggest-links.mjs`) | Advisory-предложения недостающих `related:` (vector-similarity, on-device, без LLM) — питает граф-канал. Пишет в `.context/`, не коммитит | Связи между документами заводились вручную; легко пропустить очевидную |
-| **MCP-сервер** (`scripts/semantic/mcp-server.mjs`) | Tools `kb_search`/`kb_think`/`kb_backlinks`/`kb_verify`/**`kb_retain`** (write-path: заметка агента → `.context/inbox/` на ревью) любому MCP-клиенту | Агент не мог ни искать без копипасты, ни зафиксировать находку в очередь на ревью |
-| **kb-doctor** (`scripts/kb-doctor.mjs`) | Health-check: missing frontmatter, broken `related:`, orphans, stale synthesis | KB накапливала скрытый долг; никто не замечал |
-| **Dream cycle** (`scripts/dream-cycle.mjs`) | Еженедельный LLM-аудит: что устарело, новые противоречия, что синтезировать, **+ fact-консолидация** (near-duplicate пары + freshness-конфликты). Только дроп-зона, в KB не пишет | Open questions висели закрытыми; дубли и устаревшие факты копились незаметно |
-| **Viewer** (`tools/viewer/`) | Локальное веб-приложение: обзор слоёв, рендер любого `.md` с дизайн-системой, поиск, интерактивный граф связей, open-questions/contradictions. `pnpm dev` → `localhost:5173` | KB видна только через текстовый редактор; коллегам тяжело ориентироваться; нет единого UI для поиска/графа |
-
-Плюс **дисциплина утверждений**: каждое нетривиальное высказывание помечается `FACT/INFERENCE/ASSUMPTION/UNKNOWN/RISK/DECISION/RECOMMENDATION` с цитатой `[source: /path]`. Эти правила живут в `AGENTS.md` и проверяются хуками `check-decisions.mjs` / `check-md-frontmatter.mjs`.
-
----
-
-## Кому полезно
-
-**Подходит, если у вас:**
-- Содержательный проект, где знание копится: исследование, продуктовое решение, due diligence, миграция, расследование инцидента, написание книги/статьи.
-- Markdown — основной формат (или вы готовы конвертировать в него).
-- Используете AI-агента не для одноразовых задач, а как ежедневный инструмент.
-
-**Конкретные сценарии:**
-- **Продуктовый ресёрч** (наш исходный кейс — pricing redesign). Десятки источников, противоречия, evidence в постоянной ревизии.
-- **M&A / Due diligence**. Куча документов, нужна дисциплина «факт vs гипотеза», структура «источник → wiki → synthesis → decision».
-- **Архитектурные decisions**. ADR-формат с явной дисциплиной evidence, поиском по истории решений, backlinks от decision к источникам.
-- **Расследования / постмортемы**. Хронология + противоречивые показания + явное выделение `UNKNOWN`.
-
-**Не подходит, если:**
-- Знание живёт в коде, не в документах.
-- Нужна real-time коллаборация (Notion/Confluence-стиль). Этот шаблон — про solo или small-team с git-workflow.
-- Объём KB > 50K страниц. SQLite + on-device embedder упрётся в потолок; нужен Postgres+pgvector.
-
----
-
-## Quick start (5 шагов, ~5 минут)
-
-### 1. Создать проект из шаблона
-
-В GitHub UI: кнопка **«Use this template»** → новый репозиторий.
-Или через CLI:
+Для тех, кто не лезет в терминал — локальный веб-интерфейс (`tools/viewer/`):
 
 ```bash
-gh repo create my-project --template ha1ex/ai-kb-harness-template --public --clone
-cd my-project
+pnpm viewer:dev     # API на :3001 + клиент на http://localhost:5173
 ```
 
-### 2. Поставить зависимости
+Главная с обзором слоёв · автогенерируемый sidebar · рендер любого `.md` с дизайн-системой и
+backlinks · поиск (тот же hybrid retrieval) · интерактивный граф связей (Sigma) ·
+open-questions/contradictions · дашборд SkillOpt. Для коллег: `pnpm viewer:build` → статический сайт.
 
-Требования: **Node 22** (в репо есть `.nvmrc` — `nvm use` подхватит), **pnpm** через `corepack enable`.
+## SkillOpt — самообучение инструкций (опционально)
 
-Одной командой (ставит все три под-пакета — semantic, skillopt, viewer):
-
-```bash
-pnpm run setup
-```
-
-Или только семантик-индекс:
-
-```bash
-cd scripts/semantic && pnpm install && cd ../..
-```
-
-(При первом запуске индексатора качается ONNX-модель `multilingual-e5-small` ~120 MB в `scripts/semantic/.transformers-cache/`, gitignored — единственная сетевая операция, дальше всё локально.)
-
-> **Supply chain:** запускайте `pnpm audit`. В шаблоне применён `pnpm.overrides` на `protobufjs>=7.5.8` (закрывает critical-RCE из транзитивной ONNX-зависимости). Viewer-API по умолчанию слушает только `127.0.0.1` (для доступа из сети — `VIEWER_HOST=0.0.0.0`).
-
-### 3. Заполнить персонализированные плейсхолдеры
-
-Откройте и поправьте:
-
-- `AGENTS.md` — заменить блок `Project purpose` (TODO внутри).
-- `CLAUDE.md` — поправить язык / workflow / запуск проекта (TODO внутри).
-- `.remember/core.md` — заполнить «Цель проекта», «Контекст», «Hard rules».
-
-Лицензия: `LICENSE` (MIT). Замените copyright-holder при необходимости.
-
-### 4. Положить первый артефакт
-
-Простейший сценарий — кладёте свой первый источник:
-
-```bash
-mkdir -p 01_raw/research
-cp ~/your-document.md 01_raw/research/2026-XX-XX-first-source.md
-```
-
-Потом просите Claude обработать его по skill-ingest (этот скилл создан в `skills/skill-ingest.md`):
-
-```
-Привет. Обработай новый артефакт /01_raw/research/2026-XX-XX-first-source.md по skill-ingest.
-```
-
-Claude пройдёт по 11 шагам и создаст файлы в `/02_sources/`, `/03_wiki/`, `/04_synthesis/`.
-
-### 5. Запустить индекс и убедиться, что всё работает
-
-```bash
-node scripts/semantic/index.mjs                  # построить hybrid-индекс (vector + BM25 + links + doc_date)
-node scripts/semantic/search.mjs "тема"          # проверить поиск (hybrid + граф-канал)
-node scripts/semantic/search.mjs "тема" --asof 2026-03-01   # срез «на дату» (temporal)
-node scripts/kb-doctor.mjs                       # health-check
-```
-
-### MCP — для подключения в Claude Code
-
-`.mcp.json` в корне уже настроен. Перезапустите Claude Code в этом проекте — появятся tools `kb_search` / `kb_think` / `kb_backlinks` / `kb_verify` / `kb_retain`. Дальше агент будет вызывать их сам, без передачи файлов вручную (а `kb_retain` — складывать находки в `.context/inbox/` на ваше ревью).
-
-### 6. Поднять веб-приложение для коллег
-
-Для людей, которые не лазят в командную строку — есть локальный веб-интерфейс KB (`tools/viewer/`):
-
-```bash
-cd tools/viewer
-pnpm install     # ~15 секунд
-pnpm dev         # API на :3001 + клиент на :5173
-```
-
-Открыть `http://localhost:5173` — будет:
-- **Главная** — обзор всех слоёв KB с счётчиками и последними изменениями.
-- **Sidebar** — data-driven дерево по структуре каталогов (читает `/api/tree`).
-- **Любой документ** — `/doc/<path>` рендерит markdown через единый компонент с дизайн-системой v2 (13 KB-блоков, callouts, типографика). Внизу — backlinks (кто ссылается).
-- **Поиск** — `/search` вызывает hybrid retrieval из `scripts/semantic/`. Режимы: hybrid / vector / bm25.
-- **Граф связей** — `/graph` рисует интерактивный граф (Sigma + ForceAtlas2): ноды = файлы, рёбра = `related:` из frontmatter. Клик по ноде → открыть документ.
-- **Открытые вопросы** — `/open-questions` показывает `04_synthesis/open-questions.md` + `contradictions.md` в едином виде.
-
-Для деплоя коллегам — `pnpm build`, выложить `dist/` куда угодно (Vercel, Netlify, S3, любой статик-хостинг). Для прода с динамическими данными — поднять `server.ts` рядом.
-
-### 7. SkillOpt — регрессионные тесты и оптимизация SKILL.md (опционально)
-
-Превращает скиллы из статических `SKILL.md` в эволюционирующие документы с метриками. Идея вдохновлена [microsoft/SkillOpt](https://microsoft.github.io/SkillOpt/) — `rollout → reflect → edit → gate` — но реализована **без привязки к конкретной нейронке**: claude CLI, OpenAI HTTP API, Ollama, LiteLLM, любой OpenAI-compatible endpoint.
-
-**Установка:**
-
-```bash
-cd scripts/skillopt
-pnpm install        # cosmiconfig + p-queue + zod + js-yaml
-cd ../..
-```
-
-**Phase 1 (уже работает) — regression-тесты скиллов:**
-
-```bash
-pnpm skill list                              # обзор: какие скиллы, сколько eval'ов
-pnpm skill rollout skill-ingest              # прогнать все eval'ы скилла через LLM
-pnpm skill rollout skill-ingest --case happy-path
-pnpm skill score <run-id>                    # офлайн: пересчитать graders без LLM
-pnpm skill rollout skill-ingest --ci         # exit 1 если pass-rate < 100%
-```
-
-Результат каждого прогона — в `.context/skillopt/<run-id>/`:
-- `summary.json` — pass/fail/score, токены, по-скильному breakdown
-- `traces/<skill>__<case>.json` — полный trace (prompt, response, grader details)
-
-**Подключение нейронки.** По умолчанию `provider=auto`: пробует `claude` CLI → fallback на `openai-http` если `OPENAI_API_KEY` задан → иначе actionable error. Явно:
-
-```bash
-# OpenAI
-export OPENAI_API_KEY=sk-...
-pnpm skill rollout skill-ingest --provider openai-http --model gpt-4o-mini
-
-# Локальный Ollama (OpenAI-совместимый)
-ollama serve &
-pnpm skill rollout skill-ingest \
-  --provider openai-http \
-  --base-url http://localhost:11434/v1 \
-  --model llama3
-
-# Или через .skillopt.json в корне репо
-cat > .skillopt.json <<EOF
-{
-  "provider": "openai-http",
-  "model": "gpt-4o-mini",
-  "concurrency": 2
-}
-EOF
-```
-
-**Формат eval-кейса** (`skills/<skill-name>/evals/<case-id>.yaml`):
-
-```yaml
----
-type: eval-case
-version: v0.1
-skill: skill-ingest
-grader: label-presence       # contains | label-presence (phase 2: + llm-judge + json-schema)
-tags: [regression, happy-path]
----
-# Input
-Текст промпта. Поддержка {{file:fixture.md}} для подгрузки фикстур
-из skills/<name>/evals/_fixtures/.
-
-# Expected
-- required labels: FACT, INFERENCE
-- at least: 2 distinct
-```
-
-Готовые примеры — `skills/skill-ingest/evals/happy-path.yaml` (label-presence), `skills/skill-ingest/evals/no-fabrication.yaml` (contains, проверка что модель отвечает `UNKNOWN:` а не выдумывает retention rate), `skills/skill-decision-log/evals/decision-with-source.yaml`.
-
-**Phase 2** (в разработке): `reflect` (LLM анализирует traces и предлагает правки в `proposals/<skill>.md` с метками AGENTS.md), `diff`/`apply` (human-in-the-loop коммит), llm-judge и json-schema graders, `generic-cli` adapter (sgpt, llm Simon Willison, gemini).
-
-**Phase 2** (готово): полный цикл оптимизации:
-
-```bash
-pnpm skill rollout skill-foo            # собрать traces (Phase 1)
-pnpm skill reflect <run-id>             # 2-й LLM-pass предлагает правки
-pnpm skill diff <run-id>                # unified diff proposal vs current
-pnpm skill apply <run-id>               # overwrite skills/, git add, backup
-git diff --staged skills/               # человек смотрит и решает
-git commit -m "skill-foo: optimized [run <id>]"
-# или откат:
-pnpm skill revert <run-id>
-pnpm skill runs                         # последние runs из metrics
-```
-
-Защита от ошибок: `reflect` отказывается работать если <5 кейсов (overfit) или pass_rate=100%. `apply` отказывается если working tree грязный — не теряет ручные правки. Backup в `.context/skillopt/<run>/backups/`. Новые graders: `llm-judge` (рубрика + LLM в качестве судьи) и `json-schema` (валидация JSON output). Adapter `generic-cli` — для sgpt/llm/gemini/любого CLI с config-driven argv + stdin.
-
-**Phase 3** (готово):
-
-- **MCP-сервер** `scripts/skillopt/mcp-server.mjs` (зарегистрирован в `.mcp.json` рядом с `kb-local`). Read-only tools: `skill_list_runs`, `skill_get_trace`, `skill_get_proposal`, `skill_list_evals`, `skill_get_eval`. Агент в Claude Code/Desktop может смотреть историю оптимизации, но **мутации** (`rollout`/`reflect`/`apply`) остаются за CLI — human pulls the trigger.
-- **Страница `/skillopt` в viewer**: список runs с pass-rate и стоимостью, drill-down в traces, ссылки на `pnpm skill diff/apply <run-id>`. Видна по `pnpm viewer:dev` → `http://localhost:5173/skillopt`.
-
----
-
-## Архитектура (как куски связаны)
-
-```
-┌────────────────────────────────────────────────────────────────┐
-│                  AI-агент (Claude Code, Desktop, ...)          │
-└──────────┬─────────────────────────────────────┬───────────────┘
-           │                                     │
-   читает прямо файлы                  вызывает через MCP
-           │                                     │
-           ▼                                     ▼
-   ┌─────────────────┐              ┌─────────────────────────┐
-   │ markdown KB     │              │ scripts/semantic/       │
-   │ 00..06_*/       │              │  mcp-server.mjs         │
-   │ AGENTS.md       │              │  └─ kb_search (+graph,  │
-   │ CLAUDE.md       │              │     temporal, rerank)   │
-   │ .remember/      │              │  └─ kb_think            │
-   │ skills/         │              │  └─ kb_backlinks        │
-   │ .mcp.json       │              │  └─ kb_verify           │
-   │                 │              │  └─ kb_retain (→inbox)  │
-   └────────┬────────┘              └────────┬────────────────┘
-            │                                │
-            │ индексируется ───────────────▶ │
-            │                                ▼
-            │                       ┌──────────────────────┐
-            │                       │ .semantic-index      │
-            │                       │   .sqlite            │
-            │                       │ ├─ chunks (text,     │
-            │                       │ │   doc_date)        │
-            │                       │ ├─ vec_chunks (e5)   │
-            │                       │ ├─ fts_chunks (BM25) │
-            │                       │ ├─ files (mtime)     │
-            │                       │ └─ links (related:)  │
-            │                       └──────────────────────┘
-            │
-   правка в KB ──▶ hooks из .claude/settings.json:
-                    • SessionStart: session-start-context.mjs (контекст)
-                    • PreToolUse:   check-decisions.mjs       (dec-карточки)
-                                    check-md-frontmatter.mjs  (frontmatter)
-```
-
-**Ключевые abstractions:**
-- **Слои KB** (`00..06_*`) — каноническая иерархия `evidence → summary → wiki → synthesis → decision → output`. Определяется в `AGENTS.md`, проверяется хуками, индексируется семантик-поиском.
-- **Метки утверждений** — `FACT/INFERENCE/ASSUMPTION/UNKNOWN/RISK/DECISION/RECOMMENDATION`. Жёсткое правило в `AGENTS.md`, инжектится в системный промпт `think` / `kb_think`, проверяется `check-decisions.mjs`.
-- **Frontmatter `related:`** — единственный источник связей между файлами. Парсится в `index.mjs`, питает `backlinks.mjs` **и граф-канал поиска** (`searchGraph`), валидируется `kb-doctor.mjs`, предлагается `suggest-links.mjs`.
-- **`doc_date`** — дата документа (`date`→`ingested`→`updated`→mtime), пишется в индекс. Питает temporal-канал (`--since/--until/--asof/--recency`).
-- **MCP как мост** — `scripts/semantic/mcp-server.mjs` экспонирует пять операций (`kb_search`, `kb_think`, `kb_backlinks`, `kb_verify`, `kb_retain`) через JSON-RPC. Один индекс — несколько клиентов. `kb_retain` — единственный write-path (в `.context/inbox/`, не в KB).
+Превращает скиллы из статических `SKILL.md` в документы с метриками: `rollout` (прогон eval-кейсов
+через LLM) → `reflect` (LLM предлагает правки) → `diff`/`apply` (human-in-the-loop). Работает с любой
+нейронкой (claude CLI, OpenAI HTTP, Ollama, любой OpenAI-совместимый endpoint). Защита от ошибок:
+`reflect` не работает при <5 кейсах или 100% pass-rate; `apply` отказывается на грязном working tree;
+бэкап + `revert`. Идея вдохновлена [microsoft/SkillOpt](https://microsoft.github.io/SkillOpt/), но без
+привязки к Azure. Детали и форматы eval-кейсов — в [`scripts/README.md`](scripts/README.md).
 
 ---
 
 ## Параметризация под свой проект
 
-Большинство кода — generic. Что обычно надо подкрутить:
+Большинство кода — generic. Что обычно подкручивают:
 
 | Файл | Что менять |
 |---|---|
-| `AGENTS.md` § Project purpose | Цель и контекст проекта (TODO внутри) |
-| `CLAUDE.md` § Язык | Если у вас English-команда — переведите |
-| `CLAUDE.md` § Дисциплина веток | Workflow вашей команды (rebase / squash / ff-merge) |
-| `CLAUDE.md` § Запуск проекта | Команды разработки, если репозиторий не чисто-KB |
-| `.remember/core.md` | Hard rules, инвариант проекта |
-| `scripts/semantic/lib.mjs` → `INDEXABLE_LAYERS` | Если у вас другая структура слоёв (например, добавили `07_phase3/` или `08_launch/`) |
-| `scripts/semantic/lib.mjs` → `SKIP_DIRS` | Если внутри слоёв есть подкаталоги, которые не нужно индексировать |
-| `scripts/kb-doctor.mjs` → `LAYERS` | Обязательные frontmatter-поля для каждого слоя |
-| `scripts/check-md-frontmatter.mjs` → `LAYER_RULES` | То же — для блокирующего hook'а |
-| `.mcp.json` → имя сервера | Опционально — переименовать с `kb-local` на что-то проектное |
-| `LICENSE` | Copyright holder |
+| `AGENTS.md` § Project purpose | Цель и контекст проекта |
+| `CLAUDE.md` | Язык, дисциплина веток, команды запуска |
+| `.remember/core.md` · `preferences.md` | Инвариант проекта и форма ответа |
+| `scripts/semantic/lib.mjs` → `INDEXABLE_LAYERS` / `SKIP_DIRS` | Своя структура слоёв |
+| `scripts/lib/provenance.mjs` → `PROVENANCE_ENFORCED_LAYERS` | Для каких слоёв включать provenance-гейт |
+| `scripts/kb-doctor.mjs` / `check-md-frontmatter.mjs` | Обязательные frontmatter-поля по слоям |
+| `.mcp.json` · `LICENSE` | Имя сервера · copyright holder |
 
-Что **не нужно** менять:
-- Алгоритмы поиска (`searchVec`, `searchBM25`, `searchGraph`, `fuseRRF`, `searchHybrid` в `lib.mjs`).
-- MCP-handler'ы в `mcp-server.mjs`.
-- Логику kb-doctor.
-
-Что можно настроить тонко (опционально): вес граф-канала (`graphWeight`, default 0.5) и порог recency (`halfLifeDays`) в `searchHybrid`; включить rerank по умолчанию (`KB_RERANK=1`) — но только если `pnpm kb:eval --rerank` показывает рост на ваших данных.
-
----
+**Не нужно** менять алгоритмы поиска (`lib.mjs`), MCP-handler'ы и логику гейтов — они generic.
 
 ## Как обновляться от upstream
 
-Шаблон-репо не обновляет ваши клоны автоматически — это сознательное ограничение GitHub templates.
-
-Чтобы догонять улучшения:
+GitHub-шаблоны не обновляют клоны автоматически. Чтобы догонять улучшения:
 
 ```bash
 git remote add upstream https://github.com/ha1ex/ai-kb-harness-template.git
 git fetch upstream
-git diff upstream/main -- scripts/   # посмотреть что изменилось в скриптах
+git diff upstream/main -- scripts/                       # что изменилось
 git checkout upstream/main -- scripts/semantic/lib.mjs   # цеплять конкретные файлы
 ```
 
-Чтобы получить уведомление о новых релизах — Watch → Custom → Releases на странице репо.
-
----
-
 ## FAQ
 
-**Зачем on-device, а не OpenAI/Anthropic embeddings?**
-Нулевая стоимость, нулевая задержка после первого запуска, никаких leak'ов вашей KB в чужие сервисы. `multilingual-e5-small` (384-dim) для русского/английского достаточен — на enterprise-объёмах (~10K страниц) разница с топовыми моделями в качестве retrieval незначима, а стоимость 0 vs $300/мес.
+**Зачем on-device, а не облачные эмбеддинги?** Нулевая стоимость и задержка после первого запуска,
+никаких утечек базы в чужие сервисы. `multilingual-e5-small` (384-dim) для ru/en достаточен.
 
-**Почему sqlite-vec, а не Qdrant/Chroma/Postgres+pgvector?**
-Один файл, нет процесса, нет порта, нет миграций. До ~50K чанков работает молниеносно. Если упрётесь — `lib.mjs` написан так, что миграция на другой бекенд = переписать `openDb` и три функции поиска.
+**Почему sqlite-vec, а не Qdrant/Postgres+pgvector?** Один файл, нет процесса/порта/миграций. До ~50K
+чанков — молниеносно. Упрёшься — `lib.mjs` написан так, что смена бекенда = переписать `openDb` + три
+функции поиска.
 
-**Почему MCP-сервер, а не CLI с Bash-allowlist?**
-MCP-tools видны агенту как first-class инструменты с типизированной схемой. Bash-allowlist менее надёжен (escaping, прав доступа, агенту проще ошибиться с флагами). MCP — стандарт, поддерживается Claude Code, Claude Desktop, Cursor, Windsurf, ChatGPT.
+**Почему MCP, а не Bash-allowlist?** MCP-инструменты видны агенту как first-class с типизированной
+схемой; это стандарт (Claude Code/Desktop, Cursor, Windsurf).
 
-**Это работает с GPT-5 / Gemini / open-source LLM?**
-Шаблон не привязан к Claude. CLI-команды (`search`, `think`, `backlinks`, `kb-doctor`) работают везде — выводят stdout/JSON. MCP — открытый стандарт, его поддерживают многие клиенты. Хуки `.claude/settings.json` специфичны для Claude Code, но их можно адаптировать (Cursor использует `.cursor/`, Windsurf — свой формат).
+**Работает с GPT/Gemini/open-source?** Да. CLI отдаёт stdout/JSON; MCP — открытый стандарт. Хуки
+`.claude/settings.json` специфичны для Claude Code, но адаптируются под Cursor/Windsurf.
 
-**Можно ли использовать без AI-агента, как обычный поиск по markdown?**
-Да — `search.mjs` работает сам по себе как CLI hybrid-поиск с цитатами. Это уже полезнее `grep -r`.
+**Можно без AI-агента, как поиск по markdown?** Да — `pnpm kb:search` полезнее `grep -r` (смысл +
+термины + связи + цитаты).
 
-**Что за граф / temporal / rerank каналы в поиске?**
-- **Граф** (вкл по умолчанию): к найденному подтягиваются документы, связанные через `related:` — выигрыш на multi-hop вопросах. На KB без связей канал ничего не делает (eval Δ=0), `--no-graph` выключает.
-- **Temporal**: `--since/--until/--asof` фильтруют по дате документа, `--recency` мягко поднимает свежее. Дата берётся из frontmatter (`date`/`ingested`/`updated`) или mtime.
-- **Rerank** (`--rerank`): cross-encoder для точности, но **по умолчанию выключен** — на встроенном корпусе наш eval показал регрессию. Включайте, только если ваш `pnpm kb:eval --rerank` растёт. Идеи каналов вдохновлены [Hindsight](https://hindsight.vectorize.io/) (agent memory), но реализованы on-device и детерминированно.
-
-**Что такое `kb_retain` и `.context/inbox/`?**
-Контролируемый write-path: агент во время работы может сохранить находку через MCP-tool `kb_retain` — она падает в `.context/inbox/` со статусом `needs-review` и **не коммитится и не попадает в KB сама**. Вы разбираете входящие через `skill-ingest`. Так агент получает «память», не нарушая git-дисциплину.
-
----
+**Что за `kb_retain` / `kb_promote` / `.context/inbox/`?** Контролируемые write-path: `kb_retain`
+кладёт черновик в карантин на ревью; `kb_promote` сохраняет **проверенный** ответ как answer-card.
+Агент получает «память», не нарушая git-дисциплину.
 
 ## Происхождение и кредиты
 
-- Идея «brain = markdown-репо + структурированный AI-доступ» вдохновлена [gbrain](https://github.com/garrytan/gbrain) Garry Tan. Этот шаблон — другая реализация той же идеи: без платных embeddings, без миграции на Postgres, без BunSDK — только Node + sqlite-vec + on-device ONNX.
-- Концепция AI harness как 7 building blocks (System Prompt, Tools, Context, Skills, Hooks, Permissions, Memory) — см. [статью «AI Harness, Skills, Context: Orchestration Guide»](https://www.youngju.dev/blog/culture/2026-03-23-ai-harness-skills-context-orchestration-guide.en).
-- Идеи retrieval-каналов (граф / temporal), консолидации фактов и write-path памяти инспирированы [Hindsight](https://hindsight.vectorize.io/) (Vectorize, MIT) — agent-memory система. Здесь они переосмыслены под нашу философию: on-device, детерминированно, git-native, human-in-the-loop (без Postgres, без LLM-на-запись).
-- `multilingual-e5-small` (Microsoft, MIT) для эмбеддингов; `sqlite-vec` (Alex Garcia, MIT) для vector storage; MCP SDK от Anthropic.
-
----
+- Идея «brain = markdown-репо + структурированный AI-доступ» вдохновлена
+  [gbrain](https://github.com/garrytan/gbrain). Здесь — реализация без платных эмбеддингов и Postgres:
+  Node + sqlite-vec + on-device ONNX.
+- Идея «харнесс определяет качество» и петля Compose→Adapt→Evolve — см. [`docs/architecture.md`](docs/architecture.md).
+- Петля verify→critique→revise, provenance-гейт и verified answer-cards — перенос идей из обзора
+  *Code as Agent Harness* (разбор: [`04_synthesis/code-as-agent-harness-adoption.md`](04_synthesis/code-as-agent-harness-adoption.md)).
+- `multilingual-e5-small` (Microsoft, MIT), `sqlite-vec` (Alex Garcia, MIT), MCP SDK (Anthropic).
 
 ## Лицензия
 
-MIT — см. [LICENSE](./LICENSE).
+MIT — см. [LICENSE](LICENSE).
