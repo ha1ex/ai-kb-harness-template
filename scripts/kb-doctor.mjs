@@ -29,6 +29,7 @@ const asJson = argv.includes('--json');
 const fixDryrun = argv.includes('--fix-dryrun');
 
 const STALE_DAYS = 60;
+const INBOX_STALE_DAYS = 14;  // .context/inbox: needs-review старше этого — залежавшаяся память (advisory)
 const NOW = Date.now();
 
 // Слои и их правила. Подстройте под структуру своего проекта.
@@ -122,6 +123,8 @@ const issues = {
   orphan: [],
   staleSynthesis: [],
   ghostInIndex: [],
+  staleInbox: [],   // advisory (L4): не гейтит — .context эфемерна и отсутствует в CI
+  staleAnswers: [], // advisory (N2): verified answer-card, чей источник изменился после verified_at
 };
 
 const allFiles = new Map(); // relPath → { layer, fields, related, mtimeMs }
@@ -255,6 +258,38 @@ if (existsSync(DB_PATH)) {
   }
 }
 
+// 6. scratch-hygiene (L4) — .context/inbox/*.md со status:needs-review старше N дней.
+//    Это непромоутнутая память от kb_retain: видимость, что её пора разобрать (skill-ingest)
+//    и разложить по слоям или удалить. Advisory: НЕ влияет на exit (см. GATING ниже).
+const inboxDir = join(REPO_ROOT, '.context', 'inbox');
+if (existsSync(inboxDir)) {
+  for (const entry of readdirSync(inboxDir, { withFileTypes: true })) {
+    if (!entry.isFile() || extname(entry.name) !== '.md') continue;
+    const abs = join(inboxDir, entry.name);
+    let fields = {};
+    try { ({ fields } = parseFrontmatter(readFileSync(abs, 'utf8'))); } catch { continue; }
+    if (String(fields.status || '').toLowerCase() !== 'needs-review') continue;
+    const ageDays = Math.floor((NOW - statSync(abs).mtimeMs) / 86_400_000);
+    if (ageDays >= INBOX_STALE_DAYS) issues.staleInbox.push({ file: `.context/inbox/${entry.name}`, age_days: ageDays });
+  }
+}
+
+// 7. stale answer-cards (N2 guardrail) — verified answer-card (type: answer), чей источник
+//    (из related:) изменился ПОСЛЕ verified_at. Сигнал «перепроверь карту». Advisory.
+for (const [rel, meta] of allFiles) {
+  if (String(meta.fields?.type || '').toLowerCase() !== 'answer') continue;
+  const va = String(meta.fields?.verified_at || '').trim();
+  if (!/^\d{4}-\d{2}-\d{2}/.test(va)) continue;
+  const vaEpoch = Date.parse(va.slice(0, 10)) + 86_400_000; // +1д буфер: дата без времени
+  const changed = [];
+  for (const src of meta.related) {
+    const abs = join(REPO_ROOT, src);
+    if (!existsSync(abs)) continue; // несуществующий источник ловит broken-related
+    if (statSync(abs).mtimeMs > vaEpoch) changed.push(src);
+  }
+  if (changed.length) issues.staleAnswers.push({ file: rel, verified_at: va.slice(0, 10), changed });
+}
+
 // ---------- вывод ----------
 
 const summary = {
@@ -264,6 +299,8 @@ const summary = {
   orphans: issues.orphan.length,
   stale_synthesis: issues.staleSynthesis.length,
   ghost_in_index: issues.ghostInIndex.length,
+  stale_inbox: issues.staleInbox.length,
+  stale_answers: issues.staleAnswers.length,
 };
 
 await appendJournal({ kind: 'doctor', ts: new Date().toISOString(), summary });
@@ -284,9 +321,31 @@ console.log(`  Broken related:          ${summary.broken_related}`);
 console.log(`  Orphan-страницы:         ${summary.orphans}`);
 console.log(`  Stale synthesis (>${STALE_DAYS}д):  ${summary.stale_synthesis}`);
 console.log(`  Ghost в индексе:         ${summary.ghost_in_index}`);
+console.log(`  Stale inbox (advisory):  ${summary.stale_inbox}`);
+console.log(`  Stale answers (advisory):${summary.stale_answers}`);
 console.log('');
 
-const totalIssues = Object.values(summary).reduce((s, v) => s + v, 0) - summary.total_files;
+// Advisory-секции всегда видны (не влияют на exit).
+if (issues.staleInbox.length > 0) {
+  console.log('─'.repeat(60));
+  console.log(`  ⚠ Залежавшаяся inbox-память (>${INBOX_STALE_DAYS}д, status: needs-review)  (${issues.staleInbox.length})`);
+  console.log('─'.repeat(60));
+  for (const it of issues.staleInbox.slice(0, 20)) console.log(`  • ${it.file}   возраст=${it.age_days}д`);
+  console.log('  → разобрать через skill-ingest: разложить по слоям и закоммитить, либо удалить.');
+  console.log('');
+}
+if (issues.staleAnswers.length > 0) {
+  console.log('─'.repeat(60));
+  console.log(`  ⚠ Устаревшие answer-cards (источник изменился после verified_at)  (${issues.staleAnswers.length})`);
+  console.log('─'.repeat(60));
+  for (const it of issues.staleAnswers.slice(0, 20)) console.log(`  • ${it.file}   verified_at=${it.verified_at}   изменились: ${it.changed.join(', ')}`);
+  console.log('  → перепроверь ответ (kb_promote заново или правка) и обнови verified_at, либо status: stale.');
+  console.log('');
+}
+
+// Гейтят только эти проверки. stale_inbox — advisory (см. L4), total_files — счётчик.
+const GATING = ['missing_frontmatter', 'broken_related', 'orphans', 'stale_synthesis', 'ghost_in_index'];
+const totalIssues = GATING.reduce((s, k) => s + summary[k], 0);
 if (totalIssues === 0) {
   console.log('  ✓ Все проверки пройдены.');
   console.log('');

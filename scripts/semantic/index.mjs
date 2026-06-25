@@ -31,6 +31,7 @@ import {
   DB_PATH,
   REPO_ROOT,
   INDEXABLE_LAYERS,
+  INDEXABLE_ROOT_FILES,
 } from './lib.mjs';
 
 const args = process.argv.slice(2);
@@ -61,13 +62,15 @@ console.log(`[index] модель готова за ${((Date.now() - t0) / 1000)
 const db = openDb();
 
 const layers = layerFilter ? [layerFilter] : INDEXABLE_LAYERS;
+// Корневые файлы (log.md) индексируем только при полном проходе, не при --layer X.
+const rootFiles = layerFilter ? [] : INDEXABLE_ROOT_FILES;
 const filesSeen = new Set();
 let processedFiles = 0;
 let skippedFiles = 0;
 let totalChunks = 0;
 const tStart = Date.now();
 
-for (const file of walkMarkdown(REPO_ROOT, layers)) {
+for (const file of walkMarkdown(REPO_ROOT, layers, { rootFiles })) {
   filesSeen.add(file.relPath);
   const stored = getFileMtime(db, file.relPath);
   if (!isFull && stored >= file.mtime) {

@@ -8,7 +8,7 @@
 // Хук пишет в stdout — Claude Code получит это как additionalContext.
 // Никогда не блокирует.
 
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve, basename } from 'node:path';
@@ -71,6 +71,28 @@ if (now.trim()) {
     lines.push('```');
     lines.push('');
   }
+}
+
+// ─── .context/inbox — непромоутнутая память от kb_retain (L4 scratch-hygiene) ──────────
+const inboxDir = resolve(root, '.context', 'inbox');
+let inboxPending = 0;
+let inboxOldest = 0;
+try {
+  for (const name of readdirSync(inboxDir)) {
+    if (!name.endsWith('.md')) continue;
+    const abs = resolve(inboxDir, name);
+    if (!/^\s*status:\s*needs-review\s*$/im.test(readSafe(abs))) continue;
+    inboxPending++;
+    try {
+      const ageDays = Math.floor((Date.now() - statSync(abs).mtimeMs) / 86_400_000);
+      if (ageDays > inboxOldest) inboxOldest = ageDays;
+    } catch { /* ignore */ }
+  }
+} catch { /* inbox absent */ }
+if (inboxPending > 0) {
+  lines.push('## Inbox на ревью (kb_retain)');
+  lines.push(`- ${inboxPending} непромоутнутых заметок в .context/inbox/ (старейшей ${inboxOldest}д). Разбор — через skill-ingest.`);
+  lines.push('');
 }
 
 process.stdout.write(lines.join('\n') + '\n');

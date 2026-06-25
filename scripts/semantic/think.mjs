@@ -188,12 +188,28 @@ function loadSystemPrompt() {
   ].join('\n');
 }
 
+// Answer-policy (L5): .remember/preferences.md — ручки формы ответа, которых нет в AGENTS.md.
+function loadPreferences() {
+  try {
+    const text = readFileSync(join(REPO_ROOT, '.remember', 'preferences.md'), 'utf8');
+    if (text.trim()) return text;
+  } catch { /* нет файла — no-op */ }
+  return '';
+}
+
 function buildPrompt(question, chunks, fileMeta, { allStale, openQuestionsHit, contradictionsHit }) {
   const lines = [];
   lines.push('# Системная инструкция (источник: AGENTS.md, при наличии)');
   lines.push('');
   lines.push(loadSystemPrompt());
   lines.push('');
+  const prefs = loadPreferences();
+  if (prefs) {
+    lines.push('# Answer policy (источник: .remember/preferences.md)');
+    lines.push('');
+    lines.push(prefs);
+    lines.push('');
+  }
   if (allStale) {
     lines.push(`> ⚠️ Все цитируемые источники старше ${90} дней. Указывай это в ответе как RISK: stale evidence.`);
     lines.push('');

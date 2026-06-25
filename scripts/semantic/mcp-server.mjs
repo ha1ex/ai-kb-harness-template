@@ -46,6 +46,7 @@ import {
 } from './lib.mjs';
 import { rerank } from './rerank.mjs';
 import { verifyText } from './verify.mjs';
+import { checkProvenance } from '../lib/provenance.mjs';
 import { appendJournal, compactResults } from '../lib/journal.mjs';
 import { mkdirSync, writeFileSync, readdirSync } from 'node:fs';
 
@@ -80,6 +81,15 @@ function loadSystemPrompt() {
     'Каждое нетривиальное утверждение помечай меткой FACT/INFERENCE/ASSUMPTION/UNKNOWN/RISK/DECISION/RECOMMENDATION',
     'и сопровождай цитатой [source: /path]. Если evidence не хватает — отвечай UNKNOWN, не выдумывай.',
   ].join('\n');
+}
+
+// Answer-policy (L5): .remember/preferences.md — ручки формы ответа, которых нет в AGENTS.md.
+function loadPreferences() {
+  try {
+    const text = readFileSync(join(REPO_ROOT, '.remember', 'preferences.md'), 'utf8');
+    if (text.trim()) return text;
+  } catch { /* нет файла — no-op */ }
+  return '';
 }
 
 const server = new McpServer({
@@ -216,6 +226,13 @@ server.registerTool(
     lines.push('');
     lines.push(loadSystemPrompt());
     lines.push('');
+    const prefs = loadPreferences();
+    if (prefs) {
+      lines.push('# Answer policy (источник: .remember/preferences.md)');
+      lines.push('');
+      lines.push(prefs);
+      lines.push('');
+    }
     if (allStale) {
       lines.push(`> ⚠️ Все источники старше ${STALE_DAYS} дней — пометь RISK: stale evidence.`);
       lines.push('');
@@ -283,7 +300,8 @@ server.registerTool(
       'Запусти ПОСЛЕ составления ответа с цитатами: подтверждает, что каждый путь существует, ' +
       'лежит в допустимом слое KB и не указывает на external-corpus (где цитата = source:-URL во frontmatter). ' +
       'Для FACT-меток добавляет advisory-балл семантического совпадения (НЕ блокирует, не entailment). ' +
-      'Возвращает summary + per-citation JSON. passed зависит только от Tier-1 (существование/слой).',
+      'Возвращает summary + per-citation JSON + critique (actionable-список правок: какие цитаты ' +
+      'перецитировать/удалить и почему — для петли verify→revise). passed зависит только от Tier-1.',
     inputSchema: {
       text: z.string().min(1).describe('Текст ответа/синтеза с цитатами [source: /path].'),
       threshold: z.number().min(0).max(1).optional().describe('Порог advisory strong-band (default 0.82).'),
@@ -295,16 +313,22 @@ server.registerTool(
       db: db(), embed: await embedder(), threshold, allowCorpus: allow_corpus,
     });
     const s = result.summary;
+    const cr = result.critique;
     await appendJournal({
       kind: 'verify', ts: new Date().toISOString(),
-      verify: { citations_total: s.citations_total, citations_ok: s.citations_ok, passed: s.passed },
+      verify: {
+        citations_total: s.citations_total, citations_ok: s.citations_ok, passed: s.passed,
+        critique_errors: cr.errors, critique_warns: cr.warns,
+      },
     });
     return {
       content: [
         {
           type: 'text',
           text: `Цитат: ${s.citations_total} · Tier-1 ok: ${s.citations_ok} · ${s.passed ? 'PASSED' : 'FAILED'} ` +
-            `(advisory FACT: strong=${s.advisory.strong} weak=${s.advisory.weak} none=${s.advisory.none})`,
+            `(advisory FACT: strong=${s.advisory.strong} weak=${s.advisory.weak} none=${s.advisory.none}) ` +
+            `· critique: errors=${cr.errors} warns=${cr.warns}` +
+            `${cr.needsRevision ? ' → нужна ревизия (см. critique.items: action/suggestion по каждой цитате)' : ''}`,
         },
         { type: 'text', text: JSON.stringify(result, null, 2) },
       ],
@@ -386,6 +410,98 @@ server.registerTool(
             'куда разложить (02_sources/03_wiki/04_synthesis) и коммитить ли.',
         },
       ],
+    };
+  },
+);
+
+// ---------- kb_promote (N2: verified answer-card write-path) ----------
+
+const ANSWERS_DIR = join(REPO_ROOT, '04_synthesis', '_answers');
+const PROMOTE_DUP_THRESHOLD = 0.90; // косинус: ответ ближе этого к существующей карте = дубль
+
+server.registerTool(
+  'kb_promote',
+  {
+    description:
+      'Сохранить ВЕРИФИЦИРОВАННЫЙ ответ как переиспользуемую answer-card в 04_synthesis/_answers/ ' +
+      '(committable-зона, не .context). В отличие от kb_retain — это gated write-path: карта пишется ' +
+      'ТОЛЬКО если ответ проходит verify Tier-1 (все [source:/path] существуют, допустимый слой, ' +
+      'не external-corpus), provenance (цитаты строго ниже 04_synthesis) и не дублирует существующую ' +
+      'карту (косинус < 0.90). Источники кладутся в related: (питает graph/backlinks). ' +
+      'Используй для ответа, который стоит закрепить как знание; человек ревьюит и коммитит.',
+    inputSchema: {
+      question: z.string().min(1).describe('Вопрос, на который отвечает карта.'),
+      answer: z.string().min(1).describe('Готовый grounded-ответ с метками и цитатами [source: /path].'),
+      tags: z.array(z.string()).optional().describe('Теги для классификации.'),
+      threshold: z.number().min(0).max(1).optional().describe('Порог advisory FACT-band в verify (default 0.82).'),
+    },
+  },
+  async ({ question, answer, tags = [], threshold }) => {
+    const reject = (reason, extra = null) => ({
+      content: [{ type: 'text', text: `ОТКЛОНЕНО (${reason}). Карта НЕ создана.${extra ? '\n' + extra : ''}` }],
+    });
+
+    // 1. verify Tier-1 (+ FACT advisory). allowCorpus:false — external-corpus не цитируется внутренне.
+    const result = await verifyText(answer, { db: db(), embed: await embedder(), threshold, allowCorpus: false });
+    if (result.summary.citations_total === 0) {
+      return reject('нет цитат', 'Answer-card должна быть grounded: добавь хотя бы один [source: /path] на нижний слой.');
+    }
+    if (!result.summary.passed) {
+      return reject('verify Tier-1 не пройден', JSON.stringify(result.critique, null, 2));
+    }
+    // 2. provenance: карта живёт в 04_synthesis → цитировать можно только 00–03.
+    const prov = checkProvenance('04_synthesis/_answers/_.md', answer);
+    if (prov.violations.length) {
+      return reject('provenance', prov.violations.map((v) => `[source: /${v.path}] — ${v.reason}`).join('\n'));
+    }
+    // 3. near-dup vs существующие answer-cards.
+    const emb = await embedder();
+    const [aEmb] = await emb([QUERY_PREFIX + `${question}\n${answer}`.slice(0, 1000)]);
+    const near = searchVec(db(), aEmb, { topK: 8, layer: '04_synthesis' })
+      .find((r) => r.file.startsWith('04_synthesis/_answers/') && r.similarity >= PROMOTE_DUP_THRESHOLD);
+    if (near) {
+      return reject('дубль', `Похоже на существующую карту ${near.file} (cos≈${near.similarity.toFixed(3)}). Обнови её, а не создавай новую.`);
+    }
+
+    // 4. write committable card.
+    mkdirSync(ANSWERS_DIR, { recursive: true });
+    const today = new Date().toISOString().slice(0, 10);
+    let slug = slugify(question);
+    let fname = `${today}-${slug}.md`;
+    let n = 1;
+    while (existsSync(join(ANSWERS_DIR, fname))) fname = `${today}-${slug}-${++n}.md`;
+    const sources = Array.from(new Set(result.citations.map((c) => c.path)));
+    const fm = [
+      '---',
+      'type: answer',
+      `question: ${JSON.stringify(question)}`,
+      'verified: true',
+      `verified_at: ${today}`,
+      'status: verified',
+      'related:',
+      ...sources.map((s) => `  - ${s}`),
+      tags.length ? `tags: [${tags.map((t) => String(t).trim()).filter(Boolean).join(', ')}]` : null,
+      '---',
+      '',
+      `# ${question}`,
+      '',
+    ].filter((l) => l !== null).join('\n');
+    const abs = join(ANSWERS_DIR, fname);
+    writeFileSync(abs, fm + answer.trimEnd() + '\n');
+
+    await appendJournal({
+      kind: 'promote', ts: new Date().toISOString(),
+      promote: { file: `04_synthesis/_answers/${fname}`, sources: sources.length, citations_ok: result.summary.citations_ok },
+    });
+
+    return {
+      content: [{
+        type: 'text',
+        text: `✅ Верифицированная карта создана: 04_synthesis/_answers/${fname}\n` +
+          `Цитат: ${result.summary.citations_ok}/${result.summary.citations_total}, источников в related: ${sources.length}.\n` +
+          `Проиндексируется при следующем kb:index. Закоммить после ревью. ` +
+          `Если источники изменятся — kb-doctor пометит карту как stale (по verified_at).`,
+      }],
     };
   },
 );

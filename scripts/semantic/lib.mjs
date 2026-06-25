@@ -48,6 +48,12 @@ export const INDEXABLE_LAYERS = [
   '06_outputs',
 ];
 
+// Файлы в КОРНЕ репо (не директории-слои), которые делаем findable через поиск.
+// `log.md` — changelog проекта: дешёвый «commit-history memory» без LLM-дистилляции рационалей
+// (см. план, salvage вместо T15). Это НЕ слой пирамиды и НЕ цитируется как [source:] — индексируется
+// только для обнаружения. Включается опционально: walkMarkdown(..., { rootFiles: INDEXABLE_ROOT_FILES }).
+export const INDEXABLE_ROOT_FILES = ['log.md'];
+
 // Кэш для @xenova/transformers — кладём рядом, чтобы не загрязнять ~/.cache.
 env.cacheDir = resolve(here, '.transformers-cache');
 env.allowLocalModels = true;
@@ -125,8 +131,15 @@ function stripFrontmatter(text) {
   const body = text.slice(end + 4).replace(/^\n/, '');
   const headerOffset = text.slice(0, end + 4).split('\n').length - 1;
 
-  // Из frontmatter берём ключи type/owner/date/tags/status — это семантические hint'ы.
-  const want = ['type', 'owner', 'date', 'tags', 'status', 'domain', 'segment', 'confidence'];
+  // Из frontmatter берём семантические hint'ы. Кроме служебных (type/owner/date/…) включаем
+  // applicability-текст — title/subtitle/description/category/name (L3 «describe-then-index»):
+  // у 744 external-карт это «когда применять», раньше выбрасывалось до эмбеддинга. Теперь оно
+  // попадает в вектор чанка и улучшает skill-selection по интенту. В verify Tier-2 [meta:…] всё
+  // равно срезается, так что на проверку цитат не влияет.
+  const want = [
+    'type', 'owner', 'date', 'tags', 'status', 'domain', 'segment', 'confidence',
+    'title', 'subtitle', 'description', 'category', 'name',
+  ];
   const found = [];
   for (const line of fm.split('\n')) {
     const m = line.match(/^([a-z_]+):\s*(.+)$/i);
@@ -797,13 +810,27 @@ const SKIP_DIRS = new Set([
 
 const ALLOWED_EXT = new Set(['.md']);
 
-export function* walkMarkdown(rootDir = REPO_ROOT, layers = INDEXABLE_LAYERS) {
+export function* walkMarkdown(rootDir = REPO_ROOT, layers = INDEXABLE_LAYERS, { rootFiles = [] } = {}) {
   for (const layer of layers) {
     const layerRoot = join(rootDir, layer);
     let st;
     try { st = statSync(layerRoot); } catch { continue; }
     if (!st.isDirectory()) continue;
     yield* walkDir(layerRoot, layer, rootDir);
+  }
+  // Корневые файлы (например log.md) — псевдо-слой по basename без расширения ('log.md' → 'log').
+  for (const name of rootFiles) {
+    if (!ALLOWED_EXT.has(extname(name))) continue;
+    const full = join(rootDir, name);
+    let st;
+    try { st = statSync(full); } catch { continue; }
+    if (!st.isFile()) continue;
+    yield {
+      absPath: full,
+      relPath: relative(rootDir, full),
+      layer: name.replace(/\.[^.]+$/, ''),
+      mtime: Math.floor(st.mtimeMs),
+    };
   }
 }
 
