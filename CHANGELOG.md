@@ -8,6 +8,23 @@
 ## [Unreleased]
 
 ### Added
+- **Code-as-Agent-Harness — перенос идей обзора** (синтез: `04_synthesis/code-as-agent-harness-adoption.md`):
+  - **N1 — петля verify→critique→revise.** `verify.mjs` отдаёт actionable-`critique` (`buildCritique`);
+    новый `scripts/kb-critic.mjs` строит revision-промпт по причине каждой битой цитаты, `--execute`
+    гоняет цикл через `claude` CLI (graceful degradation на печать промпта).
+  - **N3 — verify как блокирующий CI-гейт.** Шаг `verify.mjs --scan --provenance --no-semantic` в
+    `kb-ci.yml`. Цитаты в HTML-комментариях и коде (fenced/инлайн) игнорируются как примеры
+    (`maskExamples` в `scripts/lib/provenance.mjs`); external-corpus пропускается.
+  - **N4 — layer-handoff provenance.** `scripts/lib/provenance.mjs` (dependency-free) + PreToolUse-хук
+    `scripts/check-provenance.mjs`: synthesis/decisions цитируют только строго более низкий слой пирамиды.
+  - **N2 — verified answer-cards.** MCP-tool `kb_promote` пишет ответ в `04_synthesis/_answers/` только
+    после verify Tier-1 + provenance + dedup (cos<0.90); источники → `related:`; `kb-doctor` помечает карту
+    stale при изменении источника после `verified_at`.
+  - **Quick-wins:** `log.md` в семантическом индексе (`INDEXABLE_ROOT_FILES`); describe-then-index
+    (`title/subtitle/description/category` в эмбеддинге чанка); scratch-hygiene `.context/inbox`
+    (advisory в `kb-doctor` + счётчик в session-start); `.remember/preferences.md` (answer-policy,
+    подмешивается в `kb_think`/`think.mjs`).
+  - **Тесты:** офлайн-`scripts/semantic/test-control.mjs` (critique/provenance/маскирование) — гейт в CI.
 - **Онбординг.** `.nvmrc` (Node 22), поля `packageManager` (`pnpm@9.15.0`) и
   `engines` (`node >=20 <23`) во всех `package.json`, единая команда
   `pnpm run setup` вместо трёх раздельных `pnpm install`.

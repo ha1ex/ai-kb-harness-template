@@ -121,8 +121,17 @@ node scripts/semantic/mcp-server.mjs   # stdio
 - `kb_search(query, mode?, top?, layer?, graph?, rerank?, recency?, since?, until?, asof?)` — hybrid retrieval (+graph/temporal/rerank) с JSON-результатом
 - `kb_think(question, top?, layer?)` — собрать промпт-контекст под вопрос (как `think.mjs`, но через MCP)
 - `kb_backlinks(path, forward?)` — кто ссылается на файл
-- `kb_verify(text, threshold?, allow_corpus?)` — механическая проверка цитат `[source: /path]`
+- `kb_verify(text, threshold?, allow_corpus?)` — механическая проверка цитат `[source: /path]` (Tier-1 gate + FACT-advisory) + **`critique`**: actionable-список правок (какие цитаты перецитировать/удалить и почему) для петли verify→revise (N1)
 - `kb_retain(content, title?, tags?, source?)` — **write-path**: сохранить кандидат-заметку в `.context/inbox/` (status `needs-review`, НЕ коммитит, НЕ в слоях KB). Разбор — через `skill-ingest`.
+- `kb_promote(question, answer, tags?, threshold?)` — **gated write-path** (N2): сохранить ВЕРИФИЦИРОВАННЫЙ ответ как answer-card в `04_synthesis/_answers/`, только если он прошёл verify Tier-1 + provenance (цитаты строго ниже 04) + dedup (cos<0.90). Источники → `related:`. `kb-doctor` помечает карту stale при изменении источника.
+
+CLI-обвязка вокруг verify (Control-гейт):
+
+```bash
+node scripts/semantic/verify.mjs --file ans.md            # Tier-1 + FACT-advisory + critique
+node scripts/semantic/verify.mjs --scan --provenance --no-semantic   # CI-гейт по слоям (N3/N4)
+node scripts/kb-critic.mjs --file ans.md [--execute --rounds 2]      # revision-промпт по битым цитатам (N1)
+```
 
 Подключение в проекте — `.mcp.json` в корне (Claude Code подхватит автоматически):
 

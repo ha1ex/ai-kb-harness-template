@@ -24,3 +24,12 @@
 - 06_outputs/_audit-report-2026-05-29.md | всесторонний аудит (двойная оптика «шаблон / реальная KB»), 6 измерений, scorecard + backlog.
 - harness + контент | фиксы аудита: supply chain (`protobufjs` override), viewer security (allowlist .md + bind 127.0.0.1), сужены permissions + наполнен deny, онбординг (`.nvmrc`/`engines`/`setup`/CI), таймауты на `spawnSync`, path-guard в skillopt MCP, заполнен semantic invariant, задокументирован external-corpus, cybos licensing (provider/license ×418), помечены 7 fabric-стабов. Детали — в `CHANGELOG.md`.
 - 06_outputs/mcp-catalog/ | каталог базовых MCP — 12 серверов (7 reference + Playwright, Chrome DevTools, Context7, GitHub, Brave Search) + `baseline.mcp.json` (keyless-набор). Отобрано по deep-research май 2026.
+
+## 2026-06-25
+
+- 04_synthesis | `code-as-agent-harness-adoption.md` — синтез разбора обзора «Code as Agent Harness» (adopt now/later/not).
+- harness (Control) | N1 verify→critique→revise: `verify.mjs` отдаёт `critique`, `kb-critic.mjs` строит revision-промпт (`--execute` авто-цикл).
+- harness (Control) | N3 verify-гейт в CI (`verify.mjs --scan --provenance`); цитаты в комментариях/коде игнорируются (`maskExamples`).
+- harness (Control) | N4 layer-handoff provenance: `scripts/lib/provenance.mjs` + PreToolUse-хук `check-provenance.mjs`. Тесты `test-control.mjs`.
+- harness (Memory/Evolve) | N2 verified answer-cards: `kb_promote` → `04_synthesis/_answers/` (gated verify+provenance+dedup); `kb-doctor` флагует stale.
+- harness | quick-wins: `log.md` в индексе (`INDEXABLE_ROOT_FILES`), describe-then-index (L3), scratch-hygiene inbox (L4), `.remember/preferences.md` answer-policy (L5).
