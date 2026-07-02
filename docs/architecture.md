@@ -104,16 +104,29 @@ verify→revise в KB-харнесс, где исполнительный ора
 ## Команды
 
 ```bash
+pnpm kb:init      # параметризация клона (цель проекта, --strip-demo, --level 0..3)
 pnpm kb:index     # построить семантический индекс
 pnpm kb:search    # гибридный поиск
 pnpm kb:think     # промпт-синтез с цитатами
-pnpm kb:eval      # retrieval-бенчмарк + регрессия vs baseline
-pnpm kb:verify    # проверка цитат [source: /path] (+ --scan/--provenance гейт, critique)
+pnpm kb:eval      # retrieval-бенчмарк + регрессия vs baseline (+ D3-гейт против stub в топах)
+pnpm kb:verify    # проверка цитат (traversal/coverage/провенанс гейт, critique; --scan семантику из индекса — D2)
 node scripts/kb-critic.mjs --file ans.md   # revision-промпт по битым цитатам (N1; --execute для авто-цикла)
 node scripts/semantic/test-control.mjs     # офлайн-тесты critique/provenance/маскирования
-pnpm kb:doctor    # health-check KB (+ advisory: stale inbox/answers)
+node scripts/semantic/test-gate.mjs        # adversarial-сьют контура доверия (A3, векторы обхода гейта)
+pnpm kb:doctor    # health-check KB (+ advisory: stale inbox/answers, stub-карточки)
+pnpm kb:metrics   # тренды качества из журнала по неделям (D1)
 pnpm kb:dream     # еженедельный LLM-аудит (git + журнал операций)
+pnpm kb:digest    # утренний дайджест состояния KB (D4; см. docs/automation.md)
+pnpm kb:update    # обновление ядра от upstream по .template-manifest.json (C3)
 pnpm skill        # SkillOpt CLI (rollout/reflect/diff/apply)
 ```
+
+## Границы владения и обновление
+
+- **template-owned** (`scripts/semantic/`, `scripts/lib/`, `.github/workflows/`, viewer…) — ядро,
+  обновляется от upstream через `pnpm kb:update`; правится только в апстриме.
+- **project-owned** (`kb.config.mjs`, `AGENTS.md`, `.remember/`, слои 00–06…) — ваше, не трогается.
+- Граница — в [`.template-manifest.json`](../.template-manifest.json); настройки харнесса — в
+  [`kb.config.mjs`](../kb.config.mjs) корня KB (env `KB_ROOT` для нескольких баз на одной оснастке).
 
 См. также [`CLAUDE.md`](../CLAUDE.md) (раздел «Слои оснастки») и [`AGENTS.md`](../AGENTS.md).

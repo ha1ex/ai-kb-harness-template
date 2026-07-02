@@ -101,6 +101,15 @@ export async function runRollout({ adapter, config, skillFilter = null, caseFilt
   return { runId, summary, traces, runDir };
 }
 
+// case.id/skill уходят в имя файла trace (`<skill>__<case>.json`) — чистим сегменты пути,
+// чтобы `/` или `..` не вырвались из tracesDir (D5). Пустое → 'unknown'.
+function safeSeg(v) {
+  return String(v ?? '').replace(/[^A-Za-z0-9._-]/g, '_').slice(0, 120) || 'unknown';
+}
+function traceFile(tracesDir, c) {
+  return join(tracesDir, `${safeSeg(c.skill)}__${safeSeg(c.id)}.json`);
+}
+
 async function runOneCase({ c, adapter, judgeAdapter, agentsMd, skillCache, tracesDir }) {
   const startedAt = Date.now();
 
@@ -116,7 +125,7 @@ async function runOneCase({ c, adapter, judgeAdapter, agentsMd, skillCache, trac
       grader: null,
       latency_ms: 0,
     };
-    await writeFile(join(tracesDir, `${c.skill}__${c.id}.json`), JSON.stringify(trace, null, 2));
+    await writeFile(traceFile(tracesDir, c), JSON.stringify(trace, null, 2));
     return trace;
   }
 
@@ -138,7 +147,7 @@ async function runOneCase({ c, adapter, judgeAdapter, agentsMd, skillCache, trac
         grader: null,
         latency_ms: Date.now() - startedAt,
       };
-      await writeFile(join(tracesDir, `${c.skill}__${c.id}.json`), JSON.stringify(trace, null, 2));
+      await writeFile(traceFile(tracesDir, c), JSON.stringify(trace, null, 2));
       return trace;
     }
   }
@@ -185,7 +194,7 @@ async function runOneCase({ c, adapter, judgeAdapter, agentsMd, skillCache, trac
     grader_details: graderResult?.details ?? null,
   };
 
-  await writeFile(join(tracesDir, `${c.skill}__${c.id}.json`), JSON.stringify(trace, null, 2));
+  await writeFile(traceFile(tracesDir, c), JSON.stringify(trace, null, 2));
   return trace;
 }
 

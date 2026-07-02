@@ -36,6 +36,7 @@ import {
   REPO_ROOT,
   INDEXABLE_LAYERS,
   walkMarkdown,
+  getChunkEmbeddings,
 } from './lib.mjs';
 import { appendJournal } from '../lib/journal.mjs';
 import {
@@ -176,20 +177,35 @@ export async function verifyText(text, {
   }
 
   // ---------- Tier-2 (advisory, только FACT, только если есть db+embed) ----------
+  // D2: векторы чанков читаются ИЗ ИНДЕКСА (vec_chunks) — эмбеддится только сам claim.
+  // Раньше каждый claim ре-эмбеддил все чанки файла: O(claims × chunks) прогонов модели,
+  // из-за чего Tier-2 системно не запускался нигде. Fallback на ре-эмбеддинг — если файла
+  // нет в индексе (не проиндексирован после правки).
   let factStrong = 0, factWeak = 0, factNone = 0;
   if (semantic && db && embed) {
+    const fileEmbCache = new Map();
     for (const cit of citations) {
       if (cit.label !== 'FACT' || !cit.tier1_ok || cit.externalCorpus) continue;
       if (!cit.claim) continue;
-      const rows = db.prepare('SELECT line_start, text FROM chunks WHERE file = ?').all(cit.path);
+      let rows = fileEmbCache.get(cit.path);
+      if (rows === undefined) {
+        try { rows = getChunkEmbeddings(db, cit.path); } catch { rows = []; }
+        if (rows.length === 0) {
+          // Файл не в индексе — старый путь: ре-эмбеддинг текстов чанков (если чанки есть).
+          const textRows = db.prepare('SELECT line_start, text FROM chunks WHERE file = ?').all(cit.path);
+          if (textRows.length > 0) {
+            const chunkEmbs = await embed(textRows.map((r) => PASSAGE_PREFIX + String(r.text).replace(/^\[meta:[^\]]*\]\s*/, '')));
+            rows = textRows.map((r, i) => ({ line_start: r.line_start, embedding: chunkEmbs[i] }));
+          }
+        }
+        fileEmbCache.set(cit.path, rows);
+      }
       if (rows.length === 0) { cit.advisory = { band: 'none', bestScore: null, note: 'no-chunks' }; factNone++; continue; }
       const [claimEmb] = await embed([QUERY_PREFIX + cit.claim]);
-      const chunkTexts = rows.map((r) => PASSAGE_PREFIX + String(r.text).replace(/^\[meta:[^\]]*\]\s*/, ''));
-      const chunkEmbs = await embed(chunkTexts);
       let best = -1, bestLine = null;
-      for (let i = 0; i < chunkEmbs.length; i++) {
-        const score = dot(claimEmb, chunkEmbs[i]);
-        if (score > best) { best = score; bestLine = rows[i].line_start; }
+      for (const r of rows) {
+        const score = dot(claimEmb, r.embedding);
+        if (score > best) { best = score; bestLine = r.line_start; }
       }
       const band = best >= threshold ? 'strong' : best >= threshold - WEAK_DELTA ? 'weak' : 'none';
       cit.advisory = { band, bestScore: Number(best.toFixed(4)), bestChunkLine: bestLine };
@@ -281,9 +297,14 @@ export function buildCritique(citations, uncitedClaims = []) {
  * Используется CI-гейтом (N3/N4). Не грузит модель (semantic=false): детерминированно.
  * @returns {{ files:number, failedFiles:number, problems:Array, exempted:number }}
  */
-export async function scanLayers(layers, { provenance = false, allowCorpus = false } = {}) {
+export async function scanLayers(layers, {
+  provenance = false, allowCorpus = false,
+  semantic = false, db = null, embed = null, threshold = VERIFY_THRESHOLD,
+} = {}) {
   const problems = [];
+  const advisories = []; // D2: файлы со слабо подтверждёнными FACT (advisory, НЕ гейт)
   let files = 0, failedFiles = 0, exempted = 0, coverageExempted = 0;
+  let advStrong = 0, advWeak = 0, advNone = 0;
   for (const f of walkMarkdown(REPO_ROOT, layers)) {
     // external-corpus карточки в 06_outputs не несут внутренних цитат — пропускаем их явно
     // (логируем счётчик, не молчим).
@@ -302,10 +323,16 @@ export async function scanLayers(layers, { provenance = false, allowCorpus = fal
       if (/^coverage:\s*exempt\s*$/m.test(fm)) { requireCoverage = false; coverageExempted++; }
     }
     const { summary } = await verifyText(text, {
-      semantic: false,
+      semantic, db, embed, threshold,
       allowCorpus,
       requireCoverage,
     });
+    if (semantic) {
+      advStrong += summary.advisory.strong; advWeak += summary.advisory.weak; advNone += summary.advisory.none;
+      if (summary.advisory.weak + summary.advisory.none > 0) {
+        advisories.push({ file: f.relPath, weak: summary.advisory.weak, none: summary.advisory.none });
+      }
+    }
     const prov = provenance ? checkProvenance(f.relPath, text) : { violations: [] };
     if (!summary.passed || prov.violations.length) {
       failedFiles++;
@@ -317,7 +344,10 @@ export async function scanLayers(layers, { provenance = false, allowCorpus = fal
       });
     }
   }
-  return { files, failedFiles, problems, exempted, coverageExempted };
+  return {
+    files, failedFiles, problems, exempted, coverageExempted,
+    advisory: semantic ? { strong: advStrong, weak: advWeak, none: advNone, files: advisories } : null,
+  };
 }
 
 // ───────────────────────── CLI ─────────────────────────
@@ -355,8 +385,19 @@ if (isMain()) {
     const scanLayersList = layersArg
       ? layersArg.split(',').map((s) => s.trim()).filter(Boolean)
       : ['04_synthesis', '05_decisions', '06_outputs'];
+    // Семантический Tier-2 в скане (D2): только если НЕ --no-semantic и индекс существует.
+    // Advisory никогда не гейтит — exit-код по-прежнему только от Tier-1/coverage/provenance.
+    let scanDb = null, scanEmbed = null;
+    if (semantic && existsSync(DB_PATH)) {
+      scanDb = openDb();
+      scanEmbed = await createEmbedder();
+    }
     const t0 = Date.now();
-    const res = await scanLayers(scanLayersList, { provenance, allowCorpus });
+    const res = await scanLayers(scanLayersList, {
+      provenance, allowCorpus,
+      semantic: Boolean(scanDb), db: scanDb, embed: scanEmbed, threshold,
+    });
+    if (scanDb) scanDb.close();
     await appendJournal({
       kind: 'verify-scan', ts: new Date(t0).toISOString(), timing_ms: Date.now() - t0,
       scan: { layers: scanLayersList, provenance, files: res.files, failed: res.failedFiles },
@@ -369,6 +410,12 @@ if (isMain()) {
         `${res.files} файлов · external-пропущено ${res.exempted}` +
         `${res.coverageExempted ? ` · coverage-exempt ${res.coverageExempted}` : ''} · ` +
         `${res.failedFiles ? `❌ ${res.failedFiles} с проблемами` : '✅ чисто'}`);
+      if (res.advisory) {
+        console.log(`  advisory FACT-支持 (НЕ гейт): strong=${res.advisory.strong} weak=${res.advisory.weak} none=${res.advisory.none}`);
+        for (const a of res.advisory.files.slice(0, 20)) {
+          console.log(`    ⚠ ${a.file}: weak=${a.weak} none=${a.none} → node scripts/kb-critic.mjs --file ${a.file}`);
+        }
+      }
       for (const p of res.problems) {
         console.log(`  ❌ ${p.file}`);
         if (p.tier1_failed) console.log(`       Tier-1: ${p.tier1_failed} битых цитат (запусти: verify.mjs --file ${p.file})`);

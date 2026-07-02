@@ -1,0 +1,62 @@
+# kb-advisory — еженедельный СЕМАНТИЧЕСКИЙ аудит FACT-утверждений (D2). NON-BLOCKING.
+#
+# Блокирующий гейт (kb-ci.yml) гоняет verify с --no-semantic: Tier-2 недетерминирован между
+# платформами и не должен красить PR. Здесь — обратная сторона: Tier-2 из сохранённых
+# эмбеддингов по несущим слоям, отчёт со слабо подтверждёнными FACT уходит артефактом.
+# Утренний разбор: node scripts/kb-critic.mjs --file <из списка> [--execute].
+
+name: kb-advisory
+
+on:
+  schedule:
+    - cron: '0 3 * * 1' # понедельник 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  semantic-advisory:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    env:
+      KB_JOURNAL: '0'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable corepack (pnpm)
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Restore embedding model cache
+        uses: actions/cache/restore@v4
+        with:
+          path: scripts/semantic/.transformers-cache
+          key: transformers-cache-e5-small-v1
+
+      - name: Install semantic deps
+        run: pnpm -C scripts/semantic install
+
+      - name: Build semantic index
+        run: node scripts/semantic/index.mjs
+
+      # Tier-2 (D2): дешёвый — векторы чанков читаются из vec_chunks, эмбеддится только claim.
+      - name: Semantic FACT-support scan (advisory, never gates)
+        run: |
+          node scripts/semantic/verify.mjs --scan --provenance --layers 04_synthesis,05_decisions --json > kb-advisory-report.json || true
+          node -e "
+            const r = JSON.parse(require('fs').readFileSync('kb-advisory-report.json','utf8'));
+            const a = r.advisory || {strong:0,weak:0,none:0,files:[]};
+            console.log('advisory: strong=' + a.strong + ' weak=' + a.weak + ' none=' + a.none);
+            for (const f of a.files) console.log('  weak-FACT: ' + f.file + ' (weak=' + f.weak + ' none=' + f.none + ')');
+          "
+
+      - name: Upload advisory report
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb-advisory-report
+          path: kb-advisory-report.json
+          retention-days: 30

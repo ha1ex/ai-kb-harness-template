@@ -8,6 +8,26 @@
 ## [Unreleased]
 
 ### Added
+
+- **Аудит-итерация A/B/C/D (2026-07-02)** — многоагентный аудит + правки по 4 блокам:
+  - **A. Контур доверия.** Закрыт path-traversal в цитатах (`normCitePath`/`normPath` резолвят
+    `.`/`..`, выход за корень = `path-traversal`); claim-coverage (`FACT:`/`DECISION:` без цитаты
+    в абзаце = гейт `--scan`, opt-out `coverage: exempt`); `[source:]` регистронезависим;
+    adversarial-сьют `scripts/semantic/test-gate.mjs` (12 векторов обхода) в CI; наблюдаемый
+    fail-open хуков (`reportHookError` → журнал `hook-error`); git `scripts/git-hooks/pre-push`.
+  - **B. Идентичность шаблона.** `pnpm kb:init` (параметризация клона, `--strip-demo`, `--level 0..3`);
+    `probes.mjs` → композитор corpus/template/local (eval не краснеет после удаления демо-корпуса);
+    отчёты демо-корпуса → `docs/examples/`; сквозной walkthrough-пример в слоях `00→05`;
+    каркас `04_synthesis/_answers/`; уровни принятия L0–L3 в README.
+  - **C. Переиспользуемость.** `kb.config.mjs` (единый project-owned конфиг: слои/provenance/
+    frontmatter/модель); env `KB_ROOT`/`KB_DB_PATH` (несколько KB на одной оснастке);
+    `indexSingleFile` — `kb_promote` индексирует карту сразу; `scripts/lib/frontmatter.mjs`
+    (единый парсер вместо 4); `.template-manifest.json` + `pnpm kb:update`.
+  - **D. Наблюдаемость и циклы.** Фильтр `status: stub/deprecated` в retrieval + D3-гейт в eval +
+    advisory в kb-doctor; `pnpm kb:metrics` (тренды из журнала) + ротация журнала;
+    Tier-2 verify из сохранённых эмбеддингов (`getChunkEmbeddings`) + семантический `--scan` +
+    non-blocking `kb-advisory.yml`; `pnpm kb:digest` + `docs/automation.md` (launchd/cron);
+    path-safety runId (viewer) и `case.id` (skillopt).
 - **Code-as-Agent-Harness — перенос идей обзора** (синтез: `04_synthesis/code-as-agent-harness-adoption.md`):
   - **N1 — петля verify→critique→revise.** `verify.mjs` отдаёт actionable-`critique` (`buildCritique`);
     новый `scripts/kb-critic.mjs` строит revision-промпт по причине каждой битой цитаты, `--execute`

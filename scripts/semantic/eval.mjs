@@ -84,6 +84,7 @@ const embed = await createEmbedder();
 // ---------- прогон проб ----------
 
 const perProbe = [];
+let stubHits = 0; // D3-регрессия: stub/deprecated не должны появляться в выдаче вообще
 for (const probe of PROBES) {
   // overK:50 сохраняет паритет с историческим baseline (vector/BM25 топ-50 → RRF).
   // graph-канал на корпусе без related: даёт [] (no-op), поэтому порядок не меняется.
@@ -98,6 +99,7 @@ for (const probe of PROBES) {
     if (seen.has(h.file)) continue;
     seen.add(h.file);
     const fm = fileMeta(join(REPO_ROOT, h.file));
+    if (fm.status === 'stub' || fm.status === 'deprecated') stubHits++;
     top.push({
       file: h.file,
       library: libraryOf(h.file),
@@ -304,6 +306,12 @@ if (asJson) {
   if (updateBaseline) console.log(`\n  baseline записан → ${relative(REPO_ROOT, BASELINE_PATH)}`);
   if (writeReport) console.log(`  отчёт записан → ${relative(REPO_ROOT, REPORT_PATH)}`);
   console.log('');
+}
+
+// D3-гейт: stub/deprecated в топах = фильтр retrieval сломан (регрессия), красный билд.
+if (stubHits > 0) {
+  console.error(`\n  ✗ D3-РЕГРЕССИЯ: ${stubHits} stub/deprecated-карточек в топ-5 выдачи — фильтр статусов не работает (пересобери индекс: pnpm kb:index).`);
+  process.exit(1);
 }
 
 // Гейт: регрессии без --update-baseline → exit 1 (для CI). На первом запуске без baseline — exit 0.

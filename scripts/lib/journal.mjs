@@ -13,7 +13,7 @@
 //
 // Потребитель: scripts/dream-cycle.mjs (секция «журнал операций» + аудит-вопрос про пробелы).
 
-import { appendFile, readFile, mkdir } from 'node:fs/promises';
+import { appendFile, readFile, mkdir, rename, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { KB_ROOT } from './kb-root.mjs';
@@ -22,6 +22,10 @@ import { KB_ROOT } from './kb-root.mjs';
 export const REPO_ROOT = KB_ROOT;
 const JOURNAL_DIR = join(REPO_ROOT, '.context');
 const JOURNAL_FILE = join(JOURNAL_DIR, 'kb-journal.jsonl');
+// Ротация (D1): append-only файл на активной KB растёт неограниченно; при превышении лимита
+// текущий журнал уезжает в kb-journal.1.jsonl (одно поколение — довольно для трендов kb-metrics).
+const JOURNAL_MAX_BYTES = 5 * 1024 * 1024;
+const JOURNAL_ROTATED = join(JOURNAL_DIR, 'kb-journal.1.jsonl');
 
 function journalDisabled() {
   return process.env.KB_JOURNAL === '0';
@@ -37,8 +41,14 @@ function journalDisabled() {
 export async function appendJournal(entry) {
   if (journalDisabled()) return;
   if (!entry || typeof entry !== 'object') return;
+  // Мягкая валидация (D1): запись без kind бесполезна для аналитики — не даём замусорить журнал.
+  if (typeof entry.kind !== 'string' || !entry.kind) return;
   try {
     await mkdir(JOURNAL_DIR, { recursive: true });
+    try {
+      const st = await stat(JOURNAL_FILE);
+      if (st.size > JOURNAL_MAX_BYTES) await rename(JOURNAL_FILE, JOURNAL_ROTATED);
+    } catch { /* файла ещё нет — норма */ }
     const line = JSON.stringify({
       written_at: new Date().toISOString(),
       ...entry,

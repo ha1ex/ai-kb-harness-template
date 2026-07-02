@@ -96,6 +96,7 @@ const issues = {
   ghostInIndex: [],
   staleInbox: [],   // advisory (L4): не гейтит — .context эфемерна и отсутствует в CI
   staleAnswers: [], // advisory (N2): verified answer-card, чей источник изменился после verified_at
+  stubCards: [],    // advisory (D3): status stub/deprecated — скрыты из retrieval, дозаполнить или удалить
 };
 
 const allFiles = new Map(); // relPath → { layer, fields, related, mtimeMs }
@@ -112,6 +113,9 @@ for (const layer of Object.keys(LAYERS)) {
     const related = parseRelatedFromText(text);
     const stat = statSync(absPath);
 
+    if (fields.status === 'stub' || fields.status === 'deprecated') {
+      issues.stubCards.push({ file: rel, status: fields.status });
+    }
     allFiles.set(rel, {
       layer,
       fields,
@@ -272,6 +276,7 @@ const summary = {
   ghost_in_index: issues.ghostInIndex.length,
   stale_inbox: issues.staleInbox.length,
   stale_answers: issues.staleAnswers.length,
+  stub_cards: issues.stubCards.length,
 };
 
 await appendJournal({ kind: 'doctor', ts: new Date().toISOString(), summary });
@@ -294,6 +299,7 @@ console.log(`  Stale synthesis (>${STALE_DAYS}д):  ${summary.stale_synthesis}`)
 console.log(`  Ghost в индексе:         ${summary.ghost_in_index}`);
 console.log(`  Stale inbox (advisory):  ${summary.stale_inbox}`);
 console.log(`  Stale answers (advisory):${summary.stale_answers}`);
+console.log(`  Stub-карточки (advisory):${summary.stub_cards}`);
 console.log('');
 
 // Advisory-секции всегда видны (не влияют на exit).
@@ -311,6 +317,15 @@ if (issues.staleAnswers.length > 0) {
   console.log('─'.repeat(60));
   for (const it of issues.staleAnswers.slice(0, 20)) console.log(`  • ${it.file}   verified_at=${it.verified_at}   изменились: ${it.changed.join(', ')}`);
   console.log('  → перепроверь ответ (kb_promote заново или правка) и обнови verified_at, либо status: stale.');
+  console.log('');
+}
+
+if (issues.stubCards.length > 0) {
+  console.log('─'.repeat(60));
+  console.log(`  ⚠ Stub/deprecated-карточки — скрыты из retrieval (D3)  (${issues.stubCards.length})`);
+  console.log('─'.repeat(60));
+  for (const it of issues.stubCards.slice(0, 20)) console.log(`  • ${it.file}   status=${it.status}`);
+  console.log('  → дозаполни карточку (убери status: stub) или удали файл.');
   console.log('');
 }
 

@@ -27,6 +27,7 @@ import {
   readFileSafe,
   parseFrontmatterLinks,
   parseFrontmatterDate,
+  parseFrontmatterStatus,
   upsertLinks,
   DB_PATH,
   REPO_ROOT,
@@ -89,6 +90,7 @@ for (const file of walkMarkdown(REPO_ROOT, layers, { rootFiles })) {
   const links = parseFrontmatterLinks(text);
   // doc_date для temporal-канала: frontmatter (date|ingested|updated), иначе дата mtime-файла.
   const docDate = parseFrontmatterDate(text) || new Date(file.mtime).toISOString().slice(0, 10);
+  const status = parseFrontmatterStatus(text);
   if (chunks.length === 0) {
     deleteFileChunks(db, file.relPath);
     upsertFileRow(db, file.relPath, file.mtime, 0);
@@ -118,6 +120,7 @@ for (const file of walkMarkdown(REPO_ROOT, layers, { rootFiles })) {
         layer: file.layer,
         embedding: embeddings[i],
         docDate,
+        status,
       });
     }
     upsertFileRow(db, file.relPath, file.mtime, chunks.length);

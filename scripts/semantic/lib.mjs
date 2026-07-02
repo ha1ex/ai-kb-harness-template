@@ -236,7 +236,8 @@ export function openDb(path = DB_PATH) {
       line_start INTEGER,
       text TEXT NOT NULL,
       layer TEXT,
-      doc_date TEXT              -- 'YYYY-MM-DD' из frontmatter (date|ingested|updated) или mtime-дата. Для temporal-канала.
+      doc_date TEXT,             -- 'YYYY-MM-DD' из frontmatter (date|ingested|updated) или mtime-дата. Для temporal-канала.
+      status TEXT                -- frontmatter status (stub/deprecated скрываются из retrieval, D3).
     );
     CREATE INDEX IF NOT EXISTS idx_chunks_file ON chunks(file);
     CREATE INDEX IF NOT EXISTS idx_chunks_layer ON chunks(layer);
@@ -281,6 +282,11 @@ export function openDb(path = DB_PATH) {
     db.exec('ALTER TABLE chunks ADD COLUMN doc_date TEXT');
     db.exec('CREATE INDEX IF NOT EXISTS idx_chunks_doc_date ON chunks(doc_date)');
   }
+  const hasStatus = db.prepare("PRAGMA table_info(chunks)").all().some((c) => c.name === 'status');
+  if (!hasStatus) {
+    // Старые чанки получат status=NULL до ближайшей переиндексации файла (incremental по mtime).
+    db.exec('ALTER TABLE chunks ADD COLUMN status TEXT');
+  }
 
   return db;
 }
@@ -297,10 +303,10 @@ export function deleteFileChunks(db, file) {
   return ids.length;
 }
 
-export function insertChunk(db, { file, mtime, heading, lineStart, text, layer, embedding, docDate = null }) {
+export function insertChunk(db, { file, mtime, heading, lineStart, text, layer, embedding, docDate = null, status = null }) {
   const info = db.prepare(
-    'INSERT INTO chunks (file, mtime, heading, line_start, text, layer, doc_date) VALUES (?,?,?,?,?,?,?)',
-  ).run(file, mtime, heading, lineStart, text, layer, docDate);
+    'INSERT INTO chunks (file, mtime, heading, line_start, text, layer, doc_date, status) VALUES (?,?,?,?,?,?,?,?)',
+  ).run(file, mtime, heading, lineStart, text, layer, docDate, status);
   // sqlite-vec 0.1.x требует rowid именно как BigInt при параметризованном INSERT (Number → ошибка).
   const rowid = BigInt(info.lastInsertRowid);
   const json = floatArrayToJson(embedding);
@@ -341,6 +347,7 @@ export async function indexSingleFile(db, embed, relPath, layer = null) {
   const chunks = chunkMarkdown(text);
   const links = parseFrontmatterLinks(text);
   const docDate = parseFrontmatterDate(text) || new Date(st.mtimeMs).toISOString().slice(0, 10);
+  const status = parseFrontmatterStatus(text);
   const lay = layer ?? (relPath.split('/')[0] || '');
 
   const embeddings = [];
@@ -356,7 +363,7 @@ export async function indexSingleFile(db, embed, relPath, layer = null) {
       const c = chunks[i];
       insertChunk(db, {
         file: relPath, mtime: st.mtimeMs, heading: c.heading, lineStart: c.lineStart,
-        text: c.rawText, layer: lay, embedding: embeddings[i], docDate,
+        text: c.rawText, layer: lay, embedding: embeddings[i], docDate, status,
       });
     }
     upsertFileRow(db, relPath, st.mtimeMs, chunks.length);
@@ -371,7 +378,29 @@ export function getFileMtime(db, path) {
   return r ? r.mtime : 0;
 }
 
-export function searchVec(db, queryEmbedding, { topK = 10, layer = null } = {}) {
+/**
+ * Сохранённые эмбеддинги чанков файла (D2). Tier-2 verify раньше РЕ-эмбеддил все чанки
+ * цитируемого файла на каждый claim (O(claims × chunks) прогонов модели), хотя те же векторы
+ * уже лежат в vec_chunks. Читаем готовые: эмбеддится только сам claim.
+ * NB: сохранённый вектор считался по тексту с [meta:]-hint — advisory-скор может чуть отличаться
+ * от ре-эмбеддинга без hint; для advisory-полосы strong/weak/none это несущественно.
+ * @returns {Array<{ line_start:number, embedding:Float32Array }>}
+ */
+export function getChunkEmbeddings(db, file) {
+  const rows = db.prepare(
+    'SELECT c.line_start AS line_start, v.embedding AS embedding FROM chunks c JOIN vec_chunks v ON v.rowid = c.id WHERE c.file = ?',
+  ).all(file);
+  return rows.map((r) => ({
+    line_start: r.line_start,
+    embedding: new Float32Array(r.embedding.buffer, r.embedding.byteOffset, r.embedding.byteLength / 4),
+  }));
+}
+
+// Статусы, скрываемые из retrieval (D3): пустые стабы и deprecated-карточки не должны
+// попадать в контекст синтеза. Отладка: opts.includeStubs = true.
+const HIDDEN_STATUSES = new Set(['stub', 'deprecated']);
+
+export function searchVec(db, queryEmbedding, { topK = 10, layer = null, includeStubs = false } = {}) {
   // Кандидаты — top-K по vec, потом join с chunks для текста и фильтрации по layer.
   // sqlite-vec не умеет JOIN в одном запросе с WHERE по другой таблице,
   // поэтому берём с запасом и фильтруем в JS.
@@ -384,7 +413,7 @@ export function searchVec(db, queryEmbedding, { topK = 10, layer = null } = {}) 
   const ids = matches.map((m) => Number(m.rowid));
   const placeholders = ids.map(() => '?').join(',');
   const rows = db.prepare(
-    `SELECT id, file, heading, line_start, text, layer, doc_date FROM chunks WHERE id IN (${placeholders})`,
+    `SELECT id, file, heading, line_start, text, layer, doc_date, status FROM chunks WHERE id IN (${placeholders})`,
   ).all(...ids);
   const byId = new Map(rows.map((r) => [r.id, r]));
 
@@ -393,6 +422,7 @@ export function searchVec(db, queryEmbedding, { topK = 10, layer = null } = {}) 
     const row = byId.get(Number(m.rowid));
     if (!row) continue;
     if (layer && row.layer !== layer) continue;
+    if (!includeStubs && HIDDEN_STATUSES.has(row.status)) continue;
     results.push({ ...row, distance: m.distance, similarity: 1 - m.distance / 2 });
     if (results.length >= topK) break;
   }
@@ -431,7 +461,7 @@ export function searchBM25(db, queryText, { topK = 10, layer = null } = {}) {
   const ids = matches.map((m) => Number(m.rowid));
   const placeholders = ids.map(() => '?').join(',');
   const rows = db.prepare(
-    `SELECT id, file, heading, line_start, text, layer, doc_date FROM chunks WHERE id IN (${placeholders})`,
+    `SELECT id, file, heading, line_start, text, layer, doc_date, status FROM chunks WHERE id IN (${placeholders})`,
   ).all(...ids);
   const byId = new Map(rows.map((r) => [r.id, r]));
 
@@ -440,6 +470,7 @@ export function searchBM25(db, queryText, { topK = 10, layer = null } = {}) {
     const row = byId.get(Number(m.rowid));
     if (!row) continue;
     if (layer && row.layer !== layer) continue;
+    if (!includeStubs && HIDDEN_STATUSES.has(row.status)) continue;
     results.push({ ...row, rank: m.rank, score: -m.rank });
     if (results.length >= topK) break;
   }
@@ -583,7 +614,7 @@ export function searchGraph(db, seedFiles, { topK = 20, layer = null } = {}) {
   // Сортировка: по весу убыв., затем стабильно по имени (детерминизм для CI).
   const ranked = [...weight.entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1));
   const rep = db.prepare(
-    'SELECT id, file, heading, line_start, text, layer, doc_date FROM chunks WHERE file = ? ORDER BY line_start ASC LIMIT 1',
+    "SELECT id, file, heading, line_start, text, layer, doc_date, status FROM chunks WHERE file = ? AND (status IS NULL OR status NOT IN ('stub','deprecated')) ORDER BY line_start ASC LIMIT 1",
   );
   const out = [];
   for (const [file, w] of ranked) {
@@ -728,6 +759,18 @@ function normalizeRelPath(p) {
 // `date` — каноническое; `ingested` использует external-corpus (когда карточка попала в KB);
 // `updated` — если автор ведёт явную дату правки.
 const DATE_FM_KEYS = ['date', 'ingested', 'updated'];
+
+/**
+ * Достаёт frontmatter `status:` (для колонки chunks.status; stub/deprecated скрываются из retrieval, D3).
+ * @returns {string|null}
+ */
+export function parseFrontmatterStatus(text) {
+  if (!text.startsWith('---')) return null;
+  const end = text.indexOf('\n---', 3);
+  if (end < 0) return null;
+  const m = text.slice(3, end).match(/^status\s*:\s*(.+)$/im);
+  return m ? m[1].trim().replace(/^["']|["']$/g, '') : null;
+}
 
 /**
  * Достаёт дату документа из frontmatter в формате 'YYYY-MM-DD'.

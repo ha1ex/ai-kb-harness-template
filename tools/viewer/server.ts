@@ -207,7 +207,12 @@ async function handleSkillOptRuns(limit: number): Promise<unknown> {
   return { runs };
 }
 
+// runId уходит в join() путей — валидируем формат (буквы/цифры/._-), чтобы `..`/слэши
+// не вырвались из .context/skillopt/ (D5). Всё остальное → null (404).
+const RUN_ID_RE = /^[A-Za-z0-9._-]+$/;
+
 async function handleSkillOptRunSummary(runId: string): Promise<unknown> {
+  if (!RUN_ID_RE.test(runId)) return null;
   const summaryPath = join(REPO_ROOT, ".context", "skillopt", runId, "summary.json");
   if (!existsSync(summaryPath)) return null;
   const summary = JSON.parse(await readFile(summaryPath, "utf8"));
