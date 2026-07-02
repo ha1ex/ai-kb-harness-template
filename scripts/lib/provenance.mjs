@@ -34,7 +34,8 @@ export const EXTERNAL_CORPUS_DIRS = new Set([
   'anthropics-skills', 'claude-cookbooks', 'cybos-cases', 'fabric-patterns', 'mcp-catalog',
 ]);
 
-const CITATION_RE = /\[source:\s*([^\]]+)\]/g;
+// Регистронезависимо: `[Source: …]` — та же цитата, а не способ спрятаться от гейта.
+const CITATION_RE = /\[source:\s*([^\]]+)\]/gi;
 
 // Заменяет совпадения `re` пробелами той же длины (переносы строк сохраняются) — чтобы
 // смещения символов остались валидными для вызывающего кода (verify.mjs строит claim-span
@@ -66,23 +67,54 @@ export function maskExamples(text) {
   return s;
 }
 
-/** "/04_synthesis/x.md:12" → "04_synthesis/x.md" (нормализован, без :line, без ведущего слэша). */
-export function normCitePath(raw) {
-  let s = String(raw).trim().replace(/\\/g, '/').replace(/^\.\//, '').replace(/^\/+/, '');
-  const m = s.match(/:(\d+)\s*$/);
-  if (m) s = s.slice(0, m.index);
-  return s;
+/**
+ * Резолвит сегменты `.`/`..` без обращения к ФС (pure-строки, без node:path).
+ * `02_sources/../04_synthesis/x.md` → { path: '04_synthesis/x.md', traversal: true, escapes: false }.
+ *   traversal — в пути были `.`/`..`-сегменты: слой из первого сегмента строки нельзя брать на веру;
+ *   escapes   — путь выходит за корень KB (ведущие `..` не схлопнулись).
+ */
+export function resolveSegments(p) {
+  const out = [];
+  let traversal = false, escapes = false;
+  for (const s of String(p).split('/')) {
+    if (s === '' || s === '.') { if (s === '.') traversal = true; continue; }
+    if (s === '..') {
+      traversal = true;
+      if (out.length) out.pop(); else escapes = true;
+      continue;
+    }
+    out.push(s);
+  }
+  return { path: out.join('/'), traversal, escapes };
 }
 
-/** Извлекает ЖИВЫЕ цитаты (вне HTML-комментариев). → [{ raw, path, layer }]. */
+/**
+ * Полный разбор пути цитаты: чистка, :line, резолв `.`/`..`.
+ * → { path, line, traversal, escapes } — path уже нормализован (слой = первый сегмент надёжен).
+ */
+export function cleanCitePath(raw) {
+  let s = String(raw).trim().replace(/\\/g, '/').replace(/^\.\//, '').replace(/^\/+/, '');
+  let line = null;
+  const m = s.match(/:(\d+)\s*$/);
+  if (m) { line = parseInt(m[1], 10); s = s.slice(0, m.index); }
+  const r = resolveSegments(s);
+  return { path: r.path, line, traversal: r.traversal, escapes: r.escapes };
+}
+
+/** "/04_synthesis/x.md:12" → "04_synthesis/x.md" (нормализован, без :line, без ведущего слэша). */
+export function normCitePath(raw) {
+  return cleanCitePath(raw).path;
+}
+
+/** Извлекает ЖИВЫЕ цитаты (вне HTML-комментариев). → [{ raw, path, layer, traversal, escapes }]. */
 export function extractCitations(text) {
   const scan = maskExamples(text);
   const out = [];
   let m;
   CITATION_RE.lastIndex = 0;
   while ((m = CITATION_RE.exec(scan)) !== null) {
-    const path = normCitePath(m[1]);
-    out.push({ raw: m[1].trim(), path, layer: path.split('/')[0] || '' });
+    const { path, traversal, escapes } = cleanCitePath(m[1]);
+    out.push({ raw: m[1].trim(), path, layer: path.split('/')[0] || '', traversal, escapes });
   }
   return out;
 }
@@ -116,6 +148,15 @@ export function checkProvenance(srcPath, text) {
   if (!PROVENANCE_ENFORCED_LAYERS.has(srcLayer)) return { enforced: false, srcLayer, violations: [] };
   const violations = [];
   for (const c of extractCitations(text)) {
+    // Путь с `.`/`..` — обфускация слоя (или выход за корень): блокируем до разбора рангов,
+    // иначе `[source: /02_sources/../04_synthesis/x.md]` выглядел бы как цитата нижнего слоя.
+    if (c.traversal || c.escapes) {
+      violations.push({
+        path: c.path, layer: c.layer,
+        reason: 'путь содержит `.`/`..`-сегменты (path-traversal) — укажи канонический путь от корня KB',
+      });
+      continue;
+    }
     if (isExternalCorpus(c.path)) continue; // external corpus — отдельный carve-out (verify Tier-1)
     const reason = provenanceReason(srcLayer, c.layer);
     if (reason) violations.push({ path: c.path, layer: c.layer, reason });

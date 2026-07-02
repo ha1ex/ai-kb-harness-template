@@ -10,6 +10,7 @@
 
 import { readFileSync, existsSync } from 'node:fs';
 import { checkProvenance, PROVENANCE_ENFORCED_LAYERS } from './lib/provenance.mjs';
+import { reportHookError } from './lib/journal.mjs';
 
 function readStdin() {
   try { return readFileSync(0, 'utf8'); } catch { return ''; }
@@ -19,7 +20,10 @@ const raw = readStdin();
 if (!raw.trim()) process.exit(0);
 
 let payload;
-try { payload = JSON.parse(raw); } catch { process.exit(0); }
+try { payload = JSON.parse(raw); } catch (e) {
+  await reportHookError('check-provenance', e); // fail-open, но наблюдаемый (A4)
+  process.exit(0);
+}
 
 const tool = payload.tool_name || '';
 const input = payload.tool_input || {};

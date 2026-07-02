@@ -56,6 +56,14 @@ jobs:
       - name: Control unit tests (verify critique + provenance, offline)
         run: node scripts/semantic/test-control.mjs
 
+      # Adversarial-сьют контура доверия (A3): известные векторы обхода гейта
+      # (path-traversal, регистр цитат, uncited FACT/DECISION, unclosed fence, external-corpus)
+      # обязаны фейлиться. Рефакторинг verify/provenance, тихо открывший дыру, = красный билд.
+      - name: Gate adversarial tests (verify/provenance red-team, offline)
+        run: node scripts/semantic/test-gate.mjs
+        env:
+          KB_JOURNAL: '0'
+
       # Свежий checkout = свежие mtime → индекс собираем заново (он gitignored).
       # Первый прогон тянет модель с HuggingFace — соединение бывает флаки (connect timeout),
       # поэтому 3 попытки с очисткой частичного индекса между ними.

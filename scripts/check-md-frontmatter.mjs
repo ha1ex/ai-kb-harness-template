@@ -10,6 +10,7 @@
 // Подстройте LAYER_RULES под структуру вашего проекта.
 
 import { readFileSync, existsSync } from 'node:fs';
+import { reportHookError } from './lib/journal.mjs';
 
 // Слой → требуемые поля frontmatter. Слой определяется по подстроке `/<key>/` в пути файла.
 const LAYER_RULES = {
@@ -30,7 +31,10 @@ const raw = readStdin();
 if (!raw.trim()) process.exit(0);
 
 let payload;
-try { payload = JSON.parse(raw); } catch { process.exit(0); }
+try { payload = JSON.parse(raw); } catch (e) {
+  await reportHookError('check-md-frontmatter', e); // fail-open, но наблюдаемый (A4)
+  process.exit(0);
+}
 
 const tool = payload.tool_name || '';
 const input = payload.tool_input || {};

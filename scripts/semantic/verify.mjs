@@ -26,7 +26,7 @@
 //   флаги: --json  --threshold 0.82  --layers 02_sources,03_wiki  --allow-corpus  --no-semantic
 
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { resolve, sep } from 'node:path';
 import {
   createEmbedder,
   QUERY_PREFIX,
@@ -38,7 +38,7 @@ import {
   walkMarkdown,
 } from './lib.mjs';
 import { appendJournal } from '../lib/journal.mjs';
-import { maskExamples, checkProvenance, EXTERNAL_CORPUS_DIRS as PROV_EXTERNAL_DIRS } from '../lib/provenance.mjs';
+import { maskExamples, cleanCitePath, checkProvenance, EXTERNAL_CORPUS_DIRS as PROV_EXTERNAL_DIRS } from '../lib/provenance.mjs';
 
 export const VERIFY_THRESHOLD = 0.82;          // strong, если bestScore >= threshold
 const WEAK_DELTA = 0.08;                        // weak, если >= threshold - WEAK_DELTA
@@ -48,22 +48,19 @@ const EXTERNAL_CORPUS_DIRS = new Set([
   'anthropics-skills', 'claude-cookbooks', 'cybos-cases', 'fabric-patterns', 'mcp-catalog',
 ]);
 
-const CITATION_RE = /\[source:\s*([^\]]+)\]/g;
+// Регистронезависимо: `[Source: …]` — та же цитата, а не способ спрятаться от гейта.
+const CITATION_RE = /\[source:\s*([^\]]+)\]/gi;
+
+// Слои, в которых метки FACT:/DECISION: обязаны иметь живую цитату в своём абзаце
+// (claim-coverage). Совпадает с PROVENANCE_ENFORCED_LAYERS: это несущие слои пирамиды.
+export const COVERAGE_LAYERS = new Set(['04_synthesis', '05_decisions']);
+const COVERED_LABELS_RE = /^\s*(?:[-*+>]\s+|\d+[.)]\s+)?(?:\*\*)?(FACT|DECISION)(?:\*\*)?\s*:/;
 
 function dot(a, b) {
   let s = 0;
   const n = Math.min(a.length, b.length);
   for (let i = 0; i < n; i++) s += a[i] * b[i];
   return s;
-}
-
-function normPath(raw) {
-  // "/04_synthesis/x.md:12" → { path: "04_synthesis/x.md", line: 12 }
-  let s = String(raw).trim().replace(/\\/g, '/').replace(/^\.\//, '').replace(/^\/+/, '');
-  let line = null;
-  const m = s.match(/:(\d+)\s*$/);
-  if (m) { line = parseInt(m[1], 10); s = s.slice(0, m.index); }
-  return { path: s, line };
 }
 
 function detectLabel(claimText) {
@@ -100,6 +97,7 @@ export async function verifyText(text, {
   allowedLayers = INDEXABLE_LAYERS,
   allowCorpus = false,
   semantic = true,
+  requireCoverage = false,
 } = {}) {
   const allowed = new Set(allowedLayers);
   const citations = [];
@@ -117,10 +115,12 @@ export async function verifyText(text, {
 
   let prevEnd = 0;
   for (const c of raws) {
-    const { path, line } = normPath(c.raw);
+    const { path, line, traversal, escapes } = cleanCitePath(c.raw);
     const layer = path.split('/')[0] || '';
-    const abs = join(REPO_ROOT, path);
-    const exists = existsSync(abs);
+    const abs = resolve(REPO_ROOT, path);
+    // Даже после резолва сегментов путь обязан оставаться внутри корня KB.
+    const insideRepo = abs.startsWith(REPO_ROOT + sep);
+    const exists = insideRepo && existsSync(abs);
     const layerAllowed = allowed.has(layer);
 
     // external-corpus carve-out
@@ -132,7 +132,8 @@ export async function verifyText(text, {
 
     let tier1_ok = true;
     let reason = 'ok';
-    if (!exists) { tier1_ok = false; reason = 'missing-file'; }
+    if (traversal || escapes || !insideRepo) { tier1_ok = false; reason = 'path-traversal'; }
+    else if (!exists) { tier1_ok = false; reason = 'missing-file'; }
     else if (!layerAllowed) { tier1_ok = false; reason = 'layer-not-allowed'; }
     else if (externalCorpus && !allowCorpus) { tier1_ok = false; reason = 'external-corpus-not-citable'; }
     else if (line != null) {
@@ -153,6 +154,24 @@ export async function verifyText(text, {
       claim: claim.slice(0, 200),
       advisory: null, // заполняется ниже для FACT
     });
+  }
+
+  // ---------- claim-coverage (A2): FACT:/DECISION: без живой цитаты в своём абзаце ----------
+  // Работает по masked-тексту: метки и цитаты в примерах (код/комментарии) не считаются.
+  const uncited_claims = [];
+  if (requireCoverage) {
+    const lines = scan.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const lm = lines[i].match(COVERED_LABELS_RE);
+      if (!lm) continue;
+      let a = i, b = i;
+      while (a > 0 && lines[a - 1].trim() !== '') a--;
+      while (b < lines.length - 1 && lines[b + 1].trim() !== '') b++;
+      const para = lines.slice(a, b + 1).join('\n');
+      if (!/\[source:/i.test(para)) {
+        uncited_claims.push({ line: i + 1, label: lm[1].toUpperCase(), text: lines[i].trim().slice(0, 200) });
+      }
+    }
   }
 
   // ---------- Tier-2 (advisory, только FACT, только если есть db+embed) ----------
@@ -181,10 +200,13 @@ export async function verifyText(text, {
   const summary = {
     citations_total: citations.length,
     citations_ok,
-    passed: citations.length === 0 ? true : citations.every((c) => c.tier1_ok),
+    // Текст без цитат сам по себе валиден, но при requireCoverage непокрытые
+    // FACT:/DECISION: — это гейт: «просто не поставить цитату» больше не лазейка.
+    passed: citations.every((c) => c.tier1_ok) && uncited_claims.length === 0,
+    uncited_claims: uncited_claims.length,
     advisory: { fact_claims: factStrong + factWeak + factNone, strong: factStrong, weak: factWeak, none: factNone },
   };
-  return { citations, summary, critique: buildCritique(citations) };
+  return { citations, uncited_claims, summary, critique: buildCritique(citations, uncited_claims) };
 }
 
 // ---------- critique (N1: verify → critique → revise) ----------
@@ -207,17 +229,31 @@ const REASON_FIX = {
     action: 'fix-line',
     suggestion: 'Номер строки пуст/вне диапазона. Убери :line или укажи непустую строку файла.',
   },
+  'path-traversal': {
+    action: 're-cite',
+    suggestion: 'Путь содержит `.`/`..`-сегменты или выходит за корень KB. Укажи канонический путь от корня: [source: /слой/файл.md].',
+  },
 };
 
 /**
  * Превращает результат проверки в actionable-критику (N1). Чистая функция над citations.
  *   • Tier-1 fail  → severity:error, needsRevision=true (это и есть гейт);
+ *   • uncited FACT:/DECISION: (claim-coverage) → severity:error;
  *   • FACT с advisory band none/weak → severity:warn (advisory, НИКОГДА не форсит revision).
  * @param {Array} citations  citations из verifyText
+ * @param {Array} [uncitedClaims]  uncited_claims из verifyText (requireCoverage)
  * @returns {{ needsRevision:boolean, errors:number, warns:number, items:Array }}
  */
-export function buildCritique(citations) {
+export function buildCritique(citations, uncitedClaims = []) {
   const items = [];
+  for (const u of uncitedClaims) {
+    items.push({
+      severity: 'error', path: null, line: u.line ?? null, label: u.label,
+      reason: 'uncited-claim', action: 'add-citation',
+      suggestion: 'Метка FACT/DECISION без живой цитаты в абзаце — добавь [source: /слой/файл.md] или понизь метку до INFERENCE/ASSUMPTION.',
+      claim: u.text,
+    });
+  }
   for (const c of citations) {
     if (!c.tier1_ok) {
       const fix = REASON_FIX[c.reason] || { action: 're-cite', suggestion: 'Цитата не прошла Tier-1 — исправь путь/слой или удали утверждение.' };
@@ -246,7 +282,7 @@ export function buildCritique(citations) {
  */
 export async function scanLayers(layers, { provenance = false, allowCorpus = false } = {}) {
   const problems = [];
-  let files = 0, failedFiles = 0, exempted = 0;
+  let files = 0, failedFiles = 0, exempted = 0, coverageExempted = 0;
   for (const f of walkMarkdown(REPO_ROOT, layers)) {
     // external-corpus карточки в 06_outputs не несут внутренних цитат — пропускаем их явно
     // (логируем счётчик, не молчим).
@@ -255,18 +291,32 @@ export async function scanLayers(layers, { provenance = false, allowCorpus = fal
     files++;
     let text = '';
     try { text = readFileSync(f.absPath, 'utf8'); } catch { continue; }
-    const { summary } = await verifyText(text, { semantic: false, allowCorpus });
+    // Явный opt-out от claim-coverage: frontmatter `coverage: exempt` — для мета-документов,
+    // чей evidence живёт во frontmatter `source:`-URL (см. AGENTS.md § External corpus).
+    // Видимый и greppable: скан считает такие файлы, а не молчит.
+    let requireCoverage = COVERAGE_LAYERS.has(f.layer);
+    if (requireCoverage) {
+      const fmEnd = text.startsWith('---') ? text.indexOf('\n---', 3) : -1;
+      const fm = fmEnd > 0 ? text.slice(0, fmEnd) : '';
+      if (/^coverage:\s*exempt\s*$/m.test(fm)) { requireCoverage = false; coverageExempted++; }
+    }
+    const { summary } = await verifyText(text, {
+      semantic: false,
+      allowCorpus,
+      requireCoverage,
+    });
     const prov = provenance ? checkProvenance(f.relPath, text) : { violations: [] };
     if (!summary.passed || prov.violations.length) {
       failedFiles++;
       problems.push({
         file: f.relPath,
-        tier1_failed: summary.passed ? 0 : summary.citations_total - summary.citations_ok,
+        tier1_failed: summary.citations_total - summary.citations_ok,
+        uncited_claims: summary.uncited_claims,
         provenance_violations: prov.violations,
       });
     }
   }
-  return { files, failedFiles, problems, exempted };
+  return { files, failedFiles, problems, exempted, coverageExempted };
 }
 
 // ───────────────────────── CLI ─────────────────────────
@@ -278,7 +328,7 @@ function isMain() {
 if (isMain()) {
   const argv = process.argv.slice(2);
   let threshold = VERIFY_THRESHOLD;
-  let asJson = false, allowCorpus = false, semantic = true;
+  let asJson = false, allowCorpus = false, semantic = true, requireCoverage = false;
   let fromStdin = false, file = null, layersArg = null;
   let scan = false, provenance = false;
   const textParts = [];
@@ -287,6 +337,7 @@ if (isMain()) {
     if (a === '--json') asJson = true;
     else if (a === '--allow-corpus') allowCorpus = true;
     else if (a === '--no-semantic') semantic = false;
+    else if (a === '--require-coverage') requireCoverage = true;
     else if (a === '--stdin') fromStdin = true;
     else if (a === '--scan') scan = true;
     else if (a === '--provenance') provenance = true;
@@ -314,10 +365,13 @@ if (isMain()) {
     } else {
       console.log('');
       console.log(`Скан слоёв [${scanLayersList.join(', ')}]${provenance ? ' +provenance' : ''}: ` +
-        `${res.files} файлов · external-пропущено ${res.exempted} · ${res.failedFiles ? `❌ ${res.failedFiles} с проблемами` : '✅ чисто'}`);
+        `${res.files} файлов · external-пропущено ${res.exempted}` +
+        `${res.coverageExempted ? ` · coverage-exempt ${res.coverageExempted}` : ''} · ` +
+        `${res.failedFiles ? `❌ ${res.failedFiles} с проблемами` : '✅ чисто'}`);
       for (const p of res.problems) {
         console.log(`  ❌ ${p.file}`);
         if (p.tier1_failed) console.log(`       Tier-1: ${p.tier1_failed} битых цитат (запусти: verify.mjs --file ${p.file})`);
+        if (p.uncited_claims) console.log(`       coverage: ${p.uncited_claims} меток FACT/DECISION без цитаты (запусти: verify.mjs --require-coverage --file ${p.file})`);
         for (const v of p.provenance_violations) console.log(`       provenance: [source: /${v.path}] — ${v.reason}`);
       }
       console.log('');
@@ -347,7 +401,7 @@ if (isMain()) {
   }
 
   const t0 = Date.now();
-  const result = await verifyText(text, { db, embed, threshold, allowedLayers, allowCorpus, semantic });
+  const result = await verifyText(text, { db, embed, threshold, allowedLayers, allowCorpus, semantic, requireCoverage });
   if (db) db.close();
 
   await appendJournal({
@@ -368,7 +422,11 @@ if (isMain()) {
   } else {
     const s = result.summary;
     console.log('');
-    console.log(`Цитат: ${s.citations_total} · Tier-1 ok: ${s.citations_ok} · ${s.passed ? '✅ PASSED' : '❌ FAILED'}`);
+    console.log(`Цитат: ${s.citations_total} · Tier-1 ok: ${s.citations_ok}` +
+      `${requireCoverage ? ` · непокрытых меток: ${s.uncited_claims}` : ''} · ${s.passed ? '✅ PASSED' : '❌ FAILED'}`);
+    for (const u of result.uncited_claims) {
+      console.log(`  ✗ строка ${u.line}: ${u.label}: без цитаты — «${u.text.slice(0, 80)}…»`);
+    }
     for (const c of result.citations) {
       const mark = c.tier1_ok ? '✅' : '❌';
       let adv = '';
@@ -382,7 +440,8 @@ if (isMain()) {
       console.log(`\n  Критика (errors=${result.critique.errors} warns=${result.critique.warns}) — действия:`);
       for (const it of result.critique.items) {
         const icon = it.severity === 'error' ? '✗' : '⚠';
-        console.log(`    ${icon} [/${it.path}${it.line ? `:${it.line}` : ''}] ${it.action}: ${it.suggestion}`);
+        const where = it.path ? `[/${it.path}${it.line ? `:${it.line}` : ''}]` : `[строка ${it.line ?? '?'}]`;
+        console.log(`    ${icon} ${where} ${it.action}: ${it.suggestion}`);
       }
       console.log('    → revision-промпт: node scripts/kb-critic.mjs --file <ответ>.md');
     }

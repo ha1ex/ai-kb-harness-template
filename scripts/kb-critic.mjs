@@ -72,9 +72,12 @@ function buildRevisionPrompt(answer, critique) {
   let n = 1;
   for (const it of critique.items) {
     const sev = it.severity === 'error' ? 'ERROR' : 'warn';
-    const where = `/${it.path}${it.line ? `:${it.line}` : ''}`;
+    // uncited-claim (A2) не привязан к цитате — у него нет path, только строка в тексте.
+    const where = it.path
+      ? `[source: /${it.path}${it.line ? `:${it.line}` : ''}]`
+      : `строка ${it.line ?? '?'}`;
     const claim = it.claim ? `  ← claim: «${it.claim}»` : '';
-    lines.push(`${n}. [${sev}] [source: ${where}] — ${it.action}: ${it.suggestion}${claim}`);
+    lines.push(`${n}. [${sev}] ${where} — ${it.action}: ${it.suggestion}${claim}`);
     n++;
   }
   lines.push('');

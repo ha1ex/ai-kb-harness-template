@@ -13,6 +13,7 @@
 // файлы в /99_templates/ и сам /05_decisions/ без .md.
 
 import { readFileSync, existsSync } from 'node:fs';
+import { reportHookError } from './lib/journal.mjs';
 
 function readStdin() {
   try {
@@ -31,8 +32,9 @@ if (!raw.trim()) {
 let payload;
 try {
   payload = JSON.parse(raw);
-} catch {
-  // Не JSON → не наша зона ответственности.
+} catch (e) {
+  // Не JSON → fail-open, но наблюдаемый (A4): журнал + stderr.
+  await reportHookError('check-decisions', e);
   process.exit(0);
 }
 

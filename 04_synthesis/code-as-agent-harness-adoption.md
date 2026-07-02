@@ -5,6 +5,7 @@ date: 2026-06-25
 status: living
 confidence: medium
 source: https://github.com/YennNing/Awesome-Code-as-Agent-Harness-Papers
+coverage: exempt
 tags: [harness, retrieval, control, memory, evolve, roadmap]
 ---
 
@@ -13,7 +14,8 @@ tags: [harness, retrieval, control, memory, evolve, roadmap]
 > Синтез разбора обзора **«Code as Agent Harness»** (YennNing/Awesome-Code-as-Agent-Harness-Papers,
 > 300+ статей 2021–2026; ссылка во frontmatter `source:`). Это **мета-документ об оснастке**, поэтому
 > evidence — внешний обзор и наш собственный код (`scripts/…`), а не слои KB; внутренние `[source: /path]`
-> здесь неприменимы (как и для external-corpus). Метки `RECOMMENDATION/FACT/INFERENCE` — про природу
+> здесь неприменимы (как и для external-corpus), поэтому во frontmatter стоит `coverage: exempt` —
+> явный opt-out от claim-coverage-гейта. Метки `RECOMMENDATION/FACT/INFERENCE` — про природу
 > утверждения. Карта инструментов — `docs/architecture.md`.
 
 ## Рамка

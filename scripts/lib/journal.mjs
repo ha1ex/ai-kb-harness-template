@@ -51,6 +51,20 @@ export async function appendJournal(entry) {
 }
 
 /**
+ * A4: наблюдаемый fail-open для PreToolUse-хуков. Хук, упавший на битом payload, обязан
+ * остаться allow (не блокировать работу из-за инфраструктурной ошибки), но НЕ молчать:
+ * событие уходит в журнал (kind: hook-error) и предупреждение — в stderr.
+ * Never throws (как и appendJournal).
+ */
+export async function reportHookError(hook, err) {
+  const message = String((err && err.message) || err || 'unknown').slice(0, 200);
+  try {
+    process.stderr.write(`[${hook}] ⚠ hook-error (fail-open, запись разрешена): ${message}\n`);
+  } catch { /* stderr недоступен — не критично */ }
+  await appendJournal({ kind: 'hook-error', hook, error: message });
+}
+
+/**
  * Компактная проекция результатов поиска для журнала (без текста чанков).
  * Принимает массив из search.mjs / fuseRRF и обрезает до topN путей + скоров.
  */
