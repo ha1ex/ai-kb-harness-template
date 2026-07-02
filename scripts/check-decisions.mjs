@@ -14,6 +14,7 @@
 
 import { readFileSync, existsSync } from 'node:fs';
 import { reportHookError } from './lib/journal.mjs';
+import { loadKbConfig } from './lib/kb-root.mjs';
 
 function readStdin() {
   try {
@@ -50,9 +51,10 @@ if (!filePath) process.exit(0);
 const isDecisionPath = /\/05_decisions\/[^/]+\.md$/.test(filePath);
 if (!isDecisionPath) process.exit(0);
 
-// Исключения
+// Исключения (project-owned переопределение — kb.config.mjs → decisions.exemptBasenames)
+const cfg = await loadKbConfig();
 const basename = filePath.split('/').pop();
-const exemptions = new Set([
+const exemptions = new Set(cfg.decisions?.exemptBasenames ?? [
   'decision-log.md',
   'rejected-options.md',
   'assumptions.md',

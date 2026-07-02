@@ -38,22 +38,23 @@ import {
   walkMarkdown,
 } from './lib.mjs';
 import { appendJournal } from '../lib/journal.mjs';
-import { maskExamples, cleanCitePath, checkProvenance, EXTERNAL_CORPUS_DIRS as PROV_EXTERNAL_DIRS } from '../lib/provenance.mjs';
+import {
+  maskExamples,
+  cleanCitePath,
+  checkProvenance,
+  // Единые source of truth (project-owned переопределения — kb.config.mjs):
+  EXTERNAL_CORPUS_DIRS,   // зеркала внешних библиотек — внутренние [source:] к ним неприменимы
+  COVERAGE_LAYERS,        // слои с обязательным claim-coverage (FACT:/DECISION: + цитата)
+} from '../lib/provenance.mjs';
+
+export { COVERAGE_LAYERS };
 
 export const VERIFY_THRESHOLD = 0.82;          // strong, если bestScore >= threshold
 const WEAK_DELTA = 0.08;                        // weak, если >= threshold - WEAK_DELTA
 const LABELS = ['FACT', 'INFERENCE', 'ASSUMPTION', 'UNKNOWN', 'RISK', 'DECISION', 'RECOMMENDATION'];
-// Зеркала внешних библиотек внутри 06_outputs — к ним внутренние [source:] неприменимы.
-const EXTERNAL_CORPUS_DIRS = new Set([
-  'anthropics-skills', 'claude-cookbooks', 'cybos-cases', 'fabric-patterns', 'mcp-catalog',
-]);
 
 // Регистронезависимо: `[Source: …]` — та же цитата, а не способ спрятаться от гейта.
 const CITATION_RE = /\[source:\s*([^\]]+)\]/gi;
-
-// Слои, в которых метки FACT:/DECISION: обязаны иметь живую цитату в своём абзаце
-// (claim-coverage). Совпадает с PROVENANCE_ENFORCED_LAYERS: это несущие слои пирамиды.
-export const COVERAGE_LAYERS = new Set(['04_synthesis', '05_decisions']);
 const COVERED_LABELS_RE = /^\s*(?:[-*+>]\s+|\d+[.)]\s+)?(?:\*\*)?(FACT|DECISION)(?:\*\*)?\s*:/;
 
 function dot(a, b) {
@@ -287,7 +288,7 @@ export async function scanLayers(layers, { provenance = false, allowCorpus = fal
     // external-corpus карточки в 06_outputs не несут внутренних цитат — пропускаем их явно
     // (логируем счётчик, не молчим).
     const second = f.relPath.split('/')[1] || '';
-    if (f.layer === '06_outputs' && PROV_EXTERNAL_DIRS.has(second)) { exempted++; continue; }
+    if (f.layer === '06_outputs' && EXTERNAL_CORPUS_DIRS.has(second)) { exempted++; continue; }
     files++;
     let text = '';
     try { text = readFileSync(f.absPath, 'utf8'); } catch { continue; }

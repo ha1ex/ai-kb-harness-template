@@ -364,26 +364,39 @@ open-questions/contradictions · дашборд SkillOpt. Для коллег: `
 
 | Файл | Что менять |
 |---|---|
-| `AGENTS.md` § Project purpose | Цель и контекст проекта |
+| **`kb.config.mjs`** | **Все настройки харнесса в одном месте**: слои (`layers.indexable`), provenance/coverage, frontmatter-правила, модель эмбеддера |
+| `AGENTS.md` § Project purpose | Цель и контекст проекта (заполняет `kb:init`) |
 | `CLAUDE.md` | Язык, дисциплина веток, команды запуска |
 | `.remember/core.md` · `preferences.md` | Инвариант проекта и форма ответа |
-| `scripts/semantic/lib.mjs` → `INDEXABLE_LAYERS` / `SKIP_DIRS` | Своя структура слоёв |
-| `scripts/lib/provenance.mjs` → `PROVENANCE_ENFORCED_LAYERS` | Для каких слоёв включать provenance-гейт |
-| `scripts/kb-doctor.mjs` / `check-md-frontmatter.mjs` | Обязательные frontmatter-поля по слоям |
-| `.mcp.json` · `LICENSE` | Имя сервера · copyright holder |
+| `scripts/semantic/probes.local.mjs` | Свои eval-пробы (создать; см. `probes.mjs`) |
+| `.mcp.json` · `LICENSE` | Конфиг MCP · copyright holder |
 
-**Не нужно** менять алгоритмы поиска (`lib.mjs`), MCP-handler'ы и логику гейтов — они generic.
+**Не нужно** править ядро (`scripts/semantic/`, `scripts/lib/`) — оно template-owned и обновляется
+от upstream; граница зафиксирована в [`.template-manifest.json`](.template-manifest.json).
+
+## Несколько KB на одной машине
+
+Ядро читает env `KB_ROOT` / `KB_DB_PATH` — одна установленная оснастка обслуживает N
+markdown-репозиториев, у каждого свой `kb.config.mjs` и свой индекс:
+
+```bash
+KB_ROOT=~/kb/personal node scripts/semantic/index.mjs     # индекс чужой базы
+KB_ROOT=~/kb/personal node scripts/semantic/search.mjs "запрос"
+```
+
+В `.mcp.json` можно зарегистрировать второй сервер с `"env": {"KB_ROOT": "~/kb/personal"}` —
+имя инструментов возьмётся от basename корня (`kb-personal`).
 
 ## Как обновляться от upstream
 
-GitHub-шаблоны не обновляют клоны автоматически. Чтобы догонять улучшения:
-
 ```bash
-git remote add upstream https://github.com/ha1ex/ai-kb-harness-template.git
-git fetch upstream
-git diff upstream/main -- scripts/                       # что изменилось
-git checkout upstream/main -- scripts/semantic/lib.mjs   # цеплять конкретные файлы
+pnpm kb:update            # dry-run: что изменилось в ядре, что конфликтует с локальными правками
+pnpm kb:update --apply    # применить безопасные обновления (только template-owned, чистый tree)
 ```
+
+Скрипт делает файловый 3-way по границе из `.template-manifest.json`: файлы, изменённые только
+в upstream, обновляются; изменённые и там, и локально — перечисляются для ручного merge;
+project-owned (`kb.config.mjs`, `AGENTS.md`, слои 00–06…) не трогаются никогда.
 
 ## FAQ
 

@@ -19,8 +19,9 @@ import { spawnSync } from 'node:child_process';
 import { join, resolve, basename, extname, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const here = fileURLToPath(new URL('.', import.meta.url));
-const REPO_ROOT = resolve(here, '..');
+import { KB_ROOT } from './lib/kb-root.mjs';
+
+const REPO_ROOT = KB_ROOT;
 
 const argv = process.argv.slice(2);
 const draft = argv.includes('--draft');

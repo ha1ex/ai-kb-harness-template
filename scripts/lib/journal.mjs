@@ -15,12 +15,11 @@
 
 import { appendFile, readFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { KB_ROOT } from './kb-root.mjs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-// scripts/lib/journal.mjs → два уровня вверх = корень репо.
-export const REPO_ROOT = resolve(__dirname, '..', '..');
+// Журнал живёт в .context/ ЦЕЛЕВОЙ KB (env KB_ROOT при мультипроектности, иначе — репо оснастки).
+export const REPO_ROOT = KB_ROOT;
 const JOURNAL_DIR = join(REPO_ROOT, '.context');
 const JOURNAL_FILE = join(JOURNAL_DIR, 'kb-journal.jsonl');
 

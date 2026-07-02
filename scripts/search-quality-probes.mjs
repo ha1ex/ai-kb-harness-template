@@ -11,6 +11,7 @@
 
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { relative, join } from 'node:path';
+import { parseFrontmatter } from './lib/frontmatter.mjs';
 import {
   createEmbedder,
   QUERY_PREFIX,
@@ -27,20 +28,8 @@ import { PROBES, toAltRegex } from './semantic/probes.mjs';
 // Template/local-пробы со схемой expect_file здесь неприменимы — их гоняет eval.mjs.
 const CORPUS_ONLY_PROBES = PROBES.filter((p) => p.expect_provider && p.expect_cat);
 
-function parseFm(text) {
-  const m = text.match(/^---\s*\n([\s\S]*?)\n---\s*\n/);
-  if (!m) return {};
-  const fm = {};
-  for (const line of m[1].split('\n')) {
-    const km = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
-    if (km) {
-      let v = km[2].trim();
-      if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1);
-      fm[km[1]] = v;
-    }
-  }
-  return fm;
-}
+// Единый frontmatter-парсер (C4): scripts/lib/frontmatter.mjs.
+const parseFm = (text) => parseFrontmatter(text).fields;
 
 function fileMeta(filePath) {
   try {

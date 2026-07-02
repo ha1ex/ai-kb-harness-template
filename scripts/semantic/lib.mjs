@@ -18,28 +18,31 @@ import { fileURLToPath } from 'node:url';
 import Database from 'better-sqlite3';
 import * as sqliteVec from 'sqlite-vec';
 import { pipeline, env } from '@xenova/transformers';
+import { KB_ROOT, KB_DB_PATH, loadKbConfig } from '../lib/kb-root.mjs';
 
 // ---------- константы ----------
 
-export const EMBED_MODEL = 'Xenova/multilingual-e5-small';
-export const EMBED_DIM = 384;
+// Project-owned настройки (слои, модель) живут в kb.config.mjs корня KB (C1);
+// здесь — только дефолты шаблона. НЕ правьте этот файл под свой проект.
+const cfg = await loadKbConfig();
+
+export const EMBED_MODEL = cfg.embedder?.model ?? 'Xenova/multilingual-e5-small';
+export const EMBED_DIM = cfg.embedder?.dim ?? 384;
 export const MAX_CHUNK_CHARS = 1200;
 export const MIN_CHUNK_CHARS = 80;
 export const PASSAGE_PREFIX = 'passage: ';
 export const QUERY_PREFIX = 'query: ';
 
-// Корень репо относительно scripts/semantic/lib.mjs
+// Корень целевой KB и путь индекса: env KB_ROOT / KB_DB_PATH (мультипроектность, C2)
+// или репо самой оснастки (см. scripts/lib/kb-root.mjs).
 const here = fileURLToPath(new URL('.', import.meta.url));
-export const REPO_ROOT = resolve(here, '..', '..');
-export const DB_PATH = resolve(REPO_ROOT, '.semantic-index.sqlite');
+export const REPO_ROOT = KB_ROOT;
+export const DB_PATH = KB_DB_PATH;
 
 // Слои, которые индексируем. Порядок отражает каноническую иерархию из AGENTS.md.
-//
-// Если у вашего проекта другая структура — отредактируйте этот массив.
-// Например, добавьте свой слой '07_phase3' / '08_launch' / '99_archive'.
-// 01_raw намеренно НЕ индексируется целиком: канонический поток требует ходить через 02_sources
-// (короткие summary вместо сырых артефактов). Если нужно — добавьте сюда и удалите из SKIP_DIRS.
-export const INDEXABLE_LAYERS = [
+// Своя структура — kb.config.mjs → layers.indexable (например ['docs','adr','notes'] для L0).
+// 01_raw намеренно НЕ индексируется целиком: канонический поток требует ходить через 02_sources.
+export const INDEXABLE_LAYERS = cfg.layers?.indexable ?? [
   '00_context',
   '02_sources',
   '03_wiki',
@@ -49,10 +52,9 @@ export const INDEXABLE_LAYERS = [
 ];
 
 // Файлы в КОРНЕ репо (не директории-слои), которые делаем findable через поиск.
-// `log.md` — changelog проекта: дешёвый «commit-history memory» без LLM-дистилляции рационалей
-// (см. план, salvage вместо T15). Это НЕ слой пирамиды и НЕ цитируется как [source:] — индексируется
-// только для обнаружения. Включается опционально: walkMarkdown(..., { rootFiles: INDEXABLE_ROOT_FILES }).
-export const INDEXABLE_ROOT_FILES = ['log.md'];
+// `log.md` — changelog проекта: дешёвый «commit-history memory» без LLM-дистилляции рационалей.
+// Это НЕ слой пирамиды и НЕ цитируется как [source:] — индексируется только для обнаружения.
+export const INDEXABLE_ROOT_FILES = cfg.layers?.rootFiles ?? ['log.md'];
 
 // Кэш для @xenova/transformers — кладём рядом, чтобы не загрязнять ~/.cache.
 env.cacheDir = resolve(here, '.transformers-cache');
@@ -321,6 +323,47 @@ function floatArrayToJson(arr) {
 
 export function upsertFileRow(db, path, mtime, chunkCount) {
   db.prepare('INSERT OR REPLACE INTO files (path, mtime, chunks) VALUES (?,?,?)').run(path, mtime, chunkCount);
+}
+
+/**
+ * Инкрементально проиндексировать ОДИН файл (C5). Для write-path (kb_retain/kb_promote):
+ * записанная агентом карточка становится видимой поиску сразу, без ручного `kb:index`.
+ * @param {object} db       открытая БД (openDb)
+ * @param {function} embed  эмбеддер (createEmbedder)
+ * @param {string} relPath  путь относительно REPO_ROOT (напр. '04_synthesis/_answers/x.md')
+ * @param {string} [layer]  слой; по умолчанию — первый сегмент relPath
+ * @returns {number} записанных чанков
+ */
+export async function indexSingleFile(db, embed, relPath, layer = null) {
+  const abs = join(REPO_ROOT, relPath);
+  const st = statSync(abs);
+  const text = readFileSync(abs, 'utf8');
+  const chunks = chunkMarkdown(text);
+  const links = parseFrontmatterLinks(text);
+  const docDate = parseFrontmatterDate(text) || new Date(st.mtimeMs).toISOString().slice(0, 10);
+  const lay = layer ?? (relPath.split('/')[0] || '');
+
+  const embeddings = [];
+  const BATCH = 16;
+  for (let i = 0; i < chunks.length; i += BATCH) {
+    const batch = chunks.slice(i, i + BATCH).map((c) => PASSAGE_PREFIX + c.text);
+    embeddings.push(...await embed(batch));
+  }
+
+  const tx = db.transaction(() => {
+    deleteFileChunks(db, relPath);
+    for (let i = 0; i < chunks.length; i++) {
+      const c = chunks[i];
+      insertChunk(db, {
+        file: relPath, mtime: st.mtimeMs, heading: c.heading, lineStart: c.lineStart,
+        text: c.rawText, layer: lay, embedding: embeddings[i], docDate,
+      });
+    }
+    upsertFileRow(db, relPath, st.mtimeMs, chunks.length);
+    upsertLinks(db, relPath, links);
+  });
+  tx();
+  return chunks.length;
 }
 
 export function getFileMtime(db, path) {
@@ -797,8 +840,8 @@ export function getForwardLinks(db, path) {
 // ---------- walker ----------
 
 // Директории, в которые walker не заходит — внутри INDEXABLE_LAYERS.
-// Добавьте сюда свои спецдиректории, если они попадают внутрь слоёв и не должны индексироваться.
-const SKIP_DIRS = new Set([
+// Свои спецдиректории — kb.config.mjs → layers.skipDirs.
+const SKIP_DIRS = new Set(cfg.layers?.skipDirs ?? [
   'node_modules',
   '.git',
   '.context',     // рабочая зона, gitignored

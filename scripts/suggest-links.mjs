@@ -47,15 +47,18 @@ if (!existsSync(DB_PATH)) {
 const db = openDb();
 const embed = await createEmbedder();
 
+const today = new Date().toISOString().slice(0, 10);
+const suggestions = [];
+
+// try/finally: при падении на любом файле БД гарантированно закрывается (C4).
+try {
+
 // Исходные документы — человеко-курируемые слои (корпус 06_outputs не трогаем: там 700+ карточек,
 // связи между ними не ведём).
 const placeholders = LAYERS.map(() => '?').join(',');
 const srcFiles = db.prepare(
   `SELECT DISTINCT file FROM chunks WHERE layer IN (${placeholders}) ORDER BY file`,
 ).all(...LAYERS).map((r) => r.file);
-
-const today = new Date().toISOString().slice(0, 10);
-const suggestions = [];
 
 for (const file of srcFiles) {
   const chunks = db.prepare('SELECT text FROM chunks WHERE file = ? ORDER BY line_start').all(file);
@@ -91,7 +94,9 @@ for (const file of srcFiles) {
   }
 }
 
-db.close();
+} finally {
+  db.close();
+}
 
 if (asJson) {
   console.log(JSON.stringify({ generated_at: today, min_sim: minSim, suggestions }, null, 2));

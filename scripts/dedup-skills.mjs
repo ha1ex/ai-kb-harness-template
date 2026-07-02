@@ -19,25 +19,17 @@
 import { existsSync, readFileSync, writeFileSync, readdirSync, mkdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { createEmbedder, PASSAGE_PREFIX, openDb, searchVec, REPO_ROOT, DB_PATH } from './semantic/lib.mjs';
+import { parseFrontmatter } from './lib/frontmatter.mjs';
 
 const THRESHOLD = 0.85; // cosine; only reported as "duplicate-suspect"
 const TOPK_VEC = 20;     // raw vec hits before cybos filter
 const SOURCE_DIRS = ['fabric-patterns', 'anthropics-skills', 'claude-cookbooks'];
 const TARGET_DIR = 'cybos-cases';
 
-function parseFrontmatter(text) {
-  const m = text.match(/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/);
-  if (!m) return { fm: {}, body: text };
-  const fm = {};
-  for (const line of m[1].split('\n')) {
-    const km = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
-    if (km) {
-      let v = km[2].trim();
-      if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1);
-      fm[km[1]] = v;
-    }
-  }
-  return { fm, body: m[2] };
+// Единый frontmatter-парсер (C4): scripts/lib/frontmatter.mjs.
+function parseFrontmatterCompat(text) {
+  const { fields, body } = parseFrontmatter(text);
+  return { fm: fields, body };
 }
 
 function firstParagraphAfterHeading(body) {
@@ -85,7 +77,7 @@ function main() {
       for (const file of files) {
         const rel = relative(REPO_ROOT, file);
         const text = readFileSync(file, 'utf-8');
-        const { fm, body } = parseFrontmatter(text);
+        const { fm, body } = parseFrontmatterCompat(text);
         const queryText = [fm.title, fm.subtitle, firstParagraphAfterHeading(body)]
           .filter(Boolean)
           .join('\n');

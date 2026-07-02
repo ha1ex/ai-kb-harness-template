@@ -13,8 +13,13 @@
 //      СТРОГО более низкий слой. 04_synthesis цитирует source/wiki, но не другой synthesis;
 //      05_decisions цитирует вплоть до synthesis, но не другое decision.
 
+import { loadKbConfig } from './kb-root.mjs';
+
+// Project-owned переопределения (kb.config.mjs корня KB); дефолты шаблона — ниже.
+const cfg = await loadKbConfig();
+
 // Ранг слоя в пирамиде 00→06 (меньше = «сырее»/ближе к evidence).
-export const LAYER_RANK = {
+export const LAYER_RANK = cfg.layers?.rank ?? {
   '00_context': 0,
   '01_raw': 1,
   '02_sources': 2,
@@ -26,13 +31,16 @@ export const LAYER_RANK = {
 
 // Для каких слоёв-ИСТОЧНИКОВ enforce provenance. Остальные (00/01/02/06) — свободны.
 // Ровно по утверждённому плану N4: гейтим handoff на этапах synthesis и decisions.
-export const PROVENANCE_ENFORCED_LAYERS = new Set(['04_synthesis', '05_decisions']);
+export const PROVENANCE_ENFORCED_LAYERS = new Set(cfg.provenance?.enforced ?? ['04_synthesis', '05_decisions']);
 
 // Зеркала внешних библиотек внутри 06_outputs — к ним внутренние [source:] неприменимы
-// (цитата = frontmatter source:-URL). Совпадает с EXTERNAL_CORPUS_DIRS в verify.mjs.
-export const EXTERNAL_CORPUS_DIRS = new Set([
+// (цитата = frontmatter source:-URL). Единый source of truth (verify.mjs импортирует отсюда).
+export const EXTERNAL_CORPUS_DIRS = new Set(cfg.provenance?.externalCorpusDirs ?? [
   'anthropics-skills', 'claude-cookbooks', 'cybos-cases', 'fabric-patterns', 'mcp-catalog',
 ]);
+
+// Слои с обязательным claim-coverage (FACT:/DECISION: с цитатой в абзаце) — гейт verify --scan.
+export const COVERAGE_LAYERS = new Set(cfg.provenance?.coverageLayers ?? ['04_synthesis', '05_decisions']);
 
 // Регистронезависимо: `[Source: …]` — та же цитата, а не способ спрятаться от гейта.
 const CITATION_RE = /\[source:\s*([^\]]+)\]/gi;

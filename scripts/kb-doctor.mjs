@@ -19,10 +19,13 @@ import { existsSync, statSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve, relative, extname, dirname, normalize as pnormalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { appendJournal } from './lib/journal.mjs';
+import { parseFrontmatter, parseRelatedList } from './lib/frontmatter.mjs';
 
-const here = fileURLToPath(new URL('.', import.meta.url));
-const REPO_ROOT = resolve(here, '..');
-const DB_PATH = resolve(REPO_ROOT, '.semantic-index.sqlite');
+import { KB_ROOT, KB_DB_PATH } from './lib/kb-root.mjs';
+
+// Целевая KB: env KB_ROOT/KB_DB_PATH (мультипроектность) или репо самой оснастки.
+const REPO_ROOT = KB_ROOT;
+const DB_PATH = KB_DB_PATH;
 
 const argv = process.argv.slice(2);
 const asJson = argv.includes('--json');
@@ -68,47 +71,15 @@ function* walkDir(dir) {
   }
 }
 
-// ---------- frontmatter ----------
+// ---------- frontmatter (единый парсер — scripts/lib/frontmatter.mjs, C4) ----------
 
-function parseFrontmatter(text) {
-  if (!text.startsWith('---')) return { fm: null, fields: {} };
-  const end = text.indexOf('\n---', 3);
-  if (end < 0) return { fm: null, fields: {} };
-  const fm = text.slice(3, end);
-  const fields = {};
-  for (const line of fm.split('\n')) {
-    const m = line.match(/^([a-z_]+)\s*:\s*(.*)$/i);
-    if (m) fields[m[1].toLowerCase()] = m[2].trim();
-  }
-  return { fm, fields };
+function parseFrontmatterCompat(text) {
+  const { raw, fields } = parseFrontmatter(text);
+  return { fm: raw, fields };
 }
 
 function parseRelatedFromText(text) {
-  const { fm } = parseFrontmatter(text);
-  if (!fm) return [];
-  const lines = fm.split('\n');
-  const out = [];
-  let inBlock = false;
-  for (const line of lines) {
-    const inline = line.match(/^related:\s*\[(.*)\]\s*$/);
-    if (inline) {
-      for (const raw of inline[1].split(',')) {
-        const c = raw.replace(/^["'\s]+|["'\s]+$/g, '');
-        if (c) out.push(normalize(c));
-      }
-      inBlock = false;
-      continue;
-    }
-    if (/^related:\s*$/.test(line)) { inBlock = true; continue; }
-    if (inBlock) {
-      const item = line.match(/^\s*-\s*(.+)$/);
-      if (item) {
-        const c = item[1].replace(/^["'\s]+|["'\s]+$/g, '');
-        if (c) out.push(normalize(c));
-      } else if (/^\S/.test(line)) inBlock = false;
-    }
-  }
-  return Array.from(new Set(out));
+  return parseRelatedList(parseFrontmatter(text).raw).map(normalize);
 }
 
 function normalize(p) {
@@ -137,7 +108,7 @@ for (const layer of Object.keys(LAYERS)) {
     if (EXEMPT_BASENAMES.has(basename)) continue;
 
     const text = readFileSync(absPath, 'utf8');
-    const { fm, fields } = parseFrontmatter(text);
+    const { fm, fields } = parseFrontmatterCompat(text);
     const related = parseRelatedFromText(text);
     const stat = statSync(absPath);
 

@@ -28,8 +28,9 @@ import { spawnSync } from 'node:child_process';
 import { readJournal, summarizeJournal } from './lib/journal.mjs';
 import { openDb, createEmbedder, searchVec, QUERY_PREFIX, DB_PATH as SEM_DB_PATH, docDateToEpochDays } from './semantic/lib.mjs';
 
-const here = fileURLToPath(new URL('.', import.meta.url));
-const REPO_ROOT = resolve(here, '..');
+import { KB_ROOT } from './lib/kb-root.mjs';
+
+const REPO_ROOT = KB_ROOT;
 
 const argv = process.argv.slice(2);
 const dryRun = argv.includes('--dry-run');

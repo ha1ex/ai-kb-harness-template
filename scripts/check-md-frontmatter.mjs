@@ -11,9 +11,13 @@
 
 import { readFileSync, existsSync } from 'node:fs';
 import { reportHookError } from './lib/journal.mjs';
+import { loadKbConfig } from './lib/kb-root.mjs';
+
+const cfg = await loadKbConfig();
 
 // Слой → требуемые поля frontmatter. Слой определяется по подстроке `/<key>/` в пути файла.
-const LAYER_RULES = {
+// Project-owned переопределение — kb.config.mjs → frontmatter.rules.
+const LAYER_RULES = cfg.frontmatter?.rules ?? {
   '02_sources':   ['type'],
   '03_wiki':      ['type'],
   '04_synthesis': ['type'],
@@ -21,7 +25,7 @@ const LAYER_RULES = {
   '06_outputs':   ['type', 'version'],
 };
 
-const EXEMPT_BASENAMES = new Set(['readme.md', 'index.md', 'nav.md', '_toc.md', 'log.md']);
+const EXEMPT_BASENAMES = new Set(cfg.frontmatter?.exemptBasenames ?? ['readme.md', 'index.md', 'nav.md', '_toc.md', 'log.md']);
 
 function readStdin() {
   try { return readFileSync(0, 'utf8'); } catch { return ''; }

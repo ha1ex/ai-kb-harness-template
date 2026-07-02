@@ -29,6 +29,7 @@ import {
 import { rerank } from './rerank.mjs';
 import { PROBES, PROBE_SOURCES, primaryCategory, toAltRegex } from './probes.mjs';
 import { appendJournal } from '../lib/journal.mjs';
+import { parseFrontmatter } from '../lib/frontmatter.mjs';
 
 const argv = process.argv.slice(2);
 const asJson = argv.includes('--json');
@@ -53,20 +54,8 @@ const SKIP_SUFFIXES = [
   '/_dedup-report.md', '/_search-quality-report.md', '/_eval-report.md',
 ];
 
-function parseFm(text) {
-  const m = text.match(/^---\s*\n([\s\S]*?)\n---\s*\n/);
-  if (!m) return {};
-  const fm = {};
-  for (const line of m[1].split('\n')) {
-    const km = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
-    if (km) {
-      let v = km[2].trim();
-      if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1);
-      fm[km[1]] = v;
-    }
-  }
-  return fm;
-}
+// Единый frontmatter-парсер (C4): scripts/lib/frontmatter.mjs.
+const parseFm = (text) => parseFrontmatter(text).fields;
 
 function fileMeta(absPath) {
   try { return parseFm(readFileSync(absPath, 'utf-8')); } catch { return {}; }

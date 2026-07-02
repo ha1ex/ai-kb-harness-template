@@ -40,6 +40,7 @@ import {
   applyDateFilter,
   getBacklinks,
   getForwardLinks,
+  indexSingleFile,
   DB_PATH,
   REPO_ROOT,
   INDEXABLE_LAYERS,
@@ -489,6 +490,16 @@ server.registerTool(
     const abs = join(ANSWERS_DIR, fname);
     writeFileSync(abs, fm + answer.trimEnd() + '\n');
 
+    // C5: инкрементальный реиндекс — карта видна поиску сразу, без ручного kb:index.
+    // Ошибка индексации не откатывает запись (карта на диске важнее), но фиксируется.
+    let indexedNote = '';
+    try {
+      const nChunks = await indexSingleFile(db(), await embedder(), `04_synthesis/_answers/${fname}`);
+      indexedNote = `Проиндексирована сразу (${nChunks} чанков) — уже находится через kb_search. `;
+    } catch (e) {
+      indexedNote = `⚠ Инкрементальный индекс не удался (${e.message}) — карта появится в поиске после kb:index. `;
+    }
+
     await appendJournal({
       kind: 'promote', ts: new Date().toISOString(),
       promote: { file: `04_synthesis/_answers/${fname}`, sources: sources.length, citations_ok: result.summary.citations_ok },
@@ -499,7 +510,7 @@ server.registerTool(
         type: 'text',
         text: `✅ Верифицированная карта создана: 04_synthesis/_answers/${fname}\n` +
           `Цитат: ${result.summary.citations_ok}/${result.summary.citations_total}, источников в related: ${sources.length}.\n` +
-          `Проиндексируется при следующем kb:index. Закоммить после ревью. ` +
+          `${indexedNote}Закоммить после ревью. ` +
           `Если источники изменятся — kb-doctor пометит карту как stale (по verified_at).`,
       }],
     };

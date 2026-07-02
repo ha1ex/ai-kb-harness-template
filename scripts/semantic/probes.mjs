@@ -13,13 +13,12 @@
 // (eval сам заметит несовпадение probe_count и не будет гейтить по несравнимому baseline).
 
 import { existsSync } from 'node:fs';
-import { join, dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { KB_ROOT } from '../lib/kb-root.mjs';
 import { CORPUS_PROBES } from './probes-corpus.mjs';
 import { TEMPLATE_PROBES } from './probes-template.mjs';
 
-const here = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(here, '..', '..');
+const REPO_ROOT = KB_ROOT;
 
 // Именно 4 библиотеки навыков — мишени corpus-проб. mcp-catalog сюда не входит:
 // он полезен любому проекту и переживает kb:init --strip-demo.
