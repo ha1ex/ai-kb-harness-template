@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-06-17",
-  "probe_count": 42,
+  "generated_at": "2026-07-02",
+  "probe_count": 48,
   "overall": {
     "recall_at_3": 1,
     "recall_at_5": 1,
-    "mrr": 0.9484,
-    "n": 42
+    "mrr": 0.9549,
+    "n": 48
   },
   "by_category": {
     "Engineering productivity": {
@@ -85,6 +85,18 @@
       "recall_at_5": 1,
       "mrr": 1,
       "n": 3
+    },
+    "Template": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 1,
+      "n": 2
+    },
+    "Walkthrough": {
+      "recall_at_3": 1,
+      "recall_at_5": 1,
+      "mrr": 1,
+      "n": 4
     }
   }
 }

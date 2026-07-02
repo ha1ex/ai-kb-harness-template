@@ -411,7 +411,7 @@ if (isMain()) {
         `${res.coverageExempted ? ` · coverage-exempt ${res.coverageExempted}` : ''} · ` +
         `${res.failedFiles ? `❌ ${res.failedFiles} с проблемами` : '✅ чисто'}`);
       if (res.advisory) {
-        console.log(`  advisory FACT-支持 (НЕ гейт): strong=${res.advisory.strong} weak=${res.advisory.weak} none=${res.advisory.none}`);
+        console.log(`  advisory FACT-поддержка (НЕ гейт): strong=${res.advisory.strong} weak=${res.advisory.weak} none=${res.advisory.none}`);
         for (const a of res.advisory.files.slice(0, 20)) {
           console.log(`    ⚠ ${a.file}: weak=${a.weak} none=${a.none} → node scripts/kb-critic.mjs --file ${a.file}`);
         }

@@ -439,7 +439,7 @@ export function searchVec(db, queryEmbedding, { topK = 10, layer = null, include
  * FTS5 bm25() возвращает отрицательное число (чем меньше, тем релевантнее). Превращаем в
  * положительный score = -rank для удобства сортировки и логов.
  */
-export function searchBM25(db, queryText, { topK = 10, layer = null } = {}) {
+export function searchBM25(db, queryText, { topK = 10, layer = null, includeStubs = false } = {}) {
   const ftsQuery = buildFtsOrQuery(queryText);
   if (!ftsQuery) return [];
   const overhead = layer ? Math.max(topK * 5, 50) : topK;
@@ -662,7 +662,7 @@ export async function searchHybrid(db, embed, query, {
   graph = true, graphWeight = 0.5,
   since = null, until = null, asof = null,
   recency = false, recencyWeight = 0.3, recencyHalfLife = 180,
-  overK = null,
+  overK = null, includeStubs = false,
 } = {}) {
   const over = overK ?? Math.max(topK * 3, 20);
   const dated = Boolean(since || until || asof);
@@ -670,8 +670,8 @@ export async function searchHybrid(db, embed, query, {
   const candK = dated ? Math.max(over * 4, 100) : over;
 
   const [queryEmbedding] = await embed([QUERY_PREFIX + query]);
-  let vec = searchVec(db, queryEmbedding, { topK: candK, layer });
-  let bm = searchBM25(db, query, { topK: candK, layer });
+  let vec = searchVec(db, queryEmbedding, { topK: candK, layer, includeStubs });
+  let bm = searchBM25(db, query, { topK: candK, layer, includeStubs });
   if (dated) {
     vec = applyDateFilter(vec, { since, until, asof });
     bm = applyDateFilter(bm, { since, until, asof });
