@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // search-quality-probes.mjs — batch a curated set of search queries to gauge
 // whether the KB finds the right skills across all 4 sources / 14 categories.
-// Writes 06_outputs/_search-quality-report.md and prints a TL;DR.
+// Writes docs/examples/search-quality-report.md and prints a TL;DR.
 //
 // NB (метрика): PASS = релевантное в top-3 по OR-логике (expected_category ИЛИ
 // provider). Это recall@3, НЕ precision@1 — top-1 не всегда самый релевантный.
@@ -22,6 +22,10 @@ import {
   REPO_ROOT,
 } from './semantic/lib.mjs';
 import { PROBES, toAltRegex } from './semantic/probes.mjs';
+
+// Этот отчёт — про качество ранжирования ДЕМО-КОРПУСА (category/provider во frontmatter карточек).
+// Template/local-пробы со схемой expect_file здесь неприменимы — их гоняет eval.mjs.
+const CORPUS_ONLY_PROBES = PROBES.filter((p) => p.expect_provider && p.expect_cat);
 
 function parseFm(text) {
   const m = text.match(/^---\s*\n([\s\S]*?)\n---\s*\n/);
@@ -64,7 +68,7 @@ const embed = await createEmbedder();
 const reportRows = [];
 const sumLines = [];
 
-for (const probe of PROBES) {
+for (const probe of CORPUS_ONLY_PROBES) {
   const [emb] = await embed([QUERY_PREFIX + probe.q]);
   const vec = searchVec(db, emb, { topK: 50 });
   const bm = searchBM25(db, probe.q, { topK: 50 });
@@ -120,11 +124,11 @@ const lines = [
   '',
   '# Skills search — quality probes',
   '',
-  `> Батарея из ${PROBES.length} тестовых запросов через гибридный поиск (vector + BM25 + RRF) ` +
+  `> Батарея из ${CORPUS_ONLY_PROBES.length} тестовых запросов через гибридный поиск (vector + BM25 + RRF) ` +
     `по объединённой KB из 4 источников. Для каждого запроса проверяется, попадает ли top-3 ` +
     `в ожидаемую категорию и провайдер.`,
   '',
-  `**Итог:** ✅ ${passCount} pass · ⚠️ ${warnCount} partial · ❌ ${missCount} miss из ${PROBES.length}.`,
+  `**Итог:** ✅ ${passCount} pass · ⚠️ ${warnCount} partial · ❌ ${missCount} miss из ${CORPUS_ONLY_PROBES.length}.`,
   '',
   '> **Метрика (честно):** PASS = релевантное в **top-3** по OR-логике (категория ИЛИ провайдер) — ' +
     'это **recall@3**, а не **precision@1**.',
@@ -149,9 +153,9 @@ for (const { probe, top, verdict } of reportRows) {
   lines.push('');
 }
 
-writeFileSync(join(REPO_ROOT, '06_outputs', '_search-quality-report.md'), lines.join('\n') + '\n');
+writeFileSync(join(REPO_ROOT, 'docs', 'examples', 'search-quality-report.md'), lines.join('\n') + '\n');
 
 console.log('--- summary ---');
 for (const l of sumLines) console.log(l);
-console.log(`\n✅ ${passCount} pass · ⚠️ ${warnCount} partial · ❌ ${missCount} miss out of ${PROBES.length}`);
-console.log('report: 06_outputs/_search-quality-report.md');
+console.log(`\n✅ ${passCount} pass · ⚠️ ${warnCount} partial · ❌ ${missCount} miss out of ${CORPUS_ONLY_PROBES.length}`);
+console.log('report: docs/examples/search-quality-report.md');

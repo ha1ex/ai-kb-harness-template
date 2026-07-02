@@ -8,6 +8,17 @@
 - [Цель проекта](./00_context/) — собственный контекст проекта (`product.md`, `glossary.md` по мере наполнения)
 - [Semantic invariant](./.remember/core.md) — цель, контекст, hard rules
 
+## Walkthrough-пример (удаляется `kb:init --strip-demo`)
+
+Сквозной вымышленный мини-проект «пилот AI-ассистента поддержки» — дисциплина слоёв на живом контенте:
+
+- [00_context: контекст](./00_context/walkthrough-product.md) →
+  [01_raw: стенограмма (immutable)](./01_raw/walkthrough/2026-06-30-interview-cto.md) →
+  [02_sources: саммари](./02_sources/2026-06-30-walkthrough-interview-cto.md) →
+  [03_wiki: deflection rate](./03_wiki/walkthrough-deflection-rate.md) →
+  [04_synthesis: гипотезы](./04_synthesis/walkthrough-pilot-hypotheses.md) →
+  [05_decisions: решение](./05_decisions/walkthrough-decision-pilot-scope.md)
+
 ## Источники
 
 - [Все source summaries](./02_sources/)
@@ -30,7 +41,7 @@
 - [Финальные артефакты](./06_outputs/)
 - [Каталог навыков — external corpus, 736 карточек](./06_outputs/_skills-index.md)
 - [Каталог базовых MCP — 12 серверов](./06_outputs/mcp-catalog/_index.md)
-- [Отчёт аудита 2026-05-29](./06_outputs/_audit-report-2026-05-29.md)
+- [Отчёты на демо-корпусе (аудит/eval/dedup/качество поиска)](./docs/examples/README.md)
 - [CHANGELOG](./CHANGELOG.md)
 
 ---

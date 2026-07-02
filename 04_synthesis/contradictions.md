@@ -23,4 +23,4 @@ status: living
 -->
 
 На 2026-05-29 противоречий между источниками не зафиксировано
-(семантический dedup — 0 дублей по проверенной оси, см. [`/06_outputs/_dedup-report.md`](../06_outputs/_dedup-report.md)).
+(семантический dedup — 0 дублей по проверенной оси, см. [`docs/examples/dedup-report.md`](../docs/examples/dedup-report.md)).

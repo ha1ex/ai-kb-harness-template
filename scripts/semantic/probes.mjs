@@ -1,124 +1,60 @@
-// probes.mjs — курируемая батарея поисковых проб (golden set) для оценки качества retrieval.
+// probes.mjs — КОМПОЗИТОР golden-set проб для eval.mjs / search-quality-probes.mjs.
 //
-// Это ДАННЫЕ, без побочных эффектов: модуль импортируют и search-quality-probes.mjs (markdown-отчёт),
-// и eval.mjs (метрики recall@k / MRR / by_category + регрессия vs baseline). Меняешь набор проб —
-// один источник правды.
+// Развязывает eval от демо-корпуса (B2): шаблон не наказывает красным CI за удаление демо.
+// Состав PROBES определяется тем, что реально лежит в клоне:
+//   • probes-corpus.mjs    — 42 пробы по демо-корпусу; включаются, только если 06_outputs/<provider>/ существует;
+//   • probes-template.mjs  — smoke-пробы по living-файлам шаблона; walkthrough-пробы включаются,
+//                            только если walkthrough-файлы не вычищены (`kb:init --strip-demo`);
+//   • probes.local.mjs     — ВАШИ пробы (project-owned, шаблон его не поставляет): создайте файл
+//                            рядом, экспортируйте `export const LOCAL_PROBES = [...]` в любой из
+//                            двух схем (expect_provider/expect_cat или expect_file).
 //
-// Каждая проба:
-//   q                — запрос (RU/EN), как его задал бы пользователь.
-//   expect_provider  — regex-альтернатива провайдеров/библиотек, релевантных запросу (OR через |).
-//   expect_cat       — regex-альтернатива ожидаемых категорий (OR через |).
-//
-// PASS-предикат (recall@k): среди top-k уникальных файлов есть хотя бы один, чья категория ИЛИ
-// провайдер/библиотека матчат ожидание. Это recall@k, НЕ precision@1.
+// После изменения состава проб пересними baseline: node scripts/semantic/eval.mjs --update-baseline
+// (eval сам заметит несовпадение probe_count и не будет гейтить по несравнимому baseline).
+
+import { existsSync } from 'node:fs';
+import { join, dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { CORPUS_PROBES } from './probes-corpus.mjs';
+import { TEMPLATE_PROBES } from './probes-template.mjs';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = resolve(here, '..', '..');
+
+// Именно 4 библиотеки навыков — мишени corpus-проб. mcp-catalog сюда не входит:
+// он полезен любому проекту и переживает kb:init --strip-demo.
+const SKILL_LIBRARY_DIRS = ['anthropics-skills', 'claude-cookbooks', 'cybos-cases', 'fabric-patterns'];
+const corpusPresent = SKILL_LIBRARY_DIRS.some((p) => existsSync(join(REPO_ROOT, '06_outputs', p)));
+const walkthroughPresent = existsSync(join(REPO_ROOT, '03_wiki', 'walkthrough-deflection-rate.md'));
+
+let localProbes = [];
+try {
+  const mod = await import('./probes.local.mjs');
+  localProbes = mod.LOCAL_PROBES || mod.PROBES || [];
+} catch { /* probes.local.mjs не создан — норма для свежего клона */ }
 
 export const PROBES = [
-  // ============================================================
-  // 01-engineering-productivity
-  // ============================================================
-  { q: 'build mcp server claude tools',            expect_provider: 'anthropic|fabric|cybos',  expect_cat: 'Engineering productivity' },
-  { q: 'prompt caching cost reduction claude api', expect_provider: 'anthropic-cookbooks|cybos', expect_cat: 'Engineering productivity' },
-  { q: 'code review skill for pull requests',      expect_provider: 'fabric|cybos',             expect_cat: 'Engineering productivity' },
-  { q: 'parallel multi-agent dev workflow worktrees', expect_provider: 'cybos|fabric',          expect_cat: 'Engineering productivity' },
-
-  // ============================================================
-  // 02-marketing-content
-  // ============================================================
-  { q: 'write essay in paul graham style',         expect_provider: 'fabric',                   expect_cat: 'Marketing & content' },
-  { q: 'newsletter writing prompts',               expect_provider: 'fabric|cybos',             expect_cat: 'Marketing & content' },
-  { q: 'blog post landing page conversion copy',   expect_provider: 'cybos|fabric',             expect_cat: 'Marketing & content' },
-
-  // ============================================================
-  // 03-strategy-leadership
-  // ============================================================
-  { q: 'competitive positioning swot analysis framework', expect_provider: 'fabric|cybos',      expect_cat: 'Strategy & leadership' },
-  { q: 'prepare 7s mckinsey strategy',             expect_provider: 'fabric',                   expect_cat: 'Strategy & leadership' },
-  { q: 'analyze business risk decision',           expect_provider: 'fabric|cybos',             expect_cat: 'Strategy & leadership' },
-
-  // ============================================================
-  // 04-infrastructure
-  // ============================================================
-  { q: 'terraform plan iac infrastructure analysis', expect_provider: 'fabric|cybos',           expect_cat: 'Infrastructure' },
-  { q: 'self-installable claude code skill via http server', expect_provider: 'cybos',          expect_cat: 'Infrastructure' },
-
-  // ============================================================
-  // 05-sales-outbound
-  // ============================================================
-  { q: 'analyze sales call transcript scoring',    expect_provider: 'fabric|cybos',             expect_cat: 'Sales & outbound' },
-  { q: 'cold outbound email prospect personalize', expect_provider: 'cybos|fabric',             expect_cat: 'Sales & outbound' },
-  { q: 'create hormozi grand slam offer',          expect_provider: 'fabric',                   expect_cat: 'Sales & outbound' },
-
-  // ============================================================
-  // 06-operations
-  // ============================================================
-  { q: 'meeting summary auto crm slack',           expect_provider: 'cybos|fabric',             expect_cat: 'Operations|Sales & outbound' },
-  { q: 'transcribe minutes board meeting',         expect_provider: 'fabric|cybos',             expect_cat: 'Operations' },
-  { q: 'agility user story epic agile',            expect_provider: 'fabric|cybos',             expect_cat: 'Operations' },
-
-  // ============================================================
-  // 07-knowledge-management
-  // ============================================================
-  { q: 'extract wisdom from podcast or video',     expect_provider: 'fabric',                   expect_cat: 'Knowledge management' },
-  { q: 'summarize research paper academic',        expect_provider: 'fabric|cybos',             expect_cat: 'Knowledge management' },
-  { q: 'extract book ideas highlights reading',    expect_provider: 'fabric',                   expect_cat: 'Knowledge management' },
-
-  // ============================================================
-  // 08-hr-hiring
-  // ============================================================
-  { q: 'candidate cv resume analysis hire',        expect_provider: 'fabric|cybos',             expect_cat: 'HR & hiring' },
-  { q: 'interview question preparation answer',    expect_provider: 'fabric|cybos',             expect_cat: 'HR & hiring' },
-  { q: 'analyze personality from text behavior',   expect_provider: 'fabric',                   expect_cat: 'HR & hiring' },
-
-  // ============================================================
-  // 09-founder-productivity
-  // ============================================================
-  { q: 'tony robbins year in review self reflection', expect_provider: 'fabric|cybos',          expect_cat: 'Founder productivity' },
-  { q: 'find blindspots dunning kruger thinking',  expect_provider: 'fabric',                   expect_cat: 'Founder productivity' },
-  { q: 'daily focus top priorities founder',       expect_provider: 'cybos|fabric',             expect_cat: 'Founder productivity' },
-
-  // ============================================================
-  // 10-customer-success
-  // ============================================================
-  { q: 'analyze product feedback users complaints', expect_provider: 'fabric|cybos',            expect_cat: 'Customer success' },
-  { q: 'saas churn prevention retention onboarding', expect_provider: 'cybos',                  expect_cat: 'Customer success' },
-
-  // ============================================================
-  // 11-data-bi
-  // ============================================================
-  { q: 'build dashboard chart with claude',        expect_provider: 'cybos|fabric',             expect_cat: 'Data & BI' },
-  { q: 'natural language analytics over warehouse', expect_provider: 'cybos',                   expect_cat: 'Data & BI' },
-  { q: 'classification embeddings text categories', expect_provider: 'anthropic-cookbooks',     expect_cat: 'Engineering productivity|Data & BI' },
-
-  // ============================================================
-  // 12-design
-  // ============================================================
-  { q: 'apply anthropic brand colors typography',  expect_provider: 'anthropic',                expect_cat: 'Design' },
-  { q: 'design system tokens for frontend',        expect_provider: 'anthropic|cybos',          expect_cat: 'Design' },
-  { q: 'algorithmic art generative design pattern', expect_provider: 'anthropic',               expect_cat: 'Design' },
-
-  // ============================================================
-  // 13-cybersecurity
-  // ============================================================
-  { q: 'analyze malware threat report',            expect_provider: 'fabric',                   expect_cat: 'Cybersecurity' },
-  { q: 'write hackerone bug bounty report',        expect_provider: 'fabric',                   expect_cat: 'Cybersecurity' },
-  { q: 'stride threat model security review',      expect_provider: 'fabric',                   expect_cat: 'Cybersecurity' },
-
-  // ============================================================
-  // Source-available reference cards
-  // ============================================================
-  { q: 'create powerpoint deck slides from data',  expect_provider: 'anthropic|cybos',          expect_cat: 'Engineering productivity|Operations' },
-  { q: 'extract tables from pdf form fill',        expect_provider: 'anthropic',                expect_cat: 'Engineering productivity' },
-  { q: 'edit excel spreadsheet formulas xlsx',     expect_provider: 'anthropic',                expect_cat: 'Engineering productivity' },
-  { q: 'word document docx generate report',       expect_provider: 'anthropic',                expect_cat: 'Engineering productivity' },
+  ...(corpusPresent ? CORPUS_PROBES : []),
+  ...TEMPLATE_PROBES.filter((p) => !p.walkthrough || walkthroughPresent),
+  ...localProbes,
 ];
 
-/** Первичная категория пробы (до первого `|`) — ключ группировки в by_category. */
+export const PROBE_SOURCES = {
+  corpus: corpusPresent ? CORPUS_PROBES.length : 0,
+  template: TEMPLATE_PROBES.filter((p) => !p.walkthrough || walkthroughPresent).length,
+  local: localProbes.length,
+  corpusPresent,
+  walkthroughPresent,
+};
+
+/** Первичная категория пробы — ключ группировки в by_category. */
 export function primaryCategory(probe) {
-  return probe.expect_cat.split('|')[0].trim();
+  if (probe.category) return probe.category;
+  return (probe.expect_cat || 'Other').split('|')[0].trim();
 }
 
 /** Скомпилировать OR-regex из `a|b|c` с экранированием спецсимволов. */
 export function toAltRegex(spec) {
-  const alts = spec.split('|').map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const alts = String(spec).split('|').map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   return new RegExp(alts.join('|'), 'i');
 }

@@ -10,7 +10,7 @@
 // (external↔external, cybos↔cybos) НЕ покрыты — «0 дублей» относится к этой оси.
 //
 // Writes:
-//   - 06_outputs/_dedup-report.md       — human-readable top-N report
+//   - docs/examples/dedup-report.md     — human-readable top-N report
 //   - .context/dedup-fabric-cybos.json  — raw matches (every external file)
 //
 // Does NOT modify any source files. Adding `possible_duplicate: <id>` to
@@ -194,9 +194,9 @@ function main() {
       '',
     );
 
-    writeFileSync(join(outBase, '_dedup-report.md'), lines.join('\n') + '\n');
+    writeFileSync(join(REPO_ROOT, 'docs', 'examples', 'dedup-report.md'), lines.join('\n') + '\n');
     console.error(`[dedup] wrote ${allMatches.length} matches, ${suspect.length} suspects.`);
-    console.error(`[dedup] report: ${relative(REPO_ROOT, join(outBase, '_dedup-report.md'))}`);
+    console.error(`[dedup] report: docs/examples/dedup-report.md`);
     console.error(`[dedup] raw:    ${relative(REPO_ROOT, join(ctxDir, 'dedup-fabric-cybos.json'))}`);
 
     if (suspect.length > 0) {

@@ -9,7 +9,7 @@
 //   node scripts/semantic/eval.mjs                  # прогон, diff vs baseline, exit 0/1
 //   node scripts/semantic/eval.mjs --json           # машинный вывод { overall, by_category, diff }
 //   node scripts/semantic/eval.mjs --update-baseline # перезаписать eval-baseline.json (после намеренных изменений)
-//   node scripts/semantic/eval.mjs --report         # дополнительно записать 06_outputs/_eval-report.md
+//   node scripts/semantic/eval.mjs --report         # дополнительно записать docs/examples/eval-report.md
 //
 // Метрика (честно): per-file relevance = карточка в top-k, у которой И категория, И провайдер
 // матчат ожидание пробы. Это СТРОЖЕ collective-вердикта в _search-quality-report.md (там категорию
@@ -27,7 +27,7 @@ import {
   REPO_ROOT,
 } from './lib.mjs';
 import { rerank } from './rerank.mjs';
-import { PROBES, primaryCategory, toAltRegex } from './probes.mjs';
+import { PROBES, PROBE_SOURCES, primaryCategory, toAltRegex } from './probes.mjs';
 import { appendJournal } from '../lib/journal.mjs';
 
 const argv = process.argv.slice(2);
@@ -40,7 +40,7 @@ const useGraph = !argv.includes('--no-graph');
 const useRerank = argv.includes('--rerank');
 
 const BASELINE_PATH = join(REPO_ROOT, 'scripts', 'semantic', 'eval-baseline.json');
-const REPORT_PATH = join(REPO_ROOT, '06_outputs', '_eval-report.md');
+const REPORT_PATH = join(REPO_ROOT, 'docs', 'examples', 'eval-report.md');
 // Порог регрессии. Квантованная ONNX-модель e5-small НЕ бит-в-бит детерминирована между
 // платформами (macOS ARM ↔ Linux x86 в CI): near-tie RRF-ранги могут флипнуться, сдвигая
 // recall@k на 1–2 пробы из 42 (~0.024–0.048). Берём 0.05 (~2 пробы), чтобы гейт не давал
@@ -118,16 +118,22 @@ for (const probe of PROBES) {
     if (top.length >= 5) break;
   }
 
-  const catRe = toAltRegex(probe.expect_cat);
-  const provRe = toAltRegex(probe.expect_provider);
-  // per-file relevance = категория И провайдер на ОДНОЙ карточке (строже, чем collective-AND
-  // в _search-quality-report.md, где категорию и провайдера могут покрывать разные файлы).
-  // Это даёт честный градиент: «нашли ИМЕННО ту карточку», а не «где-то рядом».
+  // Два вида проб (см. probes.mjs):
+  //   • expect_file — карточка релевантна, если путь матчит alt-подстроку (template/walkthrough/local);
+  //   • expect_provider+expect_cat — категория И провайдер на ОДНОЙ карточке (строже collective-AND
+  //     в _search-quality-report.md). Честный градиент: «нашли ИМЕННО ту карточку», а не «где-то рядом».
+  let isRelevant;
+  if (probe.expect_file) {
+    const fileRe = toAltRegex(probe.expect_file);
+    isRelevant = (t) => fileRe.test(t.file);
+  } else {
+    const catRe = toAltRegex(probe.expect_cat);
+    const provRe = toAltRegex(probe.expect_provider);
+    isRelevant = (t) => catRe.test(t.category) && (provRe.test(t.provider) || provRe.test(t.library));
+  }
   let firstRank = 0;
   for (let i = 0; i < top.length; i++) {
-    const t = top[i];
-    const relevant = catRe.test(t.category) && (provRe.test(t.provider) || provRe.test(t.library));
-    if (relevant) { firstRank = i + 1; break; }
+    if (isRelevant(top[i])) { firstRank = i + 1; break; }
   }
 
   perProbe.push({
@@ -177,6 +183,15 @@ function loadBaseline() {
 
 function diffAgainstBaseline(cur, base) {
   if (!base) return { hasBaseline: false, regressions: [], improvements: [], deltas: {} };
+  // Состав проб изменился (демо-корпус удалён/добавлен, появились local-пробы) — baseline
+  // несравним: не гейтим по нему, просим переснять. Иначе клон после --strip-demo получал бы
+  // ложный «красный» за осознанное действие.
+  if (base.probe_count != null && base.probe_count !== cur.probe_count) {
+    return {
+      hasBaseline: false, staleBaseline: true,
+      baselineProbeCount: base.probe_count, regressions: [], improvements: [], deltas: {},
+    };
+  }
   const regressions = [];
   const improvements = [];
   const deltas = { overall: {}, by_category: {} };
@@ -276,7 +291,7 @@ if (asJson) {
   console.log('  Retrieval eval — recall@k / MRR');
   console.log('─'.repeat(60));
   console.log(`  Каналы:      graph=${useGraph ? 'on' : 'off'} rerank=${useRerank ? 'on' : 'off'}`);
-  console.log(`  Проб:        ${current.probe_count}`);
+  console.log(`  Проб:        ${current.probe_count} (corpus=${PROBE_SOURCES.corpus} template=${PROBE_SOURCES.template} local=${PROBE_SOURCES.local})`);
   console.log(`  recall@3:    ${overall.recall_at_3}`);
   console.log(`  recall@5:    ${overall.recall_at_5}`);
   console.log(`  MRR:         ${overall.mrr}`);
@@ -289,6 +304,10 @@ if (asJson) {
     if (diff.regressions.length) {
       console.log(`  ⚠ РЕГРЕССИИ (> ${REGRESSION_EPS}): ${diff.regressions.map((r) => `${r.scope}/${r.metric} ${fmtDelta(r.delta)}`).join('; ')}`);
     }
+  } else if (diff.staleBaseline) {
+    console.log('');
+    console.log(`  ⚠ baseline снят на другом составе проб (${diff.baselineProbeCount} vs ${current.probe_count}) — гейт пропущен.`);
+    console.log('    Пересними: node scripts/semantic/eval.mjs --update-baseline');
   } else {
     console.log('');
     console.log('  ⚠ baseline отсутствует. Зафиксируйте: node scripts/semantic/eval.mjs --update-baseline');

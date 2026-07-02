@@ -33,3 +33,9 @@
 - harness (Control) | N4 layer-handoff provenance: `scripts/lib/provenance.mjs` + PreToolUse-хук `check-provenance.mjs`. Тесты `test-control.mjs`.
 - harness (Memory/Evolve) | N2 verified answer-cards: `kb_promote` → `04_synthesis/_answers/` (gated verify+provenance+dedup); `kb-doctor` флагует stale.
 - harness | quick-wins: `log.md` в индексе (`INDEXABLE_ROOT_FILES`), describe-then-index (L3), scratch-hygiene inbox (L4), `.remember/preferences.md` answer-policy (L5).
+
+## 2026-07-02
+
+- harness (Control) | A1–A4: закрыты обходы контура доверия — path-traversal в цитатах, claim-coverage (FACT/DECISION без цитаты = гейт), регистронезависимый `[source:]`, adversarial-сьют `test-gate.mjs` в CI, наблюдаемый fail-open хуков, git pre-push гейт.
+- 00_context…05_decisions | walkthrough-пример «пилот AI-ассистента поддержки»: сквозная цепочка raw → summary → wiki → synthesis → decision с метками/цитатами; удаляется `kb:init --strip-demo`.
+- 04_synthesis/_answers | закоммичен каркас для verified answer-cards (`kb_promote`, N2).

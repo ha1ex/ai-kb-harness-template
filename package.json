@@ -19,6 +19,7 @@
     "kb:critic": "node scripts/kb-critic.mjs",
     "kb:dream": "node scripts/dream-cycle.mjs",
     "viewer:dev": "cd tools/viewer && pnpm dev",
-    "viewer:build": "cd tools/viewer && pnpm build"
+    "viewer:build": "cd tools/viewer && pnpm build",
+    "kb:init": "node scripts/kb-init.mjs"
   }
 }
