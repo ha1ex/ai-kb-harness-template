@@ -179,15 +179,15 @@
     },
     "scripts/git-hooks/post-checkout": {
       "sha256": "18b0c8d6a24db56dd8a55c73a6c74868ca20d71c633a7331e59258ba9dcbb362",
-      "mode": "100644"
+      "mode": "100755"
     },
     "scripts/git-hooks/post-merge": {
       "sha256": "18b0c8d6a24db56dd8a55c73a6c74868ca20d71c633a7331e59258ba9dcbb362",
-      "mode": "100644"
+      "mode": "100755"
     },
     "scripts/git-hooks/post-rewrite": {
       "sha256": "18b0c8d6a24db56dd8a55c73a6c74868ca20d71c633a7331e59258ba9dcbb362",
-      "mode": "100644"
+      "mode": "100755"
     },
     "scripts/git-hooks/pre-push": {
       "sha256": "9198b351df5b8eefa9b53a0ca098c948465372ece95d5466f69c7bad07a02a65",
