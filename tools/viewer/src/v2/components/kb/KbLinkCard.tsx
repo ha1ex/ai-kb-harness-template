@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/v2/lib/utils";
 
 type Props = { href?: string; title?: string; desc?: string; className?: string };
@@ -11,6 +11,12 @@ type Props = { href?: string; title?: string; desc?: string; className?: string 
  *   <kb-linkcard href="/v2/plan" title="Дорожная карта" desc="…"></kb-linkcard>
  */
 export function KbLinkCard({ href = "#", title = "", desc, className }: Props) {
+  const location = useLocation();
+  if (/\.md(?:#.*)?$/.test(href) && !/^(https?:|\/doc\/)/.test(href)) {
+    const base=location.pathname.startsWith("/doc/")?location.pathname.slice(5).replace(/\/$/, ""):"";
+    const target=new URL(href,"https://kb.invalid/"+base);
+    href="/doc"+target.pathname+target.hash;
+  }
   const isExternal = /^https?:\/\//.test(href);
   const content = (
     <>

@@ -1,0 +1,1621 @@
+{
+  "schemaVersion": 1,
+  "templateVersion": "0.4.0",
+  "repository": "https://github.com/ha1ex/ai-kb-harness-template.git",
+  "sourceRef": "v0.4.0",
+  "sourceCommit": null,
+  "files": {
+    ".github/workflows/ci.yml": {
+      "sha256": "0e5880a29188f663cae79899281e9dfb2fe8b182727d3efff62b402e036ec642",
+      "mode": "100644"
+    },
+    ".github/workflows/kb-advisory.yml": {
+      "sha256": "7840c9aead16facda0fd85b9da041ba5eeef3f54c3278e5d5ddd72fd6c2d9fc8",
+      "mode": "100644"
+    },
+    ".github/workflows/kb-ci.yml": {
+      "sha256": "ed423565a74801b7d5bd1938162271c6853b6366a79b44c3cdb94c46bfb425f5",
+      "mode": "100644"
+    },
+    ".nvmrc": {
+      "sha256": "f14b4987904bcb5814e4459a057ed4d20f58a633152288a761214dcd28780b56",
+      "mode": "100644"
+    },
+    ".template-manifest.json": {
+      "sha256": "ebf22fe63fa8254d41e8316da3b1c3f18fba71309b523151c2a9898a113559bb",
+      "mode": "100644"
+    },
+    "docs/architecture.md": {
+      "sha256": "40b4bff3c841c78de4c6a326ecbbe5b4aad584e9d700bbc59163c20337198b99",
+      "mode": "100644"
+    },
+    "docs/assets/viewer-light.png": {
+      "sha256": "9ad6dc99ed47a83139b8fd598a2070252e7848a6a22a49e3a71ff7316bfca51c",
+      "mode": "100644"
+    },
+    "docs/compatibility.md": {
+      "sha256": "b5e6125d8f6f16830cc7c652b67aaa1454b074693beca5401743857afc3cd63f",
+      "mode": "100644"
+    },
+    "docs/contributing.md": {
+      "sha256": "6c299e8c7ef1994976e1df4b3133da246985b66bb5fb09a7c78e8956bd8d5ee4",
+      "mode": "100644"
+    },
+    "docs/extensions.md": {
+      "sha256": "2cc1f729d03284c3de6bddd1f3d544c671b7df414ebef74aa4d774b0bf0d33cc",
+      "mode": "100644"
+    },
+    "docs/human-interface.md": {
+      "sha256": "453b74d39da013b0876791c2dc9c24e501b5fb76b60c1d87f24117d9f67d1f36",
+      "mode": "100644"
+    },
+    "docs/markdown-dialect.md": {
+      "sha256": "bda0e45d7700815e971b05568160f5258e8171c85eb4bc56a37460e37758b572",
+      "mode": "100644"
+    },
+    "docs/releases/0.4.0.md": {
+      "sha256": "c4232b183d09b13d0abfe4d28535a81cd30ebb10095a2df9d722c76b21bd41d9",
+      "mode": "100644"
+    },
+    "docs/upgrades.md": {
+      "sha256": "38424c0f6bff01fd1cfe15d6e9241f68c86cd85eefeb145c71a3c3d2b92ba49d",
+      "mode": "100644"
+    },
+    "harness/README.md": {
+      "sha256": "9be9e60dfb3fe8ac951115b690f513519261049e1486d1bacea4631baef28829",
+      "mode": "100644"
+    },
+    "harness/adapters/CLAUDE.md": {
+      "sha256": "dbe131e012c188679b6ca311daaf71fcba2cc878c53df9c3ba325984bc284214",
+      "mode": "100644"
+    },
+    "harness/adapters/GEMINI.md": {
+      "sha256": "bae285e1798e2e24b2cf072a50d611b6cad264b303021c86430ead0e70a82182",
+      "mode": "100644"
+    },
+    "harness/adapters/README.md": {
+      "sha256": "05025426d5c45cfaf847433a311d8939cf97072f97bcea80597225e90c6b481b",
+      "mode": "100644"
+    },
+    "harness/adapters/mcp.json": {
+      "sha256": "cf69cb339a7d541e75ac3f83102fc591cc7146c3dbaa85b27ef3a9647a5b00ba",
+      "mode": "100644"
+    },
+    "harness/evals/README.md": {
+      "sha256": "be23eff1dc6fbdd77e23af9d0aeb2feb8868696198beec2266d4e77e4c3efeb9",
+      "mode": "100644"
+    },
+    "harness/evals/fixtures/01_raw/demo/2026-09-01-support-observation.md": {
+      "sha256": "b3fe8a4fe6641508295197db5012b435bece520ac08dd07d95cfe580a106c14c",
+      "mode": "100644"
+    },
+    "harness/evals/fixtures/02_sources/2026-09-02-pilot-a.md": {
+      "sha256": "2ab60d291eda3d57a3614510b4844995316b5a7932f462b2b19a0022ce292b04",
+      "mode": "100644"
+    },
+    "harness/evals/fixtures/02_sources/2026-09-03-pilot-b.md": {
+      "sha256": "48b4f6893d5ad3eaeb8672f4829a716b0e44ee46d72b23b2f7e8eece5856bdd4",
+      "mode": "100644"
+    },
+    "harness/evals/scenarios.json": {
+      "sha256": "e2eb2c6f680d5fee7a45b490d1cba3743699420ca89c3377a34411d2bf8df456",
+      "mode": "100644"
+    },
+    "harness/roles/README.md": {
+      "sha256": "a02f9e07f9050a919d726e5689306813265ff41ac83ee6d3289af7cf52b0cda7",
+      "mode": "100644"
+    },
+    "harness/rules/evidence.md": {
+      "sha256": "d2961fa5bd0e19a61be37648c01a89f0e909b1445da81e1fb8b8a5a8a2f28f4b",
+      "mode": "100644"
+    },
+    "harness/rules/workflow.md": {
+      "sha256": "b4c63784dd8a03bcfe4cdb2646c8528b751dc4d2d1d10479879b9f258fbda6ac",
+      "mode": "100644"
+    },
+    "harness/skills/harness-evidence/SKILL.md": {
+      "sha256": "6f625b8d28acb81ef88d1167b3f7ebede0fc261a60f78d83cc4d38bd0c68a229",
+      "mode": "100644"
+    },
+    "harness/skills/harness-handoff/SKILL.md": {
+      "sha256": "8c42c97c7ac96fa206209a1738ac109d07449e63b60474b3fc157c1ee04cdcf0",
+      "mode": "100644"
+    },
+    "harness/skills/harness-human-summary/SKILL.md": {
+      "sha256": "25611b7b56db43bed10236bcf530e7e37653c14b3b3fef5c42b1a1361c409963",
+      "mode": "100644"
+    },
+    "harness/templates/handoff.json": {
+      "sha256": "cafcdb7ce62b52762c65c706081fe5f93f1cbd152e6b6268f8a573bce7d3de69",
+      "mode": "100644"
+    },
+    "scripts/README.md": {
+      "sha256": "8993d8d85b6606c8fcb8d02219e5064b82e9d752573e74e5bdc60063de8d0d71",
+      "mode": "100644"
+    },
+    "scripts/check-decisions.mjs": {
+      "sha256": "455517880067f2c39d9e225ff61b5ca17b05da7824b51968c7e256ef04522c44",
+      "mode": "100644"
+    },
+    "scripts/check-harness.mjs": {
+      "sha256": "2b6ba043f9947586facdc8a3b878f935b542aff1782e25d732b749ea955b42f1",
+      "mode": "100644"
+    },
+    "scripts/check-md-frontmatter.mjs": {
+      "sha256": "08c343dd45d63f9556c44c0c32597f1884f2ec3dad97ea438f5c1fc12f217c79",
+      "mode": "100644"
+    },
+    "scripts/check-portability.mjs": {
+      "sha256": "6a67cdf87c43dbb60c9925a7cae3ce257facca2d6859a1df6d7f041f19973e60",
+      "mode": "100644"
+    },
+    "scripts/check-provenance.mjs": {
+      "sha256": "644f58a5c08ebc07bfef844af4e56f817aaef3662681ac8ccad69abe2a21d140",
+      "mode": "100644"
+    },
+    "scripts/check-readability.mjs": {
+      "sha256": "29ac87e0c89861a157af48f1648dfaaf3d35e07a271e7c592738db0a14020ce1",
+      "mode": "100644"
+    },
+    "scripts/check-spaces.mjs": {
+      "sha256": "98a23ab3a1aed5281129c3215f07a1d4449704cea468eed29e758d9080432d70",
+      "mode": "100644"
+    },
+    "scripts/cybos-manifest.py": {
+      "sha256": "e5d0c38a5ddd7e473ffcce390a6eff45da6e08d32457016e85bebcedec045d15",
+      "mode": "100644"
+    },
+    "scripts/dedup-skills.mjs": {
+      "sha256": "6d567fa1dcde93fb0e561048a04f832a78245e7a1c668b89586bcd39af8c20e9",
+      "mode": "100644"
+    },
+    "scripts/dream-cycle.mjs": {
+      "sha256": "2eafd07080e5fbc6e429c59ece1cda2444d43295f1befa5f2e7b451a961872ec",
+      "mode": "100644"
+    },
+    "scripts/git-hooks/check.mjs": {
+      "sha256": "feb6dacf2d41f458d264c3455ec675cbd298df68a7d4403de6f9f4a1bb20f461",
+      "mode": "100644"
+    },
+    "scripts/git-hooks/post-checkout": {
+      "sha256": "18b0c8d6a24db56dd8a55c73a6c74868ca20d71c633a7331e59258ba9dcbb362",
+      "mode": "100644"
+    },
+    "scripts/git-hooks/post-merge": {
+      "sha256": "18b0c8d6a24db56dd8a55c73a6c74868ca20d71c633a7331e59258ba9dcbb362",
+      "mode": "100644"
+    },
+    "scripts/git-hooks/post-rewrite": {
+      "sha256": "18b0c8d6a24db56dd8a55c73a6c74868ca20d71c633a7331e59258ba9dcbb362",
+      "mode": "100644"
+    },
+    "scripts/git-hooks/pre-push": {
+      "sha256": "9198b351df5b8eefa9b53a0ca098c948465372ece95d5466f69c7bad07a02a65",
+      "mode": "100755"
+    },
+    "scripts/import-anthropics-skills.py": {
+      "sha256": "06a9b8c2ddf0af5f1848c3ce903aacb6410e501a96d27e033cc35ea2b74167da",
+      "mode": "100644"
+    },
+    "scripts/import-anthropics-source-available.py": {
+      "sha256": "063def4b88be18d002b73afad485fdba47d44693db4a312dc6fdfbfbaf7fbdca",
+      "mode": "100644"
+    },
+    "scripts/import-claude-cookbooks.py": {
+      "sha256": "cf74011f9014d006a67a0f56ff15617742bfaa8b5ce6c2fdbc9af7d7a3ed37d2",
+      "mode": "100644"
+    },
+    "scripts/import-fabric.py": {
+      "sha256": "236922f2158c66e10437c0ee1f05c1d2b8b57af497b4eadf6ad45b3966dc98af",
+      "mode": "100644"
+    },
+    "scripts/kb-critic.mjs": {
+      "sha256": "a46ac820e22e9d51c31b482260eb16c6561f1cbf8c7fb5615420f68bbdd1696e",
+      "mode": "100644"
+    },
+    "scripts/kb-digest.mjs": {
+      "sha256": "10cfb222b89edd1f6a47fa3996ea8f3d506d58eab14653da3c674fa0795a05e5",
+      "mode": "100644"
+    },
+    "scripts/kb-doctor.mjs": {
+      "sha256": "bbb4a00579a85fad01740c34d331489ebfbda0bc811959f1cfceea3effdf73e9",
+      "mode": "100644"
+    },
+    "scripts/kb-init.mjs": {
+      "sha256": "27b634ef75dc8421b1260819ff768a2b456ea921cf2c4dabcf2eaf5f8fe3b08d",
+      "mode": "100644"
+    },
+    "scripts/kb-metrics.mjs": {
+      "sha256": "e4bcfb6766a5ce05049b6f0ba27c3505df6643dd4ceb708bd217583cdf918efc",
+      "mode": "100644"
+    },
+    "scripts/kb-session.mjs": {
+      "sha256": "3a8adbae54803576ae28983e4ce3ac08346abc36e7eea5c7778842008bde11ef",
+      "mode": "100644"
+    },
+    "scripts/kb-update.mjs": {
+      "sha256": "ec6243dc7d63e23dc156c4253e9f78646281d578a26b175d3f2c99acbea4bd0e",
+      "mode": "100644"
+    },
+    "scripts/lib/agent-context.mjs": {
+      "sha256": "bb71739a5a7194b143c327d7ef295a43a02e55db5d172e3abfdd30ac10f066ce",
+      "mode": "100644"
+    },
+    "scripts/lib/frontmatter.mjs": {
+      "sha256": "161449365a0c9fc642200cdbe2b6a68738c5505983a009655a83142cb2966599",
+      "mode": "100644"
+    },
+    "scripts/lib/journal.mjs": {
+      "sha256": "ce107e5af33e8f2ddaafa28951d402c2bdd027fe376a90d97a5585d88e95d07e",
+      "mode": "100644"
+    },
+    "scripts/lib/kb-root.mjs": {
+      "sha256": "ef4b19528c4c2189085f3f5fb46119e561fffeacc261f48841a4cfdc227d0c76",
+      "mode": "100644"
+    },
+    "scripts/lib/llm.mjs": {
+      "sha256": "0600ef3a040bbd8fe36c840fc7eebb1ce73addf60ca4c80cf5c9206c089bd366",
+      "mode": "100644"
+    },
+    "scripts/lib/provenance.mjs": {
+      "sha256": "6ed704786899f6381e85988820781d3c8ec2e64a8db1be3e7baed6f2b95bb9e0",
+      "mode": "100644"
+    },
+    "scripts/lib/template-state.mjs": {
+      "sha256": "01073fe3c0081a0a426c0578df6046fbfb123425984a28fdb14d38950450a0bc",
+      "mode": "100644"
+    },
+    "scripts/parse-raw.mjs": {
+      "sha256": "ac1b274235de57704f3c7436a1e5e97d7a35204775062100638964219e36e324",
+      "mode": "100644"
+    },
+    "scripts/requirements.txt": {
+      "sha256": "740b83d76a5f7ef7cf7916fcb0f37d138d7609bada93f709ea6c0e12a724ee35",
+      "mode": "100644"
+    },
+    "scripts/scrape-cybos.py": {
+      "sha256": "92e12933189af16c86cc4d12adc0a85b5f4ff3384ccf25a3454f8c94ef92ec1a",
+      "mode": "100644"
+    },
+    "scripts/search-quality-probes.mjs": {
+      "sha256": "ebcd79daa2567e2dff772846c7ca48fbc1293f698a70a2182543c4ca69f70b80",
+      "mode": "100644"
+    },
+    "scripts/semantic/README.md": {
+      "sha256": "350c42eef4969144170b4f981b744c99c1a1c9cff56e471c91dde88040bfe52d",
+      "mode": "100644"
+    },
+    "scripts/semantic/backlinks.mjs": {
+      "sha256": "d7bf39f30e8c9a7ea29e24c0bc54b56ad81a58e9835c5875082cc840f79af60e",
+      "mode": "100644"
+    },
+    "scripts/semantic/eval-baseline.json": {
+      "sha256": "6b707a3f05514d4fccefa141bf6afd00fe23f011ead00d5eebe4b9647703c8db",
+      "mode": "100644"
+    },
+    "scripts/semantic/eval.mjs": {
+      "sha256": "9e8d8a5970e9c9b8710ec3b82dae93c9bbfa80dd029f38ed97914e3afd73ed20",
+      "mode": "100644"
+    },
+    "scripts/semantic/index.mjs": {
+      "sha256": "8e3df9e16928ceece7d7cbe93e4b88c8c31652366e6c63b80c112bae206536ae",
+      "mode": "100644"
+    },
+    "scripts/semantic/lib.mjs": {
+      "sha256": "e4dd02800ae4d1ad15b2cadeccf23ff56eb4d837cb9978729d53762a0375c863",
+      "mode": "100644"
+    },
+    "scripts/semantic/mcp-server.mjs": {
+      "sha256": "2598b312f63788629a88c16d355c45116e1b9d349c7dc28ef4908426723d0afa",
+      "mode": "100644"
+    },
+    "scripts/semantic/package.json": {
+      "sha256": "630403e5a306ef95a326d5ef695a07604a3b2b5a3d9bdc7c9b59c454e215765b",
+      "mode": "100644"
+    },
+    "scripts/semantic/pnpm-lock.yaml": {
+      "sha256": "72b0a0d99edd4c8db21325e4b7bf9c7033a5952094eedfeb08095787c2ca421f",
+      "mode": "100644"
+    },
+    "scripts/semantic/probes-corpus.mjs": {
+      "sha256": "5ab87cb3b5608b54e13638fc63696fda95468420d70a7c122aeb0b7b07e7af47",
+      "mode": "100644"
+    },
+    "scripts/semantic/probes-template.mjs": {
+      "sha256": "c22bc5d04c6949d0e7e5253b5e11c0c7cd42b541de75211e578e9182c4f9c1d4",
+      "mode": "100644"
+    },
+    "scripts/semantic/probes.mjs": {
+      "sha256": "c81e59493b28d32b0e20d7a97c1f5635332f46faf0dd55ba729fb3d0ebc1b73e",
+      "mode": "100644"
+    },
+    "scripts/semantic/rerank.mjs": {
+      "sha256": "80c00f960b28d62c38167db2800df6c4554e1e836ca80e206562e806ea488a3a",
+      "mode": "100644"
+    },
+    "scripts/semantic/search.mjs": {
+      "sha256": "0bca1a21cdfd43ce5e8b55e10fe8de57c907fa499b16d9b70c2aaf68fb2de3c6",
+      "mode": "100644"
+    },
+    "scripts/semantic/test-control.mjs": {
+      "sha256": "c68c26afa11a3c6999834f44ae7fd52112ee69697704c0f832f51501afe70846",
+      "mode": "100644"
+    },
+    "scripts/semantic/test-gate.mjs": {
+      "sha256": "30cd776184e3e0b52a32d8196a50d11578c59ad2ba00a0c81dbfc3ee2714481d",
+      "mode": "100644"
+    },
+    "scripts/semantic/test-retrieval.mjs": {
+      "sha256": "e04e7d4a733a5d45443b020eddfdd28160a18520ff27a9985fa604dac1b3501b",
+      "mode": "100644"
+    },
+    "scripts/semantic/think.mjs": {
+      "sha256": "ad5a75a88aa569e48596481457ba262df97bcdd493cd84c72cf1dcfa92eb06e4",
+      "mode": "100644"
+    },
+    "scripts/semantic/verify.mjs": {
+      "sha256": "819bf5e525169a52e6cbf6df541de707f2530f1cede43ccaebed063912a5aaa8",
+      "mode": "100644"
+    },
+    "scripts/session-start-context.mjs": {
+      "sha256": "32b099b8cb2fa3967b42b5f377a176a842b5b29add510f1896ff26221212cec1",
+      "mode": "100644"
+    },
+    "scripts/skillopt/cli.mjs": {
+      "sha256": "137f7eb2bf8880cff021cc0118dceb89c17fa7209f75c9e4eaecd065b8726cb2",
+      "mode": "100644"
+    },
+    "scripts/skillopt/config.mjs": {
+      "sha256": "9e7e2ec31ba956c942b9c28ff191fc5da7150fe974e78c0b684e04b7a4212cb3",
+      "mode": "100644"
+    },
+    "scripts/skillopt/evals/graders/contains.mjs": {
+      "sha256": "3a5444d799896557869e59853f4d92a6dde6f076ba4df75bbb449ba9b7b4b9e6",
+      "mode": "100644"
+    },
+    "scripts/skillopt/evals/graders/index.mjs": {
+      "sha256": "37beb9dce8008d6ccee4db812241360788989b52f6ce46899ec4a1555b742a13",
+      "mode": "100644"
+    },
+    "scripts/skillopt/evals/graders/json-schema.mjs": {
+      "sha256": "78a4f2e8d45c30b41f863747c06bcd1318383ac54ad7f2eb07da7c9cc99f77ad",
+      "mode": "100644"
+    },
+    "scripts/skillopt/evals/graders/label-presence.mjs": {
+      "sha256": "60a23a3c8a93fe548513aa3200905a82a44fcb95b16506fb1e4519ac1aa8e2ae",
+      "mode": "100644"
+    },
+    "scripts/skillopt/evals/graders/llm-judge.mjs": {
+      "sha256": "f64917c9b43fa41f35580b2e7dfc4e1d9ec94dcbef9407b8f9fd5bfbe6427c36",
+      "mode": "100644"
+    },
+    "scripts/skillopt/evals/loader.mjs": {
+      "sha256": "9f4ae2fdc5b1323fc09b088522f1161d87b6a55be3309a609ebd49b99249b0c0",
+      "mode": "100644"
+    },
+    "scripts/skillopt/llm/adapter.mjs": {
+      "sha256": "52b1f84c7bfdee4119283eae7f961b39e5e89b12a1c51e4baa15512c9728fbef",
+      "mode": "100644"
+    },
+    "scripts/skillopt/llm/claude-cli.mjs": {
+      "sha256": "d48934fa64040b7bfbcfb99348bbf81ec32090a86528a16dfdf8afa4653df138",
+      "mode": "100644"
+    },
+    "scripts/skillopt/llm/cli-timeout.mjs": {
+      "sha256": "ea834946d96ce04515809d4a5bb71979a7f694997bcb32949dd886f119f995c0",
+      "mode": "100644"
+    },
+    "scripts/skillopt/llm/generic-cli.mjs": {
+      "sha256": "d6419dbc3935f209aafcd2e24df6b016fe4f600e8f8d90d72cc7dd722166c333",
+      "mode": "100644"
+    },
+    "scripts/skillopt/llm/openai-http.mjs": {
+      "sha256": "6999f1cece85653e3759972bb31f121a5eeac1b9527d0e6ce4efc01e54745b65",
+      "mode": "100644"
+    },
+    "scripts/skillopt/mcp-server.mjs": {
+      "sha256": "aee4789f7ea4aba998a7850272d7d0d873068716ff64aa3f36221b0a1fcb5095",
+      "mode": "100644"
+    },
+    "scripts/skillopt/package.json": {
+      "sha256": "59f0ac1b7572af7cc2fab479cc79c7ea6aa80666363fd5182a704c28c865938f",
+      "mode": "100644"
+    },
+    "scripts/skillopt/pnpm-lock.yaml": {
+      "sha256": "d69d2d3cfc9c639e65b07ff251b8271e079764bb239aabaef7c1f7d5b09ae287",
+      "mode": "100644"
+    },
+    "scripts/skillopt/prompts/reflect.md": {
+      "sha256": "2bfc693442335c031b1056b9a21640e3cbec8fc97c407677fdf73eedffc74c95",
+      "mode": "100644"
+    },
+    "scripts/skillopt/runner/diff.mjs": {
+      "sha256": "811e12b6c8eb6fc4a7ae02f660d718671af9e7458a94aa94d4c9e76eeb4b5bce",
+      "mode": "100644"
+    },
+    "scripts/skillopt/runner/edit.mjs": {
+      "sha256": "7f51279196b2071f9f063197c68ae5f7de972a1997f032e9ff975d8d68b8cf41",
+      "mode": "100644"
+    },
+    "scripts/skillopt/runner/reflect.mjs": {
+      "sha256": "cdd843e9fa0a569add6e5820c248dc248a9e1b3cf6918b99ccd94a57717251ee",
+      "mode": "100644"
+    },
+    "scripts/skillopt/runner/rollout.mjs": {
+      "sha256": "972b71993f3bbd649cf6f3799c174b13c11682c7c52ee2bdc433709076897e98",
+      "mode": "100644"
+    },
+    "scripts/skillopt/storage/metrics.mjs": {
+      "sha256": "3be188a096a16c006511585b7b2d9349143366417bcddf864a6cd3bf4e4d93a7",
+      "mode": "100644"
+    },
+    "scripts/skills-manifest.py": {
+      "sha256": "c4efbb8c005f15a31497935d93869c987615a33e8f1a2cc7a07d3bef0c8d04a3",
+      "mode": "100644"
+    },
+    "scripts/suggest-links.mjs": {
+      "sha256": "91a5f11b48fe6fd4451d1482b85dc4c575d08820c34c9a8f36edafb5b123ee17",
+      "mode": "100644"
+    },
+    "scripts/template-release.mjs": {
+      "sha256": "49734bbe991568fab5616eb93a5cdaa634d25119a73c076fdd1ddc3ba0a1228b",
+      "mode": "100644"
+    },
+    "test/agents-runtime.test.mjs": {
+      "sha256": "363462c777d5ec2c29548f92570ba4f1bbe908047c46f7f10b68c51d0f5e6e05",
+      "mode": "100644"
+    },
+    "test/content-quality.test.mjs": {
+      "sha256": "c0a946e8f9495a16ba9c93ca37e32a4b18f626ca4e0ce6a504d176e2bf6c6b39",
+      "mode": "100644"
+    },
+    "test/runtime-llm.test.mjs": {
+      "sha256": "52b5d1d251d5e65a48a24d59a6f92978ec2e2834eb294ef22a64c0c2b8c635dd",
+      "mode": "100644"
+    },
+    "test/template-init.test.mjs": {
+      "sha256": "47e76a12be6c349f0fa115f35d1694048c09eb806bc4ad031f570ceaff9925cc",
+      "mode": "100644"
+    },
+    "test/template-update.test.mjs": {
+      "sha256": "8d1daefffb3a056c943e634b85c4aa9437dafd5d6b03565a09dfa2318b36fd49",
+      "mode": "100644"
+    },
+    "tools/viewer/.gitignore": {
+      "sha256": "61022f949eb49fe0ee5b774835be844845b3d71d9001f676d9ac82bd433e49a7",
+      "mode": "100644"
+    },
+    "tools/viewer/README.md": {
+      "sha256": "9e930d97c102c87a6c32308f1c70a664d5480da4b3f8a3f3e5a7af01b1c8cc9b",
+      "mode": "100644"
+    },
+    "tools/viewer/build-static.mjs": {
+      "sha256": "44e6675e6cae56b2443c24c1d509af4c2fa35fde21c0e5ae277b066fa618b09c",
+      "mode": "100644"
+    },
+    "tools/viewer/components.test.tsx": {
+      "sha256": "cf63278652af3b4f1e3591d378cb8c6c662107f6c2fb2defa1abd9a192640527",
+      "mode": "100644"
+    },
+    "tools/viewer/data.d.mts": {
+      "sha256": "835ff9b86f4a4055b9a82c048b312550337913d766dcd082d9a805272533e1ef",
+      "mode": "100644"
+    },
+    "tools/viewer/data.mjs": {
+      "sha256": "4af543fa6d72ac9d1c924bfc4f36c68065eb3d12b728fe6cbb3d7c53b9bff17d",
+      "mode": "100644"
+    },
+    "tools/viewer/data.test.mjs": {
+      "sha256": "2b35c5bf878e014ce7d47d93af5c619d111447354fc9c62a003fcecdc0c8f2c3",
+      "mode": "100644"
+    },
+    "tools/viewer/index.html": {
+      "sha256": "529539facc9b98cac58ae394f4069732efd3788dac41207e1d9d07ec97385542",
+      "mode": "100644"
+    },
+    "tools/viewer/package.json": {
+      "sha256": "49c757d71791f7f93d356a3993acceca3414b23397ce3b18c78a3e8fac5f5668",
+      "mode": "100644"
+    },
+    "tools/viewer/pnpm-lock.yaml": {
+      "sha256": "b5cf998dcfce506f755e33822685027139e613709b6a37119fa9ddffb67fe1fc",
+      "mode": "100644"
+    },
+    "tools/viewer/server.ts": {
+      "sha256": "c991b7134b4d1ff688e3c1311bb89d88f531cc22c89a487f5bcfab1dc67f45e2",
+      "mode": "100644"
+    },
+    "tools/viewer/src/App.tsx": {
+      "sha256": "ad2f834b3cdf0e3ff4f5f07fbf28694eeddd71196d0ac76bedee94fcb6ef077c",
+      "mode": "100644"
+    },
+    "tools/viewer/src/api.ts": {
+      "sha256": "163d539ef172fa10c8f6c523210178d1811ab3642ccb3a42a31480c720b93af8",
+      "mode": "100644"
+    },
+    "tools/viewer/src/components/AppSidebar.tsx": {
+      "sha256": "a6533951032fada31ed2d268010dc692acc73c639ae4e2e44421285332ebdf72",
+      "mode": "100644"
+    },
+    "tools/viewer/src/components/CatalogContext.tsx": {
+      "sha256": "61c0e060c2ae2c031c725893056c36659a4e9162626d40a585611d4b0ccfbcde",
+      "mode": "100644"
+    },
+    "tools/viewer/src/components/CommandPalette.tsx": {
+      "sha256": "9e72d9b0171d2165a7bd9a2ef9b86586a2141a8343dd142cf66c8aa3758fc013",
+      "mode": "100644"
+    },
+    "tools/viewer/src/components/DocLinks.tsx": {
+      "sha256": "32e19a3cbd2f47f794481d1551194d69bcbe07e8dc2d22a49502bee8e6150c8f",
+      "mode": "100644"
+    },
+    "tools/viewer/src/components/Header.tsx": {
+      "sha256": "7f187f8d97592026376cca8633e4cac1ec180b3f6254672e543f5914757ec965",
+      "mode": "100644"
+    },
+    "tools/viewer/src/components/Home.tsx": {
+      "sha256": "8907e498100c428d3cd13ac15078308d40515b61098f0547d111c59d77462b19",
+      "mode": "100644"
+    },
+    "tools/viewer/src/components/Library.tsx": {
+      "sha256": "680beb91ad23bd140576042959b1100fc1a7f482155dc5b5703effd7dc0896fd",
+      "mode": "100644"
+    },
+    "tools/viewer/src/components/NavTree.tsx": {
+      "sha256": "ce116232ae13822ff9c4694b252754d5a3c6d3429a319bf2c90e446491446090",
+      "mode": "100644"
+    },
+    "tools/viewer/src/components/RecentChanges.tsx": {
+      "sha256": "d209c899e46051dd1de473f9db5460290679c762caa1861362bd252c8e13e5a1",
+      "mode": "100644"
+    },
+    "tools/viewer/src/components/Sidebar.tsx": {
+      "sha256": "994fa97118bb92625ef3c0ef26bfd6566abf8e1824515e9e03123dc8d38ed586",
+      "mode": "100644"
+    },
+    "tools/viewer/src/components/SpacePage.tsx": {
+      "sha256": "5ebc65676703a771e1bbdb6fecb3ac78dee1d367b2723f1c34ef29222114386a",
+      "mode": "100644"
+    },
+    "tools/viewer/src/components/Workspace.tsx": {
+      "sha256": "598c247317532755835a08483fbad16bdfc07ca8fe189c06913b31a0f2f75743",
+      "mode": "100644"
+    },
+    "tools/viewer/src/main.tsx": {
+      "sha256": "9f804977f2e5bc35f7805e09da9ea0e0a2690c0f3f64c5a529d9dd5225d96716",
+      "mode": "100644"
+    },
+    "tools/viewer/src/routes/DocumentView.tsx": {
+      "sha256": "0f10a5079b7e2e1ffc9f9c6b471af5bf9abaff33d433d9d8655d905c6b0d6c33",
+      "mode": "100644"
+    },
+    "tools/viewer/src/routes/Graph.tsx": {
+      "sha256": "f8ac1d3f67d54de11591fb309ceeac5bd57ac11fe299b0782855112c7bb54440",
+      "mode": "100644"
+    },
+    "tools/viewer/src/routes/Index.tsx": {
+      "sha256": "6a573387f53491cb4da303e627c3637d02694cec8b2ef53b48c7eb64d682159a",
+      "mode": "100644"
+    },
+    "tools/viewer/src/routes/KbLayer.tsx": {
+      "sha256": "2aa20365415891434118cfd2cf170568b320947a856283ebba89dd85d4527f5a",
+      "mode": "100644"
+    },
+    "tools/viewer/src/routes/OpenQuestions.tsx": {
+      "sha256": "5a01a8cc0c1cc536bc73204e08f03ceba6aaf95e8e303d48f5556df48814a2fa",
+      "mode": "100644"
+    },
+    "tools/viewer/src/routes/Search.tsx": {
+      "sha256": "4a27a0317315ae1e4f036d5df6dcaa70aedb6b30f882864e7bf39130c7244cf2",
+      "mode": "100644"
+    },
+    "tools/viewer/src/routes/SkillOpt.tsx": {
+      "sha256": "7cb266a49ea6e495d2ecb62e578c86dd46f63ddf94b750f70e7560f54baa451b",
+      "mode": "100644"
+    },
+    "tools/viewer/src/search-client.d.mts": {
+      "sha256": "671a926c4ef50da9c1c15e439a4559ef9bea87bf74d98b5694c9f52e7533fe33",
+      "mode": "100644"
+    },
+    "tools/viewer/src/search-client.mjs": {
+      "sha256": "2a82f47a8c1cdcfaedac99f7d8648b5890cd07011ea9ee15de4cfdf553a93910",
+      "mode": "100644"
+    },
+    "tools/viewer/src/styles/globals.css": {
+      "sha256": "aa9aec5a1b2aa73c6b171e8d8c6d84a23798ed9e2dd2430c637846ae5ae7248d",
+      "mode": "100644"
+    },
+    "tools/viewer/src/styles/workspace.css": {
+      "sha256": "6fd96797b1d1e1ecf04229d68619135fb3c788d1f3bcbea67acddccbdb145a0e",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/MarkdownDoc.tsx": {
+      "sha256": "64b04e5b7a808b5c28b7d891bebd6df4786c025ecebb06833767115603270d91",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/kb/KbAccordion.tsx": {
+      "sha256": "bf076b4fa8094409ecbbe90f1c2d4807a99e5f591d22385c90266e87a99004c3",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/kb/KbFileTree.tsx": {
+      "sha256": "2c84d50b5ca1a7472fd9972afebd89026386e4831405405347e67303f9bfc12b",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/kb/KbLinkCard.tsx": {
+      "sha256": "2670af801a56505d63cb4061b4ae57f798797aeaf3d2ef1ee53129356a2dee9a",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/kb/KbSteps.tsx": {
+      "sha256": "5fe70f0ecb37cccddbcb247727d28ee0545d50c97587de071d20568013c7072d",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/kb/KbTabs.tsx": {
+      "sha256": "355d2f3400aed0271acb9ee66618bf060c3ca7a8fafd8d8f55ea434656d199a5",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/badge.tsx": {
+      "sha256": "d8e4237fec551a083cc3c32f2bcc98892f0acece2002502b2249a9abc35a83de",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/breadcrumb.tsx": {
+      "sha256": "feb2df17823d6feba6e55a849671c9f486a87b45cd038aa71bf9c5b782ace5f3",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/button.tsx": {
+      "sha256": "a7b0e66619bd4d8e1fe8250d26b61fdb09f777bc14b5e3d17655380c4b84d27b",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/card.tsx": {
+      "sha256": "487205de1d5c557832bf09932f191caae3792836e2e8b3b71fb777b60d14d48f",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/collapsible.tsx": {
+      "sha256": "eb4ee2a9ddb3c566c509753a79e4f4c9425d9f8474d55f61f8c8694928b6a509",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/dialog.tsx": {
+      "sha256": "ac2c96c469900a2b69d9220c89197aa3ae0104098dc301ce5138e1f468249ace",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/dropdown-menu.tsx": {
+      "sha256": "8ea70dc3eea3396586a6b1fa8dfbe74db0d8dc3f98c883bb212396a80c70d7d0",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/input.tsx": {
+      "sha256": "48f9dc09a438c9f31534bd961c009a84c06372544f27a8c68eed2c4bd6be101d",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/label.tsx": {
+      "sha256": "889e2771393aad62aee2dd4fcf1935699148ea92cdcef28506382ff0f762236a",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/scroll-area.tsx": {
+      "sha256": "1c52bac357c63435f207129169160d4932abdf358d9a8090619bc24f37939a4a",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/select.tsx": {
+      "sha256": "da2952fca4677361bbd495fb7af12700b5eb36d12a734795974f4bb30b424b0c",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/separator.tsx": {
+      "sha256": "39cb57a877a1b65bbec4133ef5778bc5d80890c55ac2fef32048303199d6fb47",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/sheet.tsx": {
+      "sha256": "ec05a125ea2cff096f35377ced94f16cc9be8cb983154f24360c7c6c12718bd3",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/sidebar.tsx": {
+      "sha256": "58cd2a04217e32c9e1e48f4903199d1e1c30790ee13e5b95db5269c939ea0db3",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/skeleton.tsx": {
+      "sha256": "9e8ad9e8b2024eb3add70f0dba3d7a8ad5d9153ec12f3283250813a534137086",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/table.tsx": {
+      "sha256": "d12fd925a2615ef94f3adf863a9689f84c76fd731b5028230890da0cbcb54e0f",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/tabs.tsx": {
+      "sha256": "585614334a83087aeac31590a5aa16e750869952e139848b5cc10038a9a58c78",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/components/ui/tooltip.tsx": {
+      "sha256": "047d58e952dea9efa52ef6a2f0f125050d9878ee0f0c74b61e8fe0634b8a1267",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/hooks/use-mobile.ts": {
+      "sha256": "ad0936f84f1df79d3697bfbff9c18f8ad58431c1cbaf2359c6a853b0fcc9f28b",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/hooks/use-theme.ts": {
+      "sha256": "d42e0dda4ebc181383e788079d0bcada390796ce43086094ed68349e0e9468f9",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/layout/ThemeToggle.tsx": {
+      "sha256": "ddb59aca9edf6b719dd53078fb77fb82356256ecb4e555b89997fb3cc6787629",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/lib/extract-toc.ts": {
+      "sha256": "f922ba3670cfefd870f5dd853968f48a87c478952b1b25512b064cb93442d7e6",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/lib/remark-source-links.ts": {
+      "sha256": "391b65ee474c506458581563ca8d1c1fb098ef62794b4b00e74b94c60ba2de10",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/lib/utils.ts": {
+      "sha256": "4acbc7165a8d54738ff62b51414e772c08fe78434e524e6d8770180d3ba2925f",
+      "mode": "100644"
+    },
+    "tools/viewer/src/v2/styles/v2.css": {
+      "sha256": "2664a9690a8d3ad1200ae0c5b5ef95fbefff74c9eeae58f811a439f44b927f75",
+      "mode": "100644"
+    },
+    "tools/viewer/tsconfig.json": {
+      "sha256": "9d606873928ae4e0175c6b604d66811566af5bc687b7077d76e3b5ebf33fae98",
+      "mode": "100644"
+    },
+    "tools/viewer/vite.config.ts": {
+      "sha256": "c9014cd57e817ac1a1973ea5ffc827935b7c8c24ba495b890d5d8c942a4cbed6",
+      "mode": "100644"
+    }
+  },
+  "managedJson": {
+    "package.json": {
+      "/packageManager": {
+        "value": "pnpm@9.15.0"
+      },
+      "/engines/node": {
+        "value": ">=20 <23"
+      },
+      "/scripts/setup": {
+        "value": "pnpm -C scripts/semantic install && pnpm -C scripts/skillopt install && pnpm -C tools/viewer install"
+      },
+      "/scripts/skill": {
+        "value": "node scripts/skillopt/cli.mjs"
+      },
+      "/scripts/kb:index": {
+        "value": "node scripts/semantic/index.mjs"
+      },
+      "/scripts/kb:search": {
+        "value": "node scripts/semantic/search.mjs"
+      },
+      "/scripts/kb:think": {
+        "value": "node scripts/semantic/think.mjs"
+      },
+      "/scripts/kb:doctor": {
+        "value": "node scripts/kb-doctor.mjs"
+      },
+      "/scripts/kb:eval": {
+        "value": "node scripts/semantic/eval.mjs"
+      },
+      "/scripts/kb:verify": {
+        "value": "node scripts/semantic/verify.mjs"
+      },
+      "/scripts/kb:critic": {
+        "value": "node scripts/kb-critic.mjs"
+      },
+      "/scripts/kb:dream": {
+        "value": "node scripts/dream-cycle.mjs"
+      },
+      "/scripts/viewer:dev": {
+        "value": "cd tools/viewer && pnpm dev"
+      },
+      "/scripts/viewer:build": {
+        "value": "pnpm -C tools/viewer build"
+      },
+      "/scripts/kb:init": {
+        "value": "node scripts/kb-init.mjs"
+      },
+      "/scripts/kb:update": {
+        "value": "node scripts/kb-update.mjs"
+      },
+      "/scripts/kb:metrics": {
+        "value": "node scripts/kb-metrics.mjs"
+      },
+      "/scripts/kb:digest": {
+        "value": "node scripts/kb-digest.mjs"
+      },
+      "/scripts/test": {
+        "value": "node --test test/*.test.mjs"
+      },
+      "/scripts/check": {
+        "value": "node scripts/git-hooks/check.mjs"
+      },
+      "/scripts/harness:check": {
+        "value": "node scripts/check-harness.mjs"
+      },
+      "/scripts/harness:setup": {
+        "value": "node scripts/check-harness.mjs --setup"
+      },
+      "/scripts/kb:context": {
+        "value": "node scripts/session-start-context.mjs"
+      },
+      "/scripts/kb:session": {
+        "value": "node scripts/kb-session.mjs"
+      },
+      "/scripts/kb:spaces": {
+        "value": "node scripts/check-spaces.mjs"
+      },
+      "/scripts/kb:portability": {
+        "value": "node scripts/check-portability.mjs"
+      },
+      "/scripts/kb:readability": {
+        "value": "node scripts/check-readability.mjs"
+      },
+      "/scripts/kb:release:baseline": {
+        "value": "node scripts/template-release.mjs --write"
+      },
+      "/scripts/kb:release:check": {
+        "value": "node scripts/template-release.mjs --check"
+      },
+      "/scripts/viewer:test": {
+        "value": "pnpm -C tools/viewer test"
+      }
+    }
+  },
+  "demoFiles": {
+    "00_context/walkthrough-product.md": "762d25f6ec0c7325a7bbf4b0b8b60d94012b1e1823a6bddec263e9f54fd163f5",
+    "01_raw/walkthrough/2026-06-30-interview-cto.md": "2d0d37169c693872c6ecb0228f6dc933716aa726c139fe0be8f438bfd7028eef",
+    "02_sources/2026-06-30-walkthrough-interview-cto.md": "4e5224bf4eece06aa9c23ac80065fccf04cff15e791ec32a1bf91050d96a2f79",
+    "03_wiki/walkthrough-deflection-rate.md": "904a30600fd88a2b7a2877c1da742d1940ad1bfd23a073990c68acaf7077ab05",
+    "04_synthesis/walkthrough-pilot-hypotheses.md": "5d63e057026f1140e7fc204f161a937d9cd03769dcab58d7c0856dbcbcb98646",
+    "05_decisions/walkthrough-decision-pilot-scope.md": "ac16f382c93adbb16410d54bf6338782dc4f5a32b30025ebcd5bc98d7a913e30",
+    "06_outputs/_skills-index.md": "9f943926ee5cb8e7a430ed57f5b6a228a692744e940b5ebba1d03728fa76acbe",
+    "06_outputs/anthropics-skills/01-engineering-productivity/ANT-001-claude-api.md": "99f4e1769edee6b3fa018f157f459c705421960b2e68b161f9a8014d93cb0899",
+    "06_outputs/anthropics-skills/01-engineering-productivity/ANT-002-mcp-builder.md": "efe1a2edb3505ef21ae411eda6ae066dbf2d9be818931b286a90be88ef10bd80",
+    "06_outputs/anthropics-skills/01-engineering-productivity/ANT-003-skill-creator.md": "2f4cff3f064ee774619a9c41c7e4017d4ae9277a1abddd32b3b14d590d6bed59",
+    "06_outputs/anthropics-skills/01-engineering-productivity/ANT-004-web-artifacts-builder.md": "2af304d998708e5de287664783e74481253e1795be52523811396967dfc89645",
+    "06_outputs/anthropics-skills/01-engineering-productivity/ANT-005-webapp-testing.md": "864408339b02dc2a4599e99d6b8c7f0ece8a95430f8a2225a323f335accfe3e2",
+    "06_outputs/anthropics-skills/01-engineering-productivity/ANT-013-docx.md": "a3271c708d3cbf967787ea89a4cb8e967c5038478e183eff25a72865edc02577",
+    "06_outputs/anthropics-skills/01-engineering-productivity/ANT-014-pdf.md": "c60012cb0046917ceadbc0c22d75440951358dbefa9481a14aa606040a31f1e7",
+    "06_outputs/anthropics-skills/01-engineering-productivity/ANT-015-pptx.md": "fd921b93803451c454ef80ff55a72568a1625978e74234b3f9f39d5e4dd2fd9c",
+    "06_outputs/anthropics-skills/01-engineering-productivity/ANT-016-xlsx.md": "cb5fe020c016be717bc20dd20b61c5e0203d9b66032354225e833e0b23d04488",
+    "06_outputs/anthropics-skills/06-operations/ANT-006-internal-comms.md": "87cdae83968e50f922634631061e1c0cc8a6791b2d0b238ead05dce36a6045cd",
+    "06_outputs/anthropics-skills/06-operations/ANT-007-slack-gif-creator.md": "5713570e2b16c0e6eafa2a398ae443f606431c7a21fd3b21f50310726b04f103",
+    "06_outputs/anthropics-skills/12-design/ANT-008-algorithmic-art.md": "3284782106461461611353170b23cccf29f00e099fb8d5e6dadc6d11b444cac7",
+    "06_outputs/anthropics-skills/12-design/ANT-009-brand-guidelines.md": "9b17bc15eda8c3a5f0dd99875b08eb45e529e5f1ff319ab939f02498f0881ea8",
+    "06_outputs/anthropics-skills/12-design/ANT-010-canvas-design.md": "babce79884912273389226be36040b4dbf99f2ad69a35971a77c965ec92d217a",
+    "06_outputs/anthropics-skills/12-design/ANT-011-frontend-design.md": "b9897389e5d75df2c0cd72150182ee3486c8251d2049fbc7f743ab862be1723b",
+    "06_outputs/anthropics-skills/12-design/ANT-012-theme-factory.md": "cfdb9337f138891f41fc0f42fa447cdb4156e0f56eb949b3eccc23dd6c4dc644",
+    "06_outputs/anthropics-skills/_categories.md": "86615de199c7903c6c8be6f9bbf65616114e12c9a7f6a902f771c2150f38535b",
+    "06_outputs/anthropics-skills/_index.md": "20c4c3a4fac20e275767ebc465e05d40fc64b8cc5ed9c220905bdd81e7ce3363",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-001-guide.md": "5d1265a169394fb36ddd7a09db63d4e222b2397400caafc729aee66111bbb9c4",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-002-guide.md": "85db1f79f7e1ed7fe29a82394eb4ea1884ce8566bd9e6294d75f6787bae1df3a",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-003-guide.md": "179f215a5370a46d74b64ea287ec92554f3ced0dc7014adb707099282169d747",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-004-guide.md": "76d977adf9a2777c72eb530466ec46f3c9e4bb0dc20c3513e3ae11411d50a44b",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-005-guide.md": "b78a650aad062a4e9787ff2a652df6808cdbf6340c4a7077cbcb618e72d1ddd9",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-006-guide.md": "2dbe4212bd9b600c8543d51743d3ea134076e1004ddcb6e530a13ba3fa6b593c",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-007-00-the-one-liner-research-agent.md": "8cbf0d2cca2da3d786d79ab8c02ea2e740df422011a024e97d0d93fb8a51ed57",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-008-01-the-chief-of-staff-agent.md": "a21ae155d86133913316dc5ab0fb8d26a26027fff81edb73db5e569ed8b14388",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-009-02-the-observability-agent.md": "583ff7d64900442e888ff34016ac20c9d5e185c7d6780bb85a73ce2601c934c6",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-010-03-the-site-reliability-agent.md": "6f9c17d96b0e0ab0f3debc104f83c774a595dc8bafd519877b85f928c001ce0a",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-011-04-migrating-from-openai-agents-sdk.md": "41b62e569f8fa71f3c4c850d681eebea7315eaa7edcd469c8f4411092439d2f1",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-012-05-building-a-session-browser.md": "7822fd61d30c09c67d5f37726ad31103272348785f7f906adae77caa9b364dcd",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-013-06-the-vulnerability-detection-agent.md": "d6bb2afbf36437fab7e1880999b24b6b080d02ca60b6f05844e1c723c4d061bd",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-014-prompting-for-frontend-aesthetics.md": "54daa281e6e5007dbbe5f03fe172a8e9f54ae7fc1b7b8c05d482087a0bea3752",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-015-extended-thinking.md": "623ae3a587120e6e1a83cf2dba745da7dfc62fa35127aa763a598a9a6cbd8fe4",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-016-extended-thinking-with-tool-use.md": "f4484f8627225168ad8e989e98407e768b3bbbead3c87332f63974b35dedaabf",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-017-finetuning-on-bedrock.md": "97342306ee08c3d16ce45332532841ad2dc3f8df0e145d61244d0311ebc6717d",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-018-cma-coordinate-specialist-team.md": "5cba07c0f4dea5106df1ee59a2979fd440cacd53d2d2a791e3a86fcb48103ef4",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-019-cma-explore-unfamiliar-codebase.md": "9a29e588d7db87af72eef92f19d6f9acd17abe4d692dae88db6e7685db429522",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-020-cma-gate-human-in-the-loop.md": "48fd6e35a72c60fd25441ae0411767915c9714e78338e4ee43d489fc256fc321",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-021-cma-iterate-fix-failing-tests.md": "aa1f7a2e893c0d86ca50cde5c51636cd7cc0ad40aa2b6149ee093c211f3d5fb5",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-022-cma-operate-in-production.md": "8065afc1de1a0b71d22dc1ac9396ab7f64000006bb6fca4be121e1a8c68e8c21",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-023-cma-orchestrate-issue-to-pr.md": "426c6acee0fdba3d3a6316044463e67e4776656b445d294fd6802e7a1a22a291",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-024-cma-prompt-versioning-and-rollback.md": "7ad2e9419c21f8712374bd7ba1865acda15ebb8d861859aa0dd9733076187c23",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-025-cma-remember-user-preferences.md": "a3077d8bca7e3eeb2e27b5283d07cdd734ce5195cadd97078e8d572b0239d9db",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-026-cma-verify-with-outcome-grader.md": "9d592b0edf4da593d8588d3d7703d3dc8af1a6613173235f1e87d524d021b43b",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-027-data-analyst-agent.md": "3655bf1e03f099b59dddb826d24a5774baaa4ba7325b0c52789763b3742b58b5",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-028-slack-data-bot.md": "945c77f4f82e8562c6ab4d5b45f7cf5dd1c37caa0107c91cf1d6344bc0040698",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-029-sre-incident-responder.md": "dabf372e69192ccd597cf892d7d53ecc0557502237e4d2805882a17b40d86c76",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-030-batch-processing.md": "f78b043ecce548bc5699a7762b6fba1e8754fdbc0221fef3b398812e9f2c185f",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-031-building-evals.md": "9bbe09a4c7a598a8aedf560f2415aeb08587d7f6731cff1ba8b7a452e43e8033",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-032-building-moderation-filter.md": "40ad39ab7833a4c02dbc3c2037fdda82d001da4ca4b8766f528bf150fcc37156",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-033-generate-test-cases.md": "4d8d0590680c0e420436cada5c4fcb45c4fe517a22b49acbc7082f8c9fe61177",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-034-how-to-enable-json-mode.md": "2d2f315068134da984ed8f13d4e586ba13ec379dd7d5ad0cb661aa615fe5edcf",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-035-how-to-make-sql-queries.md": "572c698b54ba7725f75146796a16e67d86b7b85fe3ff92ab2f5c5ea6993bf633",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-036-metaprompt.md": "e09b5faad8d5f1d01b1040a148d69cf3740c05747f3cacb6d7d10851614b1006",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-037-pdf-upload-summarization.md": "8e7ff86aebd06c96dbab49409d79f7c783467526a27939a2e7e4211ac5fe3c06",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-038-prompt-caching.md": "dafe90bd61c67ab88a605d26e7acfe88f265f7ebbc4b2e1b89aa77a411e284a7",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-039-read-web-pages-with-haiku.md": "a59d9854c3d7c3a913385472177596c73c5bf4a12fe568e3f549430a0c4504e0",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-040-sampling-past-max-tokens.md": "11151d0feedaffdd809e293f4da180fce744470a25714dc62e5f387b65ccdae2",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-041-session-memory-compaction.md": "e6ad090a0d1cff9ed86594ba4d0167cc9045bbef75d4100c1377c5c9066be192",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-042-speculative-prompt-caching.md": "97d093b62b6102465e39c3d22144e3c5ebda60eade3eb7d9e00ed3be9802db5c",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-043-using-citations.md": "6a2faf2be4040a6f02896ee8acfdd960945da8c446f55d5f3dabfcce14b0ed98",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-044-best-practices-for-vision.md": "d0b5fe360e38662479d2424316274497cd961f2827d483f429b47346d30cc1aa",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-045-crop-tool.md": "0a2ee9749d1b3a6db9dd9c3ea2bcf3c203da44249b89e5320f52a1863888cece",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-046-getting-started-with-vision.md": "2e6fe9365e280f5f5bc653544a199b0031cea3f9a7d468c2dd1e61aa157581a8",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-047-how-to-transcribe-text.md": "f0477d48bfae055b9b7e52eb105944a0cb94da1c1830306fc62df99033c383d9",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-048-reading-charts-graphs-powerpoints.md": "90ea330690c19730f8f3607c2e195e0c08fcf3673b7cbdfcc04441e41225e874",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-049-using-sub-agents.md": "d7b823fe26fbd7e1247d3383e34ee61a13cc33f5a879eee93d1958ef29c01d55",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-050-usage-cost-api.md": "57d8a246da33c28d6fc78f5748e0d1e201c90b552a81811448c06c2bb59df01f",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-051-basic-workflows.md": "b2f8e02bc54f72767e55c3846dc760d8d04982e92569020a3dc2b08d3e239c94",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-052-evaluator-optimizer.md": "f97d7132adc30a938c9c654cf53ed8e630f8f98ce0b95319e49dd049ebb7660b",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-053-orchestrator-workers.md": "1ce835d62249d497799bafec39f3ada9f48e4d0f5f34a96df51df910adfaa3eb",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-054-01-skills-introduction.md": "4c48edd47eea289e97db2933f17cf9e2a0780dda6565766d1949cc71d8947724",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-055-02-skills-financial-applications.md": "45a4b2c0827a7456cbfe7e7ff8bf0b5435634924b369c6e7e40082eb2a94d247",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-056-03-skills-custom-development.md": "cbfa5df2f8c2c936da383f9a11e9245054b9a78bb5c64f87ded4e724bac7758c",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-057-prerecorded-audio.md": "9f028949d6d4d5fd2efe77e36ff72014355acfd15ce5c2e579b6d1af55a01802",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-058-low-latency-stt-claude-tts.md": "cb7c63fdfe143b6ba84afed0c613f3ce04959bf66bd44822dda6a9faec94ffd0",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-059-basic-rag-with-llamaindex.md": "af4f07533ab2c554f861cd11814822db0c69081bf80b4b09abc5e313b4820c60",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-060-multi-document-agents.md": "189f06ee0bb2e0e469181771d28bd7df940a29f78c4df3f2b8849e36927c637c",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-061-multi-modal.md": "5d1bbc7ce8d82dc5d515912746b605840ed37ddb67266b2deeea4706f2885e17",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-062-react-agent.md": "f409f85d5c21289e1e0f3996e6384cf0c92d9e7fb880081dfec8a9f9715adfbc",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-063-router-query-engine.md": "541f095807586f7f180cacb50cf690c62ef5fc1bc42cb23b648b89e88e5a3b0d",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-064-subquestion-query-engine.md": "ea8c21b6c6a5950cdabc26eb45ed34cf8d082d1c70a84ab718fc1d8714db8b95",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-065-rag-using-mongodb.md": "220e227238db368c99374c7484208983b8b0c1fc8b2b60d9c620aac2a13650f0",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-066-claude-3-rag-agent.md": "1f74060f11c3bdf5f85c45c3f2cb04281bf48eab43313464214683cb67e44598",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-067-rag-using-pinecone.md": "6bef3e169e1608e7f8be7815948439036d9493c101ad167618e2d2aba3f9148b",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-068-wikipedia-search-cookbook.md": "86d13334ae05183c845a82587e5dacce2378d15d3c33a0050118bf67d87557ab",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-069-using-llm-api.md": "322468ebe6d67f711ed1c19c09e840b9698b485640a3fa35cf0b277c76da805e",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-070-tool-evaluation.md": "26343468cfb72dd892c08daf3fd4456a066a37c3c2297344e82f913ae989fdc3",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-071-automatic-context-compaction.md": "85d3a40f2945ae0f1d2ae8fbbc9d484911b25840b9d66827877f02854440433a",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-072-calculator-tool.md": "6c4ffde999eb3b7c4f0144e21929fc51042e23fad0bb2ec627e9d0a41cf6bcb5",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-073-context-engineering-tools.md": "f957d372e48433a59ff20becd6f57f3cba0a175aa9c2c9d6b8f222493d7e0f36",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-074-customer-service-agent.md": "22cc2e69209d8f1a3655d0023eb03f5c106b254440b001712aaa3e86700015f2",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-075-extracting-structured-json.md": "2ec7fded1d89da128c31880c264aa9d14f987d19f366d1f2ee401cf199e17456",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-076-memory-cookbook.md": "39ab87d6301f186f80a29396459ad9894285030ba6b47e023f59a9e6644a7643",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-077-parallel-tools.md": "c2be733918f426a75ae5aeac260e3b585d232c31ac6b7ecffa48b1875d324d01",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-078-programmatic-tool-calling-ptc.md": "0e32a16b1deb799316a359c659725bfe32e4a9e545c86a756fa2d9b1a8fb5e70",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-079-threat-intel-enrichment-agent.md": "b8e3f58ed9c11a002b96260338ba988ab03a89ee1edd3704c8310d907c454513",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-080-tool-choice.md": "5fa57a02bc35b6a322aa0d92606a57f6faa8b074c562cdaeb2ac264b482272f8",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-081-tool-search-alternate-approaches.md": "fee3bb1c1c8d6490eef6215fe1cde845a07a808ad3290efeaec65be7985650e6",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-082-tool-search-with-embeddings.md": "b375b8e16fff5b1984e1968ca59aa07c9f93c5e7041a9bcbed3125f3c4361b68",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-083-tool-use-with-pydantic.md": "c6137d6dd51a3a5839595e7637fbf941f51c20785a95c106de94fad15dc665b5",
+    "06_outputs/claude-cookbooks/01-engineering-productivity/COB-084-vision-with-tools.md": "d01296cc6d463f688b927eb130b7145d16c356486fe14b19977d11280bf2efbd",
+    "06_outputs/claude-cookbooks/_categories.md": "cf1250b1d6bb3901e716641c3d5b41782a49bbad06e22831d03143442aaeba2f",
+    "06_outputs/claude-cookbooks/_index.md": "68e773b14a93aaa969c1753d3927469227146100aa2eea139208b90370f43c18",
+    "06_outputs/cybos-cases/01-engineering-productivity/A-024-closed-loop-user-feedback-code-change-automation.md": "779a11021c1f9b2eddf9ab3e9b7f3a05f916d81620abf10802b3937d92094cd1",
+    "06_outputs/cybos-cases/01-engineering-productivity/A-025-vibe-coding-playbook-from-blank-page-to-deployed-artefact-an.md": "0477a261676da36301ceb08bca48753203c76e9d20661824f744d88d544c2fab",
+    "06_outputs/cybos-cases/01-engineering-productivity/A-026-hierarchical-agent-config-agentsmd-three-tier-with-claudemd.md": "16833beef373355d962c717c54b221b577e6a9dc6a920f5391c3d30797e88070",
+    "06_outputs/cybos-cases/01-engineering-productivity/A-027-github-issues-as-agent-memory-project-as-memory.md": "b557ca10189dabf351d429de261e2e4d8f6cb61bbeae4670c7db193b242afb28",
+    "06_outputs/cybos-cases/01-engineering-productivity/A-028-100-ai-adoption-in-engineering-vpn-agent-cli-claudemd-unlock.md": "23c553476c0b54e1fc7c889278b85bc7b9c817ddb93ad568e059342690212615",
+    "06_outputs/cybos-cases/01-engineering-productivity/A-064-concilium-3-model-debate-triggered-after-a-3-pr-strike.md": "f293a0f58c95137cc9d8921b519567afbb0e58613f14b91b28e1ee0ff596a03a",
+    "06_outputs/cybos-cases/01-engineering-productivity/A-065-parallel-agent-dev-workflow-46-subsystem-agents-in-worktrees.md": "a119b51ab60af477a2f4bcebeaa361a0414d3d2c1d90eeb097a4fc3f252fcb08",
+    "06_outputs/cybos-cases/01-engineering-productivity/A-066-three-layer-rule-enforcement-hook-skill-step-claudemd.md": "4fda25bc56a7beaa73c7ef5e26268d4e07392445ec2bc9a207fac26a47b39156",
+    "06_outputs/cybos-cases/01-engineering-productivity/A-067-subsystem-specialized-agent-teams-orchestrator-4-12-parallel.md": "9c08e6ea08e33fe96905257ba43282a9e2d09d1d824cf249bca624ee25bbc7ce",
+    "06_outputs/cybos-cases/01-engineering-productivity/A-089-six-pattern-delegation-framework-with-a-two-tier-lightfull-r.md": "7f8d6febbc26d0b4fa57355f83615d1a711fdd85aa2175052059df285c08e972",
+    "06_outputs/cybos-cases/01-engineering-productivity/A-095-real-time-design-review-live-call-transcript-to-figma-node-c.md": "02e2bb5cdbf40facca6bf271f7c987135ae81886562244e5c9bc56b9581e2465",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-039-plannerexecutor-split-between-two-coding-agents.md": "9366f88ecd515f52022130b8379276dc6f57d604ea0a4b5869fd456c2982c02c",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-040-mcp-integration-with-task-tracker.md": "a78fb4b78ca8562a55caf55b1045dfb0730898279b41a6da5b58421708642ad5",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-041-pm-vibe-coding-cursor-lovable-for-pms.md": "85c640cca503bfd35c733d154b66b376aad7c426e71671009313ebd25070d9df",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-042-multi-agent-dev-pipeline-4-agents.md": "37bc1bd72303837a8f6af8409c199105b1ef575a2edd96da28cda4920794ed47",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-043-qa-regression-automation-device-farm-ai-test-generation.md": "bebbd13b9bcb035de6d12e81cfcea80364d0b2b93e643f6f9e60711fcb32c8f3",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-044-notion-kaiten-auto-transfer-cross-tool-migration.md": "29dfc05f9ace0cdc34a6d24c589591aa327ffcec5a998ec96e4e1a0de04b6f94",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-045-walk-up-ai-workstations-247-lab.md": "b4cf977be0ddeeaa1c6f9ed28a2157d63b507abdc73b1e64aa6d8be8183be652",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-046-release-management-automation.md": "4fa179133f5641b6c68997d41e8585b5f20b2e5c3be2e5a276668ecca11d709c",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-047-ai-code-review-v2-full-repo-context-not-just-diff.md": "697652a42b461154a589d973f7ce9262a38ef370554d1bf20d4ef3424d363b8e",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-048-hard-pipelines-on-agents-durable-json-state.md": "84161601f9ef122239423699e6734cb29411761288f5cd86a5c09001d40db528",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-049-agent-rules-hooks-as-safety-rails.md": "fe72f3712c11304d67b91a5489f36c14b3a5861172f95f0121a38db53dc73039",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-077-three-tier-skill-organization-for-context-window-economy.md": "9da20a51ce4f1c40005e2afc42974f737ad3147d4de65a18f186982e16053f15",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-081-eval-driven-internal-rag-over-6-enterprise-data-sources.md": "fa78ba2e17319e838a8c9f62713138ab9c36271495f9b394901263a45f75b569",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-084-multi-model-council-voting-for-architectural-decisions.md": "f4bd42ec9ddebf79d7e194d200e4d25316f283f347bcf992d0591460f37db292",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-090-screenshot-microservice-opportunistic-learning-loop.md": "ac102cc6a10a964a90ab8ffc2f0cc9f1defbcc895a13cb9a52f436134139d13a",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-116-auto-extract-recurring-corrections-from-claude-code-history.md": "d92247ccd0e0269e0bc96131f7c0ea572ad4bae42955c26b42aab7a1f34453eb",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-117-google-drive-image-share-skill-rclone-based-inline-link-capt.md": "c0d0242a8a5f5bca097242493f1866dc333c12078b7362951f833bad3362975e",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-118-superflow-claude-codex-parallel-orchestration-with-markdown.md": "0557b22fb17debc83a4adba27f308551a935d95e015d22b2119fbe5d3a0378b4",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-119-async-dev-via-slack-mentioned-agent-codexclaude-in-a-dedicat.md": "194dc6cb8183c7d441d61209759993ce08ee32c3429b4dab21276449da1af47a",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-120-debug-loop-circuit-breaker-after-3-failed-prs-zoom-out-and-b.md": "b7ce37ac822b2f83de916464deaf406eea33dbaf22feda3378fb0a6fdc22d7a4",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-121-production-eval-criteria-db-llm-judge-on-sampled-traces.md": "f09c0a959ce3e91bd3bb5811905e5b5a41f416bf27f80a5c8859728af08e341e",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-122-ai-augmented-regression-suite-claude-writes-selenium-agents.md": "41d36f5b6b08669a041f669a6a960d91d27e2e67484428fde216e99267641898",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-123-internal-dev-dashboard-with-per-dev-ai-signals-change-failur.md": "a845ce386dc4a61a21765cdae774d68b6869b1f285599cafe816f6330123df87",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-124-productized-ai-sports-coaching-pipeline-video-in-narrated-co.md": "7ba3c82544f35901f0a5ee008dcf05f126c9e1900696e23a5b06143925ac58d2",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-125-reclaim-3090k-context-tokens-with-claude-codes-mcp-tool-sear.md": "1a8252ca607adf76cf5109c46c71ddc069a3f56da81513e7a88f6b39f5cd3dd2",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-126-claude-code-anti-regression-settings-force-max-effort-thinki.md": "6f5641618a8c8a364bcfd560ab75ab2080c3e2283184c6f8b7e71dc64b3685a9",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-127-terminal-multiplexer-with-one-git-worktree-per-tab.md": "93b4a037ad4de283163721dd77fd2b11de532d3b3e3f9ce3b33c89316a610eb7",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-128-skip-community-mcps-have-claude-write-a-thin-cli-over-the-ve.md": "09b0cf9a67923924818793d776c3b0ef0e431da06098c39f9018a9774c765626",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-129-claude-code-stop-notification-hooks-never-alt-tab-back-to-a.md": "70949eb815b7591eb2480f5afc7c6a44db3634f07134a2e261ff8d1ead1f6a6c",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-130-outer-loop-autonomy-stop-hook-promise-tag-ralph-until-the-ta.md": "beb33a2dc8b8b384d922dbc3080aebbd32412eccc7d05e098b76bfe159edd192",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-131-self-improving-skills-agent-reviews-each-session-and-propose.md": "d1f25176d5e7e355fd13320c987b5f5e41d808d6a9e604eee486c4204991ac12",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-132-agentsmd-mapping-make-codex-consume-claude-format-skills-for.md": "56f0db10a34d680b1aa2702891e9927579cb9c3194a6ab4dff27904b378edb13",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-133-plan-mode-plus-hidden-claude-code-model-aliases-for-long-ses.md": "f3051512bcdbef7be5605cb48669178fa62cf0221111cb25624b926eea10402b",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-134-pick-a-multi-agent-orchestrator-from-a-side-by-side-benchmar.md": "2447bde19a8fea698430a0cccd5ff657c83c6df8c1e0125f5667f4449fa77220",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-135-fork-an-open-source-mcp-plus-a-companion-plugin-to-reach-a-s.md": "185ec69e3176f273d446bc1605d7ea66ecc9188b331c3d859b0d77fdda13a01d",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-197-claude-code-session-telemetry-reports-standup-weekly-sprint.md": "fe87108f5fd0c30684c74f0010b6936ce1d7d53f8c6fb5fb36745f36da3055af",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-198-one-question-at-a-time-intent-extraction-for-agent-driven-bu.md": "ceedfaa00077af33740374140a3a217b9f456304c6b532f3f8e53d08703db2bb",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-199-description-as-trigger-discipline-for-agent-skills.md": "65c86d4a6231e9fccadabed25485d88fa71fc212932922bd010f4a4008043b74",
+    "06_outputs/cybos-cases/01-engineering-productivity/B-213-codex-goals-persistent-multi-turn-objectives-with-evidence-b.md": "a74e40efee632a0d3f17bfbf683923a896563dd139fe35a4f0c4cf78cceba9a4",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-015-workspace-sso-for-company-internal-dashboards.md": "4db86b0820087de9cf34e33a0390bb0c4683cdc9ab64500ff5056baaeef256af",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-016-database-for-vibe-coded-dashboard-railway-supabase.md": "50784827ee83d2482fbd0abf59d44f1f085a4dabb9778223e72976f6172b373f",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-017-linters-as-agent-guardrails.md": "4507a031e60e2709682d0a1666f224e2e0b5c258c6dfb165f88187b4cb59c7c9",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-019-range-checker-utility-anti-hallucination-guardrail.md": "86e3cf6846b2f097fd57297307bc38796c6c56bb385004911573013433b2ca69",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-020-run-codex-and-cursor-in-parallel-model-comparison-race.md": "30ea801ce0834d6f53bdd2ff813c3c7725e9a6a8df5af6984b0f505ff97d56e7",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-082-caveman-skill-terse-output-style-for-token-savings.md": "fb5690b71b177bd4aefbc56ffe0ea5f31484c7f66c615996e7c2ca83c6623d33",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-083-move-vibe-coding-repos-out-of-icloud-drive.md": "173c2e242b1f0c8c63f4a77ad8fbccfe22a7a122667fa969b3d056035dfc5366",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-084-pre-load-a-language-specific-bestpracticemd-before-vibe-codi.md": "5c2f942f7e6fb54848f1d88f8fe8e513e53d8f8d7eb3848dc216a50d781661f7",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-085-global-port-registry-cli-for-parallel-agents-on-the-same-mac.md": "1e9a8cbae43834a6298075dbce700fb03d13947f900ea227f6fba1f3ef592cd8",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-086-industry-standard-prompt-for-unblocking-decisions-outside-yo.md": "0db064e54de955d43954f3d085259ed4064f90da0daa9c1cf0985788a4308368",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-087-audit-suspicious-100-on-benchmark-ai-products-with-claude-co.md": "549ceddd021af8398e9e14147d10d5482527a6495bc7d8998cf6e4a778fc9022",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-088-5-minute-rule-agent-dev-day-estimate-5-min-reality.md": "4d0938ddb0d272ed5dee9fd41b3826ad25a384b3370ee36af077e7df864c9e38",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-089-55-bullshit-question-benchmark-as-truthfulness-regression-te.md": "5b1fc9966d0472c0189aa83dd35bd906bee99db1f9bfbb8b7be04e0ed49cd6d8",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-090-codexbar-macos-menu-bar-showing-live-claude-max-codex-token.md": "ddffc41c5343e835ec0a93e688c040109dac9f9d4e97650b911ac5cb90708cc4",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-091-rotate-multiple-20-claude-pro-accounts-instead-of-buying-max.md": "525a8f1b3cc8b19411ddc7a8aed388bcbaf5d948be8aa8b12fcade30eb71ab2f",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-092-codex-yolo-mode-full-auto-autonomy-via-dangerously-bypass-ap.md": "569d5219495912b4d546683ef2f422d6187ad712ca9c4c87d34d02a275e78c13",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-093-enable-codex-1m-context-window-experimentally-via-configtoml.md": "b3afa0405881991cd7f417014f3eeea62dd28f37cb8a5d62a15c8adde2300ff8",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-094-agent-as-power-user-custdev-ask-the-agent-each-session-what.md": "bd711e21c66d237d912bd066873ccc7ecfbc4400ff72f2a577ecadfc94426547",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-095-forked-warp-terminal-wired-to-openrouter-for-multi-ssh-ops.md": "d03e1cf3d28f918068f5c155829eb7f91821cf31a2d1d549f66fa4465a48af5b",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-096-github-repo-as-zero-infra-distributed-log-for-multi-bot-coor.md": "192871535b08cb53e9abc60e93e186ef2dfcc356baf360bcf2781d3613593aba",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-097-self-administering-personal-agent-a-separate-cc-process-can.md": "5a4f86fbb73134ef7d3da82345819ca021e83bcb24e60e8d9810f62a363f24e2",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-098-session-id-hook-stamps-every-artifact-with-its-session-ident.md": "63fc0eb252a6390e6a7aa9c89d4993a09b0b3f61e7d1dd46ba84068fee7ba37a",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-099-agentfile-resumable-multi-step-pipelines-with-l0l3-data-laye.md": "94948f991542d356ca35a8517449e6ae33700ce422cc9269fcc7921b8bbf30b3",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-140-project-metrics-dashboard-generator.md": "4ec69a800408d1c41b1c733e57f4ade586f4018599437ab2a543cabd3f831eab",
+    "06_outputs/cybos-cases/01-engineering-productivity/C-144-running-implementation-notes-file-for-off-spec-decisions.md": "da8f702beb5bc38fd853e1de36ba6abeccd0da5853fae530a7ceb259a844ec10",
+    "06_outputs/cybos-cases/02-marketing-content/A-009-marketing-commitment-card-workshop.md": "9244a5184ad1324416b5e0ad5b4a68135e37d63e29f33fd9bb21780cd25fd0bb",
+    "06_outputs/cybos-cases/02-marketing-content/A-010-live-presentation-article-channel-pipeline.md": "08fa6cbcbcefba992621a70fe108f3e1e125a58f917cb0a9f8edaf60baebde08",
+    "06_outputs/cybos-cases/02-marketing-content/A-011-stylistic-contentvoice-writer-multi-channel-fact-check.md": "a1fcdd50b6da4b346f741ced203b73eb169116317c04f8b363087fb6caf6334c",
+    "06_outputs/cybos-cases/02-marketing-content/A-055-google-ads-bulk-campaign-launcher-competitor-keywords-landin.md": "fc34eea221d42ba9279a190856be7914612c3a6eb0837ea92ed844cdbe246d07",
+    "06_outputs/cybos-cases/02-marketing-content/A-056-pre-upload-creative-dedup-against-metas-andromeda-perceptual.md": "08b89db757a6a155b63faa3c5deba95bc010ff887b98d049d559af7b437265b3",
+    "06_outputs/cybos-cases/02-marketing-content/A-057-persona-modeled-investor-reviewer-deep-research-deck-generat.md": "71ce5f7241ff374e84a18dd5d4b4d152a2777fbf779a42c15d795c69dcdeb5f9",
+    "06_outputs/cybos-cases/02-marketing-content/A-058-agentic-seo-geo-pipeline-5-agent-content-factory-4-organic-i.md": "181fcae77f1482341a12567c26617f2159572a7484129b8b6cee135be32f8654",
+    "06_outputs/cybos-cases/02-marketing-content/A-059-app-farm-concept-anchored-creative-factory-for-paid-ads-plat.md": "18661694a260b90d2def617111064c8520a581160e156fe20c82f3cf33014b95",
+    "06_outputs/cybos-cases/02-marketing-content/A-060-brand-consistent-slide-deck-pipeline-figma-team-library-cust.md": "68bd3a17606333b23ae11d73d209950e838b15dba95c109e8c29894d17fcb81d",
+    "06_outputs/cybos-cases/02-marketing-content/A-061-ai-driven-design-claudeaidesign-design-system-input-frontend.md": "7f0de56bcc8f0d1d4678539b4f958e6b3d99c679d85de944eb8837016c874523",
+    "06_outputs/cybos-cases/02-marketing-content/A-062-andromeda-aware-creative-ladder-audience-first-concept-first.md": "d825e024f3a5c96c66b2eecd27fb2469691b2d957e433747322b64637dacfe18",
+    "06_outputs/cybos-cases/02-marketing-content/A-078-landing-page-audit-for-paid-ads-5-dimension-weighted-health.md": "3e662e622504ea6d3980f6be4fc87718241399cc610f19542e0ffc7d7f647bda",
+    "06_outputs/cybos-cases/02-marketing-content/A-079-synthetic-buyer-persona-builder-46-personas-with-skepticism.md": "99a0e9d22b8ebf906620e8ffb0c1b5425e814d854cde39943879ddbf0ed5cef2",
+    "06_outputs/cybos-cases/02-marketing-content/A-080-senior-copywriter-skill-voc-grounded-drafting-and-a-seven-sw.md": "b7a61574138902f064bea00248c209af37489767c6d5756546ca0fe9de9d2f33",
+    "06_outputs/cybos-cases/02-marketing-content/A-081-geo-content-optimizer-rewriting-for-ai-engine-citations.md": "abae653a8fa62b08c681046eb34a628f4acb2c8a7a41d62c85dbe6ce28dcd30e",
+    "06_outputs/cybos-cases/02-marketing-content/A-082-autonomous-marketing-experimentation-harness-with-statistica.md": "8b305a42cd31534be029d02984bfbe347e894ad7d42c3bc7afce6b766a0e9268",
+    "06_outputs/cybos-cases/02-marketing-content/A-083-voice-profile-plus-content-engine-one-source-four-to-five-pl.md": "458c6ecf085d455c0ccb4d3f4620fa688da0dfaf22e1bc7da57d23f8b1cb0e23",
+    "06_outputs/cybos-cases/02-marketing-content/A-084-full-gtm-launch-playbook-motion-by-acv-orb-channels-multi-ph.md": "3e377371ee49c5b045a1cbe126de698f24e745bc55fae81621cec870be6d3821",
+    "06_outputs/cybos-cases/02-marketing-content/B-010-auto-publish-to-netlify-with-og-preview-to-telegram.md": "2050c28de1fde58db88c6a01798fe9fd5d509ff1a1280cb28d5113fe0bd38caa",
+    "06_outputs/cybos-cases/02-marketing-content/B-011-blog-pipeline-as-an-agent-production-line-state-in-github-is.md": "26bc3a74adb2dafa8fa15f391c62661dc21e5be550678d61aad8f861d240e0bb",
+    "06_outputs/cybos-cases/02-marketing-content/B-012-voice-profiler-analyse-an-x-account-output-a-tone-guide.md": "3efbd4b07f41f12c7a0073ba75e1dea91b464fc78b81c486b1c74c0fdb0c947b",
+    "06_outputs/cybos-cases/02-marketing-content/B-013-auto-banner-brand-image-skill-canva-replacement.md": "ffdaf5f59b01e2c61e5ec0ea15c697c2fc6fee39b4ed090cbdc42cb21e086c23",
+    "06_outputs/cybos-cases/02-marketing-content/B-014-content-calendar-with-linear-as-source-of-truth-custom-ui.md": "b103e7b8dd9d94eacbac82fbb0c66b647b1a7e91a21ca4bb2d50914ad3027cc4",
+    "06_outputs/cybos-cases/02-marketing-content/B-015-voice-of-customer-voc-unified-sentiment.md": "a048d2614c04fca73ee4c0b86924f0ffa5d620cbcc604254a2e6f292b939b8d3",
+    "06_outputs/cybos-cases/02-marketing-content/B-085-youtube-as-ai-curated-reading-feed-multi-stage-cascade.md": "527b9c7886f436a5ab15b7c49d74daa5bae4f4413d3c7983e991bc92b4a28d18",
+    "06_outputs/cybos-cases/02-marketing-content/B-094-brand-style-ingestion-into-claude-design-2-month-maturation.md": "86d6d7b9f0c7356dba8199303e6030ed13a06483f305997ed758e696f0e28d83",
+    "06_outputs/cybos-cases/02-marketing-content/B-095-podcast-to-reels-content-factory.md": "49fe619803882da1c7a3196ecb5de7075367285fd33a43a9c74e7e70acebdc89",
+    "06_outputs/cybos-cases/02-marketing-content/B-100-remotion-video-director-skill-explainerinfographic-video-fro.md": "b06b4ee11f98f12f94fcdf816d522a99e7e9006a03a42ed567206e4baf36a9d1",
+    "06_outputs/cybos-cases/02-marketing-content/B-101-meta-graph-cli-meta-platform-ops-skill-claude-operates-brand.md": "524c7cf2abc1adf82e66d5d1f0203446f67ae2d9582154b78d288ae5ba1c6bb4",
+    "06_outputs/cybos-cases/02-marketing-content/B-102-ai-visibility-audit-which-sources-llm-search-actually-cites.md": "a60e1e5acab98885f974a909f4e9ad18b1e4012de770e3066785df4ad8367edc",
+    "06_outputs/cybos-cases/02-marketing-content/B-103-solo-pr-pipeline-claude-finds-editors-drafts-multilingual-ar.md": "cc150530e2402c7c2fec9d009dfa04a09b29480aade36cd8c4121e6dcc59baef",
+    "06_outputs/cybos-cases/02-marketing-content/B-104-competitive-landing-analysis-skill-100-competitors-hypothesi.md": "c378061b45ac6f970ea9147f44bf4e3a398300a9ca43069d9d35b489fbbd532c",
+    "06_outputs/cybos-cases/02-marketing-content/B-105-local-sqlite-warehouse-hack-bypass-google-ads-gsc-api-gates.md": "8446fda6902b623bfc9fe2f3c70081e65b4ed20861cae140769d2f975c5ac0f2",
+    "06_outputs/cybos-cases/02-marketing-content/B-106-solo-founder-marketing-stack-on-autopilot-claude-code-mcps-a.md": "a54d36556a55c512356739077b5331b35e15d503e50b495bc53d48255e2918ec",
+    "06_outputs/cybos-cases/02-marketing-content/B-166-landing-page-copy-generator-7-block-structure-5-objection-fa.md": "a00c9a9ebd0f7732837f5a8a7a3860ee3bdcd3d61b1c3d632d4004c7a5c1d3ff",
+    "06_outputs/cybos-cases/02-marketing-content/B-167-customer-discovery-interview-generator.md": "3496efc1234937b059d93a83756441c432109117c3f77ec601c511a1eeb916fa",
+    "06_outputs/cybos-cases/02-marketing-content/B-168-paid-ad-ab-test-designer.md": "1e8f0b7b182cab7f0fd2d5c18d2408f61b32c9170bd42619918b8ad86cecfad0",
+    "06_outputs/cybos-cases/02-marketing-content/B-169-tiktok-ads-28-point-deep-audit.md": "720325c51134480afa7f14460670fb61c13916ebbdd0a18ae2076dff84fb2165",
+    "06_outputs/cybos-cases/02-marketing-content/B-170-app-store-play-store-competitor-side-by-side.md": "8cbd48bb7e43ea579435fedcf6495c8e140e6b53e252579ad08c4173b60f1670",
+    "06_outputs/cybos-cases/02-marketing-content/B-171-long-form-article-writing-partner.md": "42dd8150c4415f5c4ea5f47e3fb7e2fbcf0c5a6145e2181beb610ac281b56395",
+    "06_outputs/cybos-cases/02-marketing-content/B-172-channel-native-content-distribution.md": "81ca42e9a55e0e201c568f796e7eafced932f5e6c2ffe2d4468d5c627fde1ed8",
+    "06_outputs/cybos-cases/02-marketing-content/B-173-tracking-plan-generator-ga4-gtm.md": "9dfb5b0b9382eb64e34f199f4659cd7091a4dca101d7f4e8ca907e86bfa26089",
+    "06_outputs/cybos-cases/02-marketing-content/B-174-competitor-profiling-with-firecrawl-dataforseo.md": "47d0a67b4b05998650f0b3347138ac0db2f0ffc3f08e7fccac76b8d9573ccee2",
+    "06_outputs/cybos-cases/02-marketing-content/B-175-email-marketing-program-design-with-deliverability-rollout.md": "e6a0785e937884e53da1c5ba04a0d69a8b3e2516690340889c9cae4fbc50e904",
+    "06_outputs/cybos-cases/02-marketing-content/B-176-competitive-intent-seo-page-generator.md": "149c2e53d23411bf5d17cc9f57de2b70f0ed36b1e025e30d991f481d6bc4d651",
+    "06_outputs/cybos-cases/02-marketing-content/B-177-page-type-mismatch-diagnosis-via-reverse-engineered-serps.md": "808839f04bb581b122d41de7ff9ad727a647e3fd1f982a6379a6e7bff3b1c630",
+    "06_outputs/cybos-cases/02-marketing-content/B-178-mobile-app-paid-user-acquisition-planner.md": "d2ffdd0ee585e2974b5beb6fd2fb67b710d0d2a1e47835519354bdcbe031ebb1",
+    "06_outputs/cybos-cases/02-marketing-content/B-179-solo-founder-plg-playbook-fix-activation-before-acquisition.md": "dbe83dc6a1998bd952f33d8331577897110934a7098a4734625c0cd5db2d75fd",
+    "06_outputs/cybos-cases/02-marketing-content/B-180-git-for-seo-prepost-deploy-drift-detection.md": "d13ee691c071a2bcb8c644c10e89fbc6bf73b526321c6954e84b271c355c0816",
+    "06_outputs/cybos-cases/02-marketing-content/B-181-marketing-campaign-manager-with-a-140-tactic-menu.md": "d83fa3aa37381160f530d9ea976dac2626fd6776d174e77cef9b1614af2881f6",
+    "06_outputs/cybos-cases/02-marketing-content/B-182-programmatic-seo-page-factory-with-thin-content-guardrails.md": "c59e2b928dd18d11b07319cb7653ada323aa927ee0c304e3dec80e31429e677d",
+    "06_outputs/cybos-cases/02-marketing-content/C-071-suno-v5-chatgpt-co-producer-loop-with-personal-style-diction.md": "fdca3c340983e726b21ba3ee4eb6b1b2d60470a7c1dd6407b0b0a7938d5722d8",
+    "06_outputs/cybos-cases/02-marketing-content/C-072-community-chat-dailyweekly-musical-genre-podcast-summary-bot.md": "70b57824c7507cdf785ea3aef9fda0af2d8999a4a7c9303cc439c952a0b75cd2",
+    "06_outputs/cybos-cases/02-marketing-content/C-073-hubspot-sales-narrative-bot-daily-timeline-of-events-as-moti.md": "c6b2595e8f6a85cf9e1bb6a009a2eb261ad474818ab11549495225b8bc64b7db",
+    "06_outputs/cybos-cases/02-marketing-content/C-074-pre-validate-paid-meta-creatives-via-tiktok-organic-with-cor.md": "3f8446853d89d7d0d9e547d6b8a495c060280d23ad33fb7ed1112b2f3bb6c427",
+    "06_outputs/cybos-cases/02-marketing-content/C-075-brandbook-bound-landing-template-on-a-vibe-coding-platform-m.md": "4a3ae171e3b95695bddb41db2767e194b445792c19b9118b8c2244e7bb9c1e7d",
+    "06_outputs/cybos-cases/02-marketing-content/C-076-claude-in-powerpoint-to-reformat-rough-decks-against-a-corpo.md": "0b40537b9cc361bcb1edfc62e355f3ebaa940803e387dab4e259c49cb1986b8c",
+    "06_outputs/cybos-cases/02-marketing-content/C-077-ai-creative-vs-human-decision-rule-by-product-category.md": "424ff1742ecbe0b50e664db1fa2071e7998f5a7414b66fe1dc981c96308f10e5",
+    "06_outputs/cybos-cases/02-marketing-content/C-126-paid-ads-unit-economics-calculator.md": "e22c896994812c2af50842c0f24b7e1ce8402210187311ba81f8a6836c47fc27",
+    "06_outputs/cybos-cases/02-marketing-content/C-127-gsc-monthly-audit-with-ai-overviews-workaround.md": "1ea23a28fc6fc653bee2567b2e3e3714f58cc0cf832e42e7fcca660abeaf47eb",
+    "06_outputs/cybos-cases/02-marketing-content/C-128-affiliate-program-design.md": "8452013368df860ba9e41bc8f2805debd6c1d74905879780946d8b4eb66d4636",
+    "06_outputs/cybos-cases/02-marketing-content/C-129-e-commerce-product-page-seo-marketplace-intel.md": "53e3f04fa77d9442e142ebcc267325d50105ec1d5ed215aa4de0f90b4748313d",
+    "06_outputs/cybos-cases/02-marketing-content/C-130-local-seo-maps-intelligence.md": "c6df575cb9dd3f1e45eca8d505160996043fab6db8869140bf78105f4f09b150",
+    "06_outputs/cybos-cases/02-marketing-content/C-131-dark-traffic-attribution-hygiene.md": "6e32922c042bde35fdb797b5be1db250014bc4acf1856e7c6c210dbbafd111f4",
+    "06_outputs/cybos-cases/02-marketing-content/C-132-newsletter-operating-template.md": "22b7bf7b9032a433db383a8480bbf5f396bb4117b2c09c21aa1e2586463d9efb",
+    "06_outputs/cybos-cases/02-marketing-content/C-133-lifecycle-email-multi-channel-campaign-designer.md": "a65ce12e4ddc03d533c54cc14e90c71062e4da7c54c21a1fd856d0bbd06f6082",
+    "06_outputs/cybos-cases/02-marketing-content/C-134-marketing-psychology-mental-models-reference.md": "d814d6996298a07db91dc42ae9d658e5ea6755a16e4dcd6620cb7fefe429a9f7",
+    "06_outputs/cybos-cases/02-marketing-content/C-135-community-led-growth-playbook.md": "c6e6301aba56ebfad4e4aab6839c2d5fe58f8337bd5d191be182099f55dd0537",
+    "06_outputs/cybos-cases/03-strategy-leadership/A-035-positioning-statement-plugin.md": "3758bb71af4f35144fee5744b49294451e689f8798468d3069675a8b8211aa67",
+    "06_outputs/cybos-cases/03-strategy-leadership/A-036-diagnostic-to-dashboard-methodology.md": "881bbe5c0f30484d11f0ea4cd984002f8b15c5791e4fd7e052ecc2c6ac4825ab",
+    "06_outputs/cybos-cases/03-strategy-leadership/A-037-eliminate-role-unlock-chain-the-prerequisite-map-for-replaci.md": "4f7b4537f73e4d4630db3913b1949e6dd22134d9b6cb8ce417f22c76ab7561cb",
+    "06_outputs/cybos-cases/03-strategy-leadership/A-038-four-phase-ai-maturity-model.md": "6db1973a11da58c604463d41a6a613271ad65d64acc1a0624ae53213ade74c78",
+    "06_outputs/cybos-cases/03-strategy-leadership/A-039-ai-transformation-office-sponsor-core-champions-extended-ext.md": "2cc96b06235d74fc5e9c91c1dcf0fa87087b92091917e26f2ddd58b4c60fbaad",
+    "06_outputs/cybos-cases/03-strategy-leadership/A-040-four-week-three-stream-launch-plan-people-pilots-education.md": "8a12aae8887c910b844f9c1f10f8b13d4367cdc76336a6e23d5b7c36682aed70",
+    "06_outputs/cybos-cases/03-strategy-leadership/A-041-selling-agents-as-services-with-success-based-pricing.md": "da7815f6476c6513fbcd11b87fc2f584980094a808f641721214493cfecd5dfa",
+    "06_outputs/cybos-cases/03-strategy-leadership/A-071-founder-as-portfolio-manager-app-factory-with-16-specialized.md": "bf6e3e3305a50c0f5d42f78f20afe7c596bcc5c42a06fbecdafc36f27646b9ab",
+    "06_outputs/cybos-cases/03-strategy-leadership/A-090-pricing-change-financial-impact-advisor.md": "63dbf0f36bd1cfea0254455a1799ff480e23bad5412324f11b87163c1cb6eef5",
+    "06_outputs/cybos-cases/03-strategy-leadership/A-091-investor-grade-financial-model-review-with-sub-agent-dispatc.md": "fd33ba83c31d6ab0787167a55255cbb4f06a1a5ec64aab6ac9dd8f67928a6d34",
+    "06_outputs/cybos-cases/03-strategy-leadership/A-092-founder-chief-of-staff-orchestrator-across-10-c-suite-role-a.md": "596a7586fe813890fbb0dcb5f72e8d9f82fdee5ff0f890ac1141722eefdb9ad7",
+    "06_outputs/cybos-cases/03-strategy-leadership/A-093-multi-framework-compliance-and-audit-readiness-engine.md": "4afabc626347ebd2e98cf795c8defcd8d919fa440c6213f9bb78a7b408ebbe47",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-057-5-stage-ai-program-effect-measurement-methodology.md": "8d31d64a684bf5eec878507d559c41c765fb812c6447a82ccf242391ad122e24",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-058-five-proven-principles-for-ai-adoption.md": "5a9d83ab277ea9198ceabddba04457b19ba187091804da2b9ba9644b095d984b",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-059-no-backlog-no-deadlines-focus-dates.md": "39487c291e0060f31f576d9807e76a4e7360f17062cf4fcbd6c54be88ad895b3",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-060-ai-budget-as-of-payroll-4-rule.md": "e631e871301b59ac036dc81c026f62f1600e146e05f06b76a8165e2b5a4e079e",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-061-ai-governance-framework.md": "80b526640ba2166c9d2610c5a6cac0b300e48a470ba7a7b9fca473dd3e0cb3e0",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-078-rhizome-17-hub-architecture-for-a-mid-size-company.md": "9725f20506e524dd7cb3a5f5b98abd0f214e48be4f2d702ab210f172d66827a0",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-087-absolute-mandate-as-precondition-for-transformation.md": "67aeefb368bf8c4f0a6c4276919c9783bf98faadf010aa1e9351585bb11dbadb",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-096-claude-deep-research-replaces-20-perplexity-founder-level-ta.md": "e8107ec53a8a1bebfba53972ad077f34b4ff82e2945a8a8f368be0065ec7c753",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-146-function-by-function-ai-rollout-sequence-engineers-first-non.md": "2dd597cf344056423fa114506e631d9d47c123ffc6330b6a53f09de6231dc24d",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-147-founders-plain-language-security-faq-template-for-ai-native.md": "1e337c4f95bcab7d42d3a81b88e32966d15ed39aa49aafda2db0539aa82c802d",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-148-ai-driven-product-idea-funnel-1000-50-10-1-via-a-3-category.md": "ea20748f74625a222645007fad3ace99121c64e52ac97550a5d235501c1bcbf2",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-149-internal-vibecoders-club-grassroots-ai-automation-channel-fo.md": "4113eca62d25123cf6850f91887104b04a899268d2ec010000a6e08a0a780cdd",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-150-weekly-thematic-automation-sprints-13-person-saas-to-3-freel.md": "9b770e20a9859a7ff35fdcf72a2fe853986227f942010d3973a75fe7dc6bd0d8",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-202-feature-list-outcome-roadmap-rewrite-command.md": "e571a6882f8e23e47cb4625b6460b64480acd46bc8c5ca0d6537b4f333afa431",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-203-fpa-workflow-bottom-up-budget-rolling-forecast-favunf-varian.md": "22af31ba5df58815c560a6a69611e679c65652c5b8f16d86b0e5bbf927f0154e",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-204-prd-assumption-mapper-with-impact-confidence-prioritization.md": "370fa71e585fa17ed3fa870c24938548e23571bfa58356373096f6cad8b927ad",
+    "06_outputs/cybos-cases/03-strategy-leadership/B-205-compliance-regime-tech-stack-decision-framework.md": "1b164997c6e394dd7928c647806473bcf49b5132e86f971d16486ae2b4e9de98",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-032-ai-adoption-baseline-target-measurement-framework.md": "34b9c89487bde1a8dfc53f6a8a25ab2eb430dd3f509fe0fca401cf5a08f6a5ad",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-036-leadership-communication-reference-frameworks.md": "022c0167b4a4a5ec4533b7ab639c132e8df378024f34f9e7f55622e1ff26018b",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-037-vendor-estimate-sanity-check-the-4-inflation-pattern.md": "4c5f23aba3b4191d16496f7b3674727092d20ef29b17910d705f48917c1b6246",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-038-ai-risk-management-framework.md": "448f49630c7f2867fe3e98c1a4a95d506c36a64aa6ca649a833454ea376a24bf",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-064-no-metrics-no-kpis-qualitative-roi-for-solo-mandate-founders.md": "f5f36ebcfe7a21d79ca93a0338ba34f03bd3a65baf6be59ea26459fae642d75d",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-066-dont-optimize-tokens-max-effort-everywhere-as-policy.md": "1f9f6ef56b9e8f5d50008fef3e3c8164d82543ad070a21b60d1ebef3f6d681ae",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-068-7-process-self-rating-map-founders-lightweight-ai-maturity-d.md": "32e844e634787b3698c2b34cf9c2ea52b985cb4f542faefba611affc788c3c5c",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-106-vibecoded-household-finance-tracker-with-spouse-collaboratio.md": "f2fb8dffc65909b41e41add93add2aedd81d8dfbad6865b4de357e1dead14140",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-107-stoic-mode-ai-coach-using-an-llm-as-a-slowdown-partner-not-a.md": "ff41aafb0a0db3190baa5320e03e4f71930b6114c3a54ce2bd0734545453a6ee",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-108-solo-founder-cap-table-pl-in-sheets-force-formulas-never-sta.md": "af15e90e8ece5662c9f35feeca89e101cb7ceeccaa8ef585f16e8dfeb1036c94",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-109-one-persistent-agent-thread-beats-many-short-sessions.md": "2b883bf2ad39dbe4d4015cf5893b791f1c7e8d3871ab5d9afdc4ffdb58088f51",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-110-reset-output-expectations-when-adopting-ai-coding-half-of-de.md": "f0da9200c605653c4843665fd722e158a4df5b1325311dc266f7f26208e5a68d",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-111-vibecoding-discipline-rules-to-prevent-burnout-for-solo-foun.md": "52bd462056f89fd1114f6d7f912daa96a003fa9f53f169ea89dc3bae69a7258f",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-112-personal-ai-coach-for-habit-building-spaced-repetition-facts.md": "5001ed7e11a397c6d5e29b075e0fa52b25d729ef8129bf30c664142d1894d191",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-113-honest-ppc-field-report-multi-agent-feels-like-a-real-it-tea.md": "90a5ef2d0ed5865ccfaba5fb80f252d5f92178527dff26f5eadaccaabd08060a",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-114-type-1-vs-type-2-work-when-ai-is-a-game-changer-vs-only-a-br.md": "8065362860916f6e9c51669f016705ee77fde866e046ed0e3b878b294c29d464",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-115-deterministic-vs-non-deterministic-design-principle-for-ai-n.md": "432ae3e1b049f418ece7a6e1a7a5f2b44f5e362c9a3a9de75a981e56998ad04a",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-116-half-your-ai-budget-goes-to-retros-rules-skills-not-delivera.md": "4d035e5f2bfe50f65618f1e22bb208ee6dc14f527c5ee623e3bbc48e3b1c8191",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-117-dual-stack-anthropic-openai-as-provider-risk-hedge.md": "c94e4a688f73c736495cbaa1952e0f340be83f63f8bf0de8d06578fead259d8c",
+    "06_outputs/cybos-cases/03-strategy-leadership/C-118-unified-task-dashboard-for-humans-ai-agents-single-brain-for.md": "1508b1926fac12acdb77d0634efc51442f630b8b7553e5cd3e281a977b611dd3",
+    "06_outputs/cybos-cases/04-infrastructure/A-047-personal-ai-ergonomics-wispr-flow-raycast-micro-shortcuts-vo.md": "e87b17080008fef41ce8f097711528a655ee2ea8d8bd69420e91f27f0ce5cda0",
+    "06_outputs/cybos-cases/04-infrastructure/A-074-defense-in-depth-for-personal-ai-agents-5-layers-prompt-os-e.md": "35ac0db21d1a2be3160a995c6f131a6b0e65c11c64b050478e5847bfc1c39818",
+    "06_outputs/cybos-cases/04-infrastructure/A-075-multi-tenant-personal-agent-fleet-5-minute-vm-provisioning-g.md": "9565a1eccb35c03681261abbfae42eb0972387916f4f46396cc38d7a750c7c3d",
+    "06_outputs/cybos-cases/04-infrastructure/B-065-claude-max-subprocess-as-zero-cost-llm-runtime.md": "60105dacd31da26ea20c154b86b011c969d1c6b025e196098b465b8df26c91d2",
+    "06_outputs/cybos-cases/04-infrastructure/B-066-deterministic-gates-around-llm-outputs.md": "304bcd17e110153ac86aa0009ec216d42a88016179f230eea4fb7e69027e0cc4",
+    "06_outputs/cybos-cases/04-infrastructure/B-067-self-installable-claude-code-skill-via-http.md": "a71cc51ed3ba819ddefdbf3afeec0de6fbe313d5829163e1ad0d74bae711bcd4",
+    "06_outputs/cybos-cases/04-infrastructure/B-068-telegram-as-universal-interaction-surface.md": "b018bf989e0dba5517dcdb86d502acd39ebe0a5dc119d33a7b138985cf813c9a",
+    "06_outputs/cybos-cases/04-infrastructure/B-069-two-layer-pipeline-pattern-deterministic-filter-ai-curation.md": "50a22256841491f4a3091bce949e194a247927b7c356cbdf2618b39daa79852b",
+    "06_outputs/cybos-cases/04-infrastructure/B-070-self-improving-skill-hygiene-checks.md": "054b26386125c6f9de659da70d59e15f86d68d7282aad3ebdc00c4d886fabce4",
+    "06_outputs/cybos-cases/04-infrastructure/B-071-repo-as-skill-packaging-pattern.md": "a1e57783a2d7e3b3c610b9effd15238000140b928cdbe1c8a6b2daab5b928ce0",
+    "06_outputs/cybos-cases/04-infrastructure/B-072-tier-based-founder-grading-using-named-companies-registry.md": "d2a80da075392e937ce22c9ae1fe7b734f1ea5bd22d5edac53a7c9f915d02db9",
+    "06_outputs/cybos-cases/04-infrastructure/B-073-tiered-model-strategy-opus-haiku-gemini-long-context.md": "af9eb22ee9cd183d51cc78b71fa4232ab1cda13e9f47db107a2cd433a8e42983",
+    "06_outputs/cybos-cases/04-infrastructure/B-074-agent-passport-blast-radius-guardrail.md": "a02d3915a0d33da1222a205de48598d034282347d7f06e9b3c80773096a29c40",
+    "06_outputs/cybos-cases/04-infrastructure/B-075-defensive-sheet-write-playbook.md": "07687f4f49e905949927d43311973749549a0b662e74a87a2884907f6b5264b4",
+    "06_outputs/cybos-cases/04-infrastructure/B-076-state-machine-capability-check-7-state.md": "0a2fb91dba2cb363da117d59179cb34c35963a32fcc914ee722b08974a2704ca",
+    "06_outputs/cybos-cases/04-infrastructure/B-080-native-mac-meeting-recorder-with-raw-audio-retention-granola.md": "f96cdb03f688d74c971622c1fe25308a81690a8ab307954b0442c60b9df3780b",
+    "06_outputs/cybos-cases/04-infrastructure/B-089-legacy-erp-as-cash-register-wrap-never-modify-the-erp.md": "233aaec9eed1d0204aefa23723cb48bc30c585b24630700ead539b57cd42e336",
+    "06_outputs/cybos-cases/04-infrastructure/B-097-tmux-with-persisted-named-tabs-for-50-simultaneous-claude-se.md": "b7398391a61b4cac86b72d45737e00c046a675c40147e556bede75b81108bccb",
+    "06_outputs/cybos-cases/04-infrastructure/B-153-use-api-keys-not-consumer-setup-token-for-any-agent-automati.md": "004472926cc1fb217dcab5ce758f89b3a5ee36a87fe81a7d6a35daaa7eea1c47",
+    "06_outputs/cybos-cases/04-infrastructure/B-154-vercel-neon-postgres-github-as-the-devops-free-serverless-de.md": "b311d9ae0a84dc59a0d512dab44dc67e6b9d3e61f43cf241901678a8cdaf86b9",
+    "06_outputs/cybos-cases/04-infrastructure/B-155-run-an-agent-as-a-real-telegram-user-account-gramjs-mtproto.md": "6af204451f2eb9b1ffb432773871a236da05ca165743a3c41f50022bd0d1ed10",
+    "06_outputs/cybos-cases/04-infrastructure/B-156-local-llm-stack-when-to-invest-what-hardware-what-fits.md": "aaccedbe7817ad50dbdf9b433f54c407a8f1808d709c293011cf0f03df091a91",
+    "06_outputs/cybos-cases/04-infrastructure/B-157-self-healing-agent-fleet-guardian-remediation-skills-sudo-di.md": "a4651d1f847d5c38c2fd68290f2ea052f4eb709e663eac3f4470a2995d36bba6",
+    "06_outputs/cybos-cases/04-infrastructure/C-044-embedded-rag-style-chatbot-over-a-consulting-deliverable.md": "62b1f76b8d5b4c0c05cd9ea5472e439754d791d5b15f8391f5fb1c1d4b502f21",
+    "06_outputs/cybos-cases/04-infrastructure/C-045-cowork-tab-in-claude-desktop-app-non-cli-onramp.md": "e67d41d795292b4678db93cabb41aa2eca8b35d6e2515ade4a4facd446f9b006",
+    "06_outputs/cybos-cases/04-infrastructure/C-047-prompt-files-as-the-only-config-that-matters.md": "8a46c1a4610353e585441b2788f52145bbe1c8f44f6ef9f51ec8e2d054c4c6e3",
+    "06_outputs/cybos-cases/04-infrastructure/C-048-auto-eval-trc-binary-pass-discipline.md": "d561036fabe581179b2f8cb76664b51b7980399751946c5696d00274d07e3c72",
+    "06_outputs/cybos-cases/04-infrastructure/C-051-one-time-gcp-setup-script-for-service-account-writes.md": "44d18f5ea2dd2e06443c95d8f4f71854373fd550d71d9ac90fdde99d7d1a9d91",
+    "06_outputs/cybos-cases/04-infrastructure/C-052-per-user-state-via-user-email-column.md": "685f6f4d52c73c2c9ef09c301651fc5ba19f6593e745bfd665d9066e48767c8d",
+    "06_outputs/cybos-cases/04-infrastructure/C-054-privacy-local-only-data-architecture.md": "6f54e49ee17ee209aa177a64330dd7c8da1d75797bbd4cf1d5fb50b07dc4de17",
+    "06_outputs/cybos-cases/04-infrastructure/C-055-rules-as-recovery-protocols-mcp-self-healing.md": "f33d95253baa4a8f194aff16c04c2e3fce6d2d82d8ac208fe58872aa85984abd",
+    "06_outputs/cybos-cases/04-infrastructure/C-056-skills-as-composable-hubs-over-rules-integrations.md": "8600fc19f83f39350c2b1717855b7faff2c8cf5b6e0cd9667f8cc6bfb49dfac8",
+    "06_outputs/cybos-cases/04-infrastructure/C-057-sqlite-as-shared-bus-single-db-for-all-state.md": "dcd0de56362bdb0895fcd1d097fc4af22aa3678d2fbafbe251b470d2708d830b",
+    "06_outputs/cybos-cases/04-infrastructure/C-058-pii-aware-client-data-anonymisation.md": "4180109b4fc04e9bea4e35a681f6a45fd3a12c7d935fd05f30727c77a0712148",
+    "06_outputs/cybos-cases/04-infrastructure/C-060-knowledge-graph-quality-as-a-service-stack-judge-llm-gepa-de.md": "b3fc02d63b8eaf202f26153faaaebf43d630574f3aed7f99415552f256b4c449",
+    "06_outputs/cybos-cases/04-infrastructure/C-119-visible-chrome-on-a-headless-vps-xvfb-fluxbox-x11vnc-novnc.md": "40422426bacc5bebc2a38dda0364e3075dca2b9f4f912c00c92391578fa0fbb0",
+    "06_outputs/cybos-cases/04-infrastructure/C-120-cheap-dedicated-phone-numbers-for-army-of-telegram-accounts.md": "d2417d0de0cb8c63a39f9546c26ec24347db752a95925da34f2cd45311100c35",
+    "06_outputs/cybos-cases/04-infrastructure/C-121-railway-as-managed-catalog-for-vibecoded-side-projects.md": "d4e0359aa6b0d948b0b7a62602945ffa6eb21b9480780ad69551df0584d8bf21",
+    "06_outputs/cybos-cases/04-infrastructure/C-122-claude-code-p-cost-change-june-15-audit-switch-to-cheaper-mo.md": "4553d91cbaaf68e23e07371bcb251d0c548aa3c0b345a3024eddbfe88086daa5",
+    "06_outputs/cybos-cases/04-infrastructure/C-123-residential-ip-for-agent-scrapers-home-raspberry-pi-wireguar.md": "201c05c8ca6a9ac1553f70ef013150c17fd12fdf26f1ca20a608fdb533196fb5",
+    "06_outputs/cybos-cases/04-infrastructure/C-124-physical-phone-in-the-loop-adb-screenshots-xdotool-for-app-a.md": "15e6be2aa96c5057cf383b39b5f75472f5cdc9fe2a0b732777dcc3a5b923887c",
+    "06_outputs/cybos-cases/04-infrastructure/C-125-per-prompt-telemetry-mcp-what-staff-actually-do-on-a-generic.md": "3b681a0761a06575f8ed8ce3f77b5ffd471f64ce61380ecad944501eb9b4ec89",
+    "06_outputs/cybos-cases/05-sales-outbound/A-001-ai-sales-meeting-auto-processor-transcript-dual-prompts-noti.md": "9d1266a44270f9fdc7c8cae31f4eff7e2a27a08db0b4808d85dfc11779b4f04c",
+    "06_outputs/cybos-cases/05-sales-outbound/A-002-end-to-end-network-outreach-builder-telegram-gmail-curated-w.md": "bf9c433e3f0d611accff31124c832ece87b92b02121c19ed8770ce74fe9859b3",
+    "06_outputs/cybos-cases/05-sales-outbound/A-003-real-time-sales-copilot-during-calls-in-call-prompts-auto-re.md": "569a2e664f565052fdc7d86d39f9b3a3c1b1f7d2143ac0afc0f2378e2fd2f732",
+    "06_outputs/cybos-cases/05-sales-outbound/A-004-auto-orchestration-on-call-end-six-systems-updated-zero-clic.md": "200ff5362f1542b367207abf527f867de0ba86e0e5330cc8dfc0ebc19f9afc2e",
+    "06_outputs/cybos-cases/05-sales-outbound/A-005-pre-call-pre-meeting-briefing-from-your-vault.md": "e1489d691aee5bddb30947eae6f2b4cb1c16d54276121f7470609d27e28f0e1d",
+    "06_outputs/cybos-cases/05-sales-outbound/A-006-call-scoring-sales-qa-same-engine-two-consumers.md": "348162dd19f037be08acdf0044238241f2a9e2ccfa5df94fc33fe38f57e51bc4",
+    "06_outputs/cybos-cases/05-sales-outbound/A-007-hook-driven-cold-outreach-as-a-managed-program.md": "0094dd30f2e2ac39aebd574c7fc3180cdf0e6054006bbb3e7d91d5a0503a3822",
+    "06_outputs/cybos-cases/05-sales-outbound/A-008-risk-of-churn-case-worker-embedded-in-the-crm.md": "966fa9b659d14a22ccb65af2a58dcc91a44a2705a07ade63e39245bcf7e2f1a2",
+    "06_outputs/cybos-cases/05-sales-outbound/A-052-cold-outreach-with-per-recipient-ai-generated-brand-imagery.md": "bb279391771fde0c093cadb008025c31f6f29ce4365f2404bd8481b95fe293ae",
+    "06_outputs/cybos-cases/05-sales-outbound/A-053-self-improving-telegram-sales-bot-with-30-conversation-eval.md": "21661a446aa7d6db4b42babfcc4b7d7a80b3d18c752cb96bdc192327917765ee",
+    "06_outputs/cybos-cases/05-sales-outbound/A-054-b2b-smb-saas-sales-org-as-agents-playbook.md": "c3edbd0a4213db31326beab5dbaff787619afe468870f025c23b419e92781c85",
+    "06_outputs/cybos-cases/05-sales-outbound/A-076-recursive-10-expert-panel-cold-email-optimizer.md": "efd4641bd9b861a3d00791a4181917a6d7d95ed180280cf743bd6d1b9202b269",
+    "06_outputs/cybos-cases/05-sales-outbound/A-077-anonymous-visitor-outbound-pipeline-with-suppression-revival.md": "79611c2511307ea6141c299222e72870cd1108b047dde3095c26e122e202a36d",
+    "06_outputs/cybos-cases/05-sales-outbound/B-002-in-app-in-product-ai-assistant-start-narrow-grow-autonomy.md": "73ed992421ddc922683029f7df1cd1fb962b89012cd48bc38e9f022af3e162e2",
+    "06_outputs/cybos-cases/05-sales-outbound/B-003-telegram-bot-as-universal-deal-intake-five-input-types-one-c.md": "a094b53ccf81e51876a992756db99dc0be2f111899dbf82a096bb06e44c66b3d",
+    "06_outputs/cybos-cases/05-sales-outbound/B-005-agentmail-outbox-with-webhook-driven-crm-state-flips.md": "cf01b0c61da44e61eea98756de7eda900ce582433b598544fc1daa31a76be8f9",
+    "06_outputs/cybos-cases/05-sales-outbound/B-006-reply-back-generator-grounded-in-conversation-history-voice.md": "54c764d0e100a4decb8b8cb36455009b9960fab5a9d466b5f3d8b6643192a1d5",
+    "06_outputs/cybos-cases/05-sales-outbound/B-007-performance-marketing-copilot-commercial-proposal-kp-generat.md": "50b6ea40a8037bd39e763ad71553a780a56380f6068fb2c2db8cce579c7895cc",
+    "06_outputs/cybos-cases/05-sales-outbound/B-008-headless-deck-unwrapping-docsend-pitch-notion-pdf-summary.md": "ec7d1c04dedba9d65a209bc63d3d66aa8a00ea7a0b9381002ad47874f822ce10",
+    "06_outputs/cybos-cases/05-sales-outbound/B-009-two-step-task-creation-that-defeats-asanas-project-default-t.md": "39a9d3cfda79d40213dceddf1160dd6d595c1e542a486788449cc1e49971177c",
+    "06_outputs/cybos-cases/05-sales-outbound/B-079-personalized-interactive-web-client-proposal-replacing-pptx.md": "0ad75089175071c1a1cca88bbf47b1510fad6d76e9aac5551fe38ab27fb6ecbe",
+    "06_outputs/cybos-cases/05-sales-outbound/B-082-daily-12-agent-news-scan-per-product-client-hook-summaries.md": "d43f121a66d55132277c5d2ec4280a9e9bd8da30802cc218299b27fb43cf8f8c",
+    "06_outputs/cybos-cases/05-sales-outbound/B-092-franchise-sales-qualifier-financial-model-bot-80-pre-qualifi.md": "33b4def478a4b0671eb635fd68c1d60288200e468dfbe7f063280e3f4eda99d8",
+    "06_outputs/cybos-cases/05-sales-outbound/B-098-per-client-ai-agent-in-a-3-way-telegram-chat-consultant-coac.md": "52fab0fe0e94cab7f4a6a84fd2a7fd0820d4209f32cb21fb6882964435b1fb82",
+    "06_outputs/cybos-cases/05-sales-outbound/B-099-linkedin-enrichment-tooling-tradeoff-catalog-for-outbound-te.md": "fcb74603d67e2580ca5140638af92d11552370f6b53f009e4d489e15bf9e6e29",
+    "06_outputs/cybos-cases/05-sales-outbound/B-158-prospect-stack-detection-per-competitor-battle-cards-from-on.md": "8a0ff9771ff4662f91126fbd98542b2a08407ff3f77bf5307d5e3efd8b47ffae",
+    "06_outputs/cybos-cases/05-sales-outbound/B-159-apollo-two-phase-prospecting-free-search-human-approval-then.md": "c57e54dbc21eb5bb582815a784bac419a5978ca2923cfa83ef67408a403097f8",
+    "06_outputs/cybos-cases/05-sales-outbound/B-160-value-based-pricing-playbook-pre-call-briefing-tiered-packag.md": "dbde11889ea9915c941e4285fabe60605cd3b873b0fa874915bcca4533e91d18",
+    "06_outputs/cybos-cases/05-sales-outbound/B-161-stage-gated-sales-playbook-45-min-discovery-timing-9-kill-sk.md": "5c7abe69198350f0eb50fa21e1c00ee52b7a7b77d90f8ff1c186c6ad28d3ef30",
+    "06_outputs/cybos-cases/05-sales-outbound/B-162-uk-outbound-funnel-math-pecrduaa-lawful-basis-gate-paid-tria.md": "b5dec1610842c2131356a705271487c455d986dcb09c94974767e125946aef88",
+    "06_outputs/cybos-cases/05-sales-outbound/B-163-behavior-first-b2b-buyer-persona-champion-risk-multi-threadi.md": "c9d2d51fb630baa9db28ddfbe1e67b462f599cdc06c3d02100c9713655992d4c",
+    "06_outputs/cybos-cases/05-sales-outbound/B-164-meddpicc-challenger-spin-persona-refuses-to-advise-without-c.md": "2a4ece9d42b1e192690e4faa20462f58b27876c7db971ed9be7573686668ac6a",
+    "06_outputs/cybos-cases/05-sales-outbound/B-165-clay-gtm-outbound-engineering-4-step-data-workflow-4-signal.md": "39b3dc3c3583fe211db8724e876028685b2cf734fb8ace9a1c39b614b47e5f9a",
+    "06_outputs/cybos-cases/05-sales-outbound/C-003-cookie-auth-twitter-scraping-free-ban-aware.md": "d75b1b82e60047a86b97ea508360db590f231696e9894181ab2d705236b69cfc",
+    "06_outputs/cybos-cases/05-sales-outbound/C-004-twitter-linkedin-matching-via-llm-disambiguation-over-harmon.md": "273e05140db8f0c4fb3a637ced3d3c4321331a73081429a47fe0767752c364bb",
+    "06_outputs/cybos-cases/05-sales-outbound/C-005-harmonic-saved-search-rule-filter-sonnet-screener-opus-l3-pi.md": "ea599a705fa8f928adf03cc07e3c190ed00978380c2314a3882fa8051ddc9500",
+    "06_outputs/cybos-cases/05-sales-outbound/C-069-sales-strategist-agent-daily-per-client-analysis-vs-similar.md": "d28a14fdf1e9ea729a5d9efd9593a25231b29ec205b361b50741870a0ea7f331",
+    "06_outputs/cybos-cases/05-sales-outbound/C-070-telegram-personal-account-warm-up-rules-for-proactive-outrea.md": "397bdd2581b6dffc85a23813a3e2fa7fd8c217529ae63c9d5d7ee9975eaa3a15",
+    "06_outputs/cybos-cases/06-operations/A-019-daily-focus-skill-intentional-manual-morning-ritual.md": "d620dc55ae39d69671a414672df59296985927d7d347fc863f693063c04bf7cb",
+    "06_outputs/cybos-cases/06-operations/A-020-200-line-end-to-end-client-onboarding-workflow-skill.md": "fb54536b96b30d5b317ce085f7d10c5acd3f1f30d2125c68ece969270bb2e211",
+    "06_outputs/cybos-cases/06-operations/A-021-team-meeting-transcript-auto-update-project-status-cards.md": "a1af5f63a0be9098759663370be9bd59c8e0bb665de24cdebffd7ecca5d6b881",
+    "06_outputs/cybos-cases/06-operations/A-022-internal-scheduled-cron-agents-when-users-come-in-everything.md": "8dd15f645c9fbc71e6bc64630e50663228cfd312bd109c565a77210af24c664e",
+    "06_outputs/cybos-cases/06-operations/A-023-voice-transcription-categorisation-foundation.md": "ab8bf52fad146623ad6ef5801bb17c2f0591b231cf17e1754a089aec10c4356b",
+    "06_outputs/cybos-cases/06-operations/A-049-microservices-replace-the-task-tracker-as-the-companys-opera.md": "bc68b26e64744c5bf4bb1a815abec92a1eeaa892e28bb02effb15f58a747bbb4",
+    "06_outputs/cybos-cases/06-operations/A-086-multi-jurisdiction-contract-and-proposal-drafting-skill.md": "36c7453d7ef4329b3d25bb3a0b628f4210f93e9aa54f3db91d9dc1890a938bdc",
+    "06_outputs/cybos-cases/06-operations/A-087-monthly-compliance-drift-audit-privacy-subprocessors-templat.md": "d0ace94a964e79b9f7a99c45e0955e527d2b2f3579ed342c7fd52afb16da9e5b",
+    "06_outputs/cybos-cases/06-operations/A-088-five-parallel-subagent-review-with-a-weighted-safety-score.md": "e67fff1b339ea0d5b762413d404e7226441e02d07cff1d331c3bf532bc34c6d7",
+    "06_outputs/cybos-cases/06-operations/B-033-meeting-transcription-follow-up-auto-tasks.md": "a3f699a2cbbb99843bf78eb66c39cd99be71baf7e3be0d40f31b5e810242fbce",
+    "06_outputs/cybos-cases/06-operations/B-034-retro-shaper-convert-retrospective-into-prioritized-linear-t.md": "a626640353672e913555b1cff7565f655fb138af4f03f4d01fdd83422144354d",
+    "06_outputs/cybos-cases/06-operations/B-035-reverse-engineered-business-process-diagram.md": "7b1845b28707eecda28f5dcaeb83f2d1b2dbaa62f449cfd66645db6c0fbb0d87",
+    "06_outputs/cybos-cases/06-operations/B-036-weekly-retro-skill-surface-candidates-for-packaging-into-ski.md": "01e9938fd4c04d431f97bc1ddd752fc866bfd9b4083254b074def4318ca8293a",
+    "06_outputs/cybos-cases/06-operations/B-037-weekly-sync-skill-partnership-sync-prep-edit-existing-card-d.md": "8522f660c687033b6b79406df27c5261ba4b6eb6a27fb27e045171f62735c605",
+    "06_outputs/cybos-cases/06-operations/B-038-quarterly-okr-ritual-auto-status-collection.md": "c01ef0a4a165a1c7e8a2c87beb267536d83219b89227d465f358ed4bf1df525a",
+    "06_outputs/cybos-cases/06-operations/B-110-install-anthropics-pdf-xlsx-pptx-skills-to-ship-client-ready.md": "094275d8d4e2fff93a27892be2e25a74de05c778dcfcfb39e25b48c6ad37e0ad",
+    "06_outputs/cybos-cases/06-operations/B-111-nda-review-redline-sign-skill-built-on-claudes-default-nda-s.md": "86da234524e44e54ae384f93edcd2abb1f58a24e44adc7208090cbd39957ba77",
+    "06_outputs/cybos-cases/06-operations/B-112-cyber-essentials-soc-2-questionnaire-automation-claude-code.md": "365df72495143e12594e185c30807e854ffa8cac6a8e9a2635f83fe987e645b2",
+    "06_outputs/cybos-cases/06-operations/B-113-subscription-roas-via-ccusage-to-size-your-plan.md": "4d24688d37d19e718cfe3162a6434b29088a4736e39b138969d6ad10c3e5b6d3",
+    "06_outputs/cybos-cases/06-operations/B-114-browser-agent-stack-assign-arc-comet-atlas-claude-for-chrome.md": "eb3b26963b949656b5f9a86b45494d52abc5fc137accb80801f37ad98a15313c",
+    "06_outputs/cybos-cases/06-operations/B-115-router-bot-pattern-one-orchestrator-agent-many-deterministic.md": "eea460e19809782ac31459c6a43f8061a194054720aeeee648ac4335e0004643",
+    "06_outputs/cybos-cases/06-operations/B-188-5-minute-contract-review-with-redyellowmissingnegotiate-stru.md": "beebefe3d4e51bf0addb73162f4526eaace6a2036ff3105ea19c935948f404b8",
+    "06_outputs/cybos-cases/06-operations/B-189-plain-english-contract-translator-5-flag-taxonomy-per-sectio.md": "38c9550298357409df55c3bd4e7af2f5508fa2c6d3057aa9215ae5d568e7bfb7",
+    "06_outputs/cybos-cases/06-operations/B-190-hipaa-compliance-reviewer-45-cfr-cited-findings-baanppbreach.md": "5f577cb0271b00212658be61ee4f8d2360b1ac1aabf721e1888e5992359f6bc6",
+    "06_outputs/cybos-cases/06-operations/B-191-gdpr-audit-document-drafting-skill-6-step-audit-with-article.md": "b32437330f6808645ce2b4ce92c789d0aa9867cfb50030f42518f1706e899cc8",
+    "06_outputs/cybos-cases/06-operations/B-192-ten-type-business-agreement-drafter-with-plain-english-annot.md": "1980fbacaf47bb6046407a4bc9e652a0b02dfa902c68c3d4df3206bc4fa22803",
+    "06_outputs/cybos-cases/06-operations/B-193-founder-legal-question-skill-short-cited-memos-with-hard-esc.md": "d094e7da7b21d11dbd7039a846555b36cca25cc00679fa2e7c20be18cde172de",
+    "06_outputs/cybos-cases/06-operations/B-194-auditable-excel-via-openpyxl-color-code-formulas-not-values.md": "714d15979a2cf9da58aeabe053ccc5ce3d63dee162c339e78427963d14513d58",
+    "06_outputs/cybos-cases/06-operations/B-195-finance-ops-mode-router-with-arithmetic-re-derivation-gates.md": "f346d7759acac1a971acb755c0caea32d13917690da83f9ae93b715a6762c601",
+    "06_outputs/cybos-cases/06-operations/B-196-six-mode-in-house-legal-router-with-failure-mode-guards.md": "b0c70ad51ce196942c3d87ee7f7ee6441042627e20249657ca951eefbf7711ec",
+    "06_outputs/cybos-cases/06-operations/C-010-ai-initiative-roi-dashboard.md": "e39e368707db063052f2703222eef5299a440a012ab40229700324e504d6bb4b",
+    "06_outputs/cybos-cases/06-operations/C-065-document-automation-across-erp-e-signature-portal.md": "964f0c007c32e19a61bb148145db9a8b4367e101285f730d357875654d64af3e",
+    "06_outputs/cybos-cases/06-operations/C-080-migrate-agent-prompts-from-non-english-to-english-for-30-40.md": "11d7d68f9dcc6b288a34922c9aaf35dfa1e2513b2d23992a34d2a86d42c64d76",
+    "06_outputs/cybos-cases/06-operations/C-081-keep-claude-code-sessions-warm-kv-cache-expiry-burns-tokens.md": "ae5928e6fc00868abf0d8d44c67ab9abecd2673a33bc61756ad6430403dd24d6",
+    "06_outputs/cybos-cases/06-operations/C-138-brazilian-law-commercial-document-drafting-skill-pt-br.md": "885b4f20e1afe01da7e072a6ebcd94ede5af3adad52bb9eaebf98a9aa324a8e6",
+    "06_outputs/cybos-cases/06-operations/C-139-markdown-analysis-branded-pdf-deliverable.md": "24efeb11996d8745cbfc3668aa88db28a72ea771c0c4d640a546449033d4bd8c",
+    "06_outputs/cybos-cases/07-knowledge-management/A-030-skills-knowledge-graph-visualization.md": "81482a809f5a7deb73a5a42a2b405805ce246eb5704a924fff769a45821a4a0e",
+    "06_outputs/cybos-cases/07-knowledge-management/A-031-shared-workspace-as-second-brain.md": "ec8001d0dbb1668ce653441503d4addbb81a8e671165dc4185d5c4ff316f86ed",
+    "06_outputs/cybos-cases/07-knowledge-management/A-032-token-metabolism-knowledge-graph-as-company-memory.md": "6877b58c7357785d3f172a455ba09eb3517ab036543fef16f66367393819c759",
+    "06_outputs/cybos-cases/07-knowledge-management/A-033-documentation-skill-minto-bfo-mece-dry-with-ground-truth-cit.md": "608f97d89d0b219d664e58353e13048be8b53fdc815d93a149d077510e6a4799",
+    "06_outputs/cybos-cases/07-knowledge-management/A-034-naming-convention-as-operating-axis.md": "4f3aa13b695be826658d3b5cc0712dc3e5d3a49997144b74d3625af17f864311",
+    "06_outputs/cybos-cases/07-knowledge-management/A-048-handoffs-as-the-unit-of-agent-memory-wave-numbered-per-proje.md": "e0c8074831391c2e8e555055b8b219605ba9134537e95dca43eacd16fdad5a31",
+    "06_outputs/cybos-cases/07-knowledge-management/A-068-multi-provider-parallel-deep-research-aggregator-with-cross.md": "daedd3d3d56366d7b40be8363432531308bdb131625b8b78fbfb8b180a8b9a7c",
+    "06_outputs/cybos-cases/07-knowledge-management/A-069-three-layer-agent-memory-raw-log-embeddings-goal-biased-retr.md": "c1cee8e2de7bcfcf63323360bcef67f80f47c75e3e4a3a0334787830b9a181eb",
+    "06_outputs/cybos-cases/07-knowledge-management/A-070-six-layer-second-brain-md-in-git-nightly-graph-lint-cross-se.md": "b0d3ad4da2cf3f035f8474266c6cc379c3b0147762cd12fdf4e48bc3072c0046",
+    "06_outputs/cybos-cases/07-knowledge-management/B-054-personal-os-personal-vault-architecture.md": "420c253917d931ee94ee1828155770abcde067a3b6990552cc919bb720ffa249",
+    "06_outputs/cybos-cases/07-knowledge-management/B-055-rules-prompts-portable-rule-files.md": "80e114eba287b42b27580ed2d00365f122e18a35fb418a8058d5248cf3fc5ebf",
+    "06_outputs/cybos-cases/07-knowledge-management/B-056-periodic-vault-hygiene-sweep-agent.md": "d887f3655417678a97ed7000aa376954f7eaccb5837ce7eee32648e8f12fa681",
+    "06_outputs/cybos-cases/07-knowledge-management/B-136-multi-tier-deep-research-skill-with-intensity-levels-and-a-q.md": "210b7da0915df10f93fac3f4742f2b71befb23ee7e04c01a4fbe73c8d05bc5f1",
+    "06_outputs/cybos-cases/07-knowledge-management/B-137-auto-update-project-docs-from-merged-prs-via-a-scheduled-cla.md": "c02f901bd46743d598a36e1bd13bd380fe0f14b4ca2097783d89aae9039759ef",
+    "06_outputs/cybos-cases/07-knowledge-management/B-138-auto-load-meeting-transcripts-into-claude-code-on-session-st.md": "427c0bde2765e030452d5feb4b1775a07edbf4542051cfa0a0df5da7d378acd1",
+    "06_outputs/cybos-cases/07-knowledge-management/B-139-long-context-analytical-synthesis-over-a-transcript-corpus-s.md": "dfce6b7d54eb4be11d5c26592603c2ada6274712bf4a7c6387a33cd56394db3b",
+    "06_outputs/cybos-cases/07-knowledge-management/B-140-self-improving-research-pipeline-methodologist-spawn-evaluat.md": "b0482accfe5e7c5456da4847d28deeebdb87493b91a6bc04f5c0f248d0b627ff",
+    "06_outputs/cybos-cases/07-knowledge-management/B-141-session-open-session-close-skills-accumulate-institutional-g.md": "3328d506ee161990e88d1c8c8a11517b3de2acb622795b99b7bf37ef8699e17a",
+    "06_outputs/cybos-cases/07-knowledge-management/B-142-cross-session-memory-via-shell-snippets-in-global-claudemd.md": "ee98a5633c457d4b1b8f01953b40fc7e569e69c1c26f6f042c379447aa864c9f",
+    "06_outputs/cybos-cases/07-knowledge-management/B-143-per-department-notion-api-token-scoping-for-company-wide-ai.md": "7d0b2ea8d856a543a7f883123fa90afc393e59e12fbaed2794487e2f190aa789",
+    "06_outputs/cybos-cases/07-knowledge-management/B-144-privacy-tiered-transcript-routing-for-org-wide-ai-agents-5-p.md": "2e8e1c112ab61ea341be06c0c0c546f5765002ad0377e368ac277f6123be8136",
+    "06_outputs/cybos-cases/07-knowledge-management/B-145-8-mcp-corporate-rollout-analytics-ticketing-docs-vector-code.md": "8c0947159f0b36867d1976b0d1632423fc7f409eae145223941b607a6f78efc7",
+    "06_outputs/cybos-cases/07-knowledge-management/B-201-obsidian-wiki-dashboard-skill-live-bases-dataview-views-over.md": "9c525342b31cc204210272facbd482b4b7cda45426bc37d5315db11b9a6c93c0",
+    "06_outputs/cybos-cases/07-knowledge-management/C-027-anti-hallucination-tags-canonical-ref.md": "a1033f16056c875b03af49ff6dea93f566545af1f1189c6419a34d9f9648a4da",
+    "06_outputs/cybos-cases/07-knowledge-management/C-030-prd-rule-skill-pipeline-increasing-abstraction.md": "a339ca0a8345be94fd684038bfca27f948aeeb82126ce08a2217ce1a45e5661b",
+    "06_outputs/cybos-cases/07-knowledge-management/C-031-replay-ability-4-anchors.md": "e009729e338d7322e299193b8dd6ff5f2688239dbc36a65006ae3f029f908688",
+    "06_outputs/cybos-cases/07-knowledge-management/C-062-company-wide-context-graph-via-lms-video-survey-of-employees.md": "3ed87e7fc7f2c7565427755090312a2379c6ab277feef2c33c8fef214b0aa103",
+    "06_outputs/cybos-cases/07-knowledge-management/C-100-anti-fluff-chat-digest-prompt-concrete-tools-attributed-insi.md": "8def66b0a46339b425bdf0fc826e0d59be012015fc9b496a7d0cb87c07e39984",
+    "06_outputs/cybos-cases/07-knowledge-management/C-101-lecture-watch-club-async-lectures-weekly-1h-debrief-no-instr.md": "6ef333ce76d7c57a5465c3554f5c5c6e6321a90f8b72de5ca432585e05fdec32",
+    "06_outputs/cybos-cases/07-knowledge-management/C-102-cross-provider-ai-chat-archive-via-cookie-auth-frontend-apis.md": "c970cb022638f1bdf0c624544b62d9185033d87a294013651ab38608ec953142",
+    "06_outputs/cybos-cases/07-knowledge-management/C-103-macro-country-sector-funnel-for-finance-market-intel-llm-res.md": "3a88b6b163c63258bd2b6ac5e6c29b951cedeede9d4544e751b0d94acf4dcf5e",
+    "06_outputs/cybos-cases/07-knowledge-management/C-104-postpone-the-graph-db-relational-llm-entity-dedup-wins-at-sm.md": "63da31bc57dd0a09d9a678500108ed619910d3f036c3a1b1a0bb89c8f987cf52",
+    "06_outputs/cybos-cases/07-knowledge-management/C-105-use-case-inventory-survey-template-business-engineering-trac.md": "6c94105056f5ee31d92ef19b1a7c38431cce89f78b69d84ac03cae176ad90fb2",
+    "06_outputs/cybos-cases/08-hr-hiring/A-012-flat-file-ats-for-small-teams.md": "6fb50a67328340f34a360124cc4f006ddfb408b41641351645596066edd4fc12",
+    "06_outputs/cybos-cases/08-hr-hiring/A-013-all-in-one-hr-skill-for-small-teams.md": "f4e8a7561d7c684d665a986d969653e949661f4917f45a237c83c83dfa69051c",
+    "06_outputs/cybos-cases/08-hr-hiring/A-014-two-stage-ai-hiring-pipeline-screening-full-evaluation.md": "4324907d2da973978a794269faeb9d72fe1db85de631483eb065584eecd3c050",
+    "06_outputs/cybos-cases/08-hr-hiring/A-015-three-tier-ai-bonus-program-adoption-champion-transformation.md": "e278e45e9d5351035ca5e7cc9eead17b4a3b01bd672b9fd157c3a16b83fdc3f7",
+    "06_outputs/cybos-cases/08-hr-hiring/A-051-show-the-magic-sit-non-technical-leaders-in-the-terminal.md": "9a7a8025b3fc4e49758fcea8dc190cf6dc6589b83680577ac547c9d2d91dd9b1",
+    "06_outputs/cybos-cases/08-hr-hiring/A-085-unified-candidate-status-lookup-across-the-ats-gmail-calenda.md": "245fa2f9b83fbff3c804a429e43fb68a09cc8b0fbba14ac186b107860fca07e1",
+    "06_outputs/cybos-cases/08-hr-hiring/B-016-auto-generated-jd-landing-pages.md": "b90d51a44497cfa718d9eb3bdf34239d7123f76f389999c6295675fc7408404e",
+    "06_outputs/cybos-cases/08-hr-hiring/B-017-11-review-prep-skill.md": "e901f0c5f99b1c9a14ebba555d97c5cc70d71b8d13ff360b976462139a89fb9d",
+    "06_outputs/cybos-cases/08-hr-hiring/B-018-ai-native-hiring-criteria.md": "315714fcc379a22922b9a83fc20e8deb1e28bad0bd830da83bde49e92837f0d7",
+    "06_outputs/cybos-cases/08-hr-hiring/B-019-jd-template-with-affirmative-essence-anti-patterns.md": "c0005b9b2e9e349a50b5bb5db243c8e1188a5df663fd8dea657a7e54ebe304d8",
+    "06_outputs/cybos-cases/08-hr-hiring/B-020-knowledge-extraction-from-departing-employee.md": "2cc7b741f2fbda1bc59d61fdee527e24826729e873bf403e4baa80aa081f2b24",
+    "06_outputs/cybos-cases/08-hr-hiring/B-021-personal-context-interview-skill-extract-tacit-knowledge.md": "7e0e92d4f955bcccc1b60008822e4a51787349e2e60be795a3ff43d35379ffc0",
+    "06_outputs/cybos-cases/08-hr-hiring/B-022-role-card-schema-single-source-of-truth-per-person.md": "a8b823121a27534b2a44ade1140d153182bef4d1b2687a35ee6970b8f16bc2a3",
+    "06_outputs/cybos-cases/08-hr-hiring/B-023-ai-champions-network.md": "2a6c54b88bcd38e8579034a6df7b5b4188306382342964b6e3ba7b47e823334b",
+    "06_outputs/cybos-cases/08-hr-hiring/B-024-ai-onboarding-bot-vibe-coded-mvp.md": "e45dcbeacc756bf9ce6ec955fecc804cd9936997005197dea8f3de05c43962e1",
+    "06_outputs/cybos-cases/08-hr-hiring/B-025-three-level-ai-academy.md": "ae3b5fd466408cd61378d00001813b948b3199cb5d7116c974228ab4aa12cca9",
+    "06_outputs/cybos-cases/08-hr-hiring/B-026-paid-test-as-a-hiring-filter-100300-working-sample.md": "af4bf9f04cf10f1facdfa4464d2adbb29a5d766bb8d98dc71ff7f0d573d85c20",
+    "06_outputs/cybos-cases/08-hr-hiring/B-088-honest-elite-cutting-edge-framing-replaces-kpi-motivation.md": "5d81db61f3f26361a12d8a519c27901a1cf34e7ca332c208f2873852c3e1bf64",
+    "06_outputs/cybos-cases/08-hr-hiring/B-091-franchise-team-onboarding-skill-first-day-claude-code-skill.md": "a59747aea2a05c781aab09bd77399706c294b712345a1e5641219f0aeb3bc6ef",
+    "06_outputs/cybos-cases/08-hr-hiring/B-107-hackathon-wave-ai-rollout-for-non-engineers-pre-train-synchr.md": "5d2d02207d556d43c44fcb9343822b187ec39c034f7e19085e413ddb35a877b6",
+    "06_outputs/cybos-cases/08-hr-hiring/B-108-small-cohort-ai-training-program-5-weeks-7-10-students-activ.md": "be6a84e83e980c202fcf3f3b9eadce3e5a331ace74b724db30907f39439856f6",
+    "06_outputs/cybos-cases/08-hr-hiring/B-183-three-mode-founder-hiring-skill-plan-evaluate-decide.md": "568e7723c36bbdae56a9597bf1bfa1137f96efd47acfb8f9664331b6fd062d18",
+    "06_outputs/cybos-cases/08-hr-hiring/B-184-hire-vs-ai-decision-paid-trial-protocol-for-a-first-contract.md": "d52ccd6aa54e988187770b34013b8b8de4b90c5483a31ce97124b782748bb729",
+    "06_outputs/cybos-cases/08-hr-hiring/B-185-ats-to-email-drafted-interview-invites-with-browser-automati.md": "d01c108ea6a9ca96b5d758d327f66b48c34353ed323f8e3a68e8bb3a83947721",
+    "06_outputs/cybos-cases/08-hr-hiring/C-078-hands-on-train-your-own-llm-course-as-intuition-builder-for.md": "45db64822a706b089c65422ecbd5538f55340cdb794461eae3e946b60c09c1ba",
+    "06_outputs/cybos-cases/08-hr-hiring/C-136-slash-command-router-with-sub-agent-delegation.md": "bedb5272cfdf27150db1868b2f75ca891dde20c0515a6c830a7b256c142c0c2b",
+    "06_outputs/cybos-cases/08-hr-hiring/C-137-candidate-side-funnel-benchmarks-to-audit-your-hiring-funnel.md": "50e10193a648d95d2bff355c86bbcc6c72e61b201dd7421557377aba5aa956b1",
+    "06_outputs/cybos-cases/09-founder-productivity/A-042-mobile-claude-code-via-telegram.md": "ec3e335dd05b09e93f4499ff333ae089921e72f1bcd19d36680047a6d6d21017",
+    "06_outputs/cybos-cases/09-founder-productivity/A-043-founder-personal-dashboard-custom-html-mcp-fed-with-characte.md": "016474d021e48ec8028377bbb97ea5811f6c1030a8c641ef18e2bb3e810e6432",
+    "06_outputs/cybos-cases/09-founder-productivity/A-044-personal-ai-chief-of-staff-cursor-20mo.md": "1f0393fc9387d4fa3a17eebe5ddad9de2c62f5afb0996fa12bc316bcf7220765",
+    "06_outputs/cybos-cases/09-founder-productivity/A-045-year-review-system-9-history-context-lab-playbook.md": "e031ffe0094d5a7005f1f7ee7c748ab97cf683377ef6b99f9312703d1e7d26f5",
+    "06_outputs/cybos-cases/09-founder-productivity/A-046-personal-crm-for-fundraising-founders-relationship-managemen.md": "15697693ec6baf98289c349286441282da2f638b027a0de330143b374ede6f22",
+    "06_outputs/cybos-cases/09-founder-productivity/A-050-founder-must-code-the-diploma-project-pattern.md": "79030ec6e5cd0bad4760c9cf9dd5bf1149af7b2fc977a3dbc9eeedf8f7d1058e",
+    "06_outputs/cybos-cases/09-founder-productivity/A-072-personal-ops-agent-photo-to-form-fill-browser-automation-voi.md": "982493abfaa4179a2250dc0debf60853637f25a86e5db9f8f94e99d55b65945b",
+    "06_outputs/cybos-cases/09-founder-productivity/A-073-openclaw-personal-autonomous-agent-on-a-server-telegram-skil.md": "2e27e29290a3539c2aeca670ea8b6c94a17989c4bc768b60b39a9cf20fe0cd14",
+    "06_outputs/cybos-cases/09-founder-productivity/A-094-six-mode-productivity-skill-with-per-mode-pass-gates.md": "d2feff51c26bad503ac520d2aa84390c7649255b676441fee764826534e40645",
+    "06_outputs/cybos-cases/09-founder-productivity/B-062-sales-pipeline-data-extraction-durable-entities.md": "28f10df38a4d0978a91a6902a129bf1d6171f96c03f044137fd3db4d86c5acfc",
+    "06_outputs/cybos-cases/09-founder-productivity/B-063-morning-brief.md": "089f71346965515b7faf72fb55019a34e62758562593f3aefbcdef0c4eeb8dd1",
+    "06_outputs/cybos-cases/09-founder-productivity/B-064-personal-traits-psyche-file.md": "c04db5eb1eb9af13fa72809a03c02c9bb5f834536bc18fb8863116755debd112",
+    "06_outputs/cybos-cases/09-founder-productivity/B-086-personal-linkedin-telegram-network-scorer-bidirectional-usef.md": "1cf6dde95d3cfdddb78880a0eae594cefdceb70cb4a3246bedfed3f4647c04b2",
+    "06_outputs/cybos-cases/09-founder-productivity/B-151-ai-simulated-team-validation-harness-run-hundreds-of-usage-s.md": "6a1046a9e5951f77d83a5d8ed13eeec05fbeba1237ce84da71de660a7099769d",
+    "06_outputs/cybos-cases/09-founder-productivity/B-152-universal-custom-instructions-prompt-first-principles-anti-s.md": "03bf469dd166741130fbd46d43e08e51c18466a41af3abbbe7c359a02bce51d8",
+    "06_outputs/cybos-cases/09-founder-productivity/B-206-founder-financial-model-skill-12-month-projection-unit-econo.md": "bef7ac46d176ca0daa4c174689ba04f81f0b7a643794d72cd8ef427042cf8e63",
+    "06_outputs/cybos-cases/09-founder-productivity/B-207-investor-update-skill-with-mandatory-challenges-and-structur.md": "8dda9246a0b4a90f08096703e60f88be62a5c35d4b9d1613041146366fbb1efb",
+    "06_outputs/cybos-cases/09-founder-productivity/B-208-investor-outreach-skill-5-line-cold-email-forwardable-warm-i.md": "38dc466f56d7e5ef5c800557ec310ebd94d6cac4cc5af39187c669ff8df997da",
+    "06_outputs/cybos-cases/09-founder-productivity/B-209-pre-implementation-product-gate-review.md": "033d57247f9fb3071417b7f9a13e18fd6b6845d0b800319c1410cbd54cd434c8",
+    "06_outputs/cybos-cases/09-founder-productivity/B-210-weekly-evidence-only-business-retro-across-a-multi-product-p.md": "362e6a21251939161bcfa675312557960dccad345a95b3cb1bb5c75fe248dcad",
+    "06_outputs/cybos-cases/09-founder-productivity/B-211-board-deck-narrative-skill-14-slide-structure-traffic-light.md": "e45977beac4b7b35d20b8497fd8af882331335158d265d9f38b263bfc385b29c",
+    "06_outputs/cybos-cases/09-founder-productivity/C-041-bootstrap-personal-context-from-telegram-notion-export.md": "53755abf6d438ba69e275d2965ef87c1c3b28d134916be89a15de9ecccbf3311",
+    "06_outputs/cybos-cases/09-founder-productivity/C-042-calendar-event-tagging-convention-cohort-02.md": "97a37b1dea7122b6e49a6653373a8709d5baf02a591db02a85291ddbc466e929",
+    "06_outputs/cybos-cases/09-founder-productivity/C-142-13-day-sprint-with-daily-theme-rotation.md": "5306baf7d073a69334049203b68469ff7cb1949c05c67abf001a178294e68737",
+    "06_outputs/cybos-cases/09-founder-productivity/C-143-phased-conversational-audit-of-a-long-running-context-corpus.md": "54236f8049b9efab9f07fc7abcda64d171791c43c2d16f9a9a1166abcd1345c8",
+    "06_outputs/cybos-cases/10-customer-success/A-016-ai-overlord-proactive-workflow-agent-directing-the-team.md": "7e8cfc8858926a74d2359459cbdb142b2a02ff4268103260d66197b4320dadd3",
+    "06_outputs/cybos-cases/10-customer-success/A-017-support-agent-copilot-single-pane-multi-system-context.md": "df433ff149c6d223efe7cc5a6bf8e6195030d1d2117e703924fe900634052e4f",
+    "06_outputs/cybos-cases/10-customer-success/A-018-per-project-customer-success-status-dashboard.md": "4212265012bba0ee3f51d49b2ca18868c859bd28163a19637fdf15995cc07486",
+    "06_outputs/cybos-cases/10-customer-success/A-063-5-layer-prompt-injection-shield-for-public-facing-ai-auto-re.md": "18a65da63a6fce66185a4eb6de3a14fc292f8b98dc0e4f3a8f46fe2f41e5c040",
+    "06_outputs/cybos-cases/10-customer-success/B-027-onboarding-free-product-ux-in-product-ai-agent-answers-every.md": "ebe902c74a1ce99e2e8568b786ea34654b074f51e8f67fc2c8bb202bcd9b0ed4",
+    "06_outputs/cybos-cases/10-customer-success/B-028-ai-chatbot-for-text-channels-telegram-whatsapp-unified-kb.md": "00dbfaea28d85be097bd4868a503d2930aeb37cef9c088573f5cbcecba021773",
+    "06_outputs/cybos-cases/10-customer-success/B-029-ai-voice-agent-l1-informational-calls-revenue-aware-design.md": "ff68ce22191c529c51f07195eec0b19e3a39ff728bd1ac78fc1fe79c6c69184a",
+    "06_outputs/cybos-cases/10-customer-success/B-030-merchant-self-service-portal-avoid-linear-support-scaling.md": "0b6c679c60f856d75b8c1f2dc0a2526d5e70401fc8937f62b023cd1e70e8fc69",
+    "06_outputs/cybos-cases/10-customer-success/B-031-ai-claims-intake-l1-voicetext-bot.md": "f5d74a1eb845555fe2aa72c63eee9585c90fccfad690116d71006cfc7b3c1ded",
+    "06_outputs/cybos-cases/10-customer-success/B-032-unified-knowledge-base.md": "e9f66648b5328b8049061ddac24fc666f2434730e775b12df834c28f71d33332",
+    "06_outputs/cybos-cases/10-customer-success/B-109-internal-mascot-bot-for-non-technical-staff-read-only-mcp-gm.md": "45a9d068a3d5d1063d2e6e66a8d177a3f9f69778bf544ec381d84fe1343efbfc",
+    "06_outputs/cybos-cases/10-customer-success/B-186-saas-churn-prevention-system-cancel-flow-dunning-save-offer.md": "bb682350d03bd8ae3c5afe3ef942db901428f86f8df0234dcca2bd1f63471a90",
+    "06_outputs/cybos-cases/10-customer-success/B-187-mobile-app-onboarding-optimization-activation-event-permissi.md": "7716076e369cf4976107272594ee2557b6e3c956ad7dcd2b32bb4ec4da22b1b1",
+    "06_outputs/cybos-cases/10-customer-success/C-079-ai-beta-embed-feedback-instructions-in-platform-docs-so-agen.md": "cf298353eae0a3889e3f7e261a9a74ae46957c8cf9d523b2afe06091dc74f8e1",
+    "06_outputs/cybos-cases/11-data-bi/A-029-one-prompt-bi-agent-that-builds-a-dashboard-from-a-sentence.md": "e07467a55366bfd2fe844979dc8081f5891ed0b8a70b7fda5d748086b911ea4a",
+    "06_outputs/cybos-cases/11-data-bi/B-050-mcp-data-layer-for-product-teams.md": "6079c76194fca89942478170bfd379cfaba75e737832f45b50e6296098deac4a",
+    "06_outputs/cybos-cases/11-data-bi/B-051-natural-language-analytics-over-your-warehouse.md": "966691c336456e7b38bdc632a810774a8b040e4ef6aa9091e7988b56406f06b1",
+    "06_outputs/cybos-cases/11-data-bi/B-052-churn-prediction-start-rule-based-mature-into-ml.md": "8dbf7c6bc93f29d216420723884084dfda854e83ce620b26fd9c0ee93330d339",
+    "06_outputs/cybos-cases/11-data-bi/B-053-data-warehouse-lineage-graph-foundation.md": "d689bd0a39ab8a6407de8f001ba10c9741b21f6d49579bae44a69ae2ad89803c",
+    "06_outputs/cybos-cases/11-data-bi/B-093-ai-built-financial-dashboards-over-crm-erp-bank-apis.md": "dcc194f3ade27009ce7916ca5c5ab9a8e531fb6dd7f7ed537c9c8415b9e5e870",
+    "06_outputs/cybos-cases/11-data-bi/B-200-saas-finance-metrics-quick-ref-33-formulas-benchmarks-decisi.md": "6727e727c409daeb5debccc16951f6a2bb6029e73a5a4a700ac0782abc7dab63",
+    "06_outputs/cybos-cases/11-data-bi/B-212-data-visualization-critique-and-design-with-tufte-principles.md": "9fdd5f149e647e793c3f3dbf3a2d305d793a2ddd99200743204f13fdd5caf609",
+    "06_outputs/cybos-cases/11-data-bi/C-023-custom-mcp-for-any-saas-via-agentic-integration-writing.md": "4d5481adc7bcb4cd6a0f558486a164e3b358cbf5a79c4ab38f5d256adcf8624e",
+    "06_outputs/cybos-cases/11-data-bi/C-024-dual-mode-retrieval-full-text-gemini-long-context.md": "7d37a8e8623064776d0aca6eae5380b0b1a4a639a6f56f8c52fa32fd81d156a2",
+    "06_outputs/cybos-cases/11-data-bi/C-141-what-changed-why-so-what-now-what-analysis-discipline.md": "7187acaafc3476be2bba3cfa9c80a757ed3a77a44d4f72f4ca9c0b917cfb8c81",
+    "06_outputs/cybos-cases/_categories.md": "b96a2b33cd457f275a37ecc9df87ffbb005389356f566808027d0b8e94333596",
+    "06_outputs/cybos-cases/_index.md": "57aff9cec23e924fa240fc8e579ac14d96e2d09906f61e780a8489a8e48af291",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-001-coding-master.md": "a93408f787a06cbdcb490efa3df7ca481459926957f11113b042caea3b24c3c4",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-002-create-bd-issue.md": "6b5e50d173f7997fbe95e06198b8fa160af3430c90b34ae747a8624a372de4f1",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-003-create-coding-feature.md": "212a2213c31453dcd5ff30c04d000a0ef82454f7c14bc108880ca6be5c4d1991",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-004-create-coding-project.md": "f6b669006a20f190a8110bcc7029eb0dbe5dce254eb3b4f9d411fbf2ea401747",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-005-create-command.md": "be043d59764c5eaefc0eb165bde6e2d6c9d6b216d0c9ee9d1a1ae7c329f05aea",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-006-create-design-document.md": "6951ac5d58fd98496c0854a5aa8b41b0ed0bd0cc178bde5efeeefae0a8ca6e90",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-007-create-git-diff-commit.md": "b5fed031d2b6e17d4eb8f90d3f9b47bdc1cc7009cf04d607e0f20efef0ecd7f1",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-008-create-loe-document.md": "c77a8d38946c29245b77893aa79d4ced21ea2e1c10c845796abd6aa2095397f2",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-009-create-pattern.md": "902dff768a2898096980113cd015dd19cd6f40d12e102f62f75de61f4e1bf297",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-010-create-prd.md": "90ab9cac1a27319f9752524e6f2492fb3a581f8aef42c484bda987fa7d7dac11",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-011-create-upgrade-pack.md": "0dcf58d056d40bfb9d72cfa39d96e7e7c754f030351210c75ecf061e28b484fc",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-012-create-user-story.md": "3641030c7f36f4d42a40173e3ffc2f57d940c4b45b764118c83a017026a80288",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-013-explain-code.md": "b059149fc8a92649b3ff622c0672cee6e1280583e35f8bd1c38064ae45972576",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-014-explain-docs.md": "aaac84c1236581c202f974f93f0157d186ae83374c3835439dd01dc4f8d3ab6f",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-015-explain-project.md": "686ab6ecbf45c429a166a2ed1a1811e12b16da7f6702e8c1fb474eee5ca9cb34",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-016-extract-mcp-servers.md": "08859ee82081fa36186b1446e8b5f239847ba96d94c6f45120fade8124da7524",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-017-generate-code-rules.md": "8919d95e46f9014da18a34f092a4050234313604c74a687c2dd1321038529b1d",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-018-improve-prompt.md": "d72ee852c98d0e071a07fa0eabe0eba4cf559b57bb61427dd2b85380b68acf2e",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-019-judge-output.md": "5e5d51af647e18473d9c25fbe2e83a388aed4d40f76a9af7074ed2eae084b441",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-020-rate-ai-response.md": "7ece20db60b6880180a899ef5b58661b264fd9ee847ba9cea9d83099bd76a050",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-021-rate-ai-result.md": "746b3a2615351f4ed73d226aa78bf69cff3a5da825dfe726d6a05b5f79979fa1",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-022-refine-design-document.md": "f3b159e19724379aec0b3fbf5bd96b0a4deecbd0ea0462b1c172a42f735a72d9",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-023-review-code.md": "376ad434d24cbfe3dd5268479ccfdff29085e4ed89196ed6278264f1e26a788c",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-024-review-design.md": "51a8952a4885f43930f0f13857201512e247b61bf35de50eda19360a94691d37",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-025-suggest-gt-command.md": "643189bc3ddb7e5eb38b1a9b87189d52c40467cd71eff86bc2c91d979fcc5f48",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-026-suggest-openclaw-pattern.md": "182a987849e1f6787d6a087eaf82ac07d77676a0e26e2c363a46c19f58bd3e70",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-027-suggest-pattern.md": "41b56d1b0070bfd587c208171c6c234f71ab0ec24e3b904ec52a2a8816615593",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-028-summarize-git-changes.md": "d16303d60a20733d16ef38f6b3a97129befeef5a43363233726d2b3af8c3b101",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-029-summarize-git-diff.md": "74dc34af0cc4b2e088801f8ed0a1d263c57fc1c74b45e74aef66a68d676ce55f",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-030-summarize-prompt.md": "4ea03ebefbcf3eb4665445eaf0dafeb953c8c8b8ce331d21c55ac44df5c9625f",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-031-summarize-pull-requests.md": "2fc4de358ad474517721d63072644bf919ea3e5f48cc366e30a6abf7bdce6177",
+    "06_outputs/fabric-patterns/01-engineering-productivity/FAB-032-write-pull-request.md": "dce65f6aa06519963f6a3e3ede10e505a5697b8b4e4ef214d469d90f2c2b3cf6",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-033-analyze-prose.md": "95d57b7a30533a8008ef4e97aea1340fbcf518fda878026fed6659f8b652b4e3",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-034-analyze-prose-json.md": "5ecea9ae7d5ed7360aee64e16ca99ca7c36646f6ed6597235b99d6718bc0fd7e",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-035-analyze-prose-pinker.md": "c25607717b4d61e64df2e2728793d11a6c2bfc581a1313a39c671767737f921e",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-036-create-academic-paper.md": "9b215e7ffb338025aa2e95c9dda01945eefa9c8c0575b181126cea74a128a85d",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-037-create-aphorisms.md": "b7c179e4534644b003f1a77c599c5d9efc6d01f958a016b53f9a0b9c541bb671",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-038-create-art-prompt.md": "fe90c31d6e508249231bcb669dfd1f7613955c4e12d823b2816fc92acb3623a1",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-039-create-keynote.md": "fd1f473d8a4968fc45cf9f428061780c92bd062ba069873ab46ce4fdbf118541",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-040-create-newsletter-entry.md": "cc6540a3496eaf21ebae5c1a8fe49e1084520ad0428d4aba6873179c4c727d64",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-041-create-show-intro.md": "a07cabb3633107db9ae3f9ff533607c9836d1dc3b91585becca16370e89eabb4",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-042-create-slides.md": "945622f2badf9d9cea38fd58eb7dc24a536e30b1d650959bbf418067388ea08e",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-043-create-story-about-person.md": "4762cef5292785dfb0a4ed31eef4dbebca32f5c45f9a4fdd2919839d8e0c1a39",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-044-create-story-explanation.md": "678ae6c77bc66250063d83eb76954e19f5ea44f113db6fa5073e9b09d9b56156",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-045-create-video-chapters.md": "af793276c0b76be0db8283c319c89a37f9845a044c565997282d1e0a7eea1e84",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-046-enrich-blog-post.md": "c2ee0e11b1d26f7b49b9924d8bca896aabdf8859d858e0816655836c886c350a",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-047-extract-affiliate-products.md": "5aeee8b518dd1f306a157b199cce5ae1291fa7b82ed87c84f3291f25097b7d39",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-048-extract-latest-video.md": "c2539997275d49b669ee4ba60583adb18bf994238eb954876854e5338c37da59",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-049-extract-sponsors.md": "0ec16d144703bca223c3bd62ec477a8e72fdc700f8284e964d4433a4f7068b7b",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-050-extract-video-commerce-entities.md": "443e31e933dff41cd760ff322b4f22b9300a7f9599f16a4486bf732ba4e62a13",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-051-humanize.md": "450b27462cb110767d0d72959df3d9988652d1f6af7f8f9a8aca92937ec25262",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-052-improve-academic-writing.md": "d39f2199934fd46164baf2fdf3935ae9f218e3fbc32cec47d22253c96812e148",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-053-improve-report-finding.md": "10c177ebc8b8628063b9d667b7544a3079a5b21898d15cf60a3e6ea1782bbf62",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-054-improve-writing.md": "8d5b1771b9bf27cce0d208ac263b12f0713d81d24da82713c49456806cfe2f54",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-055-tweet.md": "6773471229de78fd9dbc32d7a2168d92b50ca409862c4c065babcc3468c372d5",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-056-write-essay.md": "b49eb9b011e2567f267182046b11353e2797a5837f14731d30fbd0331503b2ff",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-057-write-essay-pg.md": "deacbfd21bea711e8e45baca07df93a3325d23724971abe7496f9e038e617cb2",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-058-write-micro-essay.md": "db94f1022bf8e4e9f1718dbcbb01cc1d6a922cd75b16da13cda8bd16ec23da62",
+    "06_outputs/fabric-patterns/02-marketing-content/FAB-059-write-nuclei-template-rule.md": "3f290155bfa6e22149153e1c9151a1c75be4527eb340b321f5ffd2002c6757b5",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-060-analyze-answers.md": "51b3090eedd7bf42bd792b2ab2888f3c10296396de95391774632e8221e8a71c",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-061-analyze-debate.md": "3dc34e524a597648d6a3f74b4796a4b6d904a9fbf9feefec7278646addcdd6b4",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-062-analyze-mistakes.md": "58549c328a0ed6221c8e51539674262b2f5674b692e1b177d853a1e571148f47",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-063-analyze-monetization-opportunities.md": "06dc65b3db6137e5f1b65b76ac746f36c532521f2561298bb991718428549612",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-064-analyze-proposition.md": "ef264d232ca9e1e0a8be67138d190edf617e0a648ac2b148e7247d32329c64e1",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-065-analyze-risk.md": "619178702146a86ddebb24151761de1627acd44b3aaca754a64ca871e4fa18bb",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-066-analyze-tech-impact.md": "0f2805cf95d3c0cbd11e82cbb10855b64b79a3fc3d03447981c162b07788a596",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-067-check-agreement.md": "87cb1b8e94de2bcbae33d7bd86010a05f307528af37da325d12ece65e70191f0",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-068-compare-and-contrast.md": "df4bac4b4f6452d294a5fdc9e829582709a37904a802ee967fd718d70a014fa1",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-069-create-ai-jobs-analysis.md": "db2dd68118290eac41e16d95a617d257752a0c86a771c7fa3ffeb1fb1ce3e3ec",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-070-create-better-frame.md": "66f2912b961931951162440ac36d940760bcb2e61085ad5548042fe85ed2d48f",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-071-create-golden-rules.md": "67a14e4fca1f8dae3d61f84b44d4d925591922cc0ed6ed4e47df1737608f1665",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-072-create-idea-compass.md": "8c17f8524203aba03d4ec4a5ff8a9f94c7ea90187d5276c47f5aa4a339fc4261",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-073-create-prediction-block.md": "8a6949dc85dd3191137e00265d0c9bfddd9e5031535d9f774d436acb638fe753",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-074-extract-bd-ideas.md": "21ce9205de8778a5e8af49f1e357852c34c802eeb0df1528d4d4572b5557bd64",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-075-extract-business-ideas.md": "e50503af6f49f0495a7c23245d352c77914be555707cd237a7cbd10f3afd0213",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-076-extract-predictions.md": "97dae7e4b93b19f40ac558b5865ee83d938bca1b32306c69b2216264d4ef0282",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-077-identify-dsrp-distinctions.md": "50b97e51b6546b72396ff815c5821f69319618ce0d41813c4306d5b0056c221f",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-078-identify-dsrp-perspectives.md": "3cb108e88dfa23f973e3a00a5f376b6939c609e50c7b637608976283aeeb5299",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-079-identify-dsrp-relationships.md": "08419154439b844818b5bb047113e61db77e12fd72811a941f4fbce10b1f61a2",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-080-identify-dsrp-systems.md": "3ba58b4e153fa9c2d47475c4b2245f398c7fc95adf6d369734b21cafe0c98b2c",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-081-prepare-7s-strategy.md": "77435b42889091131bda159bcfcc0b04cd4732278026b1f94951dca02febd97b",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-082-summarize-debate.md": "326d2b398b76dcc9d9b469888bb80cf486a2cf2bdea1d7dc152127591c126ddc",
+    "06_outputs/fabric-patterns/03-strategy-leadership/FAB-083-ultimate-law-safety.md": "80c10e8e92e6d5112aace59849fbdef94941197d2037d3d3dd5a9f57d2d9d4e6",
+    "06_outputs/fabric-patterns/04-infrastructure/FAB-084-analyze-terraform-plan.md": "d561fec8f32e514ba55b5520b700c9c1a19731632e8a49c86be2829876b5f45d",
+    "06_outputs/fabric-patterns/05-sales-outbound/FAB-085-analyze-sales-call.md": "e45be7e4d1443e805e738bdf3fec39f1275666d43ef60b02d6a36a721bf9f13d",
+    "06_outputs/fabric-patterns/05-sales-outbound/FAB-086-create-formal-email.md": "f7e9f0e5d97b1dcf0ad4ff852676bd5b73c24d01080dd5aaf955dc7c09e8e793",
+    "06_outputs/fabric-patterns/05-sales-outbound/FAB-087-create-hormozi-offer.md": "3e152d69708b70d36da19e5b514e7c0f464d2bddd3f4cf90f96125eeffbcb6e0",
+    "06_outputs/fabric-patterns/06-operations/FAB-088-agility-story.md": "d1a4e57e92fb578389d0358a5b6df74c43f2bd35c4bdd2072bbede1a956298d0",
+    "06_outputs/fabric-patterns/06-operations/FAB-089-analyze-bill.md": "b6ea147ce7f38b3e44cd838a375b139416bed29a2f3368245d92439606742e2c",
+    "06_outputs/fabric-patterns/06-operations/FAB-090-analyze-bill-short.md": "63e3e260c36dbcfcc74e485e8de4e548249bcee09340f35ee1259091fc050e4c",
+    "06_outputs/fabric-patterns/06-operations/FAB-091-analyze-comments.md": "dcbb14899691113657f9e2f494172ad3bd039bac1b9471d75f63572302f93145",
+    "06_outputs/fabric-patterns/06-operations/FAB-092-analyze-discord-structure.md": "7ed7791223d13e41edf7f4f81dfb4cdaf385e3265e96d2cd0414c3a29d53ccdc",
+    "06_outputs/fabric-patterns/06-operations/FAB-093-analyze-incident.md": "33506dd4f94fc9929b6ae913c13553c1c17a8115f7a243da97617aa0a3e47c3f",
+    "06_outputs/fabric-patterns/06-operations/FAB-094-audit-consent.md": "ec21efef66408d0e96db3ba0d907ace4740eb6e3e1e770081e131dfbd9998e31",
+    "06_outputs/fabric-patterns/06-operations/FAB-095-audit-transparency.md": "a5be64e8d2eb3fa1f04d69e0eab77729becf9f40a33cbf9e598f922a8a6d4cdf",
+    "06_outputs/fabric-patterns/06-operations/FAB-096-concall-summary.md": "556d16f0156474b4d9cafcbbd6ee4d6bc154fe4a214539911e71b03c5719c200",
+    "06_outputs/fabric-patterns/06-operations/FAB-097-extract-main-activities.md": "0f4f449cf4bc89debbc9b3dfdd9b0cdd336b47c4d137ef257abbd8e6da485e0f",
+    "06_outputs/fabric-patterns/06-operations/FAB-098-summarize-board-meeting.md": "505a269471c9121069e56831849f47e296606ce67934a6cc0ecbdd15a87a5d99",
+    "06_outputs/fabric-patterns/06-operations/FAB-099-summarize-legislation.md": "63a3e1e6660175e2618058f7ac5065c376075a64d5ef72d5baec2d179a63425d",
+    "06_outputs/fabric-patterns/06-operations/FAB-100-summarize-meeting.md": "24865641ce5ba5424b570fed22eba9d40f8c0c239f6a0a92d3c484816285592a",
+    "06_outputs/fabric-patterns/06-operations/FAB-101-transcribe-minutes.md": "3e26d77d34672f0737ca7ac8b7563aed819fa9e9d17566c92bced268233936ac",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-102-analyze-claims.md": "5bd40a89e039a2bb0c2fa0c73ec069dc67ea4bde5aa485999267218ecc1141a0",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-103-analyze-paper.md": "225b5776d3cac3fd0a295444d6baba70c8b53f1f8115d78426a3a971f780e9f1",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-104-analyze-paper-simple.md": "5808b8853136abdc8217ce86e04bf29aada0dbfe0b820cd0af47b2bb2e948be6",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-105-analyze-patent.md": "3dc47d010f3af3bc38f43deae17767955a410ae9b35fa6b97ad47f175dc2e09d",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-106-analyze-presentation.md": "8379d1a3cae272dde4cf46895032d60f1b3ff2a40229011c37c5b810660ddcfe",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-107-capture-thinkers-work.md": "21d86cff50ebe1ac5ca20e08d3fb570013153da5c88805a619b752657c445012",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-108-check-falsifiability.md": "e1514358bfbe28459423d98c49ddce5f5cff0c6f408e14d6c5f6f63a9db54672",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-109-create-5-sentence-summary.md": "3fc35783baf03b6787cfea117c1da49407c07fbbcfebbcf41c1cde5c680cdc08",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-110-create-flash-cards.md": "9809b6cceca3201f523b85d2e1f7d36a65c1009f399b7cdf2467a37a30e146de",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-111-create-micro-summary.md": "33414516dc238bdd088b07ae7f225cc6caaf519841ba76191939b7ef154f4729",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-112-create-mnemonic-phrases.md": "c3f78bf0ee5eded355e9f20cb7e8261f2f6b217f5829109b610fb93fe89f4049",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-113-create-quiz.md": "c8ac450aaecd85c673652fddb986acb5cf3fb4530ef12ee5505eac81049387d3",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-114-create-reading-plan.md": "d3d097e69be0392b4c39cf8469102f0ada69fee42b8b0564c26863a13e63ea03",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-115-create-recursive-outline.md": "59172980a83c5436d3fd663ea0272ebbefb515803ebf1662227385e89b5aea7e",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-116-create-report-finding.md": "1cbfeb15855fa8ef8a49472e02b4d482f66beb07813f58d5267ba66ddee60451",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-117-create-story-about-people-interaction.md": "163b4b8c41a630a7a89c584abc1ef0e007405c3448d17018c7600591a9170575",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-118-create-summary.md": "c8ff2753787194db6a1072cd5a907ac7de67640c4591bc6941f8c4e89e5114d1",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-119-create-tags.md": "9ef6a959281eacb15b7445ed07ec917dce270242079e20e056fde653c6511518",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-120-explain-terms-and-conditions.md": "39e4bbbb6395a6b97100fe55029e9e0d5750f837fc7fd0b6b41075c8365cf65e",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-121-extract-algorithm-update-recommendations.md": "f59304d7cdaa513705396764cad43b96deca9c8d0235a86daf4d55a4eb188281",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-122-extract-all-quotes.md": "3761d4dc41fc86a00421397414f832c955e0820e467df7782161f850762f3dcb",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-123-extract-alpha.md": "d0bfdcf27f88d027e9857c1f20c0538ae72cdbefce47505222a47992cc06b1c4",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-124-extract-article-wisdom.md": "3c48fefee3c4a815bd59234b7bd8e3f9d435631f897a3e8ee504cc8495c53d85",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-125-extract-book-ideas.md": "9c43ad17a33f923beb8e88b29b85cfd15e01a107b8948471836ffaa72152dbfd",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-126-extract-book-recommendations.md": "cc7adbaad601aaebb67808b91144ef5cc6042480f9ac8d569564dc0ff2e7bd6e",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-127-extract-characters.md": "4e9d9cd41eefba6c5fd3ae19cfd845c0229669716029a7733a52b35e3c3306d4",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-128-extract-controversial-ideas.md": "09b50ef6aac4bdb5475c176b293d0c61b43b96fafbcc432c3ad442ae699ba3e6",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-129-extract-core-message.md": "01a0ab91f2862b49a474f5471f70655d03fb7386c0ba9252e7b6280bc3cf697a",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-130-extract-domains.md": "c0c1a7c5fe898a2433e1301a3a83089cf0b5ef6146c9b57487f280b34413a615",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-131-extract-ethical-framework.md": "6115c6075732c2964c62762c331605a058bf4005b13e1b5b6d0b097b6e84265b",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-132-extract-extraordinary-claims.md": "42fe6d9383f9bd8a68f2051cb6204f5779e33cd26e19d02bbc02af38873ee704",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-133-extract-ideas.md": "66d36e850490bf98c4a7f99aac3cd1ec475b522325196333f951c58f38e030e3",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-134-extract-insights.md": "00111b9d147c9899e4f927873b469f6872addc05fe3d335da3a81b75f9b22a09",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-135-extract-insights-dm.md": "b4fa024f1ecca5e65748e550b0c827d9752f863adbfb9fb4ac62efbcce9ac9d5",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-136-extract-instructions.md": "b46991e99160c9a1064cd53704fcc73810e02d6bf2efd1c8f6060b9758b9cd69",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-137-extract-jokes.md": "d57d4c82b1321ce96f7d82fe633013436820f96ca68c434ecd0301b1b419d982",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-138-extract-main-idea.md": "0f89441c1c1ca25f6a9ff2d57e8ce7bbd21755a2326d2b394ee3e7ecafc6475d",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-139-extract-most-redeeming-thing.md": "6be82b1439ca412d9d3975165d9d675b6501c78b4edaba13ac7d9877a7fdfd33",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-140-extract-patterns.md": "e340afe86c1ca92762e83e3837122d1c4500a108eed5af8456baec83fcfc0918",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-141-extract-primary-problem.md": "149151ec776fe00295b45c3799777fa7d0f5a45bc45803f64ebe16dcf08b0c41",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-142-extract-primary-solution.md": "d47c53f86930ee4667969b6f1e69414ad5d0d16c8d5aa9e37e22504752d1c8f2",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-143-extract-product-features.md": "32de70b9c7fd0ab217d9d2975f599567d5a57c4af385eced61582e84eba34ab0",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-144-extract-questions.md": "6ad205435c5841ed174643a1a4e8b1bd940ea9b189f4bb8ec433bb23f2db4c46",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-145-extract-recipe.md": "cad583ef7578b2b3fa363cc2fe0659af79c85bab07e817f348ad77b4c77c5b93",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-146-extract-recommendations.md": "b3abc2b3718209b4ebccb760047d8790a42c0a73de934eac6649fb758caa7102",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-147-extract-references.md": "3a2530d65326aa91fbd91450a5044b29626856110424414d625636f9aa92cdb8",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-148-extract-wisdom.md": "c4a1c5e45c3109fbfa730e7982a53a2388cfaf2e7d656d0742a659385eefeb6b",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-149-extract-wisdom-agents.md": "877969385cc2d920d4f17ff0ae2f04350b27aa2606d0a531d8204162376d0729",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-150-extract-wisdom-dm.md": "b1a13ea7cd83939a6fafe94c2206ee9579dee4b6878907aa1c70a675888ef701",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-151-extract-wisdom-nometa.md": "63c1e90f78974e8841866c049e932c2e2d01ef17b2e0ff74372c4920ca2a4a7f",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-152-extract-wisdom-with-attribution.md": "3aa144960e0451705a4aa9ce23bb7c66a3d389aed975c279b31962e7ebc63a47",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-153-find-logical-fallacies.md": "1297761d4b873ce0d036269ebfd539a9ebb2b372bec8801252c3510bcb827777",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-154-label-and-rate.md": "a1abf41ffa6cdd1566c12e87430a0e63aea2896cc347e8534ea0165b6fdb82d2",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-155-rate-content.md": "112da16611ff21ba17eee6efef1741b3df54322891232ce1e11b8d866b0c66ce",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-156-rate-value.md": "b2880d6db888dd20397b726493706deba34ee6bffb804ff3389caffec1e8f081",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-157-summarize.md": "634e38808c65649f087ace8487437e19cac0d6d1f4409f352a54d57fc4f95ff1",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-158-summarize-lecture.md": "947cea8480e2bd44d952ed27499a82815869fff1f54b7c2dbbb9047d690e423b",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-159-summarize-micro.md": "1ed0ff203a54a22e40a8f405f16d9e452f046a920f61ca14a7d00b1fdfbcf186",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-160-summarize-newsletter.md": "0c572617b48b46e3a7ee3f5cddcee81dc71de7693a31404f7896d8e1423d932d",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-161-summarize-paper.md": "1173b4320ea8bfcc2ff3bb43eff7604a36d6f42e967c2efa309d8054c558280d",
+    "06_outputs/fabric-patterns/07-knowledge-management/FAB-162-youtube-summary.md": "152228d2d015c26c239905f981d9f9d2cc3a874fd9d130048a14ebc8137748f3",
+    "06_outputs/fabric-patterns/08-hr-hiring/FAB-163-analyze-candidates.md": "d14508bd1c25d0721108b802a3344539dc0a975faea598700333059e579a1354",
+    "06_outputs/fabric-patterns/08-hr-hiring/FAB-164-analyze-cfp-submission.md": "ce2966ec960e0bb387151d1c36781c80e3b8e9ebbc1f35247635416011d154d5",
+    "06_outputs/fabric-patterns/08-hr-hiring/FAB-165-analyze-interviewer-techniques.md": "b2df6acfbd80193d992ace6203983c68ad5e07ee9f49607cad9440b1acdc06b7",
+    "06_outputs/fabric-patterns/08-hr-hiring/FAB-166-analyze-personality.md": "e7e81616705a38116fb624133471b760e0248d7db25320cb4fc0480ff8e39fea",
+    "06_outputs/fabric-patterns/08-hr-hiring/FAB-167-answer-interview-question.md": "1d21f697afe66a9fa8d87b233c7aed9475fabb2379183d54b4b9c436b03d901f",
+    "06_outputs/fabric-patterns/08-hr-hiring/FAB-168-extract-skills.md": "936aeda06e380b05e09810cd7d50c5b396c189d9beaaf73b134e42a30b79bea4",
+    "06_outputs/fabric-patterns/08-hr-hiring/FAB-169-identify-job-stories.md": "01723174020c8f2563b8ff461a75ec8b8ee83022e6ea70d7b19ffddb8902ac8e",
+    "06_outputs/fabric-patterns/08-hr-hiring/FAB-170-predict-person-actions.md": "647834f55f2bf531066e2057cadcc39c5fa35d9c1c09223c74a5209b1c26daee",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-171-provide-guidance.md": "3d2f83ebcbe3cf17e7ce52f28643f41df5ec7d69f4f962daad62aa7413eaf253",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-172-t-analyze-challenge-handling.md": "24b9a2ee91c2980e732334f5d05cf8e51ba1b8e60ee06dbb496893a54a00fd54",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-173-t-check-dunning-kruger.md": "cbc77bb1e9581a0b524ede7735ba7cfceca65366fed383eb72696f687444add5",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-174-t-check-metrics.md": "4903bdad0172e02c16c92035d857e028650633b858c6770efbc2fdf91218eeb4",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-175-t-create-h3-career.md": "dec7996f3d4e7f615b37d8c7f2cfff48ac1e493da229db18bab2bfc5672fab61",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-176-t-create-opening-sentences.md": "3a3ea17941c2aed13e34f1272fe7e18aea9936590507405e8b37be986086a817",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-177-t-describe-life-outlook.md": "da8e65e511128fe5c4001a824577cda1ab298a0e853cdfc8ec4e955a0a4e8281",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-178-t-extract-intro-sentences.md": "fd117494462b9b78eda54bf4d221d5fd834a982093049cd6627583286807d7ca",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-179-t-extract-panel-topics.md": "644fb47e1093f8c36f8bd6c536a91358a09d73831e553c5df26b8034cf9f8423",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-180-t-find-blindspots.md": "b325c1a9d1bf205df67afa6c237482fe20fba8219e20f1a8711d5aebc34775a2",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-181-t-find-negative-thinking.md": "db5c3821da565bf1c380898df24f3c19813947187de0615d9e147665c95606ad",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-182-t-find-neglected-goals.md": "dffe7b964ed33b50b65474d5cd00c3c59478960dc30ad41ee063d9e1a4b18c96",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-183-t-give-encouragement.md": "c4c2bb774a0e57ab3dc8f45d4ac11904c3dcba412ec871c6124c7bcc8ce132bc",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-184-t-red-team-thinking.md": "20d0734d3bdf74f98a4ff869aab347cf496a6ecb6b35a403e2bdebbca1cc408d",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-185-t-threat-model-plans.md": "9aba4307ea19ff55a95aeeac31230f9b3759455b5812d124f60fb60b97b7e70e",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-186-t-visualize-mission-goals-projects.md": "910c7e343744b10afc02256c87b1cdd1fa0b701bd7ca0e016b18a376d6077349",
+    "06_outputs/fabric-patterns/09-founder-productivity/FAB-187-t-year-in-review.md": "ccddbedc25998f8f32a926a9d5c33def95ae5ece4bde07a998ed7d037762930e",
+    "06_outputs/fabric-patterns/10-customer-success/FAB-188-analyze-product-feedback.md": "ab5d936962a5474431d43cf3c1a17a2b93794d6310321ecf4697228e2a639fea",
+    "06_outputs/fabric-patterns/11-data-bi/FAB-189-create-conceptmap.md": "fc98cd26c928d733a8db02aa93a9e5e8ea363af641b6094a3b3d8eb379934176",
+    "06_outputs/fabric-patterns/11-data-bi/FAB-190-create-excalidraw-visualization.md": "38290c274b19d92fd2eea9bbb358e9b2bf568d0776c8818b52a764997a379bcb",
+    "06_outputs/fabric-patterns/11-data-bi/FAB-191-create-graph-from-input.md": "b3313c398e4006b221ffb56b6fda429eee854ecece226deb916c997e49db7af8",
+    "06_outputs/fabric-patterns/11-data-bi/FAB-192-create-investigation-visualization.md": "0d31a8d24da5a1e6cec8620b8cf17dda247a2259c5f4ec12cab849874d805297",
+    "06_outputs/fabric-patterns/11-data-bi/FAB-193-create-markmap-visualization.md": "889f9a1f8652d3d3991ca895c4be489c52428686240f6a60f059731235ec98fb",
+    "06_outputs/fabric-patterns/11-data-bi/FAB-194-create-mermaid-visualization.md": "53e60c28e2774b3c9cf1e9b9b7622593534658fd78bdf8e2f4bbce5ccade7a54",
+    "06_outputs/fabric-patterns/11-data-bi/FAB-195-create-mermaid-visualization-for-github.md": "68bc9c67e95a5e27bdc091a814d17831bac2731c840e84a475c63f9dab4c2b8c",
+    "06_outputs/fabric-patterns/11-data-bi/FAB-196-create-visualization.md": "d23169c88b0aff10cea137ea2a3617591c169cde0e1622a1acff24dec6b55ec8",
+    "06_outputs/fabric-patterns/12-design/FAB-197-create-design-system.md": "301bc9122a9cd409a32cbc22e3f80ebd4a91ef7560888bbf26829fd83c2d9d04",
+    "06_outputs/fabric-patterns/12-design/FAB-198-create-diy.md": "d7f565f03d9cb696878fe7780b57daef16770741ebdfc6a84f28b7dfe3a730b8",
+    "06_outputs/fabric-patterns/12-design/FAB-199-create-logo.md": "a223e4a0022e99dd8b53ff726b976b5f2c1fe619797002d4cb5026aa356cfb80",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-200-analyze-email-headers.md": "9994b85f7f56a3faeb7d6281020cfee4deb225370d8cec0a1201655f174dd7d9",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-201-analyze-logs.md": "09298595f2157e3304093335960591b945cdd0c4caee348c28e53d95a814fb3e",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-202-analyze-malware.md": "fa9a120b7986a415d3306f32c2a0e9212f67e9f94117f76e1ec3fdb3d59f80eb",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-203-analyze-threat-report.md": "6a34ac8c03719b97175fb73868f7678789775b8d23f6701197f0e6473c428c3e",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-204-analyze-threat-report-cmds.md": "10cfa1d8c94aeb3157050ce4e2cdf2d7e701d0d7fd3e89c46f2bc59db67d04b4",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-205-analyze-threat-report-trends.md": "e60287c38603ca28e7f9f066833d5da9fa027bd4249fd28ae9aa47b6eff860fb",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-206-ask-secure-by-design-questions.md": "dea59f338d75c7bdd16d4618b6fe7f7728e80ca5c53bc4847191fa195e454707",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-207-create-cyber-summary.md": "305706a445d57330ad634c1ac51e35d7bc49cac6af84865ab56b423542b389f9",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-208-create-network-threat-landscape.md": "5510b2d3f6ca360652130e0ddcbc985fe7f0568f1e65286ea4c50cfc138a07b7",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-209-create-security-update.md": "9cf0f806ad372bd95fc18546d3c2e1954db7a01bca109356db12e51718927892",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-210-create-sigma-rules.md": "a4fd9f18a3bb331130d8fdf463d435593393866b5fd15779ce5ec47c97791218",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-211-create-stride-threat-model.md": "6b27cde30efb3c98313ca3e57f9b086407c2616ecce9a16dee8336d209e0ebc6",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-212-create-threat-scenarios.md": "929046943a44d83029ca9ef8e1a64aa185226c28e950162a8ef773b36ad0580c",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-213-create-ttrc-graph.md": "f9894a35b3d14aaf69c70c200ee864c7bc472a270cd833b471e2ba376afd77a7",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-214-create-ttrc-narrative.md": "1dbdd6cc9ee9f0062f0261234ec023876d6455dd53341ea3e37d443bab018b5d",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-215-extract-ctf-writeup.md": "f717e1d7bbb3b52b2a2c103cd0d2d5676fc3b5ab4b8fa22b2cd6fdc70747556c",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-216-extract-poc.md": "55f7280b1e14c6db93efca30ac38bcd57022148f74ac2d0d62347caf5e14b932",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-217-write-hackerone-report.md": "34d6c01bbebf25f109b6e6bafb4735fca1f95bf1a8d1c42c9a2fa10ab4f8bd91",
+    "06_outputs/fabric-patterns/13-cybersecurity/FAB-218-write-semgrep-rule.md": "f708839cda48cc93acf546457d12dbe5d1cb0517befecc709c4be2b7578d90fa",
+    "06_outputs/fabric-patterns/_categories.md": "7f56fd061f61201e31269855457963308bb7ac2e8b41b709107365b743de364b",
+    "06_outputs/fabric-patterns/_index.md": "38f2883eb6663154e044718d379895879d7de442e6c797caab6d52e9436bcfd7",
+    "docs/examples/audit-report-2026-05-29.md": "4aea07b78d05a22b074c22ab3c672ff8e969707f119de3a96070304302a9aa52",
+    "docs/examples/dedup-report.md": "086377797a7662f369cb474040aab0832beefe9594a529a7cf10b91df236b53e",
+    "docs/examples/eval-report.md": "c93c285f30e2ae88d5d69dc014a63441fca4a192e2f124e518535b8ac3c39040",
+    "docs/examples/search-quality-report.md": "c90bea87a9cea315be53404732c3b2ad3c169c90dedb6a3db0e2158f189d0884"
+  },
+  "seedFiles": {
+    "00_context/spaces.json": "24b68d40880ef1e8f3839d72758ef40457cc851d7fc0136a99ffaa337a0f5cd6",
+    "index.md": "bd2a47387554b1781d027c5068d05964a2538c79513990d8d06ea8a796d97302",
+    ".claude/settings.json": "bc919c999fae1b4c8555501920120f1a202db9fbf823ca6aaffc41a683750bd1"
+  }
+}

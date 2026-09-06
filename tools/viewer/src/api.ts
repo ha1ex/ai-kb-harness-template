@@ -1,3 +1,4 @@
+import { searchDocuments } from "./search-client.mjs";
 // api.ts — типизированный клиент API (см. server.ts).
 
 export type DocMeta = {
@@ -27,7 +28,12 @@ export type DocFull = {
 
 export type GraphNode = { id: string; label: string; layer: string };
 export type GraphEdge = { source: string; target: string; type: string };
-export type GraphResponse = { nodes: GraphNode[]; edges: GraphEdge[]; hint?: string; error?: string };
+export type GraphResponse = {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  hint?: string;
+  error?: string;
+};
 
 export type SearchResult = {
   file: string;
@@ -53,11 +59,55 @@ async function fetchJson<T>(url: string): Promise<T> {
 }
 
 export const api = {
-  tree: () => fetchJson<TreeResponse>("/api/tree"),
-  doc: (path: string) => fetchJson<DocFull>(`/api/doc/${encodeURI(path)}`),
-  graph: () => fetchJson<GraphResponse>("/api/graph"),
-  search: (q: string, mode: "hybrid" | "vector" | "bm25" = "hybrid", top = 10) =>
-    fetchJson<SearchResponse>(
-      `/api/search?q=${encodeURIComponent(q)}&mode=${mode}&top=${top}`,
+  tree: () => getCatalog(),
+  doc: async (path: string) => {
+    const doc = (await getCatalog()).docs.find((d) => d.path === path);
+    if (!doc)
+      throw Error(
+        "Документ не опубликован в этой витрине. Проверьте путь и настройки доступных слоёв; исходники 01_raw публикуются отдельно.",
+      );
+    return doc;
+  },
+  graph: () =>
+    import.meta.env.PROD
+      ? Promise.resolve({
+          nodes: [],
+          edges: [],
+          hint: "Graph index is available in development mode",
+        })
+      : fetchJson<GraphResponse>("/api/graph"),
+  search: (
+    q: string,
+    mode: "hybrid" | "vector" | "bm25" = "hybrid",
+    top = 10,
+  ): Promise<SearchResponse> =>
+    searchDocuments(
+      { staticMode: import.meta.env.PROD, fetchJson, getCatalog },
+      q,
+      mode,
+      top,
     ),
 };
+
+export type Space = {
+  id: string;
+  title: string;
+  description?: string;
+  start_docs: string[];
+};
+export type Catalog = TreeResponse & {
+  config: {
+    name: string;
+    description: string;
+    status?: string;
+    accent?: string;
+  };
+  spaces: Space[];
+  docs: (DocMeta & DocFull)[];
+};
+let catalogPromise: Promise<Catalog> | undefined;
+export function getCatalog(): Promise<Catalog> {
+  return (catalogPromise ??= fetchJson<Catalog>(
+    import.meta.env.PROD ? "/data/catalog.json" : "/api/viewer",
+  ));
+}

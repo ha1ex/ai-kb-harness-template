@@ -1,112 +1,180 @@
 #!/usr/bin/env node
-// kb-update.mjs — обновление форка от upstream-шаблона БЕЗ merge-ада (C3).
-//
-// GitHub-шаблоны не обновляют клоны. Этот скрипт делает файловый 3-way-lite строго
-// по границе из .template-manifest.json:
-//   • смотрит ТОЛЬКО template-owned пути (ядро оснастки);
-//   • файл изменился в upstream и НЕ тронут локально → безопасно взять upstream-версию;
-//   • файл изменился и там, и там → пропустить с предупреждением (ручной merge);
-//   • project-owned (kb.config.mjs, AGENTS.md, слои 00–06…) НИКОГДА не трогается.
-//
-// Использование:
-//   node scripts/kb-update.mjs                # dry-run: что изменилось, что конфликтует
-//   node scripts/kb-update.mjs --apply        # применить безопасные обновления (чистый tree!)
-//   node scripts/kb-update.mjs --remote NAME  # имя remote (default: upstream; создаст из манифеста)
-//
-// После --apply: pnpm run setup (если менялись package.json) и pnpm kb:doctor.
+// Preview by default. All upstream Git operations take place in a temporary repository.
+import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve, isAbsolute } from "node:path";
+import { KB_ROOT } from "./lib/kb-root.mjs";
+import {
+  LOCK_PATH,
+  readJson,
+  validateManifest,
+  validateState,
+  snapshot,
+  git,
+  planUpdate,
+  updateWrites,
+  applyWrites,
+  encode,
+  safePath,
+} from "./lib/template-state.mjs";
 
-import { execFileSync } from 'node:child_process';
-import { readFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
-import { KB_ROOT } from './lib/kb-root.mjs';
-
-const argv = process.argv.slice(2);
-const apply = argv.includes('--apply');
-const remoteIdx = argv.indexOf('--remote');
-const remote = remoteIdx >= 0 ? argv[remoteIdx + 1] : 'upstream';
-
-const git = (...args) => execFileSync('git', args, { cwd: KB_ROOT, encoding: 'utf8' }).trim();
-
-const manifestPath = join(KB_ROOT, '.template-manifest.json');
-if (!existsSync(manifestPath)) {
-  console.error('[kb-update] .template-manifest.json не найден — обновляйтесь вручную (README § Как обновляться).');
-  process.exit(1);
-}
-const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
-const templateOwned = manifest.templateOwned || [];
-if (!templateOwned.length) {
-  console.error('[kb-update] templateOwned пуст в манифесте — нечего обновлять.');
-  process.exit(1);
-}
-
-// ---------- remote ----------
-
-let hasRemote = false;
-try { git('remote', 'get-url', remote); hasRemote = true; } catch { /* нет remote */ }
-if (!hasRemote) {
-  if (!manifest.upstream) {
-    console.error(`[kb-update] remote «${remote}» отсутствует и upstream в манифесте не задан.`);
-    process.exit(1);
-  }
-  console.log(`[kb-update] добавляю remote ${remote} → ${manifest.upstream}`);
-  git('remote', 'add', remote, manifest.upstream);
-}
-console.log(`[kb-update] git fetch ${remote} …`);
-execFileSync('git', ['fetch', remote], { cwd: KB_ROOT, stdio: 'inherit' });
-
-const upstreamRef = `${remote}/main`;
-let mergeBase;
+const options = { apply: false, adopt: false, json: false, resolve: [] };
+let temp;
 try {
-  mergeBase = git('merge-base', 'HEAD', upstreamRef);
-} catch {
-  console.error(`[kb-update] нет общей истории с ${upstreamRef} (клон не из этого шаблона?) — обновляйтесь вручную.`);
-  process.exit(1);
+  const args = process.argv.slice(2);
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i];
+    if (["--apply", "--adopt", "--json"].includes(a))
+      options[a.slice(2)] = true;
+    else if (a === "--resolve") {
+      const value = args[++i];
+      if (!value || value.startsWith("-"))
+        throw new Error("Missing --resolve path");
+      options.resolve.push(value);
+    } else if (["--source", "--ref", "--from", "--remote"].includes(a)) {
+      const value = args[++i];
+      if (!value || value.startsWith("-"))
+        throw new Error(`Missing value for ${a}`);
+      options[a.slice(2)] = value;
+    } else if (a === "--help" || a === "-h") {
+      console.log(
+        "kb:update [--ref vX.Y.Z] [--source URL|path] [--apply] [--json] [--resolve PATH[#/json/pointer]]\nLegacy project: kb:update --adopt --from <known-tag-or-commit> [--apply]\nExit 0: clean; 1: error; 2: conflicts. Default: preview only.",
+      );
+      process.exit(0);
+    } else throw new Error(`Unknown option: ${a}`);
+  }
+  const manifest = validateManifest(
+    readJson(KB_ROOT, ".template-manifest.json"),
+  );
+  let source =
+    options.source ??
+    (options.remote
+      ? git(KB_ROOT, "remote", "get-url", options.remote)
+      : manifest.upstream);
+  if (!source || source.startsWith("-"))
+    throw new Error("Missing or invalid upstream source");
+  // Git resolves local sources from its own working directory, which will be a temp checkout.
+  // Preserve URL/scp transports while anchoring filesystem sources to the target project.
+  if (isAbsolute(source) || source.startsWith(".") || !source.includes(":"))
+    source = resolve(KB_ROOT, source);
+  if (options.apply && git(KB_ROOT, "status", "--porcelain"))
+    throw new Error(
+      "Рабочая копия не чистая. Сохраните/закоммитьте изменения перед --apply.",
+    );
+  if (options.adopt && !options.from)
+    throw new Error(
+      "Adoption requires --from <known-tag-or-commit>; baseline is never guessed.",
+    );
+  if (options.adopt && existsSync(safePath(KB_ROOT, LOCK_PATH)))
+    throw new Error(
+      "Installed baseline already exists; adoption never overwrites it.",
+    );
+  if (!options.adopt && !existsSync(safePath(KB_ROOT, LOCK_PATH)))
+    throw new Error(
+      "Нет исходной базы (baseline). Выполните kb:init или kb:update --adopt --from <known-version> --apply.",
+    );
+  let ref = options.adopt ? options.from : options.ref;
+  if (!ref) {
+    const tags = git(KB_ROOT, "ls-remote", "--tags", "--refs", source)
+      .split("\n")
+      .map((l) => l.split("\t")[1]?.replace("refs/tags/", ""))
+      .filter((s) => /^v\d+\.\d+\.\d+$/.test(s ?? ""));
+    tags.sort((a, b) => {
+      const x = a.slice(1).split(".").map(Number),
+        y = b.slice(1).split(".").map(Number);
+      return y[0] - x[0] || y[1] - x[1] || y[2] - x[2];
+    });
+    ref = tags[0];
+    if (!ref)
+      throw new Error(
+        "No released version tags found. Specify an exact --ref to review an unreleased revision.",
+      );
+  }
+  if (ref.startsWith("-") || /[\s\0]/.test(ref))
+    throw new Error("Invalid upstream ref");
+  temp = mkdtempSync(join(tmpdir(), "kb-upstream-"));
+  git(temp, "init", "-q");
+  git(temp, "fetch", "--depth=1", source, ref);
+  git(temp, "checkout", "-q", "--detach", "FETCH_HEAD");
+  const targetManifest = validateManifest(
+    readJson(temp, ".template-manifest.json"),
+  );
+  const target = snapshot(temp, targetManifest, {
+    repository: source,
+    sourceRef: ref,
+    sourceCommit: git(temp, "rev-parse", "HEAD"),
+  });
+  if (/^v\d+\.\d+\.\d+$/.test(ref) && ref !== `v${target.templateVersion}`)
+    throw new Error(
+      "Release tag does not match templateVersion in its manifest.",
+    );
+  if (options.adopt) {
+    const lock = { ...target, installedVersion: target.templateVersion };
+    const report = {
+      adopt: ref,
+      version: target.templateVersion,
+      commit: target.sourceCommit,
+      files: Object.keys(target.files).length,
+      apply: options.apply,
+    };
+    if (options.apply)
+      applyWrites(
+        KB_ROOT,
+        new Map([[LOCK_PATH, { data: encode(lock), mode: "100644" }]]),
+      );
+    console.log(
+      options.json
+        ? encode(report)
+        : `[kb-update] ${options.apply ? "Recorded" : "Preview baseline"} ${ref} (${target.sourceCommit.slice(0, 8)}). Project files preserved. Commit .harness/lock.json before updating.`,
+    );
+  } else {
+    const base = validateState(readJson(KB_ROOT, LOCK_PATH));
+    const plan = planUpdate(KB_ROOT, manifest, targetManifest, base, target);
+    // A local merge is accepted only by an explicit path acknowledgement, never guessed.
+    for (const id of options.resolve) {
+      const index = plan.conflicts.findIndex(
+        (a) => a.path + (a.pointer ? "#" + a.pointer : "") === id,
+      );
+      if (index < 0)
+        throw new Error(`--resolve is not a currently conflicting path: ${id}`);
+      const [item] = plan.conflicts.splice(index, 1);
+      plan.settled.push({
+        ...item,
+        resolution: "reviewed local merge; content preserved",
+      });
+    }
+    const report = {
+      from: base.installedVersion ?? base.templateVersion,
+      to: target.templateVersion,
+      commit: target.sourceCommit,
+      apply: options.apply,
+      ...plan,
+    };
+    if (options.apply)
+      applyWrites(KB_ROOT, updateWrites(KB_ROOT, temp, base, target, plan));
+    if (options.json) console.log(encode(report));
+    else {
+      console.log(
+        `[kb-update] ${report.from} → ${report.to} (${target.sourceCommit.slice(0, 8)}) — ${options.apply ? "apply" : "preview"}`,
+      );
+      for (const a of plan.actions)
+        console.log(`  ${a.kind}: ${a.path}${a.pointer ?? ""}`);
+      for (const a of plan.conflicts)
+        console.log(`  CONFLICT: ${a.path}${a.pointer ?? ""} — ${a.reason}`);
+      console.log(
+        `  ${plan.actions.length} changes, ${plan.conflicts.length} conflicts, ${plan.settled.length} already resolved.`,
+      );
+      console.log(
+        options.apply
+          ? "Review git diff, run setup/checks, then commit."
+          : "No project files, index or Git configuration changed. Apply with --apply.",
+      );
+    }
+    if (plan.conflicts.length) process.exitCode = 2;
+  }
+} catch (error) {
+  console.error(`[kb-update] ${error.message}`);
+  process.exitCode = 1;
+} finally {
+  if (temp) rmSync(temp, { recursive: true, force: true });
 }
-
-// ---------- классификация файлов ----------
-
-const nameOnly = (a, b) => {
-  const out = git('diff', '--name-only', a, b, '--', ...templateOwned);
-  return new Set(out ? out.split('\n') : []);
-};
-
-const upstreamChanged = nameOnly(mergeBase, upstreamRef); // изменено в upstream с точки развилки
-const locallyChanged = nameOnly(mergeBase, 'HEAD');       // изменено локально с точки развилки
-
-const safe = [...upstreamChanged].filter((f) => !locallyChanged.has(f)).sort();
-const conflicted = [...upstreamChanged].filter((f) => locallyChanged.has(f)).sort();
-
-if (!upstreamChanged.size) {
-  console.log(`[kb-update] template-owned файлы актуальны (upstream ${upstreamRef} не приносит изменений).`);
-  process.exit(0);
-}
-
-console.log(`\n[kb-update] upstream ${upstreamRef} (merge-base ${mergeBase.slice(0, 7)}):`);
-console.log(`\n  Безопасно обновить (${safe.length}) — изменены только в upstream:`);
-for (const f of safe) console.log(`    ✓ ${f}`);
-if (conflicted.length) {
-  console.log(`\n  ⚠ Конфликтуют (${conflicted.length}) — изменены и в upstream, и локально (ручной merge):`);
-  for (const f of conflicted) console.log(`    ✗ ${f}   (git diff ${mergeBase.slice(0, 7)}..${upstreamRef} -- ${f})`);
-}
-
-if (!apply) {
-  console.log('\n[kb-update] dry-run. Применить безопасные обновления: node scripts/kb-update.mjs --apply');
-  process.exit(0);
-}
-
-// ---------- apply ----------
-
-if (git('status', '--porcelain')) {
-  console.error('\n[kb-update] рабочее дерево не чистое — закоммить/stash перед --apply.');
-  process.exit(1);
-}
-if (!safe.length) {
-  console.log('\n[kb-update] безопасных обновлений нет (всё конфликтует) — только ручной merge.');
-  process.exit(0);
-}
-git('checkout', upstreamRef, '--', ...safe);
-console.log(`\n[kb-update] применено ${safe.length} файлов (staged). Дальше:`);
-console.log('  1. git diff --cached           # просмотреть');
-console.log('  2. pnpm run setup && pnpm kb:doctor && node scripts/semantic/test-gate.mjs');
-console.log('  3. git commit -m "chore: update harness from upstream"');
-if (conflicted.length) console.log(`  4. Разобрать ${conflicted.length} конфликтующих файлов вручную (список выше).`);

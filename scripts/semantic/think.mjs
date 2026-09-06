@@ -2,9 +2,9 @@
 // think.mjs — собирает контекст под вопрос и формирует промпт для синтеза.
 //
 // Использование:
-//   node scripts/semantic/think.mjs "что такое CDX-сегмент"
+//   node scripts/semantic/think.mjs "какие вопросы остаются открытыми"
 //   node scripts/semantic/think.mjs "..." --top 15 --layer 04_synthesis
-//   node scripts/semantic/think.mjs "..." --execute      # попробовать запустить claude CLI
+//   node scripts/semantic/think.mjs "..." --execute      # вызвать настроенного провайдера
 //   node scripts/semantic/think.mjs "..." --json         # машинный вывод (context + prompt)
 //
 // Что делает:
@@ -14,12 +14,13 @@
 //   3. Формирует промпт по правилам AGENTS.md: метки FACT/INFERENCE/ASSUMPTION/UNKNOWN,
 //      цитаты [source: /path], запрет на recommendations без evidence.
 //   4. По умолчанию печатает промпт в stdout (копируешь и вставляешь в Claude / любой LLM).
-//      С флагом --execute пробует запустить `claude -p "..."` (если claude CLI в PATH).
+//      С флагом --execute вызывает явно настроенного провайдера из kb.config.mjs llm.
 //
 // Не пишет в БД и не модифицирует KB.
 
+import { loadAgentContext } from '../lib/agent-context.mjs';
 import { existsSync, statSync, readFileSync } from 'node:fs';
-import { spawnSync } from 'node:child_process';
+import { completePrompt } from '../lib/llm.mjs';
 import { join } from 'node:path';
 import {
   createEmbedder,
@@ -138,22 +139,16 @@ if (asJson) {
 }
 
 if (execute) {
-  // Попытка вызвать claude CLI. Если нет — fallback на печать промпта.
-  const which = spawnSync('which', ['claude'], { encoding: 'utf8' });
-  if (which.status !== 0) {
-    console.error('[think] claude CLI не найден в PATH. Печатаю промпт ниже — скопируйте его в любой LLM.\n');
+  try {
+    const response = await completePrompt(promptText, { execute });
+    if (!response.executed) console.error(`[think] ${response.reason}`);
+    console.log(response.executed ? response.text : promptText);
+  } catch (error) {
+    console.error(`[think] ${error.message}; prompt follows for manual use.`);
     console.log(promptText);
-    process.exit(0);
+    process.exitCode = 1;
   }
-  // Передаём промпт через stdin: claude -p "" --print
-  const res = spawnSync('claude', ['-p', promptText], { stdio: ['ignore', 'inherit', 'inherit'], timeout: 300_000, killSignal: 'SIGTERM' });
-  if (res.error) {
-    console.error(`[think] claude не ответил за 5 мин: ${res.error.code || res.error.message}. Запусти без --execute (или с --json), чтобы получить промпт.`);
-    process.exit(1);
-  }
-  process.exit(res.status ?? 0);
-}
-
+} else
 console.log(promptText);
 
 // --------- prompt-builder ----------
@@ -161,32 +156,7 @@ console.log(promptText);
 // Если в корне репо есть AGENTS.md — он становится системным промптом (это и есть
 // канонический контракт «как агент должен работать с KB»). Если нет — используем generic
 // дефолт с метками FACT/INFERENCE/UNKNOWN.
-function loadSystemPrompt() {
-  const path = join(REPO_ROOT, 'AGENTS.md');
-  try {
-    const text = readFileSync(path, 'utf8');
-    if (text.trim()) return text;
-  } catch { /* fallthrough */ }
-  return [
-    'Ты помогаешь по KB этого проекта. Отвечай на русском.',
-    'Каждое нетривиальное утверждение помечай меткой и сопровождай цитатой:',
-    '  • `FACT:` — прямо из источника, требует [source: /path].',
-    '  • `INFERENCE:` — вывод из источников, объясни ход и цитируй.',
-    '  • `ASSUMPTION:` — гипотеза без evidence, явно помечай.',
-    '  • `UNKNOWN:` — пробел; назови, какой артефакт его закрыл бы.',
-    '  • `RISK:` — стратегический/operational/доходный риск.',
-    '  • `DECISION:` — явное решение из /05_decisions/.',
-    '  • `RECOMMENDATION:` — предложение, не факт. Запрещено выдавать за факт.',
-    '',
-    'Никогда не сваливай факты, гипотезы и решения в один абзац без меток.',
-    'Если evidence недостаточно — отвечай `UNKNOWN:` и перечисли пробелы, а не выдумывай.',
-    '',
-    'Структура ответа:',
-    '  1. Короткий ответ (1–3 предложения) с метками и цитатами.',
-    '  2. Детали — только если они меняют ответ. Каждый блок с меткой.',
-    '  3. Раздел «Пробелы» — что неизвестно, какой артефакт нужен.',
-  ].join('\n');
-}
+function loadSystemPrompt() { return loadAgentContext(REPO_ROOT); }
 
 // Answer-policy (L5): .remember/preferences.md — ручки формы ответа, которых нет в AGENTS.md.
 function loadPreferences() {

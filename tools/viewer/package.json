@@ -10,8 +10,9 @@
     "dev": "concurrently -n server,client -c blue,magenta \"pnpm dev:server\" \"pnpm dev:client\"",
     "dev:server": "tsx watch server.ts",
     "dev:client": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "build": "tsc -b && vite build && node build-static.mjs",
+    "preview": "vite preview",
+    "test": "node --test data.test.mjs && node --import tsx --test components.test.tsx"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

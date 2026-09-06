@@ -1,8 +1,8 @@
 {
   "name": "ai-kb-harness-template",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "private": true,
-  "description": "Стартовая оснастка для проектов где markdown-репо = knowledge base, а AI-агенты — ежедневный инструмент. Перед использованием: pnpm run setup (или вручную: cd scripts/semantic && pnpm install; cd scripts/skillopt && pnpm install; cd tools/viewer && pnpm install).",
+  "description": "Переиспользуемая база знаний для людей и AI-агентов: источники, проверяемые выводы, переносимые навыки, веб-витрина и обновления шаблона.",
   "packageManager": "pnpm@9.15.0",
   "engines": {
     "node": ">=20 <23"
@@ -19,10 +19,22 @@
     "kb:critic": "node scripts/kb-critic.mjs",
     "kb:dream": "node scripts/dream-cycle.mjs",
     "viewer:dev": "cd tools/viewer && pnpm dev",
-    "viewer:build": "cd tools/viewer && pnpm build",
+    "viewer:build": "pnpm -C tools/viewer build",
     "kb:init": "node scripts/kb-init.mjs",
     "kb:update": "node scripts/kb-update.mjs",
     "kb:metrics": "node scripts/kb-metrics.mjs",
-    "kb:digest": "node scripts/kb-digest.mjs"
+    "kb:digest": "node scripts/kb-digest.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check": "node scripts/git-hooks/check.mjs",
+    "harness:check": "node scripts/check-harness.mjs",
+    "harness:setup": "node scripts/check-harness.mjs --setup",
+    "kb:context": "node scripts/session-start-context.mjs",
+    "kb:session": "node scripts/kb-session.mjs",
+    "kb:spaces": "node scripts/check-spaces.mjs",
+    "kb:portability": "node scripts/check-portability.mjs",
+    "kb:readability": "node scripts/check-readability.mjs",
+    "kb:release:baseline": "node scripts/template-release.mjs --write",
+    "kb:release:check": "node scripts/template-release.mjs --check",
+    "viewer:test": "pnpm -C tools/viewer test"
   }
 }

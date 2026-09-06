@@ -1,0 +1,22 @@
+{
+  "spaces": [
+    {
+      "id": "project",
+      "title": "О проекте",
+      "description": "Цель проекта, рабочий контекст и вопросы, на которые предстоит ответить.",
+      "start_docs": [
+        "00_context/walkthrough-product.md",
+        "04_synthesis/walkthrough-pilot-hypotheses.md"
+      ]
+    },
+    {
+      "id": "evidence",
+      "title": "Источники и выводы",
+      "description": "Проверьте, на каких материалах основаны выводы и что ещё неизвестно.",
+      "start_docs": [
+        "03_wiki/walkthrough-deflection-rate.md",
+        "02_sources/2026-06-30-walkthrough-interview-cto.md"
+      ]
+    }
+  ]
+}

@@ -17,9 +17,10 @@ import { extname, join, resolve, relative, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import matter from "gray-matter";
+import { buildCatalog } from "./data.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(process.env.REPO_ROOT || join(__dirname, "..", ".."));
+const REPO_ROOT = resolve(process.env.REPO_ROOT || process.env.KB_ROOT || join(__dirname, "..", ".."));
 const PORT = Number(process.env.VIEWER_PORT) || 3001;
 // Безопасность: по умолчанию слушаем только loopback. Для доступа из сети
 // явно задайте VIEWER_HOST=0.0.0.0 (на свой риск — API читает файлы и спавнит node).
@@ -102,44 +103,13 @@ function sendText(res: import("node:http").ServerResponse, status: number, body:
 // ---------- handlers ----------
 
 async function handleTree(): Promise<unknown> {
-  const tree: Record<string, DocMeta[]> = {};
-  for (const layer of INDEXABLE_LAYERS) {
-    const files = await walkLayer(layer);
-    const docs: DocMeta[] = [];
-    for (const f of files) {
-      const meta = await readDocMeta(f, layer);
-      if (meta) docs.push(meta);
-    }
-    tree[layer] = docs;
-  }
-  return { layers: INDEXABLE_LAYERS, tree, builtAt: Date.now() };
+  const {layers,tree,builtAt}=await buildCatalog(REPO_ROOT);
+  return {layers,tree,builtAt};
 }
 
 async function handleDoc(relPath: string): Promise<unknown | null> {
-  // Безопасность: отдаём ТОЛЬКО .md строго внутри REPO_ROOT.
-  // resolve() нормализует "..", relative() ловит выход за корень; dot-сегменты
-  // (.git/.claude/.remember/.context) запрещены полностью.
-  const safe = relPath.replace(/^\/+/, "");
-  if (extname(safe) !== ".md") return null;
-  const abs = resolve(REPO_ROOT, safe);
-  const rel = relative(REPO_ROOT, abs);
-  if (rel === "" || rel.startsWith("..") || rel.startsWith("/")) return null;
-  if (rel.split("/").some((seg) => seg.startsWith("."))) return null;
-  if (!existsSync(abs)) return null;
-  const raw = await readFile(abs, "utf8");
-  const { data, content } = matter(raw);
-  const layerMatch = rel.match(/^([^/]+)\//);
-  const layer = layerMatch ? layerMatch[1] : "";
-  // backlinks через sqlite-индекс, если он есть
-  const backlinks = await loadBacklinks(rel);
-  return {
-    path: rel,
-    layer,
-    raw,
-    body: content,
-    frontmatter: data,
-    backlinks,
-  };
+  // Serve only catalogued Markdown; the catalog rejects symlink and hidden paths.
+  return (await buildCatalog(REPO_ROOT)).docs.find(doc=>doc.path===relPath.replace(/^\/+/, ""))??null;
 }
 
 async function loadBacklinks(targetPath: string): Promise<string[]> {
@@ -271,6 +241,7 @@ const server = createServer(async (req, res) => {
   res.setHeader("Cache-Control", "no-store");
   try {
     if (url.pathname === "/api/health") return sendJson(res, 200, { ok: true, repo: REPO_ROOT });
+    if (url.pathname === "/api/viewer") return sendJson(res, 200, await buildCatalog(REPO_ROOT));
     if (url.pathname === "/api/tree") return sendJson(res, 200, await handleTree());
     if (url.pathname === "/api/graph") return sendJson(res, 200, await handleGraph());
     if (url.pathname.startsWith("/api/doc/")) {

@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+# Read-only by default; explicit HARNESS_SYNC_SKILLS=1 opts into protected copy refresh.
+cd "$(git rev-parse --show-toplevel)" || exit 0
+if command -v node >/dev/null 2>&1; then
+  if [ "${HARNESS_SYNC_SKILLS:-0}" = "1" ]; then
+    node scripts/check-harness.mjs --setup || true
+  else
+    node scripts/check-harness.mjs || true
+  fi
+else
+  echo "Harness: Node is unavailable; run node scripts/check-harness.mjs when installed."
+fi

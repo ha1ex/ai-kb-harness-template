@@ -1,39 +1,25 @@
-# Core — semantic invariant проекта
+# Durable project context
 
-> Этот файл — инвариант проекта (semantic memory). Коммитится в git.
-> Здесь живёт то, что **не меняется** от сессии к сессии: цель, контекст, ключевые правила.
-> `now.md` и `today.md` — сессионные, gitignored.
+This project-owned file records context that should survive a session or client change. Update it when the project purpose or a confirmed constraint changes. Keep task progress in separate `.remember/tasks/<id>.json` records.
 
-## Цель проекта
+## Purpose
 
-Двойной артефакт: (1) переиспользуемый **шаблон** AI-оснастки для markdown-репозитория-как-KB и
-(2) загруженная **библиотека** из 736 AI-навыков/паттернов/кейсов (4 источника). On-device hybrid RAG
-(e5-small + sqlite-vec + FTS5 + RRF) + MCP-сервер, чтобы агент работал с KB без копипаста.
+Use this knowledge base to collect sources, explain findings and support decisions. Replace this paragraph with the project's purpose, audience and desired outcomes.
 
-## Контекст
+## Working rules
 
-- Стейкхолдер: solo-researcher / solo-founder, ведущий один содержательный проект с нуля.
-- Слои `00–05` — для **собственного** контента проекта; `06_outputs/<provider>/` — внешний корпус
-  (зеркало библиотек), особый слой вне пирамиды evidence→synthesis (см. `AGENTS.md` § External corpus).
-- Полностью локально после первичной загрузки модели (~120 MB ONNX при первом `kb:index`).
+- Preserve original evidence in `01_raw/` and cite sources for substantive claims.
+- Distinguish facts, inference, assumptions, open questions and proposed decisions. A proposal requires an authorized decision before it becomes accepted policy.
+- Follow `harness/rules/evidence.md` and `harness/rules/workflow.md`. Use `docs/human-interface.md` when preparing material for readers.
+- Preserve project-owned content and client settings when updating the harness.
+- Record actual checks and remaining work in an owned task handoff before ending a session.
 
-## Hard rules (то, что нарушать нельзя)
+## Project decisions and constraints
 
-1. Русский язык во всех артефактах (ID/имена файлов/термины — латиница; см. `CLAUDE.md` § Язык).
-2. ff-merge в `main`, без force-push; после пуша в `main` — резюме «что сделано + как проверить».
-3. Evidence/цитата перед recommendation; не смешивать `FACT`/`INFERENCE`/`DECISION` без меток.
-4. Значимые артефакты — сразу в git (`04_synthesis`/`05_decisions`/`06_outputs`), не оставлять в `.context/`.
+No project-specific decisions or constraints are recorded yet. Add confirmed decisions with links to their evidence or decision records; do not infer them from the template.
 
-## Карта слоёв
+## Where context lives
 
-- `00_context/` — immutable контекст (что за продукт, кто стейкхолдеры)
-- `01_raw/` — сырые артефакты (raw evidence, immutable)
-- `02_sources/` — короткие summary артефактов
-- `03_wiki/` — концепты, агрегированные из источников
-- `04_synthesis/` — интерпретация, гипотезы, open questions
-- `05_decisions/` — принятые решения с rationale
-- `06_outputs/` — финальные артефакты для людей + external corpus (зеркала библиотек)
+`00_context/` describes the project; `01_raw/` preserves sources; `02_sources/` summarizes individual sources; `03_wiki/` explains concepts; `04_synthesis/` holds interpretation and open questions; `05_decisions/` records decisions; `06_outputs/` contains reader-facing artifacts.
 
-## Поток ingest
-
-См. `AGENTS.md` § Ingest workflow.
+`.remember/preferences.md` controls presentation. `.remember/now.md` is an optional human-curated overview. Each task handoff records its owner, goal, acceptance criteria, confirmed decisions, sources, changes, checks and next step.

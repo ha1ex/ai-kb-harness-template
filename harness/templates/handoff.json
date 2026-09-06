@@ -1,0 +1,19 @@
+{
+  "goal": "Explain a neutral source",
+  "status": "active",
+  "constraints": [
+    "Preserve original source"
+  ],
+  "sources": [],
+  "changedFiles": [],
+  "checks": [],
+  "openQuestions": [
+    "Which claim needs more evidence?"
+  ],
+  "nextStep": "Read the source and record findings",
+  "result": "",
+  "acceptanceCriteria": [
+    "Every extracted claim is traced to the source; unresolved claims are marked unknown"
+  ],
+  "decisions": []
+}

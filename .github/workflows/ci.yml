@@ -31,7 +31,7 @@ jobs:
           cache-dependency-path: scripts/semantic/pnpm-lock.yaml
 
       - name: Install semantic deps
-        run: pnpm -C scripts/semantic install
+        run: pnpm -C scripts/semantic install --frozen-lockfile
 
       # Syntax-check ключевых .mjs (без загрузки 120MB ONNX-модели).
       - name: Syntax check (node --check)
@@ -45,3 +45,29 @@ jobs:
       # search-quality-probes НЕ запускаем в CI — требуют загрузки ONNX-модели (~120MB).
       - name: Run kb-doctor
         run: node scripts/kb-doctor.mjs
+
+  harness-contracts:
+    name: Template, clients and viewer
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Enable pnpm
+        run: corepack enable
+      - name: Install dependencies
+        run: pnpm run setup
+      - name: Harness and migration tests
+        run: pnpm test
+      - name: Common checks
+        run: pnpm check
+      - name: Viewer behavior
+        run: pnpm viewer:test
+      - name: Static viewer build
+        run: pnpm viewer:build
+      - name: Verify upstream release baseline
+        if: github.repository == 'ha1ex/ai-kb-harness-template'
+        run: pnpm kb:release:check

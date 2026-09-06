@@ -38,3 +38,13 @@ scripts/semantic/.transformers-cache/
 .vscode/
 .idea/
 *.swp
+
+# Local compiler/browser output
+*.tsbuildinfo
+test-results/
+playwright-report/
+
+# Active session write locks and interrupted atomic writes
+.remember/tasks/*.lock
+.remember/tasks/*.lock.recovery
+.remember/tasks/*.tmp

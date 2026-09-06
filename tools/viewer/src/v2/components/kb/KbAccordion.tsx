@@ -64,7 +64,7 @@ export function KbAccordion({ children, className, type = "single" }: AccordionP
       });
       requestAnimationFrame(() => {
         const el = document.getElementById(match.id);
-        el?.scrollIntoView({ behavior: "smooth", block: "start" });
+        el?.scrollIntoView({ behavior: "auto", block: "start" });
       });
     }
     syncFromHash();
@@ -83,7 +83,7 @@ export function KbAccordion({ children, className, type = "single" }: AccordionP
       });
       if (nextOpen) {
         try {
-          history.replaceState(null, "", `#${id}`);
+          history.replaceState(history.state, "", `#${id}`);
         } catch {
           // ignore
         }

@@ -19,7 +19,7 @@
 | `pnpm kb:metrics` | `kb-metrics.mjs` | тренды качества из журнала по неделям (D1) |
 | `pnpm kb:digest` | `kb-digest.mjs` | утренний дайджест состояния KB (D4; см. `../docs/automation.md`) |
 | `pnpm kb:update` | `kb-update.mjs` | обновление ядра от upstream по `.template-manifest.json` (C3) |
-| — | `kb-critic.mjs` | revision-промпт по битым цитатам; `--execute` гоняет verify→revise через `claude` (N1) |
+| — | `kb-critic.mjs` | revision-промпт по битым цитатам; `--execute` запускает verify→revise через выбранный LLM-адаптер (N1) |
 | `pnpm kb:dream` | `dream-cycle.mjs` | еженедельный LLM-аудит + fact-консолидация (пишет в `.context/`) |
 | — | `suggest-links.mjs` | advisory-предложения `related:` (on-device, в `.context/`) |
 | — | `parse-raw.mjs` | бинарный артефакт (PDF/docx) → черновик `02_sources` (markitdown, опц.) |
@@ -55,3 +55,29 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r scripts/requirements.txt   # сейчас no-op (только stdlib)
 python3 scripts/import-fabric.py --help
 ```
+
+
+## Harness 0.4.0: проекты, клиенты и выпуски
+
+| Команда | Назначение |
+|---|---|
+| `pnpm harness:setup --client codex` | Создать управляемые файлы выбранного клиента; чужие правки сохраняются |
+| `pnpm harness:check` | Проверить настройки без исправлений и без запуска модели |
+| `pnpm kb:context --task ID` | Краткий контекст и состояние конкретной задачи |
+| `pnpm kb:session --help` | Создание и передача handoff-записей |
+| `pnpm kb:spaces` | Проверка разделов и ссылок на документы |
+| `pnpm kb:portability` | Проверка переносимости путей |
+| `pnpm kb:readability` | Редакторские замечания к собственным документам |
+| `pnpm check` | Общий набор проверок независимо от клиента |
+| `pnpm kb:release:baseline` | Автор шаблона: подготовить исходные хеши выпуска |
+| `pnpm kb:release:check` | Автор шаблона: проверить версию и хеши |
+
+`kb-update.mjs` теперь сравнивает baseline файлов, а не `git merge-base`. Полный порядок и
+явное принятие старой базы — [обновления](../docs/upgrades.md). `template-state.mjs` содержит
+проверку владения путями, сравнение полей JSON и запись результата; данные проекта не
+становятся исходной upstream-базой автоматически.
+
+`lib/llm.mjs` объединяет выполнение `think`, `critic`, `dream` через существующие адаптеры
+SkillOpt. Ручной режим по умолчанию возвращает запрос без сетевого вызова. Общие правила
+добавляет `lib/agent-context.mjs`. Ограничения клиентских проверок —
+[совместимость](../docs/compatibility.md).

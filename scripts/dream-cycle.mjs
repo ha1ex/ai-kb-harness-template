@@ -3,7 +3,7 @@
 //
 // Использование:
 //   node scripts/dream-cycle.mjs                # сгенерировать промпт + сохранить в .context/dream-report-YYYY-MM-DD.md
-//   node scripts/dream-cycle.mjs --execute      # дополнительно прогнать через `claude -p` (если CLI в PATH)
+//   node scripts/dream-cycle.mjs --execute      # дополнительно прогнать через настроенный LLM adapter
 //   node scripts/dream-cycle.mjs --dry-run      # только напечатать промпт в stdout, не сохранять
 //   node scripts/dream-cycle.mjs --days 14      # окно (по умолчанию 7)
 //
@@ -25,6 +25,8 @@ import { existsSync, statSync, readFileSync, readdirSync, mkdirSync, writeFileSy
 import { join, resolve, relative, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { loadAgentContext } from './lib/agent-context.mjs';
+import { completePrompt } from './lib/llm.mjs';
 import { readJournal, summarizeJournal } from './lib/journal.mjs';
 import { openDb, createEmbedder, searchVec, QUERY_PREFIX, DB_PATH as SEM_DB_PATH, docDateToEpochDays } from './semantic/lib.mjs';
 
@@ -186,7 +188,7 @@ const consolidation = await computeConsolidation();
 
 // ---------- 4. Собираем промпт ----------
 
-const lines = [];
+const lines = [loadAgentContext(REPO_ROOT), ''];
 lines.push(`# Dream cycle — KB-аудит на ${todayISO}`);
 lines.push('');
 lines.push(`Окно: последние **${days} дней** (с ${sinceISO}). Коммитов: ${commits.length}. Изменённых .md: ${changedMd.length}.`);
@@ -330,23 +332,21 @@ if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
 const outPath = join(outDir, `dream-report-${todayISO}.md`);
 
 if (execute) {
-  // Попробуем через claude CLI.
-  const which = spawnSync('which', ['claude'], { encoding: 'utf8' });
-  if (which.status !== 0) {
+  let response;
+  try { response = await completePrompt(promptText, { execute }); }
+  catch (error) {
     writeFileSync(outPath, promptText);
-    console.log(`[dream] claude CLI не найден; сохранил промпт в ${relative(REPO_ROOT, outPath)}`);
-    console.log('[dream] скопируйте файл в любой LLM, ответ положите рядом как dream-answer-YYYY-MM-DD.md');
+    console.error(`[dream] ${error.message}; prompt saved to ${relative(REPO_ROOT, outPath)}`);
+    process.exit(1);
+  }
+  if (!response.executed) {
+    writeFileSync(outPath, promptText);
+    console.log(`[dream] ${response.reason} Prompt: ${relative(REPO_ROOT, outPath)}`);
     process.exit(0);
   }
-  const res = spawnSync('claude', ['-p', promptText], { encoding: 'utf8', timeout: 300_000, killSignal: 'SIGTERM' });
-  if (res.error || res.signal === 'SIGTERM') {
-    writeFileSync(outPath, promptText);
-    console.log(`[dream] claude не ответил за 5 мин (${res.error?.code || res.signal}); сохранил промпт в ${relative(REPO_ROOT, outPath)}`);
-    process.exit(0);
-  }
-  const answer = res.stdout || '(пусто)';
+  const answer = response.text;
   const combined = [
-    `# Dream cycle ${todayISO} — ответ Claude`,
+    `# Dream cycle ${todayISO} — ответ LLM`,
     '',
     '> Промпт целиком в нижней секции, ниже — синтез.',
     '',
@@ -363,5 +363,5 @@ if (execute) {
 } else {
   writeFileSync(outPath, promptText);
   console.log(`[dream] промпт сохранён в ${relative(REPO_ROOT, outPath)}`);
-  console.log('[dream] скопируйте файл в Claude/любой LLM. Для авто-прогона — флаг --execute (нужен claude CLI).');
+  console.log('[dream] скопируйте файл в Claude/любой LLM. Для авто-прогона — флаг --execute (нужен настроенный провайдер).');
 }

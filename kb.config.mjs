@@ -12,6 +12,15 @@
 // из KB_ROOT (env), а не из своего репо.
 
 export default {
+  // Project identity is initialized in 00_context/project.json. Explicit overrides here win.
+  viewer: {
+    // name: 'My research project', description: 'Purpose and audience',
+    // status: 'Research in progress', accent: '#457c72',
+    // includeRaw: false, // Publish original raw Markdown only when explicitly intended.
+  },
+  // Executing synthesis is opt-in. No provider means a portable prompt, no model request.
+  llm: { provider: 'manual', timeout_ms: 300000, max_retries: 0 },
+
   layers: {
     // Слои, которые индексирует семантический поиск (порядок = каноническая иерархия).
     // Своя структура? Например: ['docs', 'adr', 'notes'] для существующего репо (уровень L0).

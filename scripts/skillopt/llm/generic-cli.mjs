@@ -17,11 +17,12 @@
 // Подстановки в args/stdin_template: {{model}}, {{system}}, {{user}}.
 
 import { spawn, spawnSync } from "node:child_process";
+import { cliProcessOptions, enforceCliTimeout } from "./cli-timeout.mjs";
 
 const STDIN_THRESHOLD = 10_000;
 
 function which(cmd) {
-  const r = spawnSync("which", [cmd], { encoding: "utf8" });
+  const r = spawnSync(process.platform === "win32" ? "where" : "which", [cmd], { encoding: "utf8" });
   return r.status === 0;
 }
 
@@ -50,7 +51,7 @@ export function makeGenericCliAdapter(cfg = {}) {
   const stdinTemplate = cli.stdin_template ?? "{{user}}";
   const outputParser = cli.output_parser ?? "raw";
   const outputPath = cli.output_path ?? null;
-  const useStdinAlways = cli.use_stdin_always === true;
+  const useStdinAlways = cli.use_stdin_always !== false;
   const timeoutMs = cfg.timeout_ms ?? 300_000;
   const model = cfg.model ?? "";
 
@@ -80,19 +81,19 @@ export function makeGenericCliAdapter(cfg = {}) {
 
       return await new Promise((resolve, reject) => {
         const proc = spawn(command, args, {
+          ...cliProcessOptions,
           stdio: [useStdin ? "pipe" : "ignore", "pipe", "pipe"],
         });
         let stdout = "";
         let stderr = "";
-        let killed = false;
-        const t = setTimeout(() => { killed = true; proc.kill("SIGTERM"); }, timeoutMs);
+        const deadline = enforceCliTimeout(proc, timeoutMs, reject, "skillopt:generic-cli");
 
         proc.stdout.on("data", (b) => (stdout += b.toString()));
         proc.stderr.on("data", (b) => (stderr += b.toString()));
-        proc.on("error", (e) => { clearTimeout(t); reject(e); });
+        proc.on("error", (e) => { deadline.clear(); reject(e); });
         proc.on("close", (code) => {
-          clearTimeout(t);
-          if (killed) return reject(new Error(`[skillopt:generic-cli] timeout ${timeoutMs}ms`));
+          deadline.clear();
+          if (deadline.expired) return reject(new Error(`[skillopt:generic-cli] timeout ${timeoutMs}ms`));
           if (code !== 0) {
             return reject(new Error(`[skillopt:generic-cli] exit ${code}: ${stderr.slice(0, 500) || stdout.slice(0, 500)}`));
           }
@@ -114,6 +115,7 @@ export function makeGenericCliAdapter(cfg = {}) {
         });
 
         if (useStdin) {
+          proc.stdin.on("error", (e) => { if (e.code !== "EPIPE") proc.kill("SIGTERM"); });
           proc.stdin.write(stdinBlob);
           proc.stdin.end();
         }

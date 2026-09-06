@@ -7,11 +7,12 @@
 // Если на Windows ARG_MAX ~32KB; на Linux/macOS ~256KB. Порог 10KB консервативный.
 
 import { spawn, spawnSync } from "node:child_process";
+import { cliProcessOptions, enforceCliTimeout } from "./cli-timeout.mjs";
 
 const STDIN_THRESHOLD = 10_000; // bytes; выше этого размера — stdin вместо argv
 
 function which(cmd) {
-  const r = spawnSync("which", [cmd], { encoding: "utf8" });
+  const r = spawnSync(process.platform === "win32" ? "where" : "which", [cmd], { encoding: "utf8" });
   return r.status === 0 ? r.stdout.trim() : null;
 }
 
@@ -55,28 +56,24 @@ export function makeClaudeCliAdapter(cfg = {}) {
 
       return await new Promise((resolve, reject) => {
         const proc = spawn(cmd, args, {
+          ...cliProcessOptions,
           stdio: [useStdin ? "pipe" : "ignore", "pipe", "pipe"],
         });
 
         let stdout = "";
         let stderr = "";
-        let killed = false;
-
-        const killTimer = setTimeout(() => {
-          killed = true;
-          proc.kill("SIGTERM");
-        }, timeoutMs);
+        const deadline = enforceCliTimeout(proc, timeoutMs, reject, "skillopt:claude-cli");
 
         proc.stdout.on("data", (b) => (stdout += b.toString()));
         proc.stderr.on("data", (b) => (stderr += b.toString()));
 
         proc.on("error", (e) => {
-          clearTimeout(killTimer);
+          deadline.clear();
           reject(e);
         });
         proc.on("close", (code) => {
-          clearTimeout(killTimer);
-          if (killed) return reject(new Error(`[skillopt:claude-cli] timeout ${timeoutMs}ms`));
+          deadline.clear();
+          if (deadline.expired) return reject(new Error(`[skillopt:claude-cli] timeout ${timeoutMs}ms`));
           if (code !== 0) {
             return reject(
               new Error(`[skillopt:claude-cli] exit ${code}: ${stderr.slice(0, 500) || stdout.slice(0, 500)}`),
@@ -90,6 +87,7 @@ export function makeClaudeCliAdapter(cfg = {}) {
         });
 
         if (useStdin) {
+          proc.stdin.on("error", (e) => { if (e.code !== "EPIPE") proc.kill("SIGTERM"); });
           proc.stdin.write(fullPrompt);
           proc.stdin.end();
         }

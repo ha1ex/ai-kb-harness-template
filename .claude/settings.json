@@ -61,7 +61,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node $CLAUDE_PROJECT_DIR/scripts/session-start-context.mjs",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/session-start-context.mjs\"",
             "timeout": 10
           }
         ]
@@ -73,17 +73,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node $CLAUDE_PROJECT_DIR/scripts/check-decisions.mjs",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/check-decisions.mjs\"",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "node $CLAUDE_PROJECT_DIR/scripts/check-md-frontmatter.mjs",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/check-md-frontmatter.mjs\"",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "node $CLAUDE_PROJECT_DIR/scripts/check-provenance.mjs",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/check-provenance.mjs\"",
             "timeout": 10
           }
         ]

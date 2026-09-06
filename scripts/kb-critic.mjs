@@ -2,13 +2,13 @@
 // kb-critic.mjs — N1: замыкает петлю verify → critique → revise → re-verify, БЕЗ автономного агента.
 //
 // verify.mjs уже строит per-citation критику (result.critique). Этот скрипт превращает её в
-// готовый REVISION PROMPT и, опционально, гоняет короткий цикл правок через `claude` CLI.
+// готовый REVISION PROMPT и, опционально, гоняет короткий цикл правок через настроенный LLM adapter.
 //
 // Дисциплина (как у think.mjs --execute):
 //   • По умолчанию НИЧЕГО не исполняет — печатает revision-промпт для копипаста в любой LLM.
-//   • --execute: до --rounds (default 2) раз отправляет промпт в `claude -p`, перепроверяет
+//   • --execute: до --rounds (default 2) раз отправляет промпт в настроенный провайдер, перепроверяет
 //     результат через verify, останавливается когда passed или раунды кончились.
-//   • claude нет в PATH → graceful degradation: печатает промпт и выходит (никогда не падает из-за CLI).
+//   • провайдер не настроен → graceful degradation: печатает промпт и выходит (никогда не падает из-за CLI).
 //   • advisory (FACT weak/none) НЕ форсит revision — гейт только Tier-1 (как в verify).
 //
 // Использование:
@@ -18,7 +18,8 @@
 //   флаги: --json --threshold N --allow-corpus --no-semantic
 
 import { existsSync, readFileSync } from 'node:fs';
-import { spawnSync } from 'node:child_process';
+import { loadAgentContext } from './lib/agent-context.mjs';
+import { completePrompt } from './lib/llm.mjs';
 import { createEmbedder, openDb, DB_PATH } from './semantic/lib.mjs';
 import { verifyText } from './semantic/verify.mjs';
 import { appendJournal } from './lib/journal.mjs';
@@ -34,7 +35,7 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === '--no-semantic') semantic = false;
   else if (a === '--stdin') fromStdin = true;
   else if (a === '--execute') execute = true;
-  else if (a === '--rounds') rounds = Math.max(1, parseInt(argv[++i], 10) || 2);
+  else if (a === '--rounds') rounds = Math.min(10, Math.max(1, parseInt(argv[++i], 10) || 2));
   else if (a === '--threshold') threshold = parseFloat(argv[++i]);
   else if (a === '--file') file = argv[++i];
   else if (a === '--text') textParts.push(argv[++i]);
@@ -61,7 +62,7 @@ if (semantic && existsSync(DB_PATH)) {
 }
 
 function buildRevisionPrompt(answer, critique) {
-  const lines = [];
+  const lines = [loadAgentContext(), ''];
   lines.push('# Задача: исправить цитаты в ответе по правилам AGENTS.md');
   lines.push('');
   lines.push('Ниже — ответ с проблемными цитатами `[source: /path]`. Исправь ТОЛЬКО цитаты и метки');
@@ -88,12 +89,6 @@ function buildRevisionPrompt(answer, critique) {
   return lines.join('\n');
 }
 
-let claudeAvailable = null;
-function hasClaude() {
-  if (claudeAvailable === null) claudeAvailable = spawnSync('which', ['claude'], { encoding: 'utf8' }).status === 0;
-  return claudeAvailable;
-}
-
 let round = 0;
 let result = await verifyText(text, { db, embed, threshold, allowCorpus, semantic });
 let lastPrompt = '';
@@ -101,14 +96,12 @@ let lastPrompt = '';
 while (result.critique.needsRevision && round < rounds) {
   lastPrompt = buildRevisionPrompt(text, result.critique);
   if (!execute) break; // только печать промпта
-  if (!hasClaude()) break; // graceful: нет CLI — печатаем промпт ниже
+  let response;
+  try { response = await completePrompt(lastPrompt, { execute }); }
+  catch (error) { console.error(`[kb-critic] ${error.message}; use the revision prompt manually.`); break; }
+  if (!response.executed) { console.error(`[kb-critic] ${response.reason}`); break; }
   round++;
-  const res = spawnSync('claude', ['-p', lastPrompt], { encoding: 'utf8', timeout: 300_000, killSignal: 'SIGTERM' });
-  if (res.error || res.status !== 0 || !String(res.stdout || '').trim()) {
-    console.error(`[kb-critic] claude не дал результат на раунде ${round} (${res.error?.code || res.status}). Печатаю промпт.`);
-    break;
-  }
-  text = String(res.stdout).trim();
+  text = response.text.trim();
   result = await verifyText(text, { db, embed, threshold, allowCorpus, semantic });
 }
 

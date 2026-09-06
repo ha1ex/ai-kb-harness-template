@@ -1,6 +1,8 @@
+import { Link, useLocation } from "react-router-dom";
 import { Children, isValidElement, useState, type ReactNode } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { remarkSourceLinks } from "@/v2/lib/remark-source-links";
 import rehypeSlug from "rehype-slug";
 import rehypeRaw from "rehype-raw";
 import {
@@ -35,10 +37,26 @@ const calloutMeta: Record<
 > = {
   note: { label: "Note", icon: Info, iconCls: "text-foreground/60" },
   tip: { label: "Tip", icon: Lightbulb, iconCls: "text-[var(--color-income)]" },
-  warning: { label: "Warning", icon: AlertTriangle, iconCls: "text-[var(--color-warning)]" },
-  info: { label: "Info", icon: Compass, iconCls: "text-[var(--color-balance)]" },
-  success: { label: "Success", icon: CheckCircle2, iconCls: "text-[var(--color-income)]" },
-  danger: { label: "Danger", icon: OctagonAlert, iconCls: "text-[var(--color-saldo-neg)]" },
+  warning: {
+    label: "Warning",
+    icon: AlertTriangle,
+    iconCls: "text-[var(--color-warning)]",
+  },
+  info: {
+    label: "Info",
+    icon: Compass,
+    iconCls: "text-[var(--color-balance)]",
+  },
+  success: {
+    label: "Success",
+    icon: CheckCircle2,
+    iconCls: "text-[var(--color-income)]",
+  },
+  danger: {
+    label: "Danger",
+    icon: OctagonAlert,
+    iconCls: "text-[var(--color-saldo-neg)]",
+  },
 };
 
 const NUMBERED_H2_RE = /^\s*(\d{1,2})\s*[·.\-—–]\s+(.+)$/;
@@ -48,7 +66,9 @@ function isElementOnly(node: ReactNode): boolean {
   return isValidElement(node);
 }
 
-function detectCallout(children: ReactNode): { kind: CalloutKind; rest: ReactNode[] } | null {
+function detectCallout(
+  children: ReactNode,
+): { kind: CalloutKind; rest: ReactNode[] } | null {
   const arr = Children.toArray(children).filter(isElementOnly);
   if (arr.length === 0) return null;
   const first = arr[0];
@@ -89,6 +109,22 @@ function extractText(children: ReactNode): string {
 }
 
 export function MarkdownDoc({ source, className, showCopy = true }: Props) {
+  const location = useLocation();
+  function documentHref(href: string | undefined) {
+    if (
+      !href ||
+      href.startsWith("/doc/") ||
+      href.startsWith("#") ||
+      /^(https?:|mailto:)/.test(href)
+    )
+      return href;
+    if (!/\.md(?:#.*)?$/.test(href)) return href;
+    const base = location.pathname.startsWith("/doc/")
+      ? location.pathname.slice(5).replace(/\/$/, "")
+      : "";
+    const resolved = new URL(href, "https://kb.invalid/" + base);
+    return "/doc" + resolved.pathname + resolved.hash;
+  }
   const [copied, setCopied] = useState(false);
 
   async function copy() {
@@ -112,272 +148,338 @@ export function MarkdownDoc({ source, className, showCopy = true }: Props) {
             onClick={copy}
             className="text-muted-foreground hover:text-foreground"
           >
-            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-            <span className="ml-2 text-xs">{copied ? "Скопировано" : "Копировать страницу"}</span>
+            {copied ? (
+              <Check className="h-4 w-4" />
+            ) : (
+              <Copy className="h-4 w-4" />
+            )}
+            <span className="ml-2 text-xs">
+              {copied ? "Скопировано" : "Копировать страницу"}
+            </span>
           </Button>
         </div>
       ) : null}
       <article>
         <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeSlug, rehypeRaw]}
-          components={{
-            // Custom KB-теги. react-markdown с rehypeRaw пропускает unknown
-            // элементы — здесь мы их перехватываем и рендерим React-компонентом.
-            // Cast через unknown — тип Components не знает про dashed-имена.
-            // Этап D3 — канонические KB-компоненты.
-            "kb-steps": KbSteps as unknown as Components["div"],
-            "kb-step": KbStep as unknown as Components["div"],
-            "kb-accordion": KbAccordion as unknown as Components["div"],
-            "kb-accordion-item": KbAccordionItem as unknown as Components["div"],
-            "kb-tabs": KbTabs as unknown as Components["div"],
-            "kb-tab": KbTab as unknown as Components["div"],
-            "kb-tree": KbFileTree as unknown as Components["div"],
-            "kb-folder": KbFolder as unknown as Components["div"],
-            "kb-file": KbFile as unknown as Components["div"],
-            "kb-linkcard": KbLinkCard as unknown as Components["div"],
-            h1: ({ children, id }) => (
-              <h1
-                id={id}
-                className="mt-12 mb-5 scroll-mt-20 text-4xl font-semibold tracking-tight first:mt-0"
-              >
-                {children}
-              </h1>
-            ),
-            h2: ({ children, id }) => {
-              const raw = extractText(children).trim();
-              const m = NUMBERED_H2_RE.exec(raw);
-              if (m) {
-                const num = m[1].padStart(2, "0");
-                const rest = m[2];
+          remarkPlugins={[remarkGfm, remarkSourceLinks]}
+          rehypePlugins={[rehypeRaw, rehypeSlug]}
+          disallowedElements={[
+            "script",
+            "iframe",
+            "object",
+            "embed",
+            "style",
+            "form",
+          ]}
+          components={
+            {
+              // Custom KB-теги. react-markdown с rehypeRaw пропускает unknown
+              // элементы — здесь мы их перехватываем и рендерим React-компонентом.
+              // Cast через unknown — тип Components не знает про dashed-имена.
+              // Этап D3 — канонические KB-компоненты.
+              "kb-steps": KbSteps as unknown as Components["div"],
+              "kb-step": KbStep as unknown as Components["div"],
+              "kb-accordion": KbAccordion as unknown as Components["div"],
+              "kb-accordion-item":
+                KbAccordionItem as unknown as Components["div"],
+              "kb-tabs": KbTabs as unknown as Components["div"],
+              "kb-tab": KbTab as unknown as Components["div"],
+              "kb-tree": KbFileTree as unknown as Components["div"],
+              "kb-folder": KbFolder as unknown as Components["div"],
+              "kb-file": KbFile as unknown as Components["div"],
+              "kb-linkcard": KbLinkCard as unknown as Components["div"],
+              h1: ({ children, id }) => (
+                <h1
+                  id={id}
+                  className="mt-12 mb-5 scroll-mt-20 text-4xl font-semibold tracking-tight first:mt-0"
+                >
+                  {children}
+                </h1>
+              ),
+              h2: ({ children, id }) => {
+                const raw = extractText(children).trim();
+                const m = NUMBERED_H2_RE.exec(raw);
+                if (m) {
+                  const num = m[1].padStart(2, "0");
+                  const rest = m[2];
+                  return (
+                    <h2
+                      id={id}
+                      data-toc-title={`${num} · ${rest}`}
+                      className="mt-14 mb-5 scroll-mt-20 flex items-baseline gap-3 text-2xl font-semibold tracking-tight first:mt-0"
+                    >
+                      <span className="kb-numbered-chip" aria-hidden="true">
+                        {num}
+                      </span>
+                      <span>{rest}</span>
+                    </h2>
+                  );
+                }
                 return (
                   <h2
                     id={id}
-                    data-toc-title={`${num} · ${rest}`}
-                    className="mt-14 mb-5 scroll-mt-20 flex items-baseline gap-3 text-2xl font-semibold tracking-tight first:mt-0"
+                    data-toc-title={raw}
+                    className="mt-14 mb-5 scroll-mt-20 text-2xl font-semibold tracking-tight first:mt-0"
                   >
-                    <span className="kb-numbered-chip" aria-hidden="true">
-                      {num}
-                    </span>
-                    <span>{rest}</span>
+                    {children}
                   </h2>
                 );
-              }
-              return (
-                <h2
+              },
+              h3: ({ children, id }) => (
+                <h3
                   id={id}
-                  data-toc-title={raw}
-                  className="mt-14 mb-5 scroll-mt-20 text-2xl font-semibold tracking-tight first:mt-0"
+                  className="mt-10 mb-3 scroll-mt-20 text-xl font-semibold tracking-tight"
                 >
                   {children}
-                </h2>
-              );
-            },
-            h3: ({ children, id }) => (
-              <h3
-                id={id}
-                className="mt-10 mb-3 scroll-mt-20 text-xl font-semibold tracking-tight"
-              >
-                {children}
-              </h3>
-            ),
-            h4: ({ children, id }) => (
-              <h4
-                id={id}
-                className="mt-6 mb-2 scroll-mt-20 text-base font-semibold tracking-tight text-foreground"
-              >
-                {children}
-              </h4>
-            ),
-            h5: ({ children, id }) => (
-              <h5
-                id={id}
-                className="mt-5 mb-2 scroll-mt-20 text-[13px] font-semibold uppercase tracking-wider text-muted-foreground"
-              >
-                {children}
-              </h5>
-            ),
-            h6: ({ children, id }) => (
-              <h6
-                id={id}
-                className="mt-4 mb-1 scroll-mt-20 font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground"
-              >
-                {children}
-              </h6>
-            ),
-            p: ({ children }) => (
-              <p className="mt-6 first:mt-0 max-w-[75ch] text-base leading-7 text-foreground/90">
-                {children}
-              </p>
-            ),
-            aside: ({ children, className: cls }) => (
-              <aside
-                className={cn(
-                  "my-3 rounded-md border border-border-soft bg-muted/30 px-3 py-2 text-[14px] leading-relaxed text-foreground/80",
-                  cls,
-                )}
-              >
-                {children}
-              </aside>
-            ),
-            ul: ({ children, className: cls }) => (
-              <ul
-                className={cn(
-                  "mt-6 first:mt-0 max-w-[75ch] space-y-2 text-base leading-7 text-foreground/90",
-                  cls?.includes("contains-task-list") ? "list-none pl-0" : "list-disc pl-6",
-                )}
-              >
-                {children}
-              </ul>
-            ),
-            ol: ({ children }) => (
-              <ol className="mt-6 first:mt-0 max-w-[75ch] list-decimal space-y-2 pl-6 text-base leading-7 text-foreground/90">
-                {children}
-              </ol>
-            ),
-            li: ({ children, className: cls }) => (
-              <li
-                className={cn(
-                  "marker:text-muted-foreground",
-                  cls?.includes("task-list-item") ? "flex items-start gap-2 [&>input]:mt-1.5" : "",
-                )}
-              >
-                {children}
-              </li>
-            ),
-            strong: ({ children }) => (
-              <strong className="font-semibold text-foreground">{children}</strong>
-            ),
-            em: ({ children }) => <em className="italic text-foreground/90">{children}</em>,
-            a: ({ href, children }) => (
-              <a
-                href={href}
-                target={href?.startsWith("http") ? "_blank" : undefined}
-                rel={href?.startsWith("http") ? "noreferrer" : undefined}
-                className="text-foreground underline underline-offset-4 decoration-muted-foreground hover:decoration-foreground"
-              >
-                {children}
-              </a>
-            ),
-            code: ({ children, className: cls }) => {
-              const isBlock = cls && /language-/.test(cls);
-              if (isBlock) {
-                return (
-                  <code className="block font-mono text-[13px] leading-relaxed">{children}</code>
-                );
-              }
-              return (
-                <code className="rounded bg-muted px-[0.3rem] py-[0.15rem] font-mono text-[14px] text-foreground">
+                </h3>
+              ),
+              h4: ({ children, id }) => (
+                <h4
+                  id={id}
+                  className="mt-6 mb-2 scroll-mt-20 text-base font-semibold tracking-tight text-foreground"
+                >
                   {children}
-                </code>
-              );
-            },
-            pre: ({ children }) => (
-              <pre className="my-4 overflow-x-auto rounded-md border border-border-soft bg-muted/60 p-3 font-mono text-[13px] leading-relaxed">
-                {children}
-              </pre>
-            ),
-            blockquote: ({ children }) => {
-              const callout = detectCallout(children);
-              if (callout) {
-                const meta = calloutMeta[callout.kind];
-                const Icon = meta.icon;
-                const arr = callout.rest;
-                const firstP = arr[0];
-                let firstPRest: ReactNode = null;
-                if (isValidElement(firstP)) {
-                  const inner = Children.toArray(
-                    (firstP.props as { children?: ReactNode }).children ?? [],
+                </h4>
+              ),
+              h5: ({ children, id }) => (
+                <h5
+                  id={id}
+                  className="mt-5 mb-2 scroll-mt-20 text-[13px] font-semibold uppercase tracking-wider text-muted-foreground"
+                >
+                  {children}
+                </h5>
+              ),
+              h6: ({ children, id }) => (
+                <h6
+                  id={id}
+                  className="mt-4 mb-1 scroll-mt-20 font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground"
+                >
+                  {children}
+                </h6>
+              ),
+              p: ({ children }) => (
+                <p className="mt-6 first:mt-0 max-w-[75ch] text-base leading-7 text-foreground/90">
+                  {children}
+                </p>
+              ),
+              aside: ({ children, className: cls }) => (
+                <aside
+                  className={cn(
+                    "my-3 rounded-md border border-border-soft bg-muted/30 px-3 py-2 text-[14px] leading-relaxed text-foreground/80",
+                    cls,
+                  )}
+                >
+                  {children}
+                </aside>
+              ),
+              ul: ({ children, className: cls }) => (
+                <ul
+                  className={cn(
+                    "mt-6 first:mt-0 max-w-[75ch] space-y-2 text-base leading-7 text-foreground/90",
+                    cls?.includes("contains-task-list")
+                      ? "list-none pl-0"
+                      : "list-disc pl-6",
+                  )}
+                >
+                  {children}
+                </ul>
+              ),
+              ol: ({ children }) => (
+                <ol className="mt-6 first:mt-0 max-w-[75ch] list-decimal space-y-2 pl-6 text-base leading-7 text-foreground/90">
+                  {children}
+                </ol>
+              ),
+              li: ({ children, className: cls }) => (
+                <li
+                  className={cn(
+                    "marker:text-muted-foreground",
+                    cls?.includes("task-list-item")
+                      ? "flex items-start gap-2 [&>input]:mt-1.5"
+                      : "",
+                  )}
+                >
+                  {children}
+                </li>
+              ),
+              strong: ({ children }) => (
+                <strong className="font-semibold text-foreground">
+                  {children}
+                </strong>
+              ),
+              em: ({ children }) => (
+                <em className="italic text-foreground/90">{children}</em>
+              ),
+              a: ({ href, children }) => {
+                const target = documentHref(href);
+                const className =
+                  "text-foreground underline underline-offset-4 decoration-muted-foreground hover:decoration-foreground";
+                if (target?.startsWith("/doc/")) {
+                  return (
+                    <Link to={target} className={className}>
+                      {children}
+                    </Link>
                   );
-                  // strong (index 0) + возможный <br/> + ведущий whitespace убираем
-                  let i = 1;
-                  while (i < inner.length) {
-                    const n = inner[i];
-                    if (typeof n === "string" && !n.trim()) {
-                      i++;
-                      continue;
-                    }
-                    if (
-                      isValidElement(n) &&
-                      (n.type === "br" || (typeof n.type === "string" && n.type === "br"))
-                    ) {
-                      i++;
-                      continue;
-                    }
-                    break;
-                  }
-                  const dropped = inner.slice(i);
-                  firstPRest = dropped.length ? (
-                    <p className="my-0 max-w-[70ch] text-[15px] leading-7 text-foreground/90">
-                      {dropped}
-                    </p>
-                  ) : null;
                 }
                 return (
-                  <aside className="my-6 rounded-lg border border-border bg-muted/30 px-4 py-3">
-                    <div className="flex items-start gap-3">
-                      <Icon className={cn("mt-[0.15rem] h-4 w-4 shrink-0", meta.iconCls)} />
-                      <div className="min-w-0 flex-1">
-                        <div className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-foreground/70">
-                          {meta.label}
-                        </div>
-                        <div className="space-y-2 text-[15px] leading-7 text-foreground/90">
-                          {firstPRest}
-                          {arr.slice(1)}
+                  <a
+                    href={target}
+                    target={target?.startsWith("http") ? "_blank" : undefined}
+                    rel={target?.startsWith("http") ? "noreferrer" : undefined}
+                    className={className}
+                  >
+                    {children}
+                  </a>
+                );
+              },
+              input: ({ type, checked }) =>
+                type === "checkbox" ? (
+                  <input
+                    type="checkbox"
+                    checked={Boolean(checked)}
+                    disabled
+                    readOnly
+                    aria-label={checked ? "Выполнено" : "Не выполнено"}
+                  />
+                ) : null,
+              code: ({ children, className: cls }) => {
+                const isBlock = cls && /language-/.test(cls);
+                if (isBlock) {
+                  return (
+                    <code className="block font-mono text-[13px] leading-relaxed">
+                      {children}
+                    </code>
+                  );
+                }
+                return (
+                  <code className="rounded bg-muted px-[0.3rem] py-[0.15rem] font-mono text-[14px] text-foreground">
+                    {children}
+                  </code>
+                );
+              },
+              pre: ({ children }) => (
+                <pre className="my-4 overflow-x-auto rounded-md border border-border-soft bg-muted/60 p-3 font-mono text-[13px] leading-relaxed">
+                  {children}
+                </pre>
+              ),
+              blockquote: ({ children }) => {
+                const callout = detectCallout(children);
+                if (callout) {
+                  const meta = calloutMeta[callout.kind];
+                  const Icon = meta.icon;
+                  const arr = callout.rest;
+                  const firstP = arr[0];
+                  let firstPRest: ReactNode = null;
+                  if (isValidElement(firstP)) {
+                    const inner = Children.toArray(
+                      (firstP.props as { children?: ReactNode }).children ?? [],
+                    );
+                    // strong (index 0) + возможный <br/> + ведущий whitespace убираем
+                    let i = 1;
+                    while (i < inner.length) {
+                      const n = inner[i];
+                      if (typeof n === "string" && !n.trim()) {
+                        i++;
+                        continue;
+                      }
+                      if (
+                        isValidElement(n) &&
+                        (n.type === "br" ||
+                          (typeof n.type === "string" && n.type === "br"))
+                      ) {
+                        i++;
+                        continue;
+                      }
+                      break;
+                    }
+                    const dropped = inner.slice(i);
+                    firstPRest = dropped.length ? (
+                      <p className="my-0 max-w-[70ch] text-[15px] leading-7 text-foreground/90">
+                        {dropped}
+                      </p>
+                    ) : null;
+                  }
+                  return (
+                    <aside className="my-6 rounded-lg border border-border bg-muted/30 px-4 py-3">
+                      <div className="flex items-start gap-3">
+                        <Icon
+                          className={cn(
+                            "mt-[0.15rem] h-4 w-4 shrink-0",
+                            meta.iconCls,
+                          )}
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-foreground/70">
+                            {meta.label}
+                          </div>
+                          <div className="space-y-2 text-[15px] leading-7 text-foreground/90">
+                            {firstPRest}
+                            {arr.slice(1)}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </aside>
+                    </aside>
+                  );
+                }
+                return (
+                  <blockquote className="my-4 border-l-2 border-border pl-4 text-muted-foreground">
+                    {children}
+                  </blockquote>
                 );
-              }
-              return (
-                <blockquote className="my-4 border-l-2 border-border pl-4 text-muted-foreground">
-                  {children}
-                </blockquote>
-              );
-            },
-            hr: () => <hr className="my-8 border-border-soft" />,
-            table: ({ children }) => (
-              <div className="my-5 overflow-x-auto">
-                <table className="w-full border-collapse text-[14px]">{children}</table>
-              </div>
-            ),
-            thead: ({ children }) => (
-              <thead className="border-b border-border">{children}</thead>
-            ),
-            tbody: ({ children }) => <tbody>{children}</tbody>,
-            tr: ({ children }) => (
-              <tr className="border-b border-border-soft last:border-0">{children}</tr>
-            ),
-            th: ({ children }) => (
-              <th className="px-3 py-2 text-left font-medium text-muted-foreground">{children}</th>
-            ),
-            td: ({ children }) => (
-              <td className="px-3 py-2 align-top text-foreground/90">{children}</td>
-            ),
-            details: ({ children }) => (
-              <details className="my-4 rounded-md border border-border-soft bg-muted/30 px-4 py-2 [&[open]>summary]:mb-2">
-                {children}
-              </details>
-            ),
-            summary: ({ children }) => (
-              <summary className="cursor-pointer select-none py-1 text-[15px] font-medium text-foreground hover:text-foreground/80">
-                {children}
-              </summary>
-            ),
-            img: ({ src, alt }) => (
-              <figure className="my-6">
-                <div className="flex aspect-video w-full items-center justify-center rounded-lg border border-border-soft bg-muted/40 text-xs text-muted-foreground">
-                  {alt || src || "Изображение"}
+              },
+              hr: () => <hr className="my-8 border-border-soft" />,
+              table: ({ children }) => (
+                <div className="my-5 overflow-x-auto">
+                  <table className="w-full border-collapse text-[14px]">
+                    {children}
+                  </table>
                 </div>
-                {alt ? (
-                  <figcaption className="mt-2 text-center text-xs text-muted-foreground">
-                    {alt}
-                  </figcaption>
-                ) : null}
-              </figure>
-            ),
-          } as Components}
+              ),
+              thead: ({ children }) => (
+                <thead className="border-b border-border">{children}</thead>
+              ),
+              tbody: ({ children }) => <tbody>{children}</tbody>,
+              tr: ({ children }) => (
+                <tr className="border-b border-border-soft last:border-0">
+                  {children}
+                </tr>
+              ),
+              th: ({ children }) => (
+                <th className="px-3 py-2 text-left font-medium text-muted-foreground">
+                  {children}
+                </th>
+              ),
+              td: ({ children }) => (
+                <td className="px-3 py-2 align-top text-foreground/90">
+                  {children}
+                </td>
+              ),
+              details: ({ children, id }) => (
+                <details
+                  id={id}
+                  className="my-4 rounded-md border border-border-soft bg-muted/30 px-4 py-2 [&[open]>summary]:mb-2"
+                >
+                  {children}
+                </details>
+              ),
+              summary: ({ children }) => (
+                <summary className="cursor-pointer select-none py-1 text-[15px] font-medium text-foreground hover:text-foreground/80">
+                  {children}
+                </summary>
+              ),
+              img: ({ src, alt }) => (
+                <figure className="my-6">
+                  <div className="flex aspect-video w-full items-center justify-center rounded-lg border border-border-soft bg-muted/40 text-xs text-muted-foreground">
+                    {alt || src || "Изображение"}
+                  </div>
+                  {alt ? (
+                    <figcaption className="mt-2 text-center text-xs text-muted-foreground">
+                      {alt}
+                    </figcaption>
+                  ) : null}
+                </figure>
+              ),
+            } as Components
+          }
         >
           {source}
         </ReactMarkdown>

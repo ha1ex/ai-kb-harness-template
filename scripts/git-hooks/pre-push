@@ -1,16 +1,5 @@
-#!/usr/bin/env bash
-# pre-push — локальный гейт цитат/provenance ДО CI (A4).
-#
-# Закрывает обход PreToolUse-хуков через Bash-запись (`cat > 04_synthesis/x.md`):
-# хуки Claude Code видят только Write/Edit, а этот гейт — любой коммит перед push.
-# Тот же детерминированный шаг, что в kb-ci.yml (Tier-1 + provenance, без модели).
-#
-# Установка (один раз в клоне):
-#   git config core.hooksPath scripts/git-hooks
-#
-# Обход в экстренном случае: git push --no-verify (осознанно; CI всё равно поймает).
-
-set -euo pipefail
+#!/usr/bin/env sh
+# Optional early feedback; CI runs common checks independently.
+set -eu
 cd "$(git rev-parse --show-toplevel)"
-
-node scripts/semantic/verify.mjs --scan --provenance --no-semantic
+node scripts/git-hooks/check.mjs

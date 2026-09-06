@@ -24,6 +24,7 @@
 //
 // Реализация переиспользует ./lib.mjs — никакой дубликации логики.
 
+import { loadAgentContext } from '../lib/agent-context.mjs';
 import { existsSync, statSync, readFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
@@ -72,17 +73,7 @@ async function embedder() {
 }
 
 // Если в корне репо есть AGENTS.md — он становится системным промптом для kb_think.
-function loadSystemPrompt() {
-  try {
-    const text = readFileSync(join(REPO_ROOT, 'AGENTS.md'), 'utf8');
-    if (text.trim()) return text;
-  } catch { /* fallthrough */ }
-  return [
-    'Ты помогаешь по KB этого проекта. Отвечай на русском.',
-    'Каждое нетривиальное утверждение помечай меткой FACT/INFERENCE/ASSUMPTION/UNKNOWN/RISK/DECISION/RECOMMENDATION',
-    'и сопровождай цитатой [source: /path]. Если evidence не хватает — отвечай UNKNOWN, не выдумывай.',
-  ].join('\n');
-}
+function loadSystemPrompt() { return loadAgentContext(REPO_ROOT); }
 
 // Answer-policy (L5): .remember/preferences.md — ручки формы ответа, которых нет в AGENTS.md.
 function loadPreferences() {

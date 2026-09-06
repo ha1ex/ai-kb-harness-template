@@ -23,6 +23,7 @@ export function makeOpenAiHttpAdapter(cfg = {}) {
     cfg.api_key ?? process.env.SKILLOPT_API_KEY ?? process.env.OPENAI_API_KEY ?? null;
   const model = cfg.model ?? process.env.SKILLOPT_MODEL ?? "gpt-4o-mini";
   const timeoutMs = cfg.timeout_ms ?? DEFAULT_TIMEOUT_MS;
+  const attempts = 1 + (cfg.max_retries ?? (MAX_RETRIES - 1));
   const extraHeaders = cfg.headers && typeof cfg.headers === "object" ? cfg.headers : {};
 
   return {
@@ -44,7 +45,7 @@ export function makeOpenAiHttpAdapter(cfg = {}) {
       };
 
       let lastErr = null;
-      for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      for (let attempt = 0; attempt < attempts; attempt++) {
         const ctrl = new AbortController();
         const tid = setTimeout(() => ctrl.abort(), timeoutMs);
         try {
@@ -58,12 +59,11 @@ export function makeOpenAiHttpAdapter(cfg = {}) {
             body: JSON.stringify(body),
             signal: ctrl.signal,
           });
-          clearTimeout(tid);
-
           if (res.status === 429 || res.status >= 500) {
             const txt = await res.text().catch(() => "");
             lastErr = new Error(`[skillopt:openai-http] ${res.status}: ${txt.slice(0, 300)}`);
-            await sleep(backoff(attempt));
+            clearTimeout(tid);
+            if (attempt < attempts - 1) await sleep(backoff(attempt));
             continue;
           }
           if (!res.ok) {
@@ -72,6 +72,7 @@ export function makeOpenAiHttpAdapter(cfg = {}) {
           }
 
           const data = await res.json();
+          clearTimeout(tid);
           const text = data?.choices?.[0]?.message?.content ?? "";
           return {
             text,
@@ -85,8 +86,9 @@ export function makeOpenAiHttpAdapter(cfg = {}) {
           }
           // network errors — retry
           lastErr = e;
-          if (attempt < MAX_RETRIES - 1) {
-            await sleep(backoff(attempt));
+          if (attempt < attempts - 1) {
+            clearTimeout(tid);
+            if (attempt < attempts - 1) await sleep(backoff(attempt));
             continue;
           }
           throw e;
