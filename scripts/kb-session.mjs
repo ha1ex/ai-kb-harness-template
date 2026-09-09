@@ -15,6 +15,8 @@ import { fileURLToPath } from "node:url";
 import { normalizeWorkflowTask } from "./lib/workflow-state.mjs";
 import { assertSafePath } from "./lib/skills.mjs";
 import { appendJournal } from "./lib/journal.mjs";
+import { validateResearchTaskState } from "./lib/research-evidence.mjs";
+import { createHash } from "node:crypto";
 const root = process.env.KB_ROOT
   ? resolve(process.env.KB_ROOT)
   : resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -36,6 +38,7 @@ Transfer changes an existing task's writer. Recover removes only a lock whose
 recorded PID is demonstrably dead; it never changes the saved task state.
 
 Options: --task, --owner, --file (save), --to (transfer), --help / -h.
+--expected-sha <sha256|absent> rejects a save if another writer changed the task.
 KB_ROOT selects the project directory; otherwise the script's project is used.`);
   process.exit(0);
 }
@@ -126,6 +129,10 @@ try {
     const previous = existsSync(path)
       ? JSON.parse(readFileSync(path, "utf8"))
       : null;
+    if (args.includes('--expected-sha')) {
+      const current = existsSync(path) ? createHash('sha256').update(readFileSync(path)).digest('hex') : 'absent';
+      if (arg('--expected-sha') !== current) throw Error('Task fingerprint changed concurrently; reload before saving');
+    }
     if (previous && previous.owner !== owner)
       throw Error(
         `Task is owned by ${previous.owner}; transfer ownership explicitly`,
@@ -196,6 +203,7 @@ try {
           "Completion requires result, resolved questions and passing checks",
         );
     } else throw Error("Expected save or transfer");
+    validateResearchTaskState(root, next, previous);
     next = normalizeWorkflowTask(root, next, previous);
     next.updatedAt = new Date().toISOString();
     const temp = path + `.${process.pid}.tmp`;

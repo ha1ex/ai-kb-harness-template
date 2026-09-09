@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "templateVersion": "0.5.0",
+  "templateVersion": "0.6.0",
   "upstream": "https://github.com/ha1ex/ai-kb-harness-template.git",
   "templateOwned": [
     "harness",
@@ -19,7 +19,8 @@
     ".nvmrc",
     "docs/releases",
     "docs/assets",
-    "docs/work-system.md"
+    "docs/work-system.md",
+    "docs/research.md"
   ],
   "projectOwned": [
     "kb.config.mjs",
@@ -87,7 +88,8 @@
       "/scripts/kb:release:check",
       "/scripts/viewer:test",
       "/scripts/kb:profile",
-      "/scripts/kb:findings"
+      "/scripts/kb:findings",
+      "/scripts/kb:research"
     ]
   },
   "demoPaths": [

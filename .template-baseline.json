@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "templateVersion": "0.5.0",
+  "templateVersion": "0.6.0",
   "repository": "https://github.com/ha1ex/ai-kb-harness-template.git",
-  "sourceRef": "v0.5.0",
+  "sourceRef": "v0.6.0",
   "sourceCommit": null,
   "files": {
     ".github/workflows/ci.yml": {
@@ -22,7 +22,7 @@
       "mode": "100644"
     },
     ".template-manifest.json": {
-      "sha256": "04fb21ee3def0aad372cfa09eb09c1c87a37efe8942b67bb615878ed63e1ad40",
+      "sha256": "840b51ea3d989061ca408cce35c19874e81fc0fed847c2192cd8c8d2832faa72",
       "mode": "100644"
     },
     "docs/architecture.md": {
@@ -34,7 +34,7 @@
       "mode": "100644"
     },
     "docs/compatibility.md": {
-      "sha256": "b5e6125d8f6f16830cc7c652b67aaa1454b074693beca5401743857afc3cd63f",
+      "sha256": "ce462d0314eea6430089d5051ce17c4e03e3d4fe6c8e5abcb1368b7924cfe63a",
       "mode": "100644"
     },
     "docs/contributing.md": {
@@ -59,6 +59,14 @@
     },
     "docs/releases/0.5.0.md": {
       "sha256": "9382b904dcf7a0987641d4bdf233b5ee770bb72166eb8bc6b6ba7f2df18f7fd5",
+      "mode": "100644"
+    },
+    "docs/releases/0.6.0.md": {
+      "sha256": "1c0d3f138ad8405148f94de4c5a08d8551a50d2839436495b92bfd661cbecce8",
+      "mode": "100644"
+    },
+    "docs/research.md": {
+      "sha256": "673446d79b0d86c5288af97dc9917dc3dfd2990d7fb02836f6a953b68ca8ad1d",
       "mode": "100644"
     },
     "docs/upgrades.md": {
@@ -141,6 +149,10 @@
       "sha256": "c985a5f9e6bf7133e6a0fb5e1d1d4a918df370436a53de37c869d2d368530a9e",
       "mode": "100644"
     },
+    "harness/skills/economical-research/SKILL.md": {
+      "sha256": "aa61a1e46c9f807a99aa32ddae024fa034ab9a78767dfe17933fafbebd520e6c",
+      "mode": "100644"
+    },
     "harness/skills/harness-evidence/SKILL.md": {
       "sha256": "6f625b8d28acb81ef88d1167b3f7ebede0fc261a60f78d83cc4d38bd0c68a229",
       "mode": "100644"
@@ -169,6 +181,10 @@
       "sha256": "cafcdb7ce62b52762c65c706081fe5f93f1cbd152e6b6268f8a573bce7d3de69",
       "mode": "100644"
     },
+    "harness/templates/research-policy.json": {
+      "sha256": "3ac255aa9a07765af1f8f7d8f33b8d8c4117255202c82283e40f8166c69e8ffd",
+      "mode": "100644"
+    },
     "harness/templates/work-system.json": {
       "sha256": "369d614c9d1e00fc572d3f0e39ebfa7ee1a9bc934c80e60916c06298edcfb3aa",
       "mode": "100644"
@@ -190,7 +206,7 @@
       "mode": "100644"
     },
     "scripts/README.md": {
-      "sha256": "e469d00940740cc6d2172594c1a8fb542631a5796bdb59b3a55476ff46c9471e",
+      "sha256": "5aa0f757d3aa4bedc975ce407587d62712f16c8b90e296a4f06aece7e4935d10",
       "mode": "100644"
     },
     "scripts/check-decisions.mjs": {
@@ -198,7 +214,7 @@
       "mode": "100644"
     },
     "scripts/check-harness.mjs": {
-      "sha256": "569ab5d419af991f1dc14030ac90414692fa6c61768be7c0c3f32baff7e26b80",
+      "sha256": "1c8dbbfae742c8bab34e59ec91a0e3327928502dabae5788dd631cbde686f724",
       "mode": "100644"
     },
     "scripts/check-md-frontmatter.mjs": {
@@ -297,8 +313,12 @@
       "sha256": "7e9dd47773dd9315c567ea1adb659641a2dbd6c9f408c62728c0ceaf9956eae0",
       "mode": "100644"
     },
+    "scripts/kb-research.mjs": {
+      "sha256": "18537ceca73d10c96a3cad0d2ed03b68fa8adec7c5cc4d879adc1892a8163189",
+      "mode": "100644"
+    },
     "scripts/kb-session.mjs": {
-      "sha256": "eaefd915bfde74867048b90df5344f56b0500f1c447dbda1a2038e475506fd11",
+      "sha256": "682c16df0babfacbdfe3ccec6edf3d168998287162325dd450a9f42de7261b45",
       "mode": "100644"
     },
     "scripts/kb-update.mjs": {
@@ -333,6 +353,18 @@
       "sha256": "6ed704786899f6381e85988820781d3c8ec2e64a8db1be3e7baed6f2b95bb9e0",
       "mode": "100644"
     },
+    "scripts/lib/research-evidence.mjs": {
+      "sha256": "d77be05f340a23fa543efcf99b348bfdacaafdc432b44bef2469e50af082f859",
+      "mode": "100644"
+    },
+    "scripts/lib/research-policy.mjs": {
+      "sha256": "6b883bf91026318db80eae55b8f3d30a2f378f9283f295f6cb4994b78cde6deb",
+      "mode": "100644"
+    },
+    "scripts/lib/research-runner.mjs": {
+      "sha256": "0a1ed5fb87e5a86b5633dc13077ff2a860a6212a3167c40feb1ad633e36ec04d",
+      "mode": "100644"
+    },
     "scripts/lib/skills.mjs": {
       "sha256": "afc356dba51f365a917103771fecfaecc7c1dc84d1b88fc14c2d28d1c9b501dd",
       "mode": "100644"
@@ -342,7 +374,7 @@
       "mode": "100644"
     },
     "scripts/lib/work-context.mjs": {
-      "sha256": "3307c4e517390fc3d0f8dba41074c2b509cf2abb59d3cb89aab7bfa1b612a989",
+      "sha256": "40a9945136a5d73f9d358bcbb45546589e8709c4ae0dd77677ea2fd2d3744ba7",
       "mode": "100644"
     },
     "scripts/lib/work-system.mjs": {
@@ -350,7 +382,7 @@
       "mode": "100644"
     },
     "scripts/lib/workflow-state.mjs": {
-      "sha256": "9f735c7ab27fcb9348b9058be136d9a95a0cecf8e49b898753d1699edfc03cc8",
+      "sha256": "14a9c3672bd55d1a169ae6f8ab2e7b81cc64ba5718ba6f9157770a6844e47441",
       "mode": "100644"
     },
     "scripts/parse-raw.mjs": {
@@ -569,6 +601,14 @@
       "sha256": "aed9ba548be2decb2b6db0b71de9ecfa627d8752f1188253bb0096d6b2a40627",
       "mode": "100644"
     },
+    "test/research-execution.test.mjs": {
+      "sha256": "a9c5becb3842d0e98ac4ec216a8b1ef6e034f724b237824abaf51ce4a18ba352",
+      "mode": "100644"
+    },
+    "test/research-policy.test.mjs": {
+      "sha256": "bc4f069b9d51609897b0f80b58478cd219d253382f7b9846386ac97fced0a314",
+      "mode": "100644"
+    },
     "test/runtime-llm.test.mjs": {
       "sha256": "52b5d1d251d5e65a48a24d59a6f92978ec2e2834eb294ef22a64c0c2b8c635dd",
       "mode": "100644"
@@ -582,7 +622,7 @@
       "mode": "100644"
     },
     "test/template-update.test.mjs": {
-      "sha256": "742b18bbdffd74043a796348e02cb6746829185f67d6f32994a06c759f32f19f",
+      "sha256": "0219114f5222932403443de9c2457070e7a0f8a865799bf31df9ef6f16c9c406",
       "mode": "100644"
     },
     "test/work-system.test.mjs": {
@@ -967,6 +1007,9 @@
       },
       "/scripts/kb:findings": {
         "value": "node scripts/kb-findings.mjs"
+      },
+      "/scripts/kb:research": {
+        "value": "node scripts/kb-research.mjs"
       }
     }
   },

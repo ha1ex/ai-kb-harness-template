@@ -1,0 +1,67 @@
+{
+  "constraints": [
+    "No paid model calls during validation",
+    "Manual identities and usage are recorded claims, not authentication"
+  ],
+  "sources": [
+    "docs/research.md",
+    "docs/releases/0.6.0.md"
+  ],
+  "changedFiles": [],
+  "checks": [
+    {
+      "command": "pnpm test",
+      "outcome": "passed",
+      "evidence": "154 tests, including 41 research routing, execution and policy tests"
+    },
+    {
+      "command": "pnpm check",
+      "outcome": "passed",
+      "evidence": "Harness, spaces, portability, readability and provenance checks passed"
+    },
+    {
+      "command": "pnpm viewer:test && pnpm viewer:build",
+      "outcome": "passed",
+      "evidence": "Component/data tests and static viewer build passed"
+    },
+    {
+      "command": "Independent code review",
+      "outcome": "passed",
+      "evidence": "Astra review verified canonical path validation and explicit CLI model binding fixes; no remaining code blocker"
+    },
+    {
+      "command": "Independent 0.5.0 to 0.6.0 upgrade smoke",
+      "outcome": "passed",
+      "evidence": "19 changes, zero conflicts; project policy, skill, receipts, task, content, README/config retained; Codex skill exported and planner used project model without a model call"
+    },
+    {
+      "command": "Semantic retrieval/control/gate suites",
+      "outcome": "passed",
+      "evidence": "26 checks passed"
+    },
+    {
+      "command": "pnpm kb:release:check",
+      "outcome": "passed",
+      "evidence": "0.6.0 distributed baseline matches managed files"
+    }
+  ],
+  "openQuestions": [],
+  "status": "active",
+  "result": "",
+  "goal": "Deliver portable economical research components and publish template 0.6.0 for existing projects",
+  "acceptanceCriteria": [
+    "Strong planner, synthesizer and independent reviewer with economy workers",
+    "Durable evidence, review and expense history survives session handoffs and updates",
+    "Budget and evidence failures never imply successful completion",
+    "Release, README and migration instructions published"
+  ],
+  "decisions": [
+    "User authorized implementation, transfer to existing projects and publication to main",
+    "Use current clients by default and explicit adapters with --execute; no new framework dependency",
+    "Keep model policy project-owned and optional; do not claim measured savings"
+  ],
+  "nextStep": "Publish reviewed commit and v0.6.0 tag to main, create GitHub release, then record publication handoff",
+  "task": "economical-research-components",
+  "owner": "codex",
+  "updatedAt": "2026-09-09T16:07:18.043Z"
+}

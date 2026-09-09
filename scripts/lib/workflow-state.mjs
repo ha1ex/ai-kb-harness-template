@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { assertSafePath } from './skills.mjs';
 import { loadWorkSystem } from './work-system.mjs';
+import { researchStaleness } from './research-evidence.mjs';
 export const hashContent = value => createHash('sha256').update(value).digest('hex');
 export function artifactHash(root,path) {
   const content=readFileSync(assertSafePath(root,path));
@@ -15,7 +16,7 @@ function stageContractHash(system,stage) {
   return hashContent(JSON.stringify({stage,role,skills:names.map(name=>({name,text:system.skills.get(name).text}))}));
 }
 export function staleArtifacts(root,task,system=loadWorkSystem(root)) {
-  const stale=[];
+  const stale=researchStaleness(root,task);
   if(task?.workflow) {
     const workflow=system.workflows[task.workflow];
     for(const stage of task.stages??[]) if(stage.status==='complete') {

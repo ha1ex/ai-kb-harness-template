@@ -40,9 +40,47 @@ Each task lives in `.remember/tasks/<id>.json`. The context command reads workin
 
 Every saved record requires nonempty acceptanceCriteria (an array of completion conditions) and an explicit decisions array (confirmed decision descriptions, or empty when none), as well as goal and nextStep. Older records must add these fields on their next save. A completed record also requires a result, resolved questions and passing checks with evidence. This checks structure, not truth or task success; review the actual checks. Task IDs and writer names identify coordination responsibility, not an authentication boundary.
 
+## Economical research providers
+
+`kb:research` uses its own optional project policy at `00_context/research-policy.json`; it does not reuse the general `kb.config.mjs` `llm` object. With no policy file, every role is manual and no provider request is made. Copy `harness/templates/research-policy.json` only when the project needs explicit models or caps. The project work-system profile also remains optional and project-owned.
+
+| Provider | Execution behavior | Usage recorded by the adapter path |
+|---|---|---|
+| `manual` | `prepare` or `run` returns a prompt for the current client | The response file supplies complete usage or `null` |
+| `openai-http` | Sends the prepared prompt and registered source documents to the configured endpoint | OpenAI-compatible response usage when present; otherwise unknown |
+| `ollama` | Uses the OpenAI-compatible local endpoint | Compatible response usage when present; otherwise unknown |
+| `claude-cli` | Starts the configured CLI with the selected model and no allowed resume flag | Unknown; reconcile only from a complete client trace |
+| `generic-cli` | Runs a configured fresh, stateless command with an explicit model argument | Unknown; reconcile only from a complete client trace |
+
+HTTP providers receive only the supplied source documents and do not browse. An installed CLI may use its own tools according to that client's configuration and trust settings; the resulting research still needs readable source originals, exact quotations, and recorded uncertainty.
+
+Generic CLI configuration must include `cli.command` and pass the selected model in `cli.args` with `{{model}}`. This prevents an installed client default from silently changing the requested tier:
+
+```json
+{
+  "provider": "generic-cli",
+  "model": "your-explicit-economy-model",
+  "tier": "economy",
+  "timeout_ms": 300000,
+  "max_retries": 0,
+  "cli": {
+    "command": "llm",
+    "args": ["--model", "{{model}}"]
+  }
+}
+```
+
+For `claude-cli`, `cli.extra_args` cannot override `--model` or `--fallback-model` and cannot use `--resume`, `--continue`, `--session-id`, `-r`, or `-c`. Generic CLI configuration must likewise represent a fresh stateless invocation and never resume an earlier session. Use a separate fresh context for the planner, every individual worker, synthesis, and review. These constraints prevent obvious model or context reuse, but the harness cannot authenticate that a CLI context is fresh or independent. Every research role also forces hidden retries to zero.
+
+`maxOutputTokens` is sent to OpenAI-compatible HTTP adapters as `max_tokens`. In manual and CLI modes it is a conservative reservation, not an enforced generation or turn limit. Configure the selected client with its own bounded output, turn, and tool settings.
+
+Cloud credentials use a configured `api_key_env` environment-variable name. Inline `api_key`, `apiKey`, and authorization headers are rejected so persisted policy snapshots do not contain credentials. Manual model/context identity and usage are client claims, not authentication or verified metering.
+
+Unknown usage remains unknown. If a token or cost cap is enabled, a settled call with unknown usage blocks further reservations until `kb:research reconcile` records complete nonnegative usage with a reason. Model price calculations and reservations cannot guarantee an external bill or capture unreported child-tool charges. Budget exhaustion, provider errors, and review-round exhaustion never accept a result. See [the complete research procedure](research.md).
+
 ## Optional LLM execution
 
-`think`, `critic`, and `dream` all use `scripts/lib/llm.mjs`, backed by the existing SkillOpt adapter factory. Their generated prompts contain AGENTS.md plus the same evidence/workflow rules; MCP prompt building uses that common loader too. Default operation builds a prompt for manual use. Even with `--execute`, an absent provider remains manual mode. No cloud provider is selected from a key or executable found on the machine.
+`think`, `critic`, and `dream` all use `scripts/lib/llm.mjs`, backed by the existing SkillOpt adapter factory. This section describes their shared `kb.config.mjs` setting; role-separated `kb:research` uses the policy above. Their generated prompts contain AGENTS.md plus the same evidence/workflow rules; MCP prompt building uses that common loader too. Default operation builds a prompt for manual use. Even with `--execute`, an absent provider remains manual mode. No cloud provider is selected from a key or executable found on the machine.
 
 Set the optional `llm` object in project-owned `kb.config.mjs`, for example:
 

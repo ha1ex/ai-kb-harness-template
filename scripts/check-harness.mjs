@@ -14,6 +14,7 @@ import {
 import { resolve, join, dirname, relative } from "node:path";
 import { createHash } from "node:crypto";
 import { discoverSkills } from "./lib/skills.mjs";
+import { loadResearchPolicy } from "./lib/research-policy.mjs";
 import { loadWorkSystem } from "./lib/work-system.mjs";
 import { spawnSync } from "node:child_process";
 const args = process.argv.slice(2);
@@ -95,7 +96,7 @@ function manage(path, content) {
   }
 }
 const clients = [...new Set([...state.clients, ...requested])];
-try { loadWorkSystem(base, {checkDraft: true, checkContext: true}); }
+try { loadWorkSystem(base, {checkDraft: true, checkContext: true}); loadResearchPolicy(base); }
 catch (error) { errors.push(error.message); }
 if (!errors.length) {
   for (const p of [

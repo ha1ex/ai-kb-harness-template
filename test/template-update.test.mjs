@@ -273,6 +273,9 @@ test('template updates preserve a project work profile, custom procedures and ac
   const files = {
     '00_context/work-system.json': JSON.stringify({version:1,status:'active',purpose:'Project research',customRoles:{interviewer:{id:'interviewer'}}}),
     'skills/interview/SKILL.md': '---\nname: interview\ndescription: Project-owned interview analysis\n---\nPreserve interview evidence.\n',
+    '00_context/research-policy.json': JSON.stringify({version:1,models:{frontier:{model:'project-lead'},economy:{model:'project-worker'}}}),
+    '.remember/research/project-research/attempt.json': JSON.stringify({model:'project-worker',usage:{input_tokens:200,output_tokens:100},output:{summary:'Preserved project evidence'}}),
+    '.remember/tasks/project-research.json': JSON.stringify({task:'project-research',research:{version:1,attempts:[{id:'saved'}]}}),
     '.remember/findings/lesson.json': JSON.stringify({kind:'feedback',status:'accepted',title:'Keep dates'}),
   };
   for(const [path,content] of Object.entries(files))put(f.project,path,content);

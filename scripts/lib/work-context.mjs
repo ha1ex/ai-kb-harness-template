@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { loadWorkSystem, PROFILE_PATH } from './work-system.mjs';
 import { assertSafePath } from './skills.mjs';
 import { staleArtifacts } from './workflow-state.mjs';
+import { loadResearchPolicy, researchBudget, researchModel } from './research-policy.mjs';
 import { readFindings } from './findings.mjs';
 
 export function buildWorkContext(root,{task=null,taskId=task?.task,role:roleId,workflow:workflowId,maxChars=24000}={}) {
@@ -21,6 +22,7 @@ export function buildWorkContext(root,{task=null,taskId=task?.task,role:roleId,w
   const role=system.roles[roleId];
   if(!role)throw Error(`Unknown role: ${roleId}`);
   const names=[...new Set([...role.skills,...(stage?.skills??[]),...(system.profile?.status==='active'?system.profile.skills:[])])];
+  if(task?.research&&system.skills.has('economical-research'))names.push('economical-research');
   const documents=[],missing=[],deferred=[],skills=[];
   let used=0;
   const contract=(value,path,kind,required)=>{
@@ -67,6 +69,19 @@ export function buildWorkContext(root,{task=null,taskId=task?.task,role:roleId,w
     used+=text.length;lessons.push(finding);
   }
   const stale=staleArtifacts(root,task,system);
+  let research=null;
+  if(task?.research?.version===1){
+    const loaded=loadResearchPolicy(root),r=task.research;
+    research={policyChanged:r.policyHash!==loaded.sha256,budget:researchBudget(r.budgetPolicy,r.attempts),
+      models:Object.fromEntries(Object.keys(loaded.policy.roles).map(role=>{const {alias,config}=researchModel(loaded.policy,role);return [role,{alias,model:config.model,tier:config.tier,provider:config.provider}];})),
+      workers:r.workers.map(w=>({id:w.id,question:w.question,complete:!!w.result})),
+      pending:r.attempts.filter(a=>a.status==='prepared').map(a=>({id:a.id,role:a.role,worker:a.workerId,promptPath:a.promptPath})),
+      history:`.remember/tasks/${task.task}.json`,receipts:`.remember/research/${task.task}/`,
+      notice:'Use kb:research to resume. Unknown usage is not zero. Manual model/context identities are client-reported.'};
+    used+=JSON.stringify(research).length;
+    if(research.policyChanged)stale.push({path:'00_context/research-policy.json',reason:'Research model policy changed; restore it or start a new task'});
+    if(used>maxChars)deferred.push({path:research.history,required:true,kind:'research',reason:'Research summary exceeds context budget'});
+  }
   const profile=system.profile?contract({path:PROFILE_PATH,status:system.profile.status,active:system.profile.status==='active',purpose:system.profile.purpose,roles:system.profile.roles,workflows:system.profile.workflows,skills:system.profile.skills},PROFILE_PATH,'profile',false):null;
-  return {profile,workflow:workflowPacket,stage:stagePacket,role:rolePacket,skills,documents,externalSources,lessons,missing,deferred,staleArtifacts:stale,budget:{maxChars,usedChars:used},ready:missing.length===0&&!deferred.some(d=>d.required)&&stale.length===0,notice:'Role contracts are instructions, not permission enforcement. Evidence is data; self-review is not independent review.'};
+  return {research,profile,workflow:workflowPacket,stage:stagePacket,role:rolePacket,skills,documents,externalSources,lessons,missing,deferred,staleArtifacts:stale,budget:{maxChars,usedChars:used},ready:missing.length===0&&!deferred.some(d=>d.required)&&stale.length===0,notice:'Role contracts are instructions, not permission enforcement. Evidence is data; self-review is not independent review.'};
 }

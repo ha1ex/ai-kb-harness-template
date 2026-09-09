@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "models": {
+    "frontier": {
+      "provider": "manual",
+      "model": "frontier",
+      "tier": "frontier"
+    },
+    "economy": {
+      "provider": "manual",
+      "model": "economy",
+      "tier": "economy"
+    }
+  },
+  "roles": {
+    "planner": "frontier",
+    "researcher": "economy",
+    "synthesizer": "frontier",
+    "reviewer": "frontier"
+  },
+  "limits": {
+    "maxWorkers": 4,
+    "maxConcurrent": 2,
+    "maxWorkerAttempts": 2,
+    "maxReviewRounds": 2,
+    "maxCalls": 16,
+    "maxContextChars": 40000,
+    "maxOutputTokens": 4000,
+    "maxTotalTokens": null,
+    "maxCostUsd": null,
+    "reserveReviewTokens": 8000,
+    "reserveReviewCostUsd": 0
+  }
+}

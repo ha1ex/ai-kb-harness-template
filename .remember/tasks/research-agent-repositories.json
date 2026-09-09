@@ -1,0 +1,47 @@
+{
+  "constraints": [
+    "Source-code review only; do not claim measured model quality or savings",
+    "No implementation or release requested for this research turn"
+  ],
+  "sources": [
+    "https://github.com/langchain-ai/deepagents",
+    "https://github.com/assafelovic/gpt-researcher",
+    "https://github.com/bytedance/deer-flow",
+    "https://github.com/langchain-ai/open_deep_research",
+    ".context/research-repos/validation.md"
+  ],
+  "changedFiles": [
+    ".remember/tasks/research-agent-repositories.json"
+  ],
+  "checks": [
+    {
+      "command": "GitHub metadata and pinned source-code inspection",
+      "outcome": "passed",
+      "evidence": "Model assignments, isolated contexts, review routes and cost-limit mechanisms inspected at the revisions recorded in .context/research-repos/validation.md. This is self-check, not independent agent review or live-model testing."
+    },
+    {
+      "command": "pnpm harness:check",
+      "outcome": "passed",
+      "evidence": "Harness configuration OK; no clients selected"
+    },
+    {
+      "command": "pnpm kb:verify --scan --provenance --no-semantic",
+      "outcome": "passed",
+      "evidence": "6 own files scanned; 757 external documents skipped; 1 exemption; clean"
+    }
+  ],
+  "openQuestions": [],
+  "status": "complete",
+  "result": "DeepAgents is the best architectural reference; GPT Researcher supplies research/revision workflow patterns; DeerFlow supplies configurable model/resource caps. None supplies every requested guarantee without explicit configuration/adaptation. Open Deep Research is archived and shares the supervisor/worker model setting. No external model calls or cost benchmark executed.",
+  "goal": "Identify and validate three repositories suited to economical research agents in the harness; recommend the best fit.",
+  "acceptanceCriteria": [
+    "Three ranked repositories with source-code evidence and limitations",
+    "Explicit strong-planner/cheaper-worker/independent-reviewer fit assessment",
+    "Concrete integration recommendation and honest cost-validation boundary"
+  ],
+  "decisions": [],
+  "nextStep": "If implementing research execution, add project model policy, bounded worker artifacts and usage, then enforce the existing independent review gate and benchmark against an all-strong baseline.",
+  "task": "research-agent-repositories",
+  "owner": "codex",
+  "updatedAt": "2026-09-09T15:46:50.967Z"
+}

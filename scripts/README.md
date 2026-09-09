@@ -18,6 +18,7 @@
 | `pnpm kb:verify` | `semantic/verify.mjs` | проверка цитат `[source:]` (Tier-1 gate: traversal/coverage + FACT-advisory + critique); `--scan --provenance` — CI-гейт (N3/N4); `--scan` без `--no-semantic` — Tier-2 из индекса (D2) |
 | `pnpm kb:metrics` | `kb-metrics.mjs` | тренды качества из журнала по неделям (D1) |
 | `pnpm kb:digest` | `kb-digest.mjs` | утренний дайджест состояния KB (D4; см. `../docs/automation.md`) |
+| `pnpm kb:research` | `kb-research.mjs` | ограниченное исследование по ролям: ручные промпты или явный `--execute`, квоты, чеки и независимое ревью |
 | `pnpm kb:update` | `kb-update.mjs` | обновление ядра от upstream по `.template-manifest.json` (C3) |
 | — | `kb-critic.mjs` | revision-промпт по битым цитатам; `--execute` запускает verify→revise через выбранный LLM-адаптер (N1) |
 | `pnpm kb:dream` | `dream-cycle.mjs` | еженедельный LLM-аудит + fact-консолидация (пишет в `.context/`) |
@@ -57,7 +58,7 @@ python3 scripts/import-fabric.py --help
 ```
 
 
-## Harness 0.4.0: проекты, клиенты и выпуски
+## Harness 0.6.0: проекты, клиенты и выпуски
 
 | Команда | Назначение |
 |---|---|
@@ -66,6 +67,7 @@ python3 scripts/import-fabric.py --help
 | `pnpm kb:context --task ID [--workflow ID] [--role ID]` | Пакет контекста, следующий этап, источники и принятые уроки |
 | `pnpm kb:profile show/propose/apply` | Предложить и подтвердить профиль работы проекта |
 | `pnpm kb:findings list/add/scan/transition` | Общая очередь проблем знаний и обратной связи |
+| `pnpm kb:research help` | Планирование, сбор доказательств, синтез и ревью с раздельными моделями и возобновляемой историей |
 | `pnpm kb:session --help` | Создание и передача handoff-записей |
 | `pnpm kb:spaces` | Проверка разделов и ссылок на документы |
 | `pnpm kb:portability` | Проверка переносимости путей |
@@ -83,5 +85,10 @@ python3 scripts/import-fabric.py --help
 SkillOpt. Ручной режим по умолчанию возвращает запрос без сетевого вызова. Общие правила
 добавляет `lib/agent-context.mjs`. Ограничения клиентских проверок —
 [совместимость](../docs/compatibility.md).
+
+`lib/research-runner.mjs`, `lib/research-policy.mjs` и `lib/research-evidence.mjs` ведут отдельную
+историю исследования: роли и лимиты, неизменяемые чеки попыток, точные цитаты, неизвестный расход,
+пересмотр и независимую проверку. Начните с [руководства по исследованию](../docs/research.md);
+без проектной политики `kb:research` только готовит ручные запросы.
 
 Сценарии, передача этапов и проверяемое развитие скиллов: [руководство](../docs/work-system.md).
