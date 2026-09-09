@@ -43,11 +43,16 @@
       "command": "pnpm kb:release:check",
       "outcome": "passed",
       "evidence": "0.6.0 distributed baseline matches managed files"
+    },
+    {
+      "command": "git push --atomic origin HEAD:main refs/tags/v0.6.0; gh release view v0.6.0",
+      "outcome": "passed",
+      "evidence": "Remote main and tag published; https://github.com/ha1ex/ai-kb-harness-template/releases/tag/v0.6.0 exists as latest non-prerelease"
     }
   ],
   "openQuestions": [],
-  "status": "active",
-  "result": "",
+  "status": "complete",
+  "result": "Published portable research workflow 0.6.0 to main at a3786b2cdb6cdf2982a81dc4ca554d020f77e7cb, tagged v0.6.0 and created the latest GitHub release. Mixed-model routing, evidence, budget, parallel settlement and existing-project migration validated without paid model calls.",
   "goal": "Deliver portable economical research components and publish template 0.6.0 for existing projects",
   "acceptanceCriteria": [
     "Strong planner, synthesizer and independent reviewer with economy workers",
@@ -60,8 +65,14 @@
     "Use current clients by default and explicit adapters with --execute; no new framework dependency",
     "Keep model policy project-owned and optional; do not claim measured savings"
   ],
-  "nextStep": "Publish reviewed commit and v0.6.0 tag to main, create GitHub release, then record publication handoff",
+  "nextStep": "Adopt v0.6.0 in existing projects using kb:update, configure project model names before init, and compare quality/cost on 10–20 real questions before claiming savings.",
   "task": "economical-research-components",
   "owner": "codex",
-  "updatedAt": "2026-09-09T16:07:18.043Z"
+  "updatedAt": "2026-09-09T16:08:23.805Z",
+  "publication": {
+    "commit": "a3786b2cdb6cdf2982a81dc4ca554d020f77e7cb",
+    "tag": "v0.6.0",
+    "release": "https://github.com/ha1ex/ai-kb-harness-template/releases/tag/v0.6.0",
+    "ci": "GitHub CI started; local checks passed; remote completion pending at handoff recording"
+  }
 }
