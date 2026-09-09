@@ -13,6 +13,8 @@ import {
 } from "node:fs";
 import { resolve, join, dirname, relative } from "node:path";
 import { createHash } from "node:crypto";
+import { discoverSkills } from "./lib/skills.mjs";
+import { loadWorkSystem } from "./lib/work-system.mjs";
 import { spawnSync } from "node:child_process";
 const args = process.argv.slice(2);
 // URL decoding and KB_ROOT are handled explicitly for paths containing spaces.
@@ -93,6 +95,8 @@ function manage(path, content) {
   }
 }
 const clients = [...new Set([...state.clients, ...requested])];
+try { loadWorkSystem(base, {checkDraft: true, checkContext: true}); }
+catch (error) { errors.push(error.message); }
 if (!errors.length) {
   for (const p of [
     "AGENTS.md",
@@ -141,102 +145,25 @@ if (!errors.length) {
       opencode: ".opencode/skills",
     }[c];
     if (!dir) continue;
-    const seen = new Set();
-    for (const source of ["harness/skills", "skills"]) {
-      const from = join(base, source);
-      if (!existsSync(from)) continue;
-      const entries = readdirSync(from, { withFileTypes: true });
-      const bundles = new Map(
-        entries.filter((e) => e.isDirectory()).map((e) => [e.name, true]),
-      );
-      if (source === "skills")
-        for (const entry of entries) {
-          if (
-            entry.isFile() &&
-            entry.name.endsWith(".md") &&
-            entry.name !== "README.md"
-          )
-            bundles.set(
-              entry.name.slice(0, -3),
-              bundles.get(entry.name.slice(0, -3)) ?? false,
-            );
-          else if (entry.isSymbolicLink())
-            errors.push(`Skill symlink not portable: ${source}/${entry.name}`);
-        }
-      for (const [name, hasDirectory] of bundles) {
-        const bundle = join(from, name),
-          standard = join(bundle, "SKILL.md"),
-          flat = join(from, name + ".md");
-        const legacy =
-          source === "skills" && !existsSync(standard) && existsSync(flat);
-        const skill = legacy ? flat : standard;
-        if (!existsSync(skill)) {
-          errors.push(`Missing SKILL.md: ${source}/${name}`);
-          continue;
-        }
-        if (lstatSync(skill).isSymbolicLink()) {
-          errors.push(`Skill symlink not portable: ${skill}`);
-          continue;
-        }
-        if (source === "skills" && !legacy && existsSync(flat)) {
-          errors.push(`Duplicate flat and standard skill: ${name}`);
-          continue;
-        }
-        if (seen.has(name)) {
-          errors.push(`Duplicate skill name: ${name}`);
-          continue;
-        }
-        seen.add(name);
-        let text = readFileSync(skill, "utf8");
-        let fm = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-        if (legacy) {
-          if (text.startsWith("---") && !fm) {
-            errors.push(`Invalid skill frontmatter: ${source}/${name}`);
+    const discovery = discoverSkills(base);
+    errors.push(...discovery.errors);
+    for (const skill of discovery.skills) {
+      manage(`${dir}/${skill.name}/SKILL.md`, skill.text);
+      if (!skill.dir) continue;
+      const bundle = join(base, skill.dir);
+      function copy(dirpath) {
+        for (const item of readdirSync(dirpath, { withFileTypes: true })) {
+          const abs = join(dirpath, item.name);
+          if (item.isSymbolicLink()) {
+            errors.push(`Skill symlink not portable: ${abs}`);
             continue;
           }
-          const fields = fm?.[1] ?? "",
-            missing = [];
-          if (!/^name:[ \t]*\S+/m.test(fields))
-            missing.push("name: " + JSON.stringify(name));
-          if (!/^description:[ \t]*\S+/m.test(fields))
-            missing.push(
-              "description: " +
-                JSON.stringify(
-                  `Project procedure ${name}; use when this procedure is requested.`,
-                ),
-            );
-          if (missing.length)
-            text = fm
-              ? text.replace(/^---\r?\n/, "---\n" + missing.join("\n") + "\n")
-              : "---\n" + missing.join("\n") + "\n---\n\n" + text;
-          fm = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+          if (item.isDirectory()) copy(abs);
+          else if (abs !== join(base, skill.path))
+            manage(`${dir}/${skill.name}/${relative(bundle, abs).split("\\").join("/")}`, readFileSync(abs));
         }
-        if (
-          !fm ||
-          !/^name:[ \t]*\S+/m.test(fm[1]) ||
-          !/^description:[ \t]*\S+/m.test(fm[1])
-        ) {
-          errors.push(`Invalid skill frontmatter: ${source}/${name}`);
-          continue;
-        }
-        manage(`${dir}/${name}/SKILL.md`, text);
-        function copy(dirpath) {
-          for (const item of readdirSync(dirpath, { withFileTypes: true })) {
-            const abs = join(dirpath, item.name);
-            if (item.isSymbolicLink()) {
-              errors.push(`Skill symlink not portable: ${abs}`);
-              continue;
-            }
-            if (item.isDirectory()) copy(abs);
-            else if (abs !== standard)
-              manage(
-                `${dir}/${name}/${relative(bundle, abs).split("\\").join("/")}`,
-                readFileSync(abs),
-              );
-          }
-        }
-        if (hasDirectory) copy(bundle);
       }
+      copy(bundle);
     }
   }
   // Retired skill copies are obsolete even when their old digest still matches.

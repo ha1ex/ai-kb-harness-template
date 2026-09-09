@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "id": "revalidate",
+  "title": "Перепроверка знания",
+  "stages": [
+    {
+      "id": "changes",
+      "title": "Найти изменившиеся основания",
+      "role": "librarian",
+      "skills": [],
+      "requiredArtifacts": [
+        "changes"
+      ],
+      "requiresReview": false,
+      "requiresApproval": false
+    },
+    {
+      "id": "impact",
+      "title": "Перепроверить зависимые выводы",
+      "role": "researcher",
+      "skills": [],
+      "requiredArtifacts": [
+        "impact"
+      ],
+      "requiresReview": false,
+      "requiresApproval": false
+    },
+    {
+      "id": "revise",
+      "title": "Подготовить исправления",
+      "role": "editor",
+      "skills": [],
+      "requiredArtifacts": [
+        "revision"
+      ],
+      "requiresReview": false,
+      "requiresApproval": false
+    },
+    {
+      "id": "review",
+      "title": "Проверить исправления",
+      "role": "reviewer",
+      "skills": [],
+      "requiredArtifacts": [
+        "review"
+      ],
+      "requiresReview": true,
+      "requiresApproval": false
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "name": "ai-kb-harness-template",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "description": "Переиспользуемая база знаний для людей и AI-агентов: источники, проверяемые выводы, переносимые навыки, веб-витрина и обновления шаблона.",
   "packageManager": "pnpm@9.15.0",
@@ -35,6 +35,8 @@
     "kb:readability": "node scripts/check-readability.mjs",
     "kb:release:baseline": "node scripts/template-release.mjs --write",
     "kb:release:check": "node scripts/template-release.mjs --check",
-    "viewer:test": "pnpm -C tools/viewer test"
+    "viewer:test": "pnpm -C tools/viewer test",
+    "kb:profile": "node scripts/kb-profile.mjs",
+    "kb:findings": "node scripts/kb-findings.mjs"
   }
 }

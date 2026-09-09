@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "id": "librarian",
+  "title": "Библиотекарь",
+  "purpose": "Поддерживать актуальность знаний и разбирать обратную связь.",
+  "inputs": [
+    "Изменения источников",
+    "Очередь находок",
+    "Открытые вопросы"
+  ],
+  "outputs": [
+    "Предложения исправлений",
+    "Опыт для проверки владельцем"
+  ],
+  "skills": [
+    "harness-evidence",
+    "harness-handoff",
+    "harness-maintain"
+  ],
+  "requiredContext": [
+    "harness/rules/evidence.md",
+    "harness/rules/workflow.md"
+  ],
+  "optionalContext": [
+    ".remember/core.md",
+    "docs/human-interface.md"
+  ],
+  "boundaries": [
+    "Не менять постоянные процедуры без подтверждения",
+    "Отделять опыт работы от предметных фактов",
+    "Не удалять сырые доказательства"
+  ],
+  "qualityCriteria": [
+    "Находки имеют основание и предлагаемое действие"
+  ]
+}

@@ -12,6 +12,9 @@ import {
 } from "node:fs";
 import { resolve, join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { normalizeWorkflowTask } from "./lib/workflow-state.mjs";
+import { assertSafePath } from "./lib/skills.mjs";
+import { appendJournal } from "./lib/journal.mjs";
 const root = process.env.KB_ROOT
   ? resolve(process.env.KB_ROOT)
   : resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -26,6 +29,9 @@ if (args.includes("--help") || args.includes("-h")) {
 Task IDs use letters, numbers, underscores and hyphens. Save requires goal,
 nextStep, acceptanceCriteria (nonempty array) and decisions (array; may be empty).
 Completion also requires a result, resolved questions and passing checks.
+Optional workflow/stages record checkpoints with named artifact paths. Workflow
+completion requires all stages and independent review; decision recording also
+requires approval.by and approval.reference. These are local records, not identity authentication.
 Transfer changes an existing task's writer. Recover removes only a lock whose
 recorded PID is demonstrably dead; it never changes the saved task state.
 
@@ -99,9 +105,9 @@ try {
     throw Error(
       "Use save|transfer|recover --task <safe-id> --owner <writer> --file <json> (or --to <new-owner>)",
     );
-  const dir = join(root, ".remember/tasks");
+  const dir = assertSafePath(root, ".remember/tasks");
   mkdirSync(dir, { recursive: true });
-  const path = join(dir, `${task}.json`);
+  const path = assertSafePath(root, `.remember/tasks/${task}.json`);
   lock = path + ".lock";
   if (args[0] === "recover") {
     recoverLock(lock, task, owner);
@@ -190,10 +196,16 @@ try {
           "Completion requires result, resolved questions and passing checks",
         );
     } else throw Error("Expected save or transfer");
+    next = normalizeWorkflowTask(root, next, previous);
     next.updatedAt = new Date().toISOString();
     const temp = path + `.${process.pid}.tmp`;
-    writeFileSync(temp, JSON.stringify(next, null, 2) + "\n");
+    writeFileSync(temp, JSON.stringify(next, null, 2) + "\n", {flag:"wx"});
     renameSync(temp, path);
+    for (const stage of next.stages ?? []) {
+      const previousAttempt=previous?.stages?.find(s=>s.id===stage.id)?.reviewAttempt??0;
+      if(stage.review?.mode==='independent' && stage.reviewAttempt>previousAttempt && ['passed','changes-requested'].includes(stage.review.status))
+        await appendJournal({kind:'task-review',task,stage:stage.id,attempt:stage.reviewAttempt,passed:stage.review.status==='passed'});
+    }
     console.log(JSON.stringify(next, null, 2));
   }
 } catch (e) {

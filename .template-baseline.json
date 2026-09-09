@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "templateVersion": "0.4.0",
+  "templateVersion": "0.5.0",
   "repository": "https://github.com/ha1ex/ai-kb-harness-template.git",
-  "sourceRef": "v0.4.0",
+  "sourceRef": "v0.5.0",
   "sourceCommit": null,
   "files": {
     ".github/workflows/ci.yml": {
@@ -22,11 +22,11 @@
       "mode": "100644"
     },
     ".template-manifest.json": {
-      "sha256": "ebf22fe63fa8254d41e8316da3b1c3f18fba71309b523151c2a9898a113559bb",
+      "sha256": "04fb21ee3def0aad372cfa09eb09c1c87a37efe8942b67bb615878ed63e1ad40",
       "mode": "100644"
     },
     "docs/architecture.md": {
-      "sha256": "40b4bff3c841c78de4c6a326ecbbe5b4aad584e9d700bbc59163c20337198b99",
+      "sha256": "3a85d956f7552e532060e81febe1f474429c5e327a46e05d2a8b4b14405dc01c",
       "mode": "100644"
     },
     "docs/assets/viewer-light.png": {
@@ -57,8 +57,16 @@
       "sha256": "c4232b183d09b13d0abfe4d28535a81cd30ebb10095a2df9d722c76b21bd41d9",
       "mode": "100644"
     },
+    "docs/releases/0.5.0.md": {
+      "sha256": "9382b904dcf7a0987641d4bdf233b5ee770bb72166eb8bc6b6ba7f2df18f7fd5",
+      "mode": "100644"
+    },
     "docs/upgrades.md": {
       "sha256": "38424c0f6bff01fd1cfe15d6e9241f68c86cd85eefeb145c71a3c3d2b92ba49d",
+      "mode": "100644"
+    },
+    "docs/work-system.md": {
+      "sha256": "3664d7c98e1cbba5a7ea9ad4f6b7236f31db35aa5b18bee1397475007faed636",
       "mode": "100644"
     },
     "harness/README.md": {
@@ -102,7 +110,27 @@
       "mode": "100644"
     },
     "harness/roles/README.md": {
-      "sha256": "a02f9e07f9050a919d726e5689306813265ff41ac83ee6d3289af7cf52b0cda7",
+      "sha256": "ad698720a3bebdb0e98827403ddffbc6850a6ff9b526413f662acee82e7992cf",
+      "mode": "100644"
+    },
+    "harness/roles/coordinator.json": {
+      "sha256": "2527efdcff167f70d3a605f4b8c011c405c26028cdd1be766b8fd5fefbbb86c1",
+      "mode": "100644"
+    },
+    "harness/roles/editor.json": {
+      "sha256": "a7d81d9b76bd2795b5323375485695482f5956ad7cdddee9d108c04f39c7d4e4",
+      "mode": "100644"
+    },
+    "harness/roles/librarian.json": {
+      "sha256": "5b435606114441c39a7682ecfdc0bdd4ae43bef19a6e0156287bf5d7bcb0755d",
+      "mode": "100644"
+    },
+    "harness/roles/researcher.json": {
+      "sha256": "a35057c39d1a75cde39b7de610370c5875095729d6bcbabe2457e85795c14a91",
+      "mode": "100644"
+    },
+    "harness/roles/reviewer.json": {
+      "sha256": "a676928110427c271b4018e1d76fd1bc4cf27cbbece7f642ea46eac8831f729c",
       "mode": "100644"
     },
     "harness/rules/evidence.md": {
@@ -110,7 +138,7 @@
       "mode": "100644"
     },
     "harness/rules/workflow.md": {
-      "sha256": "b4c63784dd8a03bcfe4cdb2646c8528b751dc4d2d1d10479879b9f258fbda6ac",
+      "sha256": "c985a5f9e6bf7133e6a0fb5e1d1d4a918df370436a53de37c869d2d368530a9e",
       "mode": "100644"
     },
     "harness/skills/harness-evidence/SKILL.md": {
@@ -125,12 +153,44 @@
       "sha256": "25611b7b56db43bed10236bcf530e7e37653c14b3b3fef5c42b1a1361c409963",
       "mode": "100644"
     },
+    "harness/skills/harness-maintain/SKILL.md": {
+      "sha256": "8b1d9873833934e7c2585ce4a0d1162e89d6a5be7aa2d6b6661e9908a11e26d3",
+      "mode": "100644"
+    },
+    "harness/skills/harness-project-profile/SKILL.md": {
+      "sha256": "3e85af830ab0f2ecd43639b256978c8d82cafc704dc565897408b9a25efc1c1f",
+      "mode": "100644"
+    },
+    "harness/skills/harness-workflow/SKILL.md": {
+      "sha256": "3689cf6adbe014e45184c273915d19db0bdc6de67e3c8297cc682a75aa452e28",
+      "mode": "100644"
+    },
     "harness/templates/handoff.json": {
       "sha256": "cafcdb7ce62b52762c65c706081fe5f93f1cbd152e6b6268f8a573bce7d3de69",
       "mode": "100644"
     },
+    "harness/templates/work-system.json": {
+      "sha256": "369d614c9d1e00fc572d3f0e39ebfa7ee1a9bc934c80e60916c06298edcfb3aa",
+      "mode": "100644"
+    },
+    "harness/workflows/decision.json": {
+      "sha256": "058624d7e9613cbd76ca69e3064eed802f6fd2686aab3c7b97d53490155caf46",
+      "mode": "100644"
+    },
+    "harness/workflows/ingest.json": {
+      "sha256": "22c9d6e3105d3a70a648db71a39bbb61faf551bf9f039547091a930edbe65406",
+      "mode": "100644"
+    },
+    "harness/workflows/research.json": {
+      "sha256": "8485c38abf21de22d6639c9fb5052f725bb5ccc2a5cc2b0363f46f688bbbb2a5",
+      "mode": "100644"
+    },
+    "harness/workflows/revalidate.json": {
+      "sha256": "a1df0962d9d96b82dd0b80209822ad17c780310941eeb122d8e8b917ee24038f",
+      "mode": "100644"
+    },
     "scripts/README.md": {
-      "sha256": "8993d8d85b6606c8fcb8d02219e5064b82e9d752573e74e5bdc60063de8d0d71",
+      "sha256": "e469d00940740cc6d2172594c1a8fb542631a5796bdb59b3a55476ff46c9471e",
       "mode": "100644"
     },
     "scripts/check-decisions.mjs": {
@@ -138,7 +198,7 @@
       "mode": "100644"
     },
     "scripts/check-harness.mjs": {
-      "sha256": "2b6ba043f9947586facdc8a3b878f935b542aff1782e25d732b749ea955b42f1",
+      "sha256": "569ab5d419af991f1dc14030ac90414692fa6c61768be7c0c3f32baff7e26b80",
       "mode": "100644"
     },
     "scripts/check-md-frontmatter.mjs": {
@@ -170,7 +230,7 @@
       "mode": "100644"
     },
     "scripts/dream-cycle.mjs": {
-      "sha256": "2eafd07080e5fbc6e429c59ece1cda2444d43295f1befa5f2e7b451a961872ec",
+      "sha256": "71ee5218c742e46ac4377af6c53c97eac3675656df78c71aea477ce926e445d8",
       "mode": "100644"
     },
     "scripts/git-hooks/check.mjs": {
@@ -214,11 +274,15 @@
       "mode": "100644"
     },
     "scripts/kb-digest.mjs": {
-      "sha256": "10cfb222b89edd1f6a47fa3996ea8f3d506d58eab14653da3c674fa0795a05e5",
+      "sha256": "5c4e046319d465d277bd2e303838fe1a1acafcd887388e39900c60e4e9abc575",
       "mode": "100644"
     },
     "scripts/kb-doctor.mjs": {
-      "sha256": "bbb4a00579a85fad01740c34d331489ebfbda0bc811959f1cfceea3effdf73e9",
+      "sha256": "5661efe7941fd86ce1730acc0909bb26ccd56780168dc16cef50cc8a6ea1f6cc",
+      "mode": "100644"
+    },
+    "scripts/kb-findings.mjs": {
+      "sha256": "6b9f7a5892566b6ece31ad384877b7733931990e6cca3a7b5536722ac72da276",
       "mode": "100644"
     },
     "scripts/kb-init.mjs": {
@@ -226,11 +290,15 @@
       "mode": "100644"
     },
     "scripts/kb-metrics.mjs": {
-      "sha256": "e4bcfb6766a5ce05049b6f0ba27c3505df6643dd4ceb708bd217583cdf918efc",
+      "sha256": "5dd80c75aa3c3a0b87d32daa776f4413d6e6d7db7ee4d44a64f7e6bf5e3298bc",
+      "mode": "100644"
+    },
+    "scripts/kb-profile.mjs": {
+      "sha256": "7e9dd47773dd9315c567ea1adb659641a2dbd6c9f408c62728c0ceaf9956eae0",
       "mode": "100644"
     },
     "scripts/kb-session.mjs": {
-      "sha256": "3a8adbae54803576ae28983e4ce3ac08346abc36e7eea5c7778842008bde11ef",
+      "sha256": "eaefd915bfde74867048b90df5344f56b0500f1c447dbda1a2038e475506fd11",
       "mode": "100644"
     },
     "scripts/kb-update.mjs": {
@@ -239,6 +307,10 @@
     },
     "scripts/lib/agent-context.mjs": {
       "sha256": "bb71739a5a7194b143c327d7ef295a43a02e55db5d172e3abfdd30ac10f066ce",
+      "mode": "100644"
+    },
+    "scripts/lib/findings.mjs": {
+      "sha256": "1e78088421d723facbe418989659488d5a68174fa41890ba4d6adbecd67915b1",
       "mode": "100644"
     },
     "scripts/lib/frontmatter.mjs": {
@@ -261,8 +333,24 @@
       "sha256": "6ed704786899f6381e85988820781d3c8ec2e64a8db1be3e7baed6f2b95bb9e0",
       "mode": "100644"
     },
+    "scripts/lib/skills.mjs": {
+      "sha256": "afc356dba51f365a917103771fecfaecc7c1dc84d1b88fc14c2d28d1c9b501dd",
+      "mode": "100644"
+    },
     "scripts/lib/template-state.mjs": {
       "sha256": "01073fe3c0081a0a426c0578df6046fbfb123425984a28fdb14d38950450a0bc",
+      "mode": "100644"
+    },
+    "scripts/lib/work-context.mjs": {
+      "sha256": "3307c4e517390fc3d0f8dba41074c2b509cf2abb59d3cb89aab7bfa1b612a989",
+      "mode": "100644"
+    },
+    "scripts/lib/work-system.mjs": {
+      "sha256": "fa24ddf307f23729f8ecffdf322569d345a2c4d1b09ee62e2c8d71a9913fd8f3",
+      "mode": "100644"
+    },
+    "scripts/lib/workflow-state.mjs": {
+      "sha256": "9f735c7ab27fcb9348b9058be136d9a95a0cecf8e49b898753d1699edfc03cc8",
       "mode": "100644"
     },
     "scripts/parse-raw.mjs": {
@@ -358,15 +446,15 @@
       "mode": "100644"
     },
     "scripts/session-start-context.mjs": {
-      "sha256": "32b099b8cb2fa3967b42b5f377a176a842b5b29add510f1896ff26221212cec1",
+      "sha256": "5cc2f3ef16ae9b2885f8f480512433af0d10e77ebd04e1b4831b1cac34db0d47",
       "mode": "100644"
     },
     "scripts/skillopt/cli.mjs": {
-      "sha256": "137f7eb2bf8880cff021cc0118dceb89c17fa7209f75c9e4eaecd065b8726cb2",
+      "sha256": "5768370922402ada77819434810b610bfef9d32aa361be03af8940a64826d7c1",
       "mode": "100644"
     },
     "scripts/skillopt/config.mjs": {
-      "sha256": "9e7e2ec31ba956c942b9c28ff191fc5da7150fe974e78c0b684e04b7a4212cb3",
+      "sha256": "2b4b32116e88a1108d22360eabbceab957029cead77e30afe9da83393c076f89",
       "mode": "100644"
     },
     "scripts/skillopt/evals/graders/contains.mjs": {
@@ -390,7 +478,7 @@
       "mode": "100644"
     },
     "scripts/skillopt/evals/loader.mjs": {
-      "sha256": "9f4ae2fdc5b1323fc09b088522f1161d87b6a55be3309a609ebd49b99249b0c0",
+      "sha256": "82a3ec9adbec597f71df30b9496c162184653a5fb551864c02bbc5617cf52b0a",
       "mode": "100644"
     },
     "scripts/skillopt/llm/adapter.mjs": {
@@ -414,7 +502,7 @@
       "mode": "100644"
     },
     "scripts/skillopt/mcp-server.mjs": {
-      "sha256": "aee4789f7ea4aba998a7850272d7d0d873068716ff64aa3f36221b0a1fcb5095",
+      "sha256": "7a37259b6c80658a93ada73f6ab4f42af2ec4799376366ab580c03c3054b3006",
       "mode": "100644"
     },
     "scripts/skillopt/package.json": {
@@ -430,23 +518,31 @@
       "mode": "100644"
     },
     "scripts/skillopt/runner/diff.mjs": {
-      "sha256": "811e12b6c8eb6fc4a7ae02f660d718671af9e7458a94aa94d4c9e76eeb4b5bce",
+      "sha256": "fb0aa1467dc6d25ca55762172949e9053165a2bcb6e330b1acc6e264e7aa5192",
       "mode": "100644"
     },
     "scripts/skillopt/runner/edit.mjs": {
-      "sha256": "7f51279196b2071f9f063197c68ae5f7de972a1997f032e9ff975d8d68b8cf41",
+      "sha256": "ae50f5ca76f4b7f494c9413a9c6436bc8b389616cc94cf6ceeb198e3a79475f5",
+      "mode": "100644"
+    },
+    "scripts/skillopt/runner/lifecycle.mjs": {
+      "sha256": "5301dd497c69b31c0fb7a844fb05ac61ec3fa3547c222c945cb118e2b71b3279",
       "mode": "100644"
     },
     "scripts/skillopt/runner/reflect.mjs": {
-      "sha256": "cdd843e9fa0a569add6e5820c248dc248a9e1b3cf6918b99ccd94a57717251ee",
+      "sha256": "0d01eba9dd1b1c83e9a2135d02c226a5c5f81af2302b623c0f38ee6515c4a8a1",
       "mode": "100644"
     },
     "scripts/skillopt/runner/rollout.mjs": {
-      "sha256": "972b71993f3bbd649cf6f3799c174b13c11682c7c52ee2bdc433709076897e98",
+      "sha256": "36de3055fac10231b10b11a718e12931906cae86e6e3ecb179862181f5913725",
+      "mode": "100644"
+    },
+    "scripts/skillopt/runner/snapshot.mjs": {
+      "sha256": "2a5e8e15a75d522439509b3900010a4ed3492e62d0e8936f0e9aac0a9d055fc3",
       "mode": "100644"
     },
     "scripts/skillopt/storage/metrics.mjs": {
-      "sha256": "3be188a096a16c006511585b7b2d9349143366417bcddf864a6cd3bf4e4d93a7",
+      "sha256": "ff28b198c906aaed69cb17829b01df52d85fb7110e2f1439081753588f505255",
       "mode": "100644"
     },
     "scripts/skills-manifest.py": {
@@ -462,15 +558,23 @@
       "mode": "100644"
     },
     "test/agents-runtime.test.mjs": {
-      "sha256": "363462c777d5ec2c29548f92570ba4f1bbe908047c46f7f10b68c51d0f5e6e05",
+      "sha256": "ab32c4879dcc4db87f88aa95cf6dd263357aedae22b5253d58970086a25bf23e",
       "mode": "100644"
     },
     "test/content-quality.test.mjs": {
       "sha256": "c0a946e8f9495a16ba9c93ca37e32a4b18f626ca4e0ce6a504d176e2bf6c6b39",
       "mode": "100644"
     },
+    "test/knowledge-findings.test.mjs": {
+      "sha256": "aed9ba548be2decb2b6db0b71de9ecfa627d8752f1188253bb0096d6b2a40627",
+      "mode": "100644"
+    },
     "test/runtime-llm.test.mjs": {
       "sha256": "52b5d1d251d5e65a48a24d59a6f92978ec2e2834eb294ef22a64c0c2b8c635dd",
+      "mode": "100644"
+    },
+    "test/skill-lifecycle.test.mjs": {
+      "sha256": "b65ca4953952140a7959b65ef762d146e3486fed43582fbbb12b7bbff0cc0ba9",
       "mode": "100644"
     },
     "test/template-init.test.mjs": {
@@ -478,7 +582,11 @@
       "mode": "100644"
     },
     "test/template-update.test.mjs": {
-      "sha256": "8d1daefffb3a056c943e634b85c4aa9437dafd5d6b03565a09dfa2318b36fd49",
+      "sha256": "742b18bbdffd74043a796348e02cb6746829185f67d6f32994a06c759f32f19f",
+      "mode": "100644"
+    },
+    "test/work-system.test.mjs": {
+      "sha256": "efbaeb9c8e659e0e6a4aaedb94144d7699b8ee15201513da3e98ee9a93ef1af7",
       "mode": "100644"
     },
     "tools/viewer/.gitignore": {
@@ -853,6 +961,12 @@
       },
       "/scripts/viewer:test": {
         "value": "pnpm -C tools/viewer test"
+      },
+      "/scripts/kb:profile": {
+        "value": "node scripts/kb-profile.mjs"
+      },
+      "/scripts/kb:findings": {
+        "value": "node scripts/kb-findings.mjs"
       }
     }
   },

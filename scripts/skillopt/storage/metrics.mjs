@@ -7,11 +7,10 @@
 
 import { appendFile, readFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
+import { KB_ROOT } from "../../lib/kb-root.mjs";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-export const REPO_ROOT = resolve(__dirname, "..", "..", "..");
+export const REPO_ROOT = KB_ROOT;
 const METRICS_DIR = join(REPO_ROOT, ".context", "skillopt");
 const METRICS_FILE = join(METRICS_DIR, "runs.jsonl");
 
@@ -46,7 +45,7 @@ export async function listRuns({ limit = 100, skill = null, kind = null } = {}) 
   for (let i = lines.length - 1; i >= 0 && out.length < limit; i--) {
     try {
       const obj = JSON.parse(lines[i]);
-      if (skill && obj.skill !== skill && obj.summary?.by_skill && !obj.summary.by_skill[skill]) continue;
+      if (skill && obj.skill !== skill && !obj.summary?.by_skill?.[skill] && !obj.results?.some(r => r.skill === skill)) continue;
       if (kind && obj.kind !== kind) continue;
       out.push(obj);
     } catch { /* skip битые строки */ }

@@ -1,280 +1,100 @@
-// runner/rollout.mjs — выполняет eval-кейсы через resolved adapter.
-//
-// Что делает:
-//   1. Получает список eval-кейсов (после filter по skill / case)
-//   2. Под каждый кейс: загружает skill-файл → собирает промпт → adapter.complete → grader
-//   3. Пишет traces/<skill>__<case>.json + summary.json в .context/skillopt/<run-id>/
-//   4. Параллелизм через p-queue (config.concurrency)
-//
-// Промпт-конструктор: system = AGENTS.md (если есть) + skill-файл; user = input из eval-кейса.
-// Это даёт «холодный» прогон: модель видит контракт + скилл, и больше ничего.
+// Eval execution is explicit. Cases, context and outputs are persisted for review.
+import { mkdir, writeFile, readdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { discoverEvals, readSkillFile } from '../evals/loader.mjs';
+import { getGrader } from '../evals/graders/index.mjs';
+import { appendRun, estimateCost } from '../storage/metrics.mjs';
+import { canonicalContext, systemPrompt, makeRunId, runDirectory, readJson, hash } from './snapshot.mjs';
+import { assertSafePath } from '../../lib/skills.mjs';
+import { REPO_ROOT } from '../evals/loader.mjs';
 
-import { mkdir, writeFile, readFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
-import { join, dirname } from "node:path";
-import PQueue from "p-queue";
-import { discoverEvals, readSkillFile, REPO_ROOT } from "../evals/loader.mjs";
-import { getGrader } from "../evals/graders/index.mjs";
-import { appendRun, estimateCost } from "../storage/metrics.mjs";
-
-function makeRunId() {
-  const iso = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
-  const hex = Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, "0");
-  return `${iso}-${hex}`;
-}
-
-async function readAgentsMd() {
-  const p = join(REPO_ROOT, "AGENTS.md");
-  if (!existsSync(p)) return "";
-  return await readFile(p, "utf8");
-}
-
-function buildSystem(agentsMd, skillText) {
-  const parts = [];
-  if (agentsMd.trim()) {
-    parts.push("# Контракт агента (AGENTS.md)\n\n" + agentsMd.trim());
+export function summarize(traces) {
+  const total = traces.length, passed = traces.filter(t => t.passed && !t.error).length;
+  const by_skill = {};
+  for (const t of traces) {
+    by_skill[t.skill] ??= { total: 0, passed: 0 };
+    by_skill[t.skill].total++;
+    if (t.passed && !t.error) by_skill[t.skill].passed++;
   }
-  parts.push("# Активный скилл\n\n" + skillText.trim());
-  return parts.join("\n\n---\n\n");
+  return { total, passed, failed: traces.filter(t => !t.passed && !t.error).length, errored: traces.filter(t => t.error).length, pass_rate: total ? passed / total : 0, tokens_in: traces.reduce((s,t) => s + (t.usage?.input_tokens ?? 0), 0), tokens_out: traces.reduce((s,t) => s + (t.usage?.output_tokens ?? 0), 0), by_skill };
 }
 
-/**
- * @param {object} opts
- * @param {object} opts.adapter            LLM adapter
- * @param {object} opts.config             resolved config
- * @param {string|null} opts.skillFilter
- * @param {string|null} opts.caseFilter
- * @param {boolean} opts.ci                exit code 1 при regression (для CI)
- * @param {object|null} opts.judgeAdapter  отдельный adapter для llm-judge (если grader=llm-judge)
- */
-export async function runRollout({ adapter, config, skillFilter = null, caseFilter = null, ci = false, judgeAdapter = null } = {}) {
-  const cases = await discoverEvals({ skillFilter, caseFilter });
-  if (cases.length === 0) {
-    return { runId: null, summary: { error: "no eval cases found" }, traces: [] };
-  }
-
-  const runId = makeRunId();
-  const runDir = join(REPO_ROOT, ".context", "skillopt", runId);
-  const tracesDir = join(runDir, "traces");
-  await mkdir(tracesDir, { recursive: true });
-
-  const agentsMd = await readAgentsMd();
-  const queue = new PQueue({ concurrency: Math.max(1, Number(config.concurrency) || 1) });
-  const traces = [];
-
-  // Кэш skill-файлов между кейсами одного скилла
-  const skillCache = new Map();
-
-  await Promise.all(
-    cases.map((c) =>
-      queue.add(async () => {
-        const trace = await runOneCase({ c, adapter, judgeAdapter, agentsMd, skillCache, tracesDir });
-        traces.push(trace);
-      }),
-    ),
-  );
-
-  const summary = summarize(traces);
-  summary.run_id = runId;
-  summary.adapter = adapter.name;
-  summary.model = config.model ?? null;
-  summary.started_at = new Date(Date.now()).toISOString();
-  summary.cost_usd = estimateCost({
-    model: config.model,
-    input_tokens: summary.tokens_in,
-    output_tokens: summary.tokens_out,
-    pricing: config.pricing,
-  });
-
-  await writeFile(join(runDir, "summary.json"), JSON.stringify(summary, null, 2));
-
-  await appendRun({
-    kind: "rollout",
-    run_id: runId,
-    started_at: summary.started_at,
-    adapter: adapter.name,
-    model: config.model ?? null,
-    summary,
-    cost_usd: summary.cost_usd,
-  });
-
-  return { runId, summary, traces, runDir };
+function gradeError(result) {
+  return result?.details?.error ?? result?.details?.checks?.find(c => c.error)?.error ?? null;
 }
 
-// case.id/skill уходят в имя файла trace (`<skill>__<case>.json`) — чистим сегменты пути,
-// чтобы `/` или `..` не вырвались из tracesDir (D5). Пустое → 'unknown'.
-function safeSeg(v) {
-  return String(v ?? '').replace(/[^A-Za-z0-9._-]/g, '_').slice(0, 120) || 'unknown';
-}
-function traceFile(tracesDir, c) {
-  return join(tracesDir, `${safeSeg(c.skill)}__${safeSeg(c.id)}.json`);
-}
-
-async function runOneCase({ c, adapter, judgeAdapter, agentsMd, skillCache, tracesDir }) {
-  const startedAt = Date.now();
-
-  // Кейс мог быть с ошибкой парсинга
-  if (c.error) {
-    const trace = {
-      case_id: c.id,
-      skill: c.skill,
-      path: c.path,
-      passed: false,
-      score: 0,
-      error: c.error,
-      grader: null,
-      latency_ms: 0,
-    };
-    await writeFile(traceFile(tracesDir, c), JSON.stringify(trace, null, 2));
-    return trace;
-  }
-
-  let skillBlock;
-  if (skillCache.has(c.skill)) {
-    skillBlock = skillCache.get(c.skill);
-  } else {
-    try {
-      skillBlock = await readSkillFile(c.skill);
-      skillCache.set(c.skill, skillBlock);
-    } catch (e) {
-      const trace = {
-        case_id: c.id,
-        skill: c.skill,
-        path: c.path,
-        passed: false,
-        score: 0,
-        error: e.message,
-        grader: null,
-        latency_ms: Date.now() - startedAt,
-      };
-      await writeFile(traceFile(tracesDir, c), JSON.stringify(trace, null, 2));
-      return trace;
-    }
-  }
-
-  const system = buildSystem(agentsMd, skillBlock.text);
-  const user = c.input;
-
-  let llmResult, llmError;
+export async function runCase({ c, adapter, judgeAdapter = adapter, context, skillText }) {
+  const started = Date.now();
+  const trace = { case_id: c.id, skill: c.skill, path: c.path, input: c.input, expected: c.expected, mandatory: c.frontmatter?.mandatory !== false, context_hash: context.hash, grader: c.frontmatter?.grader ?? null, tags: c.frontmatter?.tags ?? [], passed: false, score: 0, error: c.error ?? null, latency_ms: 0 };
+  if (trace.error) return trace;
+  const system = systemPrompt(context, skillText);
+  trace.prompt = { system, user: c.input, system_chars: system.length, user_chars: c.input.length };
   try {
-    llmResult = await adapter.complete({
-      system,
-      user,
-      max_tokens: c.frontmatter.budget?.max_tokens,
-    });
-  } catch (e) {
-    llmError = e.message;
-  }
-
-  let graderResult = null;
-  if (llmResult) {
-    try {
-      const grader = getGrader(c.frontmatter.grader, { judgeAdapter });
-      const ctx = { input: c.input, frontmatter: c.frontmatter };
-      // grader.grade может быть sync или async (llm-judge всегда async)
-      graderResult = await grader.grade(llmResult.text, c.expected, ctx);
-    } catch (e) {
-      graderResult = { passed: false, score: 0, details: { error: e.message } };
-    }
-  }
-
-  const trace = {
-    case_id: c.id,
-    skill: c.skill,
-    path: c.path,
-    grader: c.frontmatter.grader,
-    tags: c.frontmatter.tags ?? [],
-    passed: graderResult?.passed ?? false,
-    score: graderResult?.score ?? 0,
-    error: llmError ?? null,
-    latency_ms: Date.now() - startedAt,
-    usage: llmResult?.usage ?? { input_tokens: 0, output_tokens: 0 },
-    prompt: { system_chars: system.length, user_chars: user.length },
-    output: llmResult?.text ?? null,
-    grader_details: graderResult?.details ?? null,
-  };
-
-  await writeFile(traceFile(tracesDir, c), JSON.stringify(trace, null, 2));
+    const result = await adapter.complete({ system, user: c.input, max_tokens: c.frontmatter.budget?.max_tokens });
+    if (typeof result?.text !== 'string' || !result.text.trim()) throw Error('Provider returned empty output');
+    trace.output = result.text;
+    trace.usage = result.usage;
+    const grader = getGrader(c.frontmatter.grader, { judgeAdapter });
+    const grade = await grader.grade(result.text, c.expected, { input: c.input, frontmatter: c.frontmatter });
+    trace.grader_details = grade.details;
+    if (gradeError(grade)) throw Error(`Grader error: ${gradeError(grade)}`);
+    if (!Number.isFinite(grade.score) || grade.score < 0 || grade.score > 1) throw Error('Invalid grader score');
+    trace.score = grade.score;
+    trace.passed = grade.passed === true;
+  } catch (error) { trace.error = error.message; trace.passed = false; trace.score = 0; }
+  trace.latency_ms = Date.now() - started;
   return trace;
 }
 
-function summarize(traces) {
-  const total = traces.length;
-  const passed = traces.filter((t) => t.passed).length;
-  const failed = traces.filter((t) => !t.passed && !t.error).length;
-  const errored = traces.filter((t) => t.error).length;
-  const tokensIn = traces.reduce((s, t) => s + (t.usage?.input_tokens ?? 0), 0);
-  const tokensOut = traces.reduce((s, t) => s + (t.usage?.output_tokens ?? 0), 0);
-  const bySkill = {};
-  for (const t of traces) {
-    if (!bySkill[t.skill]) bySkill[t.skill] = { total: 0, passed: 0 };
-    bySkill[t.skill].total++;
-    if (t.passed) bySkill[t.skill].passed++;
+export async function runRollout({ adapter, config = {}, skillFilter = null, caseFilter = null, judgeAdapter = null, execute = false } = {}) {
+  const cases = await discoverEvals({ skillFilter, caseFilter });
+  if (!cases.length) throw Error('No eval cases found; an empty sample cannot pass');
+  const context = canonicalContext();
+  const skills = new Map();
+  for (const c of cases) if (!skills.has(c.skill)) skills.set(c.skill, await readSkillFile(c.skill));
+  if (!execute) return { executed: false, cases: cases.map(c => ({ ...c, system: systemPrompt(context, skills.get(c.skill).text) })), notice: 'Review prompts; pass --execute with an explicit provider to run.' };
+  if (!adapter) throw Error('Explicit LLM adapter required');
+  const runId = makeRunId(), runDir = runDirectory(runId), tracesDir = join(runDir, 'traces');
+  await mkdir(tracesDir, { recursive: true });
+  await writeFile(join(runDir, 'cases.json'), JSON.stringify(cases, null, 2));
+  await writeFile(join(runDir, 'context.json'), JSON.stringify(context, null, 2));
+  const traces = [];
+  for (const c of cases) {
+    const trace = await runCase({ c, adapter, judgeAdapter: judgeAdapter ?? adapter, context, skillText: skills.get(c.skill).text });
+    traces.push(trace);
+    const file = assertSafePath(REPO_ROOT, join(tracesDir, `${c.skill}__${c.id}.json`));
+    await writeFile(file, JSON.stringify(trace, null, 2));
   }
-  return {
-    total,
-    passed,
-    failed,
-    errored,
-    pass_rate: total > 0 ? passed / total : 0,
-    tokens_in: tokensIn,
-    tokens_out: tokensOut,
-    by_skill: bySkill,
-  };
+  const summary = { ...summarize(traces), run_id: runId, adapter: adapter.name, model: config.model ?? null, started_at: new Date().toISOString(), cases_hash: hash(cases), context_hash: context.hash };
+  summary.cost_usd = estimateCost({ model: config.model, input_tokens: summary.tokens_in, output_tokens: summary.tokens_out, pricing: config.pricing });
+  await writeFile(join(runDir, 'summary.json'), JSON.stringify(summary, null, 2));
+  await appendRun({ kind: 'rollout', run_id: runId, started_at: summary.started_at, adapter: adapter.name, model: config.model ?? null, summary, cost_usd: summary.cost_usd });
+  return { executed: true, runId, summary, traces, runDir };
 }
 
-/**
- * Перепрогон graders по уже записанным traces (offline, без LLM).
- */
 export async function runScore(runId) {
-  const runDir = join(REPO_ROOT, ".context", "skillopt", runId);
-  const summaryPath = join(runDir, "summary.json");
-  if (!existsSync(summaryPath)) {
-    throw new Error(`[skillopt:score] run не найден: ${runId} (нет ${summaryPath})`);
-  }
-  // Сравниваем существующие traces, перепрогоняя graders.
-  const { readdir } = await import("node:fs/promises");
-  const files = await readdir(join(runDir, "traces"));
+  const runDir = runDirectory(runId), summaryPath = join(runDir, 'summary.json');
+  if (!existsSync(summaryPath)) throw Error(`Run not found: ${runId}`);
+  const cases = existsSync(join(runDir, 'cases.json')) ? readJson(join(runDir, 'cases.json')) : await discoverEvals();
+  const byId = new Map(cases.map(c => [`${c.skill}__${c.id}`, c]));
   const traces = [];
-  const { discoverEvals } = await import("../evals/loader.mjs");
-  const allCases = await discoverEvals();
-  const byId = new Map(allCases.map((c) => [`${c.skill}__${c.id}`, c]));
-  for (const f of files) {
-    if (!f.endsWith(".json")) continue;
-    const t = JSON.parse(await readFile(join(runDir, "traces", f), "utf8"));
-    if (!t.output) {
-      traces.push(t);
-      continue;
-    }
-    const c = byId.get(`${t.skill}__${t.case_id}`);
-    if (!c || c.error) {
-      traces.push(t);
-      continue;
-    }
+  for (const file of await readdir(assertSafePath(REPO_ROOT, join(runDir, 'traces')))) {
+    if (!file.endsWith('.json')) continue;
+    const path = join(runDir, 'traces', file), t = readJson(path), c = byId.get(`${t.skill}__${t.case_id}`);
     try {
-      if (c.frontmatter.grader === "llm-judge") {
-        // offline rescoring невозможен — judge требует LLM
-        t.grader_details = { skipped: "llm-judge нельзя пересчитать офлайн" };
-      } else {
-        const g = getGrader(c.frontmatter.grader);
-        const r = await g.grade(t.output, c.expected, { input: c.input, frontmatter: c.frontmatter });
-        t.passed = r.passed;
-        t.score = r.score;
-        t.grader_details = r.details;
-        await writeFile(join(runDir, "traces", f), JSON.stringify(t, null, 2));
+      if (!c || c.error) throw Error(c?.error ?? 'Missing eval case');
+      if (!t.output?.trim()) throw Error('Missing or empty output');
+      if (t.error) throw Error(t.error);
+      if (c.frontmatter.grader !== 'llm-judge') {
+        const r = await getGrader(c.frontmatter.grader).grade(t.output, c.expected, { input: c.input, frontmatter: c.frontmatter });
+        if (gradeError(r)) throw Error(gradeError(r));
+        t.passed = r.passed === true; t.score = r.score; t.grader_details = r.details;
       }
-    } catch (e) {
-      t.grader_details = { error: e.message };
-    }
-    traces.push(t);
+    } catch (e) { t.passed = false; t.score = 0; t.error = e.message; }
+    await writeFile(path, JSON.stringify(t, null, 2)); traces.push(t);
   }
-  const summary = summarize(traces);
-  const prev = JSON.parse(await readFile(summaryPath, "utf8"));
-  summary.run_id = prev.run_id;
-  summary.adapter = prev.adapter;
-  summary.model = prev.model;
-  summary.started_at = prev.started_at;
-  summary.rescored_at = new Date().toISOString();
+  const previous = readJson(summaryPath), summary = { ...previous, ...summarize(traces), rescored_at: new Date().toISOString() };
   await writeFile(summaryPath, JSON.stringify(summary, null, 2));
   return summary;
 }

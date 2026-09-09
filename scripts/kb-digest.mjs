@@ -20,7 +20,10 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { writeFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { readJournal, summarizeJournal } from './lib/journal.mjs';
+import { readFindings, findingsMetrics } from './lib/findings.mjs';
+import { safePath } from './lib/template-state.mjs';
 import { KB_ROOT } from './lib/kb-root.mjs';
 
 const argv = process.argv.slice(2);
@@ -29,17 +32,19 @@ const days = daysIdx >= 0 ? Math.max(1, parseInt(argv[daysIdx + 1], 10) || 7) : 
 
 const today = new Date().toISOString().slice(0, 10);
 const since = new Date(Date.now() - days * 86400000).toISOString();
-const CONTEXT = join(KB_ROOT, '.context');
+const CONTEXT = safePath(KB_ROOT, '.context');
 
 // ---------- журнал ----------
 const records = await readJournal({ limit: 100_000, since });
 const j = summarizeJournal(records);
 const hookErrors = records.filter((r) => r.kind === 'hook-error').length;
+const findings = readFindings(KB_ROOT);
+const queue = findingsMetrics(findings).findings;
 
 // ---------- kb-doctor --json (subprocess: не тянем его состояние в этот процесс) ----------
 let doctor = null;
 {
-  const r = spawnSync('node', [join(KB_ROOT, 'scripts', 'kb-doctor.mjs'), '--json'], {
+  const r = spawnSync(process.execPath, [fileURLToPath(new URL('./kb-doctor.mjs', import.meta.url)), '--json'], {
     cwd: KB_ROOT, encoding: 'utf8', timeout: 120_000,
   });
   try { doctor = JSON.parse(r.stdout); } catch { doctor = null; }
@@ -54,7 +59,7 @@ try {
 // ---------- свежий dream-report ----------
 let dreamReport = null;
 try {
-  dreamReport = readdirSync(CONTEXT).filter((f) => /^dream-report-\d{4}-\d{2}-\d{2}\.md$/.test(f)).sort().pop() || null;
+  dreamReport = readdirSync(CONTEXT).filter((f) => /^dream-report-\d{4}-\d{2}-\d{2}(?:T[\dTZ-]+)?\.md$/.test(f)).sort().pop() || null;
 } catch { /* нет .context */ }
 
 // ---------- сборка ----------
@@ -94,9 +99,19 @@ if (doctor) {
   add();
 }
 
+add('## Очередь находок и обратной связи');
+add(`Всего: ${queue.total} · open: ${queue.byStatus.open} · accepted: ${queue.byStatus.accepted} · resolved: ${queue.byStatus.resolved} · dismissed: ${queue.byStatus.dismissed}`);
+for (const finding of findings) {
+  add(`- ${finding.id} [${finding.kind}/${finding.status}] ${finding.title}`);
+  add(`  Следующий шаг: ${finding.suggestedAction}`);
+  add(`  Карточка: .remember/findings/${finding.id}.json`);
+}
+add('Разбор: pnpm kb:findings list --json; после решения человека — pnpm kb:findings transition --id <id> --status accepted|resolved|dismissed --by <имя> --note <подтверждение>.');
+add('accepted у feedback сохраняет подтверждённый урок; открытая находка остаётся наблюдением.');
+add();
 add('## Ждут человека');
 add(`- .context/inbox: ${inboxCount} кандидатов${inboxCount ? ' → разбор через skill-ingest' : ' ✅'}`);
-if (dreamReport) add(`- свежий dream-report: .context/${dreamReport}`);
+if (dreamReport) add(`- свежий dream-report: .context/${dreamReport} (проверьте содержимое; старые файлы могут содержать только промпт)`);
 add();
 add('Команды: pnpm kb:metrics (тренды) · pnpm kb:dream (аудит) · node scripts/kb-critic.mjs --file <f> (правка цитат)');
 
@@ -104,7 +119,7 @@ const text = lines.join('\n') + '\n';
 
 // ---------- вывод ----------
 await mkdir(CONTEXT, { recursive: true });
-const outPath = join(CONTEXT, `digest-${today}.md`);
+const outPath = safePath(KB_ROOT, `.context/digest-${today}.md`);
 await writeFile(outPath, text, 'utf8');
 console.log(text);
 console.log(`[digest] сохранён → .context/digest-${today}.md`);

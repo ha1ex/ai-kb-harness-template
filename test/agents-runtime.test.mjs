@@ -231,19 +231,23 @@ test("task completion and explicit writer transfer remain recoverable", () => {
 
 test("removed managed bundles are cleaned only when unchanged", () => {
   const root = fixture();
+  for (const name of ["retired-one", "retired-two"]) {
+    mkdirSync(join(root, `harness/skills/${name}`), {recursive:true});
+    writeFileSync(join(root, `harness/skills/${name}/SKILL.md`), `---\nname: ${name}\ndescription: Retired procedure\n---\nRead the source.`);
+  }
   assert.equal(
     cli(root, "check-harness.mjs", ["--setup", "--client", "codex"]).status,
     0,
   );
-  const source = join(root, "harness/skills/harness-evidence"),
-    dest = join(root, ".agents/skills/harness-evidence/SKILL.md");
+  const source = join(root, "harness/skills/retired-one"),
+    dest = join(root, ".agents/skills/retired-one/SKILL.md");
   rmSync(source, { recursive: true });
   assert.equal(cli(root, "check-harness.mjs").status, 1);
   assert.equal(cli(root, "check-harness.mjs", ["--setup"]).status, 0);
   assert.equal(existsSync(dest), false);
-  const edited = join(root, ".agents/skills/harness-handoff/SKILL.md");
+  const edited = join(root, ".agents/skills/retired-two/SKILL.md");
   writeFileSync(edited, "Local edit");
-  rmSync(join(root, "harness/skills/harness-handoff"), { recursive: true });
+  rmSync(join(root, "harness/skills/retired-two"), { recursive: true });
   assert.equal(cli(root, "check-harness.mjs", ["--setup"]).status, 1);
   assert.equal(readFileSync(edited, "utf8"), "Local edit");
 });

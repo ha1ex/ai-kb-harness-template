@@ -10,12 +10,15 @@
 //
 // Никогда не пишет в skills/. Только в .context/skillopt/<run-id>/proposals/.
 
-import { readFile, writeFile, readdir, mkdir, stat } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readSkillFile, REPO_ROOT } from "../evals/loader.mjs";
 import { appendRun, estimateCost } from "../storage/metrics.mjs";
+import { runDirectory, readJson, canonicalContext } from './snapshot.mjs';
+import { assertSafePath, validateSkillText } from '../../lib/skills.mjs';
+import { runPropose } from './lifecycle.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REFLECT_PROMPT_PATH = resolve(__dirname, "..", "prompts", "reflect.md");
@@ -25,20 +28,20 @@ const PROPOSED_END = "===PROPOSED-SKILL-END===";
 
 const MIN_CASES_FOR_REFLECT = 5;
 
-export async function runReflect({ runId, adapter, config, force = false } = {}) {
-  const runDir = join(REPO_ROOT, ".context", "skillopt", runId);
+export async function runReflect({ runId, adapter, config = {}, force = false, execute = false } = {}) {
+  const runDir = runDirectory(runId);
   const summaryPath = join(runDir, "summary.json");
   if (!existsSync(summaryPath)) {
     throw new Error(`[skillopt:reflect] run не найден: ${runId} (нет ${summaryPath})`);
   }
 
-  const summary = JSON.parse(await readFile(summaryPath, "utf8"));
-  const tracesDir = join(runDir, "traces");
+  const summary = readJson(summaryPath);
+  const tracesDir = assertSafePath(REPO_ROOT, join(runDir, "traces"));
   const traceFiles = await readdir(tracesDir);
   const traces = [];
   for (const f of traceFiles) {
     if (!f.endsWith(".json")) continue;
-    traces.push(JSON.parse(await readFile(join(tracesDir, f), "utf8")));
+    traces.push(readJson(join(tracesDir, f)));
   }
 
   // Группируем по skill
@@ -48,10 +51,8 @@ export async function runReflect({ runId, adapter, config, force = false } = {})
     bySkill.get(t.skill).push(t);
   }
 
-  const proposalsDir = join(runDir, "proposals");
-  await mkdir(proposalsDir, { recursive: true });
-
-  const systemPrompt = await readFile(REFLECT_PROMPT_PATH, "utf8");
+  const proposalsDir = assertSafePath(REPO_ROOT, join(runDir, "proposals"));
+  const systemPrompt = canonicalContext().text + '\n\n' + await readFile(REFLECT_PROMPT_PATH, "utf8");
   const results = [];
 
   for (const [skill, skillTraces] of bySkill) {
@@ -78,6 +79,10 @@ export async function runReflect({ runId, adapter, config, force = false } = {})
 
     const skillFile = await readSkillFile(skill);
     const userPrompt = buildUserPrompt({ skill, skillFile, skillTraces, summary });
+    if (!execute) {
+      results.push({ skill, prompt: { system: systemPrompt, user: userPrompt } });
+      continue;
+    }
 
     let llmResult;
     try {
@@ -86,6 +91,7 @@ export async function runReflect({ runId, adapter, config, force = false } = {})
         user: userPrompt,
         max_tokens: 8000,
       });
+      if (!llmResult?.text?.trim()) throw Error('Provider returned empty output');
     } catch (e) {
       results.push({ skill, error: e.message });
       continue;
@@ -115,14 +121,20 @@ export async function runReflect({ runId, adapter, config, force = false } = {})
       continue;
     }
 
-    const propPath = join(proposalsDir, `${skill}.md`);
-    const ratPath = join(proposalsDir, `${skill}.rationale.md`);
-    await writeFile(propPath, parsed.proposedSkill);
-    await writeFile(ratPath, parsed.rationale);
+    let proposalRun;
+    try {
+      validateSkillText(parsed.proposedSkill, { name: skill });
+      proposalRun = await runPropose({ skill, text: parsed.proposedSkill, reason: parsed.rationale, runId: bySkill.size > 1 ? undefined : runId, allowHarness: true });
+    } catch (error) { results.push({ skill, error: error.message }); continue; }
+    const propPath = join(proposalRun.runDir, 'proposals', `${skill}.md`);
+    const ratPath = join(proposalRun.runDir, 'proposals', `${skill}.rationale.md`);
 
     const sizeDelta = parsed.proposedSkill.length - skillFile.text.length;
     results.push({
       skill,
+      runId: proposalRun.runId,
+      source_run_id: runId,
+      compare_command: `pnpm skill compare ${proposalRun.runId} --execute`,
       proposed_path: propPath,
       rationale_path: ratPath,
       old_size: skillFile.text.length,
@@ -137,7 +149,7 @@ export async function runReflect({ runId, adapter, config, force = false } = {})
     0,
   );
 
-  await appendRun({
+  if (execute) await appendRun({
     kind: "reflect",
     run_id: runId,
     started_at: new Date().toISOString(),
@@ -147,7 +159,7 @@ export async function runReflect({ runId, adapter, config, force = false } = {})
     cost_usd: cost,
   });
 
-  return { results, cost_usd: cost, runDir };
+  return { executed: execute, results, cost_usd: cost, runDir };
 }
 
 function buildUserPrompt({ skill, skillFile, skillTraces, summary }) {
@@ -200,6 +212,7 @@ function buildUserPrompt({ skill, skillFile, skillTraces, summary }) {
 }
 
 function t_input(trace) {
+  if (trace.input) return trace.input;
   // input в trace не хранится — лежит в самом eval-файле; но reflect ужe смотрит на trace
   // и нам важнее output + grader_details. Если нужен исходный input, используем prompt.user_chars
   // как индикатор размера. Для целей промпта возвращаем плейсхолдер с информацией.

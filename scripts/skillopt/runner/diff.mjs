@@ -1,10 +1,12 @@
 // runner/diff.mjs — unified diff между proposal и текущим skill.
 
-import { readFile, readdir } from "node:fs/promises";
+import { readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { createTwoFilesPatch } from "diff";
 import { REPO_ROOT, readSkillFile } from "../evals/loader.mjs";
+import { runDirectory, readJson, readText } from './snapshot.mjs';
+import { assertSafePath, assertSkillName } from '../../lib/skills.mjs';
 
 /**
  * @param {object} opts
@@ -12,8 +14,8 @@ import { REPO_ROOT, readSkillFile } from "../evals/loader.mjs";
  * @returns {Promise<Array<{skill, diff, removed_pct, warn_majorRewrite}>>}
  */
 export async function runDiff({ runId } = {}) {
-  const runDir = join(REPO_ROOT, ".context", "skillopt", runId);
-  const proposalsDir = join(runDir, "proposals");
+  const runDir = runDirectory(runId);
+  const proposalsDir = assertSafePath(REPO_ROOT, join(runDir, "proposals"));
   if (!existsSync(proposalsDir)) {
     throw new Error(`[skillopt:diff] нет proposals/ для run ${runId}. Сначала: pnpm skill reflect <run-id>`);
   }
@@ -25,13 +27,15 @@ export async function runDiff({ runId } = {}) {
 
   const out = [];
   for (const skill of skills) {
-    const proposal = await readFile(join(proposalsDir, `${skill}.md`), "utf8");
+    assertSkillName(skill);
+    const proposal = readText(join(proposalsDir, `${skill}.md`));
     let current;
     try {
       current = await readSkillFile(skill);
     } catch (e) {
-      out.push({ skill, error: e.message });
-      continue;
+      const manifest = existsSync(join(runDir, 'proposal.json')) ? readJson(join(runDir, 'proposal.json')) : null;
+      if (manifest?.skill === skill && manifest.base?.exists === false) current = { path: '/dev/null', text: '' };
+      else { out.push({ skill, error: e.message }); continue; }
     }
     const removedChars = Math.max(0, current.text.length - proposal.length);
     const removedPct = current.text.length > 0 ? Math.round((removedChars / current.text.length) * 100) : 0;

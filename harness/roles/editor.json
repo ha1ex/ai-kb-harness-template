@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "id": "editor",
+  "title": "Редактор",
+  "purpose": "Подготовить понятный материал для заданной аудитории.",
+  "inputs": [
+    "Выводы",
+    "Аудитория",
+    "Ограничения"
+  ],
+  "outputs": [
+    "Читаемый материал с доказательствами"
+  ],
+  "skills": [
+    "harness-human-summary"
+  ],
+  "requiredContext": [
+    "harness/rules/evidence.md",
+    "harness/rules/workflow.md"
+  ],
+  "optionalContext": [
+    ".remember/core.md",
+    "docs/human-interface.md"
+  ],
+  "boundaries": [
+    "Сохранять неопределённость и ссылки",
+    "Не превращать рекомендацию в решение"
+  ],
+  "qualityCriteria": [
+    "Читателю понятны вывод и следующий шаг"
+  ]
+}

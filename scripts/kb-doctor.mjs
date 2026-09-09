@@ -5,6 +5,7 @@
 //   node scripts/kb-doctor.mjs                 # человекочитаемый отчёт
 //   node scripts/kb-doctor.mjs --json          # JSON для CI/pipe
 //   node scripts/kb-doctor.mjs --fix-dryrun    # показать команды для фиксов (не выполняет)
+//   node scripts/kb-doctor.mjs --record-findings # явно сохранить наблюдения в .remember/findings
 //
 // Проверки (без LLM, без сети):
 //   1. missing-frontmatter — файлы в значимых слоях без обязательных полей
@@ -20,6 +21,7 @@ import { join, resolve, relative, extname, dirname, normalize as pnormalize } fr
 import { fileURLToPath } from 'node:url';
 import { appendJournal } from './lib/journal.mjs';
 import { parseFrontmatter, parseRelatedList } from './lib/frontmatter.mjs';
+import { doctorFindings, upsertFinding } from './lib/findings.mjs';
 
 import { KB_ROOT, KB_DB_PATH } from './lib/kb-root.mjs';
 
@@ -30,6 +32,7 @@ const DB_PATH = KB_DB_PATH;
 const argv = process.argv.slice(2);
 const asJson = argv.includes('--json');
 const fixDryrun = argv.includes('--fix-dryrun');
+const recordFindings = argv.includes('--record-findings');
 
 const STALE_DAYS = 60;
 const INBOX_STALE_DAYS = 14;  // .context/inbox: needs-review старше этого — залежавшаяся память (advisory)
@@ -279,10 +282,15 @@ const summary = {
   stub_cards: issues.stubCards.length,
 };
 
-await appendJournal({ kind: 'doctor', ts: new Date().toISOString(), summary });
+// Inspection is read-only. Recording findings/journal entries is an explicit action.
+let recordedFindings;
+if (recordFindings) {
+  recordedFindings = doctorFindings({ summary, issues }).map((finding) => upsertFinding(REPO_ROOT, finding).id);
+  await appendJournal({ kind: 'doctor', ts: new Date().toISOString(), summary, recorded_findings: recordedFindings.length });
+}
 
 if (asJson) {
-  console.log(JSON.stringify({ summary, issues }, null, 2));
+  console.log(JSON.stringify({ summary, issues, ...(recordFindings ? { recordedFindings } : {}) }, null, 2));
   process.exit(0);
 }
 
@@ -300,6 +308,7 @@ console.log(`  Ghost в индексе:         ${summary.ghost_in_index}`);
 console.log(`  Stale inbox (advisory):  ${summary.stale_inbox}`);
 console.log(`  Stale answers (advisory):${summary.stale_answers}`);
 console.log(`  Stub-карточки (advisory):${summary.stub_cards}`);
+if (recordFindings) console.log(`  Записано наблюдений:    ${recordedFindings.length} → pnpm kb:findings list`);
 console.log('');
 
 // Advisory-секции всегда видны (не влияют на exit).

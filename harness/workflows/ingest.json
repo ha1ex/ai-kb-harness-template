@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "id": "ingest",
+  "title": "Новый источник",
+  "stages": [
+    {
+      "id": "preserve",
+      "title": "Сохранить оригинал",
+      "role": "researcher",
+      "skills": [],
+      "requiredArtifacts": [
+        "raw"
+      ],
+      "requiresReview": false,
+      "requiresApproval": false
+    },
+    {
+      "id": "summarize",
+      "title": "Подготовить саммари",
+      "role": "researcher",
+      "skills": [],
+      "requiredArtifacts": [
+        "summary"
+      ],
+      "requiresReview": false,
+      "requiresApproval": false
+    },
+    {
+      "id": "impact",
+      "title": "Найти затронутые знания",
+      "role": "librarian",
+      "skills": [],
+      "requiredArtifacts": [
+        "impact"
+      ],
+      "requiresReview": false,
+      "requiresApproval": false
+    },
+    {
+      "id": "update",
+      "title": "Подготовить обновления",
+      "role": "editor",
+      "skills": [],
+      "requiredArtifacts": [
+        "updates"
+      ],
+      "requiresReview": false,
+      "requiresApproval": false
+    },
+    {
+      "id": "review",
+      "title": "Проверить источники и результат",
+      "role": "reviewer",
+      "skills": [],
+      "requiredArtifacts": [
+        "review"
+      ],
+      "requiresReview": true,
+      "requiresApproval": false
+    }
+  ]
+}

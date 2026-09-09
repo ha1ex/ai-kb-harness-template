@@ -1,10 +1,15 @@
-# Roles
+# Роли
 
-| Role | Input | Output | Boundary |
+Роль задаёт входы, ожидаемый результат, процедуры и границы работы. Один агент может выполнять роли последовательно; для независимого ревью нужен отдельный контекст. Назначение роли не запускает агента и не даёт дополнительных разрешений.
+
+| ID и контракт | Вход | Результат | Граница |
 |---|---|---|---|
-| Researcher | Question, scope, source access | Cited findings and conflicts | Does not invent missing evidence |
-| Editor | Findings and audience | Summary and readable artifact | Preserves uncertainty and links |
-| Reviewer | Artifact and acceptance criteria | Findings, check results | Does not approve unsupported decisions |
-| Coordinator | Goal, ownership and checkpoints | Scoped work and handoff | Does not overwrite another task state |
+| [coordinator](coordinator.json) — координатор | Цель, критерии, состояние задачи | План и передача работы | Сохраняет владельца записи; не утверждает решения за человека |
+| [researcher](researcher.json) — исследователь | Вопрос и источники | Выводы со ссылками, противоречия и пробелы | Не придумывает доказательства |
+| [editor](editor.json) — редактор | Выводы и аудитория | Понятный материал | Сохраняет неопределённость и ссылки |
+| [reviewer](reviewer.json) — рецензент | Материал, доказательства и критерии | Замечания и результаты проверок | Самопроверка не считается независимым ревью |
+| [librarian](librarian.json) — библиотекарь | Изменения источников и очередь замечаний | Предложения исправлений и уроков | Отделяет опыт работы от предметных фактов |
 
-One agent may perform these roles in sequence. Role names do not require any particular client or delegation feature.
+JSON-контракты содержат `id`, `title`, `purpose`, `inputs`, `outputs`, `skills`, `requiredContext`, `optionalContext`, `boundaries`, `qualityCriteria` и `version`. Этапы [сценариев](../workflows/) ссылаются на ID роли и задают обязательные имена результатов.
+
+`pnpm kb:context --task <id> --workflow research --json` выбирает роль текущего этапа. `--role <id>` позволяет явно выбрать роль для контекста. Собственные роли с отдельными ID добавляются через необязательный [профиль проекта](../../docs/work-system.md#настроить-профиль-проекта). Выбор ролей в профиле — рекомендации проекта, а не ограничение доступа.

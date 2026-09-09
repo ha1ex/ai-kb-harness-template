@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "id": "research",
+  "title": "Исследовательский вопрос",
+  "stages": [
+    {
+      "id": "scope",
+      "title": "Определить вопрос и критерии",
+      "role": "coordinator",
+      "skills": [],
+      "requiredArtifacts": [
+        "brief"
+      ],
+      "requiresReview": false,
+      "requiresApproval": false
+    },
+    {
+      "id": "gather",
+      "title": "Собрать доказательства и противоречия",
+      "role": "researcher",
+      "skills": [],
+      "requiredArtifacts": [
+        "findings"
+      ],
+      "requiresReview": false,
+      "requiresApproval": false
+    },
+    {
+      "id": "synthesize",
+      "title": "Подготовить ответ",
+      "role": "editor",
+      "skills": [],
+      "requiredArtifacts": [
+        "answer"
+      ],
+      "requiresReview": false,
+      "requiresApproval": false
+    },
+    {
+      "id": "review",
+      "title": "Провести независимое ревью",
+      "role": "reviewer",
+      "skills": [],
+      "requiredArtifacts": [
+        "review"
+      ],
+      "requiresReview": true,
+      "requiresApproval": false
+    },
+    {
+      "id": "save",
+      "title": "Сохранить результат",
+      "role": "coordinator",
+      "skills": [],
+      "requiredArtifacts": [
+        "result"
+      ],
+      "requiresReview": false,
+      "requiresApproval": false
+    }
+  ]
+}

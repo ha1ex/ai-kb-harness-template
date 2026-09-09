@@ -63,7 +63,9 @@ python3 scripts/import-fabric.py --help
 |---|---|
 | `pnpm harness:setup --client codex` | Создать управляемые файлы выбранного клиента; чужие правки сохраняются |
 | `pnpm harness:check` | Проверить настройки без исправлений и без запуска модели |
-| `pnpm kb:context --task ID` | Краткий контекст и состояние конкретной задачи |
+| `pnpm kb:context --task ID [--workflow ID] [--role ID]` | Пакет контекста, следующий этап, источники и принятые уроки |
+| `pnpm kb:profile show/propose/apply` | Предложить и подтвердить профиль работы проекта |
+| `pnpm kb:findings list/add/scan/transition` | Общая очередь проблем знаний и обратной связи |
 | `pnpm kb:session --help` | Создание и передача handoff-записей |
 | `pnpm kb:spaces` | Проверка разделов и ссылок на документы |
 | `pnpm kb:portability` | Проверка переносимости путей |
@@ -81,3 +83,5 @@ python3 scripts/import-fabric.py --help
 SkillOpt. Ручной режим по умолчанию возвращает запрос без сетевого вызова. Общие правила
 добавляет `lib/agent-context.mjs`. Ограничения клиентских проверок —
 [совместимость](../docs/compatibility.md).
+
+Сценарии, передача этапов и проверяемое развитие скиллов: [руководство](../docs/work-system.md).

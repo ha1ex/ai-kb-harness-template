@@ -26,18 +26,18 @@
 //   • skill_get_eval(skill, case_id)            — конкретный eval с frontmatter и body
 
 import { existsSync } from "node:fs";
-import { readFile, readdir } from "node:fs/promises";
-import { join, basename, resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { readdir } from "node:fs/promises";
+import { join, basename } from "node:path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { listRuns } from "./storage/metrics.mjs";
 import { discoverEvals, listSkillsWithEvals } from "./evals/loader.mjs";
+import { KB_ROOT } from '../lib/kb-root.mjs';
+import { runDirectory, readText, readJson } from './runner/snapshot.mjs';
+import { assertSafePath, assertSkillName } from '../lib/skills.mjs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(__dirname, "..", "..");
-const RUNS_DIR = join(REPO_ROOT, ".context", "skillopt");
+const REPO_ROOT = KB_ROOT;
 
 const server = new McpServer({
   name: `skillopt-${basename(REPO_ROOT)}`,
@@ -55,7 +55,7 @@ server.registerTool(
       "Read-only — не запускает новые runs.",
     inputSchema: {
       limit: z.number().int().positive().max(200).optional().describe("Сколько runs вернуть (default 20)."),
-      kind: z.enum(["rollout", "reflect", "apply"]).optional().describe("Фильтр по типу run'а."),
+      kind: z.enum(["propose", "rollout", "reflect", "compare", "apply"]).optional().describe("Фильтр по типу run'а."),
       skill: z.string().optional().describe("Фильтр по конкретному скиллу."),
     },
   },
@@ -86,7 +86,7 @@ server.registerTool(
     },
   },
   async ({ run_id, case_id, skill }) => {
-    const runDir = join(RUNS_DIR, run_id);
+    const runDir = runDirectory(run_id);
     if (!existsSync(runDir)) {
       return { content: [{ type: "text", text: `run не найден: ${run_id}` }], isError: true };
     }
@@ -98,11 +98,11 @@ server.registerTool(
       return {
         content: [
           { type: "text", text: `Summary run ${run_id}:` },
-          { type: "text", text: await readFile(summaryPath, "utf8") },
+          { type: "text", text: readText(summaryPath) },
         ],
       };
     }
-    const tracesDir = join(runDir, "traces");
+    const tracesDir = assertSafePath(REPO_ROOT, join(runDir, "traces"));
     if (!existsSync(tracesDir)) {
       return { content: [{ type: "text", text: `нет traces в ${runDir}` }], isError: true };
     }
@@ -134,7 +134,7 @@ server.registerTool(
     return {
       content: [
         { type: "text", text: `Trace ${fileName}:` },
-        { type: "text", text: await readFile(tracePath, "utf8") },
+        { type: "text", text: readText(tracePath) },
       ],
     };
   },
@@ -154,16 +154,18 @@ server.registerTool(
     },
   },
   async ({ run_id, skill }) => {
-    const propPath = join(RUNS_DIR, run_id, "proposals", `${skill}.md`);
-    const ratPath = join(RUNS_DIR, run_id, "proposals", `${skill}.rationale.md`);
+    assertSkillName(skill);
+    const dir = runDirectory(run_id);
+    const propPath = assertSafePath(REPO_ROOT, join(dir, "proposals", `${skill}.md`));
+    const ratPath = assertSafePath(REPO_ROOT, join(dir, "proposals", `${skill}.rationale.md`));
     if (!existsSync(propPath)) {
       return {
         content: [{ type: "text", text: `proposal не найден: ${propPath}. Сначала: pnpm skill reflect ${run_id}` }],
         isError: true,
       };
     }
-    const proposal = await readFile(propPath, "utf8");
-    const rationale = existsSync(ratPath) ? await readFile(ratPath, "utf8") : "(rationale не найден)";
+    const proposal = readText(propPath);
+    const rationale = existsSync(ratPath) ? readText(ratPath) : "(rationale не найден)";
     return {
       content: [
         { type: "text", text: `=== Rationale (${skill}) ===` },
@@ -253,6 +255,11 @@ server.registerTool(
 );
 
 // ---------- start ----------
+
+server.registerTool('skill_get_comparison', {
+  description: 'Read the factual CURRENT/PROPOSAL comparison, sample sizes, rationale and hashes. Does not execute, approve or apply.',
+  inputSchema: { run_id: z.string().min(1) },
+}, async ({ run_id }) => ({ content: [{ type: 'text', text: JSON.stringify(readJson(join(runDirectory(run_id), 'comparison.json')), null, 2) }] }));
 
 const transport = new StdioServerTransport();
 await server.connect(transport);

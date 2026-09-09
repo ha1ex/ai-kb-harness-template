@@ -16,6 +16,8 @@ import { existsSync } from 'node:fs';
 import { appendFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { readJournal } from './lib/journal.mjs';
+import { readFindings, findingsMetrics } from './lib/findings.mjs';
+import { safePath } from './lib/template-state.mjs';
 import { KB_ROOT } from './lib/kb-root.mjs';
 
 const argv = process.argv.slice(2);
@@ -24,7 +26,7 @@ const snapshot = argv.includes('--snapshot');
 const weeksIdx = argv.indexOf('--weeks');
 const horizon = weeksIdx >= 0 ? Math.max(1, parseInt(argv[weeksIdx + 1], 10) || 8) : 8;
 
-const HISTORY = join(KB_ROOT, '.context', 'kb-metrics-history.jsonl');
+const HISTORY = safePath(KB_ROOT, '.context/kb-metrics-history.jsonl');
 
 // ISO-неделя 'YYYY-Wnn' из ISO-таймстампа.
 function isoWeek(ts) {
@@ -39,10 +41,7 @@ function isoWeek(ts) {
 }
 
 const records = await readJournal({ limit: 1_000_000 });
-if (records.length === 0) {
-  console.log('[kb-metrics] журнал пуст (.context/kb-journal.jsonl) — нечего агрегировать.');
-  process.exit(0);
-}
+const queueMetrics = findingsMetrics(readFindings(KB_ROOT), records);
 
 const byWeek = new Map();
 function week(ts) {
@@ -104,7 +103,7 @@ const rows = weeks.map((k) => {
   };
 });
 
-const out = { generated_at: new Date().toISOString(), total_records: records.length, weeks: rows };
+const out = { generated_at: new Date().toISOString(), total_records: records.length, weeks: rows, ...queueMetrics };
 
 if (snapshot) {
   await mkdir(join(KB_ROOT, '.context'), { recursive: true });
@@ -114,6 +113,14 @@ if (snapshot) {
 if (asJson) {
   console.log(JSON.stringify(out, null, 2));
 } else {
+  const { findings, repeatedFeedback, firstPassCompletion } = queueMetrics;
+  console.log(`  Находки: ${findings.total} · knowledge=${findings.byKind.knowledge} · feedback=${findings.byKind.feedback}`);
+  console.log(`  Состояния: ${Object.entries(findings.byStatus).map(([key, value]) => `${key}=${value}`).join(', ')}`);
+  for (const [label, metric] of [['Повторная обратная связь', repeatedFeedback], ['Независимая проверка с первой попытки', firstPassCompletion]]) {
+    console.log(`  ${label}: ${metric.value == null ? 'insufficient-data (недостаточно данных)' : `${(metric.value * 100).toFixed(1)}%`} · выборка=${metric.sampleSize}`);
+    console.log(`    ${metric.basis}`);
+  }
+  if (!records.length) console.log('  Журнал операций пуст; тренды пока неизвестны.');
   console.log('');
   console.log('  Тренды качества KB (из .context/kb-journal.jsonl)');
   console.log('  ' + '─'.repeat(96));

@@ -19,15 +19,15 @@
 //   # Expected
 //   <блок ожиданий — зависит от grader'а>
 
-import { readFile, readdir, stat } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { join, basename, dirname, resolve, relative } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join, basename, dirname, relative } from "node:path";
+import { KB_ROOT } from "../../lib/kb-root.mjs";
+import { discoverSkills, assertSafePath, assertSkillName } from "../../lib/skills.mjs";
 import yaml from "js-yaml";
 import { z } from "zod";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-export const REPO_ROOT = resolve(__dirname, "..", "..", "..");
+export const REPO_ROOT = KB_ROOT;
 export const SKILLS_DIR = join(REPO_ROOT, "skills");
 
 const EvalCaseFrontmatterSchema = z.object({
@@ -45,6 +45,7 @@ const EvalCaseFrontmatterSchema = z.object({
     .default({}),
   pass_threshold: z.number().min(0).max(1).optional(),
   owner: z.string().optional(),
+  mandatory: z.boolean().optional().default(true),
 });
 
 const EvalCaseSchema = z.object({
@@ -59,8 +60,9 @@ const EvalCaseSchema = z.object({
 /**
  * Парсит один YAML-файл eval-кейса.
  */
-export async function parseEvalCase(absPath) {
-  const raw = await readFile(absPath, "utf8");
+export async function parseEvalCase(absPath, { root = REPO_ROOT, skill } = {}) {
+  assertSafePath(root, absPath);
+  const raw = (await readFile(absPath, "utf8")).replace(/\r\n/g, "\n");
   const fmMatch = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
   if (!fmMatch) {
     throw new Error(`[skillopt:loader] ${relative(REPO_ROOT, absPath)}: нет frontmatter (---...---)`);
@@ -77,22 +79,25 @@ export async function parseEvalCase(absPath) {
       `[skillopt:loader] ${relative(REPO_ROOT, absPath)}: невалидный frontmatter — ${fmParsed.error.message}`,
     );
   }
+  if (skill && fmParsed.data.skill !== skill) throw Error(`Eval skill mismatch: ${absPath}`);
+  assertSkillName(fmParsed.data.skill);
   const body = fmMatch[2] ?? "";
   const sections = splitSections(body);
-  if (!sections.Input) {
+  if (!sections.Input?.trim()) {
     throw new Error(`[skillopt:loader] ${relative(REPO_ROOT, absPath)}: нет секции "# Input"`);
   }
-  if (!sections.Expected) {
+  if (!sections.Expected?.trim()) {
     throw new Error(`[skillopt:loader] ${relative(REPO_ROOT, absPath)}: нет секции "# Expected"`);
   }
 
   // Раскрываем {{file:...}} интерполяцию в input
-  const inputResolved = await interpolateFiles(sections.Input.trim(), dirname(absPath));
+  const inputResolved = await interpolateFiles(sections.Input.trim(), dirname(absPath), root);
 
-  const caseId = basename(absPath, ".yaml");
+  const caseId = basename(absPath).replace(/\.ya?ml$/, "");
+  assertSkillName(caseId);
   return EvalCaseSchema.parse({
     id: caseId,
-    path: relative(REPO_ROOT, absPath),
+    path: relative(root, absPath),
     skill: fmParsed.data.skill,
     frontmatter: fmParsed.data,
     input: inputResolved,
@@ -119,7 +124,7 @@ function splitSections(body) {
   return out;
 }
 
-async function interpolateFiles(text, baseDir) {
+async function interpolateFiles(text, baseDir, root) {
   const re = /\{\{file:([^}]+)\}\}/g;
   let out = "";
   let lastIdx = 0;
@@ -130,9 +135,9 @@ async function interpolateFiles(text, baseDir) {
     const candidates = [
       join(baseDir, rel),
       join(baseDir, "_fixtures", rel),
-      join(REPO_ROOT, rel),
+      join(root, rel),
     ];
-    const hit = candidates.find((p) => existsSync(p));
+    const hit = candidates.find((p) => { assertSafePath(root, p); return existsSync(p); });
     if (!hit) {
       throw new Error(`[skillopt:loader] не найден файл фикстуры: ${rel} (пробовали ${candidates.join(" | ")})`);
     }
@@ -143,86 +148,54 @@ async function interpolateFiles(text, baseDir) {
   return out;
 }
 
-/**
- * Discover eval-кейсы под skills/<skill-name>/evals/*.yaml.
- * @param {string} [skillFilter] — если задан, вернёт только этот скилл
- * @param {string} [caseFilter]  — если задан, вернёт только этот case-id
- */
-export async function discoverEvals({ skillFilter = null, caseFilter = null } = {}) {
-  if (!existsSync(SKILLS_DIR)) return [];
-  const entries = await readdir(SKILLS_DIR, { withFileTypes: true });
-  const out = [];
-  for (const e of entries) {
-    if (!e.isDirectory()) continue;
-    if (e.name.startsWith(".") || e.name === "_shared") continue;
-    if (skillFilter && e.name !== skillFilter) continue;
-    const evalsDir = join(SKILLS_DIR, e.name, "evals");
-    if (!existsSync(evalsDir)) continue;
-    const files = await readdir(evalsDir);
-    for (const f of files) {
-      if (!f.endsWith(".yaml") && !f.endsWith(".yml")) continue;
-      if (f.startsWith("_")) continue;
-      const caseId = basename(f, ".yaml").replace(/\.yml$/, "");
-      if (caseFilter && caseId !== caseFilter) continue;
-      try {
-        const parsed = await parseEvalCase(join(evalsDir, f));
-        out.push(parsed);
-      } catch (err) {
-        // не падаем на одном битом файле — продолжаем, ошибку отдаём наверх
-        out.push({ id: caseId, skill: e.name, path: relative(REPO_ROOT, join(evalsDir, f)), error: err.message });
-      }
-    }
+/** A directory loader is also used for prepared new-skill evals. */
+export async function loadEvalDirectory(evalsDir, { root = REPO_ROOT, skill, caseFilter = null } = {}) {
+  assertSkillName(skill);
+  assertSafePath(root, evalsDir);
+  if (!existsSync(evalsDir)) return [];
+  const files = (await readdir(evalsDir)).filter(f => /\.ya?ml$/.test(f) && !f.startsWith('_')).sort();
+  const out = [], seen = new Set();
+  for (const file of files) {
+    const id = basename(file).replace(/\.ya?ml$/, '');
+    if (caseFilter && caseFilter !== id) continue;
+    try {
+      if (seen.has(id)) throw Error(`Duplicate eval case: ${skill}/${id}`);
+      seen.add(id);
+      out.push(await parseEvalCase(join(evalsDir, file), { root, skill }));
+    } catch (error) { out.push({ id, skill, path: relative(root, join(evalsDir, file)), error: error.message }); }
   }
   return out;
 }
 
-/**
- * Поверхностный обзор: какие скиллы есть и сколько у них кейсов.
- */
-export async function listSkillsWithEvals() {
-  if (!existsSync(SKILLS_DIR)) return [];
-  const entries = await readdir(SKILLS_DIR, { withFileTypes: true });
-  const out = [];
-  for (const e of entries) {
-    if (!e.isDirectory()) continue;
-    if (e.name.startsWith(".") || e.name === "_shared") continue;
-    const skillFile = join(SKILLS_DIR, `${e.name}.md`);
-    const evalsDir = join(SKILLS_DIR, e.name, "evals");
-    let caseCount = 0;
-    if (existsSync(evalsDir)) {
-      const files = await readdir(evalsDir);
-      caseCount = files.filter((f) => (f.endsWith(".yaml") || f.endsWith(".yml")) && !f.startsWith("_")).length;
-    }
-    out.push({
-      skill: e.name,
-      skillFileExists: existsSync(skillFile),
-      caseCount,
-    });
-  }
-  // Также скиллы-файлы без поддиректории (legacy формат)
-  const filesAtRoot = entries.filter((e) => e.isFile() && e.name.endsWith(".md") && !e.name.startsWith("_"));
-  for (const f of filesAtRoot) {
-    const name = basename(f.name, ".md");
-    if (name === "README") continue;
-    if (out.some((o) => o.skill === name)) continue;
-    out.push({ skill: name, skillFileExists: true, caseCount: 0 });
-  }
-  return out.sort((a, b) => a.skill.localeCompare(b.skill));
+export function requireSkills(root = REPO_ROOT) {
+  const result = discoverSkills(root);
+  if (result.errors.length) throw Error(result.errors.join('\n'));
+  return result.skills;
 }
 
-/**
- * Читает содержимое skill-файла (как text). Поддерживает оба формата:
- *   skills/skill-foo.md
- *   skills/skill-foo/skill-foo.md  (если когда-нибудь введём)
- */
-export async function readSkillFile(skillName) {
-  const candidates = [
-    join(SKILLS_DIR, `${skillName}.md`),
-    join(SKILLS_DIR, skillName, `${skillName}.md`),
-    join(SKILLS_DIR, skillName, "SKILL.md"),
-  ];
-  for (const p of candidates) {
-    if (existsSync(p)) return { path: relative(REPO_ROOT, p), text: await readFile(p, "utf8") };
+export async function discoverEvals({ skillFilter = null, caseFilter = null, root = REPO_ROOT } = {}) {
+  if (skillFilter) assertSkillName(skillFilter);
+  const skills = requireSkills(root).filter(s => !skillFilter || s.name === skillFilter);
+  const out = [];
+  for (const skill of skills) {
+    if (!skill.dir) continue;
+    out.push(...await loadEvalDirectory(join(root, skill.dir, 'evals'), { root, skill: skill.name, caseFilter }));
   }
-  throw new Error(`[skillopt:loader] skill-файл не найден для "${skillName}". Пробовали: ${candidates.join(" | ")}`);
+  return out;
+}
+
+export async function listSkillsWithEvals({ root = REPO_ROOT } = {}) {
+  const out = [];
+  for (const s of requireSkills(root)) {
+    const cases = s.dir ? await loadEvalDirectory(join(root, s.dir, 'evals'), { root, skill: s.name }) : [];
+    out.push({ skill: s.name, path: s.path, source: s.source, legacy: s.legacy, skillFileExists: true, caseCount: cases.length, errors: cases.filter(c => c.error).map(c => c.error) });
+  }
+  return out;
+}
+
+export async function readSkillFile(skillName, { root = REPO_ROOT } = {}) {
+  assertSkillName(skillName);
+  const skill = requireSkills(root).find(s => s.name === skillName);
+  if (!skill) throw Error(`[skillopt:loader] skill file not found: ${skillName}`);
+  return skill;
 }

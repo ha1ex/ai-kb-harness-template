@@ -7,7 +7,7 @@
 
 ```bash
 pnpm kb:index                 # подхватить дневные правки и kb_retain-заметки
-pnpm kb:doctor                # health-check (EXIT 0 contract)
+pnpm kb:findings scan --json  # локальная проверка + сохранение находок
 pnpm kb:dream --execute       # LLM-аудит (git-окно + журнал + open-questions); без claude CLI — сохранит промпт
 node scripts/kb-metrics.mjs --snapshot   # тренды качества за недели (+ история)
 pnpm kb:digest                # утренний дайджест → .context/digest-YYYY-MM-DD.md
@@ -27,7 +27,7 @@ pnpm kb:digest                # утренний дайджест → .context/d
   <key>Label</key><string>kb.nightly</string>
   <key>ProgramArguments</key><array>
     <string>/bin/zsh</string><string>-lc</string>
-    <string>cd /path/to/kb && pnpm kb:index && pnpm kb:doctor && pnpm kb:dream --execute; node scripts/kb-metrics.mjs --snapshot; pnpm kb:digest</string>
+      <string>cd /path/to/kb && pnpm kb:index && pnpm kb:findings scan --json && pnpm kb:dream --execute; node scripts/kb-metrics.mjs --snapshot; pnpm kb:digest</string>
   </array>
   <key>StartCalendarInterval</key><dict>
     <key>Hour</key><integer>5</integer><key>Minute</key><integer>30</integer>
@@ -45,7 +45,7 @@ launchctl start kb.nightly        # проверить вручную
 ## Linux — cron
 
 ```cron
-30 5 * * * cd /path/to/kb && pnpm kb:index && pnpm kb:doctor && pnpm kb:dream --execute; node scripts/kb-metrics.mjs --snapshot; pnpm kb:digest >> /tmp/kb-nightly.log 2>&1
+30 5 * * * cd /path/to/kb && pnpm kb:index && pnpm kb:findings scan --json && pnpm kb:dream --execute; node scripts/kb-metrics.mjs --snapshot; pnpm kb:digest >> /tmp/kb-nightly.log 2>&1
 ```
 
 ## Несколько KB
@@ -60,8 +60,10 @@ launchctl start kb.nightly        # проверить вручную
 
 | Артефакт | Путь | Кто читает |
 |---|---|---|
+| Находки и принятые уроки | `.remember/findings/` | библиотекарь, контекст задачи, дайджест |
 | Дайджест | `.context/digest-YYYY-MM-DD.md` | человек утром |
-| Dream-report (аудит/промпт) | `.context/dream-report-YYYY-MM-DD.md` | человек / LLM |
+| Выполненный Dream-report | `.context/dream-report-<timestamp>.md` | человек / LLM |
+| Подготовленный запрос без выполнения | `.context/dream-prompt-YYYY-MM-DD.md` | агент для ручной работы |
 | Тренды качества | `pnpm kb:metrics` (+ `.context/kb-metrics-history.jsonl`) | человек еженедельно |
 | Журнал операций | `.context/kb-journal.jsonl` (ротация 5 MB) | metrics / dream / digest |
 | Семантический аудит FACT | GitHub Actions `kb-advisory` (артефакт, non-blocking) | человек / kb-critic |

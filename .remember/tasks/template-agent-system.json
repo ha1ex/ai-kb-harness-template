@@ -1,0 +1,151 @@
+{
+  "constraints": [
+    "Preserve original evidence and project-owned content",
+    "Do not rename the workspace branch"
+  ],
+  "sources": [
+    "https://pstv-agents-system.birta.link/",
+    "docs/work-system.md",
+    "harness/rules/workflow.md"
+  ],
+  "changedFiles": [
+    ".gitignore",
+    ".remember/tasks/template-agent-system.json",
+    ".template-baseline.json",
+    ".template-manifest.json",
+    "CHANGELOG.md",
+    "README.md",
+    "docs/architecture.md",
+    "docs/automation.md",
+    "docs/releases/0.5.0.md",
+    "docs/work-system.md",
+    "harness/roles/README.md",
+    "harness/roles/coordinator.json",
+    "harness/roles/editor.json",
+    "harness/roles/librarian.json",
+    "harness/roles/researcher.json",
+    "harness/roles/reviewer.json",
+    "harness/rules/workflow.md",
+    "harness/skills/harness-maintain/SKILL.md",
+    "harness/skills/harness-project-profile/SKILL.md",
+    "harness/skills/harness-workflow/SKILL.md",
+    "harness/templates/work-system.json",
+    "harness/workflows/decision.json",
+    "harness/workflows/ingest.json",
+    "harness/workflows/research.json",
+    "harness/workflows/revalidate.json",
+    "package.json",
+    "scripts/README.md",
+    "scripts/check-harness.mjs",
+    "scripts/dream-cycle.mjs",
+    "scripts/kb-digest.mjs",
+    "scripts/kb-doctor.mjs",
+    "scripts/kb-findings.mjs",
+    "scripts/kb-metrics.mjs",
+    "scripts/kb-profile.mjs",
+    "scripts/kb-session.mjs",
+    "scripts/lib/findings.mjs",
+    "scripts/lib/skills.mjs",
+    "scripts/lib/work-context.mjs",
+    "scripts/lib/work-system.mjs",
+    "scripts/lib/workflow-state.mjs",
+    "scripts/session-start-context.mjs",
+    "scripts/skillopt/cli.mjs",
+    "scripts/skillopt/config.mjs",
+    "scripts/skillopt/evals/loader.mjs",
+    "scripts/skillopt/mcp-server.mjs",
+    "scripts/skillopt/runner/diff.mjs",
+    "scripts/skillopt/runner/edit.mjs",
+    "scripts/skillopt/runner/lifecycle.mjs",
+    "scripts/skillopt/runner/reflect.mjs",
+    "scripts/skillopt/runner/rollout.mjs",
+    "scripts/skillopt/runner/snapshot.mjs",
+    "scripts/skillopt/storage/metrics.mjs",
+    "skills/README.md",
+    "test/agents-runtime.test.mjs",
+    "test/knowledge-findings.test.mjs",
+    "test/skill-lifecycle.test.mjs",
+    "test/template-update.test.mjs",
+    "test/work-system.test.mjs"
+  ],
+  "checks": [
+    {
+      "command": "pnpm test",
+      "outcome": "passed",
+      "evidence": "Release preparation: .context/agent-system/publish-tests.log; 113/113 passed, zero failures"
+    },
+    {
+      "command": "pnpm check",
+      "outcome": "passed",
+      "evidence": "Release preparation: .context/agent-system/publish-check.log; harness, spaces, portability, readability and provenance passed"
+    },
+    {
+      "command": "pnpm harness:check",
+      "outcome": "passed",
+      "evidence": "No clients selected in this workspace; portable client setup validated in temporary fixtures"
+    },
+    {
+      "command": "pnpm kb:verify --scan --provenance --no-semantic",
+      "outcome": "passed",
+      "evidence": "6 own files scanned, 757 external documents skipped, 1 exemption; clean"
+    },
+    {
+      "command": "pnpm viewer:test",
+      "outcome": "passed",
+      "evidence": "6 data tests and 4 component tests passed"
+    },
+    {
+      "command": "pnpm viewer:build",
+      "outcome": "passed",
+      "evidence": "Static build: 766 documents, 2 spaces, 779 routes; existing large chunk advisory only"
+    },
+    {
+      "command": "node scripts/semantic/test-retrieval.mjs; node scripts/semantic/test-control.mjs; node scripts/semantic/test-gate.mjs",
+      "outcome": "passed",
+      "evidence": "8 retrieval + 6 control + 12 adversarial checks passed"
+    },
+    {
+      "command": "Independent implementation and scoped regression review",
+      "outcome": "passed",
+      "evidence": "final_review: all material lifecycle findings resolved; 32 lifecycle tests independently passed. Separate context/profile review fixes covered in 20 work-system tests."
+    },
+    {
+      "command": "git diff --check",
+      "outcome": "passed",
+      "evidence": "No whitespace errors"
+    },
+    {
+      "command": "pnpm kb:release:check",
+      "outcome": "passed",
+      "evidence": "Version 0.5.0 matches distributed baseline: 216 managed files, 755 demo files"
+    },
+    {
+      "command": "node scripts/session-start-context.mjs --task release-example --workflow research --json",
+      "outcome": "passed",
+      "evidence": "README example: work.role.id=coordinator, work.stage.id=scope, ready=true, missing=[] and deferred=[]"
+    }
+  ],
+  "openQuestions": [],
+  "status": "complete",
+  "result": "All three approved stages implemented and independently reviewed. Release 0.5.0 is prepared with README, changelog, migration notes and current distribution baseline. Final local checks: 113 main tests, 10 viewer tests, 26 semantic checks, common checks and static build passed. External model providers and live client sessions were not exercised.",
+  "goal": "Implement the approved portable agent work system: roles, project profiles, resumable workflows, verified skill evolution and durable findings.",
+  "acceptanceCriteria": [
+    "Five role contracts and four workflows with resumable checked artifacts",
+    "Draft project profile becomes active only after recorded confirmation",
+    "Clients and SkillOpt share standard and legacy skill discovery",
+    "Proposed skill changes require same-case comparison, exact-version confirmation and no regression",
+    "Accepted scoped lessons and durable knowledge findings integrate with audit/digest/metrics",
+    "Legacy tasks and template updates preserve project-owned content",
+    "Relevant automated checks and independent review pass"
+  ],
+  "decisions": [
+    "User approved all three implementation stages in this conversation",
+    "No scheduler, external publishing or web UI added; new LLM calls require explicit --execute",
+    "Local approvals record authorization; they do not authenticate identity or sandbox a client",
+    "User explicitly authorized publishing all changes to origin/main and updating the repository README and latest update on 2026-09-09"
+  ],
+  "nextStep": "Publish the prepared 0.5.0 commit and tag to origin, verify remote main and CI, then use docs/work-system.md to configure a project or start a workflow.",
+  "task": "template-agent-system",
+  "owner": "codex",
+  "updatedAt": "2026-09-09T07:19:15.486Z"
+}

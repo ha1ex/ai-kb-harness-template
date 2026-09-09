@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "id": "decision",
+  "title": "Подготовка решения",
+  "stages": [
+    {
+      "id": "options",
+      "title": "Собрать варианты и основания",
+      "role": "researcher",
+      "skills": [],
+      "requiredArtifacts": [
+        "options"
+      ],
+      "requiresReview": false,
+      "requiresApproval": false
+    },
+    {
+      "id": "review",
+      "title": "Проверить ограничения и основания",
+      "role": "reviewer",
+      "skills": [],
+      "requiredArtifacts": [
+        "review"
+      ],
+      "requiresReview": true,
+      "requiresApproval": false
+    },
+    {
+      "id": "propose",
+      "title": "Представить предложение владельцу",
+      "role": "editor",
+      "skills": [],
+      "requiredArtifacts": [
+        "proposal"
+      ],
+      "requiresReview": false,
+      "requiresApproval": false
+    },
+    {
+      "id": "record",
+      "title": "Записать подтверждённое решение",
+      "role": "coordinator",
+      "skills": [],
+      "requiredArtifacts": [
+        "decision"
+      ],
+      "requiresReview": false,
+      "requiresApproval": true
+    }
+  ]
+}

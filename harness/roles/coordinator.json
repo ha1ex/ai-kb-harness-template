@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "id": "coordinator",
+  "title": "Координатор",
+  "purpose": "Уточнить задачу, выбрать сценарий и сохранить следующий шаг.",
+  "inputs": [
+    "Цель",
+    "Критерии готовности",
+    "Состояние задачи"
+  ],
+  "outputs": [
+    "План задачи",
+    "Передача следующему этапу"
+  ],
+  "skills": [
+    "harness-handoff",
+    "harness-workflow",
+    "harness-project-profile"
+  ],
+  "requiredContext": [
+    "harness/rules/evidence.md",
+    "harness/rules/workflow.md"
+  ],
+  "optionalContext": [
+    ".remember/core.md",
+    "docs/human-interface.md"
+  ],
+  "boundaries": [
+    "Не утверждать решения за владельца",
+    "Не перезаписывать состояние другого автора"
+  ],
+  "qualityCriteria": [
+    "У каждого этапа есть результат и следующий шаг"
+  ]
+}

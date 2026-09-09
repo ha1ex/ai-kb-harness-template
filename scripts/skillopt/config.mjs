@@ -6,15 +6,14 @@
 //   3. cosmiconfig: .skillopt.{json,js,yaml,yml}, package.json#skillopt
 //   4. Hard defaults
 //
-// Если provider="auto" — пробуем claude CLI, иначе openai-http (если есть key),
-// иначе actionable error.
+// Default provider is manual. Execution requires an explicit configured provider.
 
 import { cosmiconfig } from "cosmiconfig";
-import { spawnSync } from "node:child_process";
+import { KB_ROOT } from "../lib/kb-root.mjs";
 
 const MODULE = "skillopt";
 
-export async function loadConfig({ cwd = process.cwd(), overrides = {} } = {}) {
+export async function loadConfig({ cwd = KB_ROOT, overrides = {} } = {}) {
   const explorer = cosmiconfig(MODULE, {
     searchPlaces: [
       `.${MODULE}.json`,
@@ -36,7 +35,7 @@ export async function loadConfig({ cwd = process.cwd(), overrides = {} } = {}) {
     overrides,
   );
 
-  merged.provider = await resolveAutoProvider(merged);
+  if (merged.provider === "auto") throw Error("Choose an explicit SkillOpt provider; auto detection is disabled.");
 
   return {
     config: merged,
@@ -47,7 +46,7 @@ export async function loadConfig({ cwd = process.cwd(), overrides = {} } = {}) {
 
 function defaults() {
   return {
-    provider: "auto",
+    provider: "manual",
     model: null,
     base_url: null,
     api_key: null,
@@ -67,31 +66,6 @@ function fromEnv() {
   if (process.env.SKILLOPT_TIMEOUT_MS) out.timeout_ms = Number(process.env.SKILLOPT_TIMEOUT_MS);
   if (process.env.SKILLOPT_CONCURRENCY) out.concurrency = Number(process.env.SKILLOPT_CONCURRENCY);
   return out;
-}
-
-async function resolveAutoProvider(cfg) {
-  if (cfg.provider && cfg.provider !== "auto") return cfg.provider;
-  // 1. Пробуем claude CLI
-  const hasClaude = which("claude");
-  if (hasClaude) return "claude-cli";
-  // 2. Пробуем openai-http (нужен ключ)
-  const key = cfg.api_key ?? process.env.OPENAI_API_KEY ?? process.env.SKILLOPT_API_KEY;
-  if (key) return "openai-http";
-  // 3. Ollama по дефолтному адресу без ключа — последний шанс
-  if (cfg.base_url && /11434|ollama/i.test(cfg.base_url)) return "openai-http";
-  throw new Error(
-    "[skillopt] LLM provider не настроен. Варианты:\n" +
-      "  • Установите Claude Code (`claude` в PATH) — будет auto-detected\n" +
-      "  • Задайте OPENAI_API_KEY для openai-http\n" +
-      "  • Запустите Ollama (ollama serve) и в .skillopt.json пропишите base_url=http://localhost:11434/v1\n" +
-      "  • Создайте .skillopt.json с явным provider и model\n" +
-      "Без LLM можно использовать `pnpm skill list` и `pnpm skill score` для офлайн-операций.",
-  );
-}
-
-function which(cmd) {
-  const r = spawnSync("which", [cmd], { encoding: "utf8" });
-  return r.status === 0 ? r.stdout.trim() : null;
 }
 
 function extractCustomAdapters(fileCfg) {

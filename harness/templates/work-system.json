@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "status": "draft",
+  "purpose": "Replace with the project purpose and recurring tasks",
+  "roles": [
+    "coordinator",
+    "researcher",
+    "editor",
+    "reviewer",
+    "librarian"
+  ],
+  "workflows": [
+    "ingest",
+    "research",
+    "decision",
+    "revalidate"
+  ],
+  "skills": [],
+  "customRoles": {},
+  "customWorkflows": {}
+}

@@ -48,3 +48,7 @@ playwright-report/
 .remember/tasks/*.lock
 .remember/tasks/*.lock.recovery
 .remember/tasks/*.tmp
+
+# Finding write locks and interrupted atomic writes
+.remember/findings/*.lock
+.remember/findings/*.tmp

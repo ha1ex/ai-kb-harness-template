@@ -2,7 +2,7 @@
 // dream-cycle.mjs — еженедельный LLM-аудит KB по аналогии с gbrain «dream».
 //
 // Использование:
-//   node scripts/dream-cycle.mjs                # сгенерировать промпт + сохранить в .context/dream-report-YYYY-MM-DD.md
+//   node scripts/dream-cycle.mjs                # сгенерировать промпт + сохранить в .context/dream-prompt-YYYY-MM-DD.md
 //   node scripts/dream-cycle.mjs --execute      # дополнительно прогнать через настроенный LLM adapter
 //   node scripts/dream-cycle.mjs --dry-run      # только напечатать промпт в stdout, не сохранять
 //   node scripts/dream-cycle.mjs --days 14      # окно (по умолчанию 7)
@@ -18,8 +18,8 @@
 //   2. Какие новые противоречия видны в diff'е?
 //   3. Какие synthesis/wiki-файлы стоит обновить (с обоснованием через цитаты)?
 //
-// Никогда не пишет в /03_wiki, /04_synthesis, /05_decisions — только в .context/.
-// Пользователь сам решает, что коммитить.
+// Промпты и отчёты живут в .context/. Только исполненный отчёт получает открытую
+// карточку наблюдения в .remember/findings; источники и постоянные правила не меняются.
 
 import { existsSync, statSync, readFileSync, readdirSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve, relative, extname } from 'node:path';
@@ -28,6 +28,8 @@ import { spawnSync } from 'node:child_process';
 import { loadAgentContext } from './lib/agent-context.mjs';
 import { completePrompt } from './lib/llm.mjs';
 import { readJournal, summarizeJournal } from './lib/journal.mjs';
+import { readFindings, upsertFinding } from './lib/findings.mjs';
+import { safePath } from './lib/template-state.mjs';
 import { openDb, createEmbedder, searchVec, QUERY_PREFIX, DB_PATH as SEM_DB_PATH, docDateToEpochDays } from './semantic/lib.mjs';
 
 import { KB_ROOT } from './lib/kb-root.mjs';
@@ -52,6 +54,7 @@ const sinceISO = new Date(today.getTime() - days * 86_400_000).toISOString().sli
 // а не только git-история. Раскрывает пробелы: что искали и не нашли, какие verify провалились.
 const journalRecords = await readJournal({ since: sinceISO, limit: 2000 });
 const journal = summarizeJournal(journalRecords);
+const findings = readFindings(REPO_ROOT);
 
 // ---------- 1. Изменённые файлы за окно (git log) ----------
 
@@ -203,6 +206,7 @@ lines.push('Каждое нетривиальное утверждение — �
 lines.push('');
 lines.push('Твоя задача — провести аудит и выдать структурированный отчёт по трём разделам ниже.');
 lines.push('Это **дроп-зона**: ничего не правится в репозитории. Выводи только аналитику.');
+lines.push('Очередь ниже содержит наблюдения и решения об их разборе. Открытые находки не являются правилами или подтверждёнными фактами. Не выдавай предложения за принятые решения.');
 lines.push('');
 lines.push('## Что нужно сделать');
 lines.push('');
@@ -245,6 +249,16 @@ lines.push('```');
 for (const c of commits.slice(0, 80)) lines.push(c);
 if (commits.length > 80) lines.push(`... ещё ${commits.length - 80}`);
 lines.push('```');
+lines.push('');
+lines.push('## Контекст: очередь находок и обратной связи');
+lines.push('');
+if (!findings.length) lines.push('_(записанных находок нет)_');
+for (const finding of findings) {
+  lines.push(`- ${finding.id} [${finding.kind}/${finding.status}] ${finding.title}`);
+  lines.push(`  Наблюдение: ${finding.problem}`);
+  lines.push(`  Предложение к разбору: ${finding.suggestedAction}`);
+  for (const item of finding.evidence) lines.push(`  Evidence: ${item.source} — ${item.observation}`);
+}
 lines.push('');
 lines.push('## Контекст: изменённые .md за окно');
 lines.push('');
@@ -327,24 +341,25 @@ if (dryRun) {
   process.exit(0);
 }
 
-const outDir = join(REPO_ROOT, '.context');
+const outDir = safePath(REPO_ROOT, '.context');
 if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
-const outPath = join(outDir, `dream-report-${todayISO}.md`);
+const promptPath = safePath(REPO_ROOT, `.context/dream-prompt-${todayISO}.md`);
 
 if (execute) {
   let response;
   try { response = await completePrompt(promptText, { execute }); }
   catch (error) {
-    writeFileSync(outPath, promptText);
-    console.error(`[dream] ${error.message}; prompt saved to ${relative(REPO_ROOT, outPath)}`);
+    writeFileSync(promptPath, promptText);
+    console.error(`[dream] ${error.message}; prompt saved to ${relative(REPO_ROOT, promptPath)}`);
     process.exit(1);
   }
   if (!response.executed) {
-    writeFileSync(outPath, promptText);
-    console.log(`[dream] ${response.reason} Prompt: ${relative(REPO_ROOT, outPath)}`);
+    writeFileSync(promptPath, promptText);
+    console.log(`[dream] ${response.reason} Prompt: ${relative(REPO_ROOT, promptPath)}`);
     process.exit(0);
   }
   const answer = response.text;
+  const outPath = safePath(REPO_ROOT, `.context/dream-report-${new Date().toISOString().replace(/[:.]/g, '-')}.md`);
   const combined = [
     `# Dream cycle ${todayISO} — ответ LLM`,
     '',
@@ -358,10 +373,18 @@ if (execute) {
     '',
     promptText,
   ].join('\n');
-  writeFileSync(outPath, combined);
+  writeFileSync(outPath, combined, { flag: 'wx' });
+  const reportPath = relative(REPO_ROOT, outPath);
+  const finding = upsertFinding(REPO_ROOT, {
+    kind: 'knowledge', code: 'dream:report', title: `Review executed dream report: ${reportPath}`,
+    problem: 'A model produced audit proposals. Their claims and suggested changes require source review.',
+    paths: [reportPath], evidence: [{ source: reportPath, observation: answer }],
+    suggestedAction: 'Read the executed report, verify its source references, and record only supported findings or explicitly confirmed feedback.',
+  });
   console.log(`[dream] готово, сохранено в ${relative(REPO_ROOT, outPath)}`);
+  console.log(`[dream] кандидат на разбор: ${finding.id} [open]; вывод модели не принят как правило.`);
 } else {
-  writeFileSync(outPath, promptText);
-  console.log(`[dream] промпт сохранён в ${relative(REPO_ROOT, outPath)}`);
+  writeFileSync(promptPath, promptText);
+  console.log(`[dream] промпт сохранён в ${relative(REPO_ROOT, promptPath)}`);
   console.log('[dream] скопируйте файл в Claude/любой LLM. Для авто-прогона — флаг --execute (нужен настроенный провайдер).');
 }

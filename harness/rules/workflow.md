@@ -1,11 +1,31 @@
-# Work and handoff
+# Работа и передача задачи
 
-Start with the task goal, scope and acceptance criteria. Inspect the working copy before editing. Follow the evidence rules and human-interface guide; do not silently approve a proposed decision. Preserve project-owned content and client settings.
+Начните с цели, границ и критериев готовности; перед изменениями проверьте рабочую копию. Следуйте [правилам доказательств](evidence.md) и [руководству для читателей](../../docs/human-interface.md). Сохраняйте материалы проекта и настройки клиента. Предложение становится принятым решением только после подтверждения владельцем.
 
-Run `node scripts/session-start-context.mjs --task <id> --json` to restore context. Each task has a separate `.remember/tasks/<id>.json` with one writer (`owner`). Use unique task IDs; do not write a shared current-task note. `.remember/now.md` may remain a short human-curated index, never generated task state.
+## Контекст и владелец
 
-Save with `node scripts/kb-session.mjs save --task <id> --owner <name> --file <handoff.json>`. Required: goal, nextStep, nonempty acceptanceCriteria (completion conditions), and decisions (confirmed decisions; an empty array explicitly means none). Include constraints, sources, changedFiles, checks, openQuestions and result. Each check records command, outcome (passed/failed/not-run) and evidence. Completed state requires a result, no open questions and at least one passed check; this is a structural gate, not proof that the goal was achieved. The owner reviews that judgment. Transfer ownership explicitly with `transfer --task <id> --owner <old> --to <new>`.
+Восстановите контекст: `pnpm kb:context --task <id> --json`. Для работы по этапам добавьте `--workflow ingest|research|decision|revalidate`; собственные сценарии доступны через активный профиль. `--role <id>` явно выбирает роль. Команда только читает и не вызывает модель.
 
-Keep transient thoughts in `.context/inbox/`. Promote knowledge only after source and citation checks. Record checkpoints during long operations. Default LLM execution is off; use explicit --execute with a configured provider and bounded timeout/retries. Do not retry unboundedly.
+Прочитайте `work.role`, `work.stage`, `work.skills` и `work.documents`. Отсутствующие обязательные документы попадают в `missing`, не поместившиеся целиком — в `deferred`. Увеличьте `--max-chars` или явно прочитайте отложенные документы. `ready: false` также требует разобрать `staleArtifacts`; `ready: true` означает готовность контекста, а не качество результата.
 
-Use roles sequentially unless independent work benefits from available parallel execution. Run common CLI checks regardless of the client; hooks are optional early feedback. Report actual results, remaining work and untested integrations honestly.
+У каждой задачи свой `.remember/tasks/<id>.json` и один автор записи (`owner`). Используйте отдельные ID; не создавайте общий файл текущей задачи. `.remember/now.md` может быть коротким указателем, который редактирует человек. Передавайте авторство явно: `pnpm kb:session transfer --task <id> --owner <old> --to <new>`.
+
+## Сохранение и этапы
+
+Сохраняйте состояние командой `pnpm kb:session save --task <id> --owner <name> --file <handoff.json>`. Обязательны `goal`, `nextStep`, непустой массив `acceptanceCriteria` и массив `decisions` с подтверждёнными решениями; `[]` означает их отсутствие. Добавляйте `constraints`, `sources`, `changedFiles`, `checks`, `openQuestions`, `result`. Проверка содержит `command`, `outcome` (`passed`, `failed`, `not-run`) и фактическое `evidence`.
+
+При выбранном `workflow` сохраняйте этапы в `stages`: `id`, `status` (`pending`, `active`, `complete`), `result`, `artifacts` с `name` и относительным `path`. Используйте обязательные имена из контракта сценария. Завершение этапа требует непустого результата и существующих непустых файлов; этапы проходят по порядку. Получайте свежий контекст после сохранения.
+
+Файлы завершённых этапов проверяются по содержимому. После изменения верните затронутый этап и все последующие в `pending`, установите задаче `status: active`, сохраните состояние и перепроверьте работу по порядку. Повторно получите ревью и согласование, если они требуются. Для другого сценария создайте новую задачу.
+
+Независимое ревью требует отдельного контекста, исходных доказательств и критериев. Для завершения запись `review` содержит `mode: independent`, `status: passed`, `reviewer`, разные `contextId` и `authorContextId`. Замечания для исправления сохраняйте с `review.status: changes-requested` и этапом `active`. Самопроверку нельзя записывать как независимое ревью. Этап принятия решения требует `approval.by` и `approval.reference` с основанием реального подтверждения. Эти поля — локальный журнал, а не проверка личности или разрешений.
+
+`status: complete` требует результата, отсутствия открытых вопросов и хотя бы одной проверки; все записанные проверки должны иметь `passed`. Для сценария должны завершиться все этапы. Формальная проверка не доказывает достижение цели: автор сверяет результат с критериями. Незавершённую работу передавайте с честным статусом и следующим шагом.
+
+## Поддержка и проверки
+
+Временные заметки храните в `.context/inbox/`; устойчивые знания переносите после проверки источников. Записывайте промежуточные результаты долгих операций. Очередь замечаний разделяет предметные проблемы (`knowledge`) и опыт работы (`feedback`). Только подтверждённый человеком `feedback` со статусом `accepted` включается в уроки контекста; он не меняет правила или навыки автоматически.
+
+Выбирайте роли последовательно; независимые части можно передавать отдельным агентам, когда это разрешено задачей и поддерживается средой. Выполняйте общие CLI-проверки независимо от клиента; хуки дают дополнительную раннюю обратную связь. Перед завершением запустите `pnpm harness:check` и `pnpm kb:verify --scan --provenance --no-semantic`, сохраните фактические результаты.
+
+LLM-выполнение по умолчанию выключено. Используйте явный `--execute` с настроенным провайдером и ограниченными временем и повторами. Подготовленный запрос не равен выполненной проверке. Сообщайте оставшуюся работу и непроверенные интеграции. Примеры команд и форматов — в [руководстве рабочей системы](../../docs/work-system.md).

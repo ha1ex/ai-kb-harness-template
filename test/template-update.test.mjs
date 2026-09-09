@@ -267,3 +267,17 @@ test("ownership validation rejects protected ancestors and equal paths, retainin
     validateManifest({ ...base, projectOwned: ["scripts/core/local.mjs"] }),
   );
 });
+
+test('template updates preserve a project work profile, custom procedures and accepted lessons', (t) => {
+  const f = fixture(t);
+  const files = {
+    '00_context/work-system.json': JSON.stringify({version:1,status:'active',purpose:'Project research',customRoles:{interviewer:{id:'interviewer'}}}),
+    'skills/interview/SKILL.md': '---\nname: interview\ndescription: Project-owned interview analysis\n---\nPreserve interview evidence.\n',
+    '.remember/findings/lesson.json': JSON.stringify({kind:'feedback',status:'accepted',title:'Keep dates'}),
+  };
+  for(const [path,content] of Object.entries(files))put(f.project,path,content);
+  commit(f.project,'project working system');
+  const r=f.run('--apply');assert.equal(r.status,0,r.stderr+r.stdout);
+  for(const [path,content] of Object.entries(files))assert.equal(get(f.project,path),content);
+  assert.equal(get(f.project,'scripts/core.mjs'),'new core\n');
+});
