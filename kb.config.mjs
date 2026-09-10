@@ -63,6 +63,28 @@ export default {
     exemptBasenames: ['readme.md', 'index.md', 'nav.md', '_toc.md', 'log.md'],
   },
 
+  approval: {
+    // Подпись эффекта решений: status из acceptedStatuses требует approved_by/approved_at/approved_ref/approved_hash
+    // (pnpm kb:approve). Несовпадающий хеш — гейт в verify --scan; отсутствие подписи — advisory,
+    // гейт только при required: true (включает проект).
+    layers: ['05_decisions'],
+    required: false,
+    acceptedStatuses: ['accepted', 'approved'],
+    proposedStatuses: ['proposed', 'draft'],
+  },
+
+  invariants: {
+    // Архитектурные инварианты harness/invariants.json (pnpm kb:invariants): проектные заморозки по id и отключённые id.
+    frozen: {},
+    disabled: [],
+  },
+
+  doctor: {
+    // Порог свежести synthesis в днях: считается по дате документа (updated/date/ingested), затем по последнему
+    // коммиту, затем по mtime. status: living не стареет. Дефолт 60.
+    staleDays: 60,
+  },
+
   decisions: {
     // Файлы в 05_decisions, освобождённые от требования метки DECISION: (check-decisions).
     exemptBasenames: ['decision-log.md', 'rejected-options.md', 'assumptions.md', 'README.md'],

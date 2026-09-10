@@ -15,8 +15,9 @@
 import { existsSync } from 'node:fs';
 import { appendFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { readJournal } from './lib/journal.mjs';
+import { readJournal, appendJournal } from './lib/journal.mjs';
 import { readFindings, findingsMetrics } from './lib/findings.mjs';
+import { buildInbox } from './lib/inbox.mjs';
 import { safePath } from './lib/template-state.mjs';
 import { KB_ROOT } from './lib/kb-root.mjs';
 
@@ -103,11 +104,14 @@ const rows = weeks.map((k) => {
   };
 });
 
-const out = { generated_at: new Date().toISOString(), total_records: records.length, weeks: rows, ...queueMetrics };
+let pendingHuman = { total: null, olderThan7: null, basis: 'kb:inbox unavailable' };
+try { const inbox = buildInbox(KB_ROOT, { olderThanDays: 7 }); pendingHuman = { total: inbox.summary.total, olderThan7: inbox.summary.olderThan, basis: 'Cards from kb:inbox: decisions, task stages, skill comparisons, profile proposals, inbox candidates, open findings.' }; } catch (e) { pendingHuman.basis = `kb:inbox unavailable: ${e.message}`; }
+const out = { generated_at: new Date().toISOString(), total_records: records.length, weeks: rows, ...queueMetrics, pendingHuman };
 
 if (snapshot) {
   await mkdir(join(KB_ROOT, '.context'), { recursive: true });
   await appendFile(HISTORY, JSON.stringify(out) + '\n', 'utf8');
+  await appendJournal({ kind: 'run', step: 'metrics', status: 'ok', snapshot: '.context/kb-metrics-history.jsonl' });
 }
 
 if (asJson) {
@@ -120,6 +124,7 @@ if (asJson) {
     console.log(`  ${label}: ${metric.value == null ? 'insufficient-data (недостаточно данных)' : `${(metric.value * 100).toFixed(1)}%`} · выборка=${metric.sampleSize}`);
     console.log(`    ${metric.basis}`);
   }
+  console.log(`  Ждут человека: ${pendingHuman.total ?? 'неизвестно'} · дольше 7 дней: ${pendingHuman.olderThan7 ?? 'неизвестно'}`);
   if (!records.length) console.log('  Журнал операций пуст; тренды пока неизвестны.');
   console.log('');
   console.log('  Тренды качества KB (из .context/kb-journal.jsonl)');

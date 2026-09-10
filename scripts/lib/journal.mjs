@@ -38,6 +38,10 @@ function journalDisabled() {
  *     top_results?: [{file, fused?, vec_rank?, bm25_rank?}], result_count?, timing_ms?,
  *     verify?: {citations_total, citations_ok, passed, ...}, summary?: {...} }
  */
+// Ночной контур пишет kind 'run': { step: 'findings-scan'|'dream'|'metrics'|'digest', status: 'ok'|'skipped'|'failed',
+// reason?, exit_code?, delivered?, http_status?, error? } — пустой или упавший шаг виден в дайджесте, не только в логе.
+export function journalStatus() { return { enabled: process.env.KB_JOURNAL !== '0' }; }
+
 export async function appendJournal(entry) {
   if (journalDisabled()) return;
   if (!entry || typeof entry !== 'object') return;

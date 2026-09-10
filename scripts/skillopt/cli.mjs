@@ -71,7 +71,7 @@ try {
       output(await runNew({ name: first, to: flags.to }));
       break;
     }
-    case 'propose': output(await runPropose({ skill: first, file: flags.file, reason: flags.reason, evals: flags.evals })); break;
+    case 'propose': output(await runPropose({ skill: first, file: flags.file, reason: flags.reason, evals: flags.evals, findings: flags['from-findings'] ? flags['from-findings'].split(',').map((s) => s.trim()).filter(Boolean) : [] })); break;
     case 'compare': {
       const result = await runCompare({ runId: first, execute: flags.execute });
       output(result);
@@ -96,7 +96,7 @@ try {
   pnpm skill score <run-id>                   Offline rescoring
   pnpm skill reflect <run-id> [--execute] [--force]
   pnpm skill new <name> [--to <dir>]           Scaffold a project skill draft from harness/templates/skill into .context/
-  pnpm skill propose <skill> --file <SKILL.md> --reason <text> [--evals <file|directory>]
+  pnpm skill propose <skill> --file <SKILL.md> --reason <text> [--evals <file|directory>] [--from-findings <id,...>]
   pnpm skill diff <run-id>
   pnpm skill compare <run-id> [--execute]
   pnpm skill approve <run-id> --by <human> --note <authorization-reference>

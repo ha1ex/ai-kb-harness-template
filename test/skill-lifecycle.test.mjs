@@ -436,3 +436,23 @@ test('list reports consumers of each skill and flags unreferenced project skills
   assert.equal(listed.find(s => s.skill === f.name).usedBy.profile, 'active');
   assert.equal(listed.find(s => s.skill === f.name).unreferenced, false);
 });
+
+test('propose --from-findings links only human-accepted lessons of the same skill', async (t) => {
+  const f = fixture(t);
+  const findingsCli = (...args) => spawnSync(process.execPath, [resolve('scripts/kb-findings.mjs'), ...args], { cwd: f.root, env: { ...process.env, KB_ROOT: f.root, KB_JOURNAL: '0' }, encoding: 'utf8' });
+  const mk = (name, extra = {}) => { put(f.root, name, JSON.stringify({ kind: 'feedback', title: `Lesson ${name}`, problem: 'The procedure skipped the source date.', paths: ['proposal.md'], evidence: [{ source: 'proposal.md', observation: 'Reviewer asked for the date.' }], suggestedAction: 'Keep the source date.', ...extra })); return JSON.parse(findingsCli('add', '--file', name, '--json').stdout); };
+  const open = mk('open.json');
+  const attempt = command(f.root, 'propose', f.name, '--file', 'proposal.md', '--reason', 'Fix the date handling.', '--from-findings', open.id);
+  assert.notEqual(attempt.status, 0); assert.match(attempt.stderr, /not confirmed|accept/i);
+  assert.equal(findingsCli('transition', '--id', open.id, '--status', 'accepted', '--by', 'owner', '--note', 'confirmed').status, 0);
+  const run = json(f.root, 'propose', f.name, '--file', 'proposal.md', '--reason', 'Fix the date handling.', '--from-findings', open.id);
+  assert.equal(run.findings[0].id, open.id);
+  assert.match(readFileSync(join(f.root, '.context/skillopt', run.runId, 'proposals', `${f.name}.rationale.md`), 'utf8'), new RegExp(`finding: ${open.id}`));
+  assert.equal(JSON.parse(readFileSync(join(f.root, '.context/skillopt', run.runId, 'proposal.json'), 'utf8')).findings[0].id, open.id);
+  const other = mk('other.json', { skill: 'other-skill' });
+  assert.equal(findingsCli('transition', '--id', other.id, '--status', 'accepted', '--by', 'owner', '--note', 'confirmed').status, 0);
+  assert.notEqual(command(f.root, 'propose', f.name, '--file', 'proposal.md', '--reason', 'Wrong scope.', '--from-findings', other.id).status, 0);
+  const { selectLessons, lessonsSection } = await import(resolve('scripts/lib/lessons.mjs'));
+  assert.deepEqual(selectLessons(f.root, { skill: f.name }).map((l) => l.id), [open.id]);
+  assert.match(lessonsSection(selectLessons(f.root, { skill: f.name })), /KNOWN-ERRORS-CHECK/);
+});

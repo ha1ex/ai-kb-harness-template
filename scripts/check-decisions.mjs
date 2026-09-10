@@ -15,6 +15,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { reportHookError } from './lib/journal.mjs';
 import { loadKbConfig } from './lib/kb-root.mjs';
+import { checkApproval } from './lib/approval.mjs';
 
 function readStdin() {
   try {
@@ -77,6 +78,17 @@ if (tool === 'Write' && typeof input.content === 'string') {
   candidateText = existing + '\n' + input.edits.map((e) => e.new_string || '').join('\n');
 }
 
+// Результирующий текст для подписи эффекта: для Edit/MultiEdit применяем замену, а не склейку.
+let candidateFull = candidateText;
+if (tool === 'Edit' && typeof input.old_string === 'string' && existsSync(filePath)) {
+  const existing = readFileSync(filePath, 'utf8');
+  if (existing.includes(input.old_string)) candidateFull = existing.replace(input.old_string, input.new_string || '');
+} else if (tool === 'MultiEdit' && Array.isArray(input.edits) && existsSync(filePath)) {
+  let acc = readFileSync(filePath, 'utf8');
+  for (const e of input.edits) if (typeof e.old_string === 'string' && acc.includes(e.old_string)) acc = acc.replace(e.old_string, e.new_string || '');
+  candidateFull = acc;
+}
+
 const hasDecisionLabel = /\bDECISION:/i.test(candidateText);
 const hasSourceLink =
   /\[source:\s*\/(02_sources|04_synthesis|01_raw|03_wiki|05_decisions)\//i.test(candidateText) ||
@@ -84,6 +96,11 @@ const hasSourceLink =
   /\/02_sources\//.test(candidateText);
 
 const errors = [];
+// «Принято» ставит человек: агентская запись не может оставить accepted без совпадающей подписи эффекта.
+const approval = checkApproval(candidateFull, cfg);
+if (approval.status === 'unsigned' || approval.status === 'stale') {
+  errors.push(`Статус «принято» без действующей подписи эффекта (${approval.reason}). Верните status: proposed либо подтвердите командой человека: pnpm kb:approve --file <путь> --by <human> --reference <ref>.`);
+}
 if (!hasDecisionLabel) {
   errors.push('Не найдена метка `DECISION:` (требование AGENTS.md «Required labels»).');
 }

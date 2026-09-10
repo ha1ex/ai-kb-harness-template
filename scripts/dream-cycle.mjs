@@ -27,7 +27,7 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { loadAgentContext } from './lib/agent-context.mjs';
 import { completePrompt } from './lib/llm.mjs';
-import { readJournal, summarizeJournal } from './lib/journal.mjs';
+import { readJournal, summarizeJournal, appendJournal } from './lib/journal.mjs';
 import { readFindings, upsertFinding } from './lib/findings.mjs';
 import { safePath } from './lib/template-state.mjs';
 import { openDb, createEmbedder, searchVec, QUERY_PREFIX, DB_PATH as SEM_DB_PATH, docDateToEpochDays } from './semantic/lib.mjs';
@@ -350,11 +350,13 @@ if (execute) {
   try { response = await completePrompt(promptText, { execute }); }
   catch (error) {
     writeFileSync(promptPath, promptText);
+    await appendJournal({ kind: 'run', step: 'dream', status: 'failed', reason: String(error.message).slice(0, 200) });
     console.error(`[dream] ${error.message}; prompt saved to ${relative(REPO_ROOT, promptPath)}`);
     process.exit(1);
   }
   if (!response.executed) {
     writeFileSync(promptPath, promptText);
+    await appendJournal({ kind: 'run', step: 'dream', status: 'skipped', reason: 'manual-provider', prompt: relative(REPO_ROOT, promptPath) });
     console.log(`[dream] ${response.reason} Prompt: ${relative(REPO_ROOT, promptPath)}`);
     process.exit(0);
   }
@@ -383,6 +385,7 @@ if (execute) {
   });
   console.log(`[dream] готово, сохранено в ${relative(REPO_ROOT, outPath)}`);
   console.log(`[dream] кандидат на разбор: ${finding.id} [open]; вывод модели не принят как правило.`);
+  await appendJournal({ kind: 'run', step: 'dream', status: 'ok', report: reportPath, finding: finding.id });
 } else {
   writeFileSync(promptPath, promptText);
   console.log(`[dream] промпт сохранён в ${relative(REPO_ROOT, promptPath)}`);

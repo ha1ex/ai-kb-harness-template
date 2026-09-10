@@ -56,6 +56,20 @@ launchctl start kb.nightly        # проверить вручную
 30 5 * * * cd /path/to/harness && for r in ~/kb/research ~/kb/personal; do KB_ROOT=$r pnpm kb:index && KB_ROOT=$r pnpm kb:digest; done
 ```
 
+## Тишина не успех
+
+Каждый шаг ночного контура оставляет запись в журнале, и дайджест печатает её первой секцией «Ночной контур»: последний запуск шага и его статус. Пустой результат под зелёным статусом — баг, поэтому отсутствие шага, провал или нуль файлов показываются явно.
+
+| Шаг | Запись журнала | Что значит ⚠ | Код выхода |
+|---|---|---|---|
+| `pnpm kb:findings scan` | `doctor` (успех) или `run/findings-scan failed` | doctor не запустился или упал | scan: 1 при провале |
+| `pnpm kb:dream --execute` | `run/dream ok|skipped|failed` | `failed`; `skipped manual-provider` — не ⚠, а нейтральная строка (LLM выключен по умолчанию) | 1 при ошибке провайдера |
+| `pnpm kb:metrics --snapshot` | `run/metrics ok` | — | 0 |
+| `pnpm kb:verify --scan` | `verify-scan` с `scan.files` | скан проверил 0 файлов | 1 только с `--require-files` |
+| `pnpm kb:digest` | `run/digest delivered/http_status` | webhook не доставлен; kb-doctor не запустился | 1 при недоставке заданного `KB_DIGEST_WEBHOOK`; `--strict` — 1 при любом ⚠ |
+
+`KB_JOURNAL=0` выключает журнал: дайджест тогда честно пишет «тренды неизвестны».
+
 ## Что где оседает
 
 | Артефакт | Путь | Кто читает |

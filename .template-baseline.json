@@ -22,23 +22,27 @@
       "mode": "100644"
     },
     ".template-manifest.json": {
-      "sha256": "8226b0a01eb94f0bd4a75485de5c25bf6da4cac80d8d61d3265f3e6dd07b1d89",
+      "sha256": "f76ed6e1cd1f98156d75977ef00868031c329dbb648e15871a30d0c3b54567e5",
       "mode": "100644"
     },
     "docs/architecture.md": {
-      "sha256": "394df2f2a2713d4d3ca030a4588a433017b55be23459d9f4c6186613201543f6",
+      "sha256": "032a6c1380a6af1281496c3e8fa8c23f28d722f818b9d163f7ed5515b62a8c2e",
       "mode": "100644"
     },
     "docs/assets/viewer-light.png": {
       "sha256": "9ad6dc99ed47a83139b8fd598a2070252e7848a6a22a49e3a71ff7316bfca51c",
       "mode": "100644"
     },
+    "docs/automation.md": {
+      "sha256": "38f968d537dbe1dfc2506c5121cab051e07e93f1bb27cecf8b0a6730be2fd53a",
+      "mode": "100644"
+    },
     "docs/compatibility.md": {
-      "sha256": "5a714d1841b28c23f7c6bb5f16e5c1bb838cbba368c569f57ba29e9d63ce7ce2",
+      "sha256": "c28b23f53a083bd9032929c6253ef13148a0e35871fba247007d188843873871",
       "mode": "100644"
     },
     "docs/contributing.md": {
-      "sha256": "1cc7afecc6e1b434db2e3cea85aa148e6cbc924dc068047b21901c6ec3ecc99d",
+      "sha256": "eb41de738a287c7cc90d5b3e30e489454903c5ce3f41e807c49894291ed5fea8",
       "mode": "100644"
     },
     "docs/extensions.md": {
@@ -46,7 +50,7 @@
       "mode": "100644"
     },
     "docs/human-interface.md": {
-      "sha256": "453b74d39da013b0876791c2dc9c24e501b5fb76b60c1d87f24117d9f67d1f36",
+      "sha256": "2806edd162d0f344456e5e37ecb1539e3e01adcde584483be8940d746395ab34",
       "mode": "100644"
     },
     "docs/markdown-dialect.md": {
@@ -74,7 +78,7 @@
       "mode": "100644"
     },
     "docs/work-system.md": {
-      "sha256": "8c8f8b64907fc7098da33422b8e336b1c056f4df13b0c00a3bf074e9beb59fdd",
+      "sha256": "f138870ed78af016fa1fabf96cf3fb2b7f9a6a00b30e97dfff2e68fc383a8c93",
       "mode": "100644"
     },
     "harness/README.md": {
@@ -114,7 +118,11 @@
       "mode": "100644"
     },
     "harness/evals/scenarios.json": {
-      "sha256": "e2eb2c6f680d5fee7a45b490d1cba3743699420ca89c3377a34411d2bf8df456",
+      "sha256": "807af5bd995838badae001f3a646dab3ab08a13065eabf6844584573bfc5962a",
+      "mode": "100644"
+    },
+    "harness/invariants.json": {
+      "sha256": "260df0245b79f36db2aa45e9a0f9356363ea1edf9261526dc8dfe7362229da39",
       "mode": "100644"
     },
     "harness/roles/README.md": {
@@ -142,7 +150,7 @@
       "mode": "100644"
     },
     "harness/rules/evidence.md": {
-      "sha256": "d2961fa5bd0e19a61be37648c01a89f0e909b1445da81e1fb8b8a5a8a2f28f4b",
+      "sha256": "974394b9aa0840ec7be2fde264cf13b2b6c4966564ce6c4bd2f0a204b106243b",
       "mode": "100644"
     },
     "harness/rules/workflow.md": {
@@ -222,15 +230,19 @@
       "mode": "100644"
     },
     "scripts/README.md": {
-      "sha256": "40713b1d7089c60aa9d4c7b0acc19149610562eb67f35253567856d51ccce80d",
+      "sha256": "27af3139b096a89c6334d8281951cecd56b673b7ae6a91f10dde7e8807b1fe0d",
       "mode": "100644"
     },
     "scripts/check-decisions.mjs": {
-      "sha256": "11f7984d2b09a15067791fa2fade29b7b2726815b06946bda908652512286510",
+      "sha256": "9be7d848582f2923c6cf79643c7cd3927f08853a32bef93c107b5645882be238",
       "mode": "100644"
     },
     "scripts/check-harness.mjs": {
       "sha256": "9fa85d632c1ffa0b750b08eaa1fc6d95bcb38bc9a868b633f67785bc76416673",
+      "mode": "100644"
+    },
+    "scripts/check-invariants.mjs": {
+      "sha256": "75d99fb6f6a40a8aeef60c443bd9bd4851fda3c8170011c45b1f4fbbef435f38",
       "mode": "100644"
     },
     "scripts/check-md-frontmatter.mjs": {
@@ -262,11 +274,11 @@
       "mode": "100644"
     },
     "scripts/dream-cycle.mjs": {
-      "sha256": "71ee5218c742e46ac4377af6c53c97eac3675656df78c71aea477ce926e445d8",
+      "sha256": "40dd3e39f86d19ae750723712bd3937ec883053bb69bcb69cbac576854dc6e91",
       "mode": "100644"
     },
     "scripts/git-hooks/check.mjs": {
-      "sha256": "feb6dacf2d41f458d264c3455ec675cbd298df68a7d4403de6f9f4a1bb20f461",
+      "sha256": "2bf3ca6ebe51edd5baa26577e2326e25937f64794740c06bd36c83b1734f060c",
       "mode": "100644"
     },
     "scripts/git-hooks/post-checkout": {
@@ -301,20 +313,28 @@
       "sha256": "236922f2158c66e10437c0ee1f05c1d2b8b57af497b4eadf6ad45b3966dc98af",
       "mode": "100644"
     },
+    "scripts/kb-approve.mjs": {
+      "sha256": "458ebe47a18570950a2ffe49268b69eddcefbf0ca20d4215c285a23a3fb55328",
+      "mode": "100644"
+    },
     "scripts/kb-critic.mjs": {
       "sha256": "a46ac820e22e9d51c31b482260eb16c6561f1cbf8c7fb5615420f68bbdd1696e",
       "mode": "100644"
     },
     "scripts/kb-digest.mjs": {
-      "sha256": "788db8a308febef98b68fcf8e1ec7d030b38cc0d4a104d872e5141060fed0391",
+      "sha256": "df09494fda5a829961adb2c97d49d3cd8818b5d63cdc0fc7cd5832f863ea9b22",
       "mode": "100644"
     },
     "scripts/kb-doctor.mjs": {
-      "sha256": "5661efe7941fd86ce1730acc0909bb26ccd56780168dc16cef50cc8a6ea1f6cc",
+      "sha256": "2d0bd5d706d0ff5887d131f2fff2f57dbe6a3224c0489a873ac4bbbe3c9566b2",
       "mode": "100644"
     },
     "scripts/kb-findings.mjs": {
-      "sha256": "6b9f7a5892566b6ece31ad384877b7733931990e6cca3a7b5536722ac72da276",
+      "sha256": "d679f61e4955b5154763d91ef02db18b3b3002764f63ab1f98256bff8d21ace0",
+      "mode": "100644"
+    },
+    "scripts/kb-inbox.mjs": {
+      "sha256": "7b69c734ad99c4b196bfa5f8f91981a46b10d6fbe68486a990fdf047fcd09546",
       "mode": "100644"
     },
     "scripts/kb-init.mjs": {
@@ -322,7 +342,7 @@
       "mode": "100644"
     },
     "scripts/kb-metrics.mjs": {
-      "sha256": "5dd80c75aa3c3a0b87d32daa776f4413d6e6d7db7ee4d44a64f7e6bf5e3298bc",
+      "sha256": "a5e7dbc62a318038f32034c0d9069fc19cb27abd3771c5e82cc9fcc94636b19b",
       "mode": "100644"
     },
     "scripts/kb-profile.mjs": {
@@ -349,24 +369,40 @@
       "sha256": "bb71739a5a7194b143c327d7ef295a43a02e55db5d172e3abfdd30ac10f066ce",
       "mode": "100644"
     },
+    "scripts/lib/approval.mjs": {
+      "sha256": "092ae87e75fbed494006af6716aee8ed157bc9a68814c0b914cdb87dd689ae96",
+      "mode": "100644"
+    },
+    "scripts/lib/check-runner.mjs": {
+      "sha256": "85e38de9c7cee31b6781855e67e7bd16e3e3c6c2e642c017c63a0426223e42cb",
+      "mode": "100644"
+    },
     "scripts/lib/docs-drift.mjs": {
       "sha256": "0dbc303a08fe17fbdf687534c1799c79c335ae5358b1209a599e72caafeea189",
       "mode": "100644"
     },
     "scripts/lib/findings.mjs": {
-      "sha256": "1e78088421d723facbe418989659488d5a68174fa41890ba4d6adbecd67915b1",
+      "sha256": "0cfd69ad2d0fae8fad93d8406f2fe8a7a0fd2f942c128ba97c020b810ac57ca2",
       "mode": "100644"
     },
     "scripts/lib/frontmatter.mjs": {
-      "sha256": "161449365a0c9fc642200cdbe2b6a68738c5505983a009655a83142cb2966599",
+      "sha256": "fb58a60a6a6816028b0f00e2c5397bd79d33d6c1044ba0d4eef4a1b21e5591a6",
+      "mode": "100644"
+    },
+    "scripts/lib/inbox.mjs": {
+      "sha256": "11aec1325bfae3ebc80289845d44fa80825285d9c7ead2986fd20d8f345d18d9",
       "mode": "100644"
     },
     "scripts/lib/journal.mjs": {
-      "sha256": "ce107e5af33e8f2ddaafa28951d402c2bdd027fe376a90d97a5585d88e95d07e",
+      "sha256": "3b1accf05a89a8a0385e07205ce09091a175e09b2148a0547d326721e4966cee",
       "mode": "100644"
     },
     "scripts/lib/kb-root.mjs": {
       "sha256": "ef4b19528c4c2189085f3f5fb46119e561fffeacc261f48841a4cfdc227d0c76",
+      "mode": "100644"
+    },
+    "scripts/lib/lessons.mjs": {
+      "sha256": "0e764a00d71578f3ae101c567aef565a0974c39ee77a18cc0354c718a2b4628b",
       "mode": "100644"
     },
     "scripts/lib/llm.mjs": {
@@ -498,11 +534,11 @@
       "mode": "100644"
     },
     "scripts/semantic/think.mjs": {
-      "sha256": "ad5a75a88aa569e48596481457ba262df97bcdd493cd84c72cf1dcfa92eb06e4",
+      "sha256": "cffc6bc548968bd61b5811e04dafb213fdb3a276e704bcff04c59828eaf07a94",
       "mode": "100644"
     },
     "scripts/semantic/verify.mjs": {
-      "sha256": "819bf5e525169a52e6cbf6df541de707f2530f1cede43ccaebed063912a5aaa8",
+      "sha256": "b8db76f6951c4ab356280efe5fd62823a6028b888adb62e4dc0748add6e9a29e",
       "mode": "100644"
     },
     "scripts/session-start-context.mjs": {
@@ -510,7 +546,7 @@
       "mode": "100644"
     },
     "scripts/skillopt/cli.mjs": {
-      "sha256": "5a7f6e0dc3c9acf5382cfc525cef913ba0203e9afc16b61682c504d747cd2b45",
+      "sha256": "a2a42ffa17bc6e6b026037436638523a6f8500cde58bf641ff0435cd672f6c74",
       "mode": "100644"
     },
     "scripts/skillopt/config.mjs": {
@@ -574,7 +610,7 @@
       "mode": "100644"
     },
     "scripts/skillopt/prompts/reflect.md": {
-      "sha256": "2bfc693442335c031b1056b9a21640e3cbec8fc97c407677fdf73eedffc74c95",
+      "sha256": "12e9a62d871ea6506562586803f5486eb94d2d417d0f5e6401ea858d184a5ca7",
       "mode": "100644"
     },
     "scripts/skillopt/runner/diff.mjs": {
@@ -582,15 +618,15 @@
       "mode": "100644"
     },
     "scripts/skillopt/runner/edit.mjs": {
-      "sha256": "ae50f5ca76f4b7f494c9413a9c6436bc8b389616cc94cf6ceeb198e3a79475f5",
+      "sha256": "c45f49e9ea2db11dab582e30dd338b78e21fe3a42081763611d8ac45198be6ca",
       "mode": "100644"
     },
     "scripts/skillopt/runner/lifecycle.mjs": {
-      "sha256": "5301dd497c69b31c0fb7a844fb05ac61ec3fa3547c222c945cb118e2b71b3279",
+      "sha256": "74da61ea58a57f536e375a452e29fe607538408750058629c6329e75656516a1",
       "mode": "100644"
     },
     "scripts/skillopt/runner/reflect.mjs": {
-      "sha256": "0d01eba9dd1b1c83e9a2135d02c226a5c5f81af2302b623c0f38ee6515c4a8a1",
+      "sha256": "f410010cac0ab6bb44ea2156049828db93f859d9fb35ee83e5c4351576c6494f",
       "mode": "100644"
     },
     "scripts/skillopt/runner/rollout.mjs": {
@@ -625,6 +661,14 @@
       "sha256": "d79b9434795804db6136adac6e29c6a69b8133eafcbd4fce5049a43f33575e8e",
       "mode": "100644"
     },
+    "test/approval.test.mjs": {
+      "sha256": "6c3e95c7582e9cd775c2e18be2f1e1ff32e7b29cf6c194b8d7d36f482e3ef342",
+      "mode": "100644"
+    },
+    "test/check-runner.test.mjs": {
+      "sha256": "e5320ca7cdf3713b248e560bd7a7c1c7b80bc6a305eae46da17856968b4b0d62",
+      "mode": "100644"
+    },
     "test/content-quality.test.mjs": {
       "sha256": "c0a946e8f9495a16ba9c93ca37e32a4b18f626ca4e0ce6a504d176e2bf6c6b39",
       "mode": "100644"
@@ -633,8 +677,12 @@
       "sha256": "2d6e153731a3a271f80dc1346e4bbb396d8a982fc96612f4cb7a28add7237059",
       "mode": "100644"
     },
+    "test/invariants.test.mjs": {
+      "sha256": "260a0f95a25d3babbefeab2f92b1da31a1aa4deccbef7955ede7b7e6e6123be3",
+      "mode": "100644"
+    },
     "test/knowledge-findings.test.mjs": {
-      "sha256": "aed9ba548be2decb2b6db0b71de9ecfa627d8752f1188253bb0096d6b2a40627",
+      "sha256": "c566380050f658c0c16cc7163437a44de22f7dc6c68417a4e61f14721af2e5cf",
       "mode": "100644"
     },
     "test/research-execution.test.mjs": {
@@ -650,7 +698,7 @@
       "mode": "100644"
     },
     "test/skill-lifecycle.test.mjs": {
-      "sha256": "eb07acfe410c05b60d2b01632a4becba40f3f3d8390b40d3ae412eca03876ccf",
+      "sha256": "c7b239d5115692737707e5b34e1841e8e0f38f537fe2075f8ed0be3b0822be9e",
       "mode": "100644"
     },
     "test/template-init.test.mjs": {
@@ -1049,6 +1097,15 @@
       },
       "/scripts/kb:roster": {
         "value": "node scripts/kb-roster.mjs"
+      },
+      "/scripts/kb:approve": {
+        "value": "node scripts/kb-approve.mjs"
+      },
+      "/scripts/kb:inbox": {
+        "value": "node scripts/kb-inbox.mjs"
+      },
+      "/scripts/kb:invariants": {
+        "value": "node scripts/check-invariants.mjs"
       }
     }
   },
@@ -1058,7 +1115,7 @@
     "02_sources/2026-06-30-walkthrough-interview-cto.md": "4e5224bf4eece06aa9c23ac80065fccf04cff15e791ec32a1bf91050d96a2f79",
     "03_wiki/walkthrough-deflection-rate.md": "904a30600fd88a2b7a2877c1da742d1940ad1bfd23a073990c68acaf7077ab05",
     "04_synthesis/walkthrough-pilot-hypotheses.md": "5d63e057026f1140e7fc204f161a937d9cd03769dcab58d7c0856dbcbcb98646",
-    "05_decisions/walkthrough-decision-pilot-scope.md": "ac16f382c93adbb16410d54bf6338782dc4f5a32b30025ebcd5bc98d7a913e30",
+    "05_decisions/walkthrough-decision-pilot-scope.md": "218903571d2b858581c872ecd2413ace5e144cd16d37f8a730276fb4e8eada5f",
     "06_outputs/_skills-index.md": "9f943926ee5cb8e7a430ed57f5b6a228a692744e940b5ebba1d03728fa76acbe",
     "06_outputs/anthropics-skills/01-engineering-productivity/ANT-001-claude-api.md": "99f4e1769edee6b3fa018f157f459c705421960b2e68b161f9a8014d93cb0899",
     "06_outputs/anthropics-skills/01-engineering-productivity/ANT-002-mcp-builder.md": "efe1a2edb3505ef21ae411eda6ae066dbf2d9be818931b286a90be88ef10bd80",

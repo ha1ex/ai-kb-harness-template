@@ -19,6 +19,9 @@
 | `pnpm kb:metrics` | `kb-metrics.mjs` | тренды качества из журнала по неделям (D1) |
 | `pnpm kb:digest` | `kb-digest.mjs` | утренний дайджест состояния KB (D4; см. `../docs/automation.md`) |
 | `pnpm kb:research` | `kb-research.mjs` | ограниченное исследование по ролям: ручные промпты или явный `--execute`, квоты, чеки и независимое ревью |
+| `pnpm kb:approve` | `kb-approve.mjs` | подпись эффекта решения человеком: `status: accepted` + `approved_by/at/ref/hash`; `--check` показывает proposed/accepted/stale/unsigned |
+| `pnpm kb:inbox` | `kb-inbox.mjs` | всё, что ждёт человека (решения, этапы, сравнения навыков, профиль, inbox, открытые находки) с командой на каждую карточку |
+| `pnpm kb:invariants` | `check-invariants.mjs` | архитектурные инварианты `harness/invariants.json` с храповиком (новое нарушение — красный; вылеченная заморозка — удалить); входит в `pnpm check` |
 | `pnpm kb:roster` | `kb-roster.mjs` | реестр ролей, сценариев и навыков с потребителями: что есть, что подключено, где копии у клиентов (read-only) |
 | `pnpm kb:update` | `kb-update.mjs` | обновление ядра от upstream по `.template-manifest.json` (C3) |
 | `pnpm kb:critic` | `kb-critic.mjs` | revision-промпт по битым цитатам; `--execute` запускает verify→revise через выбранный LLM-адаптер (N1) |
@@ -74,7 +77,7 @@ python3 scripts/import-fabric.py --help
 | `pnpm kb:spaces` | Проверка разделов и ссылок на документы |
 | `pnpm kb:portability` | Проверка переносимости путей |
 | `pnpm kb:readability` | Редакторские замечания к собственным документам |
-| `pnpm check` | Общий набор проверок независимо от клиента |
+| `pnpm check` | Общий набор проверок независимо от клиента: все проверки выполняются до конца и печатается сводка; `--fail-fast` останавливает на первом провале |
 | `pnpm kb:release:baseline` | Автор шаблона: подготовить исходные хеши выпуска |
 | `pnpm kb:release:check` | Автор шаблона: проверить версию и хеши |
 

@@ -10,6 +10,7 @@ import { runCase, summarize } from './rollout.mjs';
 import { loadConfig } from '../config.mjs';
 import { createAdapter } from '../llm/adapter.mjs';
 import { appendRun, estimateCost } from '../storage/metrics.mjs';
+import { readFindings } from '../../lib/findings.mjs';
 
 export async function writeJson(path, value) {
   assertSafePath(REPO_ROOT, path);
@@ -36,9 +37,22 @@ export function readProposal(runId) {
   return { ...proposal, dir };
 }
 
-export async function runPropose({ skill, file, text, reason, evals, runId = makeRunId(), allowHarness = false } = {}) {
+export async function runPropose({ skill, file, text, reason, evals, findings = [], runId = makeRunId(), allowHarness = false } = {}) {
   assertSkillName(skill);
   if (!reason?.trim()) throw Error('A concrete reason for the proposed change is required');
+  // Only lessons a human accepted may justify a skill change; open observations are not confirmed.
+  const linked = [];
+  if (findings.length) {
+    const all = readFindings(REPO_ROOT);
+    for (const id of findings) {
+      const finding = all.find((f) => f.id === id);
+      if (!finding) throw Error(`Unknown finding: ${id}`);
+      if (finding.kind !== 'feedback' || finding.status !== 'accepted') throw Error(`Lesson not confirmed by a human: ${id} [${finding.kind}/${finding.status}]; accept it first with kb:findings transition --status accepted`);
+      if (finding.skill && finding.skill !== skill) throw Error(`Finding ${id} is scoped to skill ${finding.skill}, not ${skill}`);
+      const acceptedBy = finding.history.filter((h) => h.to === 'accepted').at(-1)?.by ?? 'unknown';
+      linked.push({ id, status: finding.status, updatedAt: finding.updatedAt, acceptedBy, title: finding.title, problem: finding.problem });
+    }
+  }
   const base = skillBase(skill);
   if (base.exists && base.source !== 'project' && !allowHarness) throw Error('Harness skills can be evaluated and reflected on; apply is limited to project-owned skills.');
   const proposalText = validateSkillText(text ?? readText(assertSafePath(REPO_ROOT, file)), { name: skill });
@@ -63,16 +77,17 @@ export async function runPropose({ skill, file, text, reason, evals, runId = mak
   if (!base.exists && !evals) throw Error('New project skills require --evals <file-or-directory> with nonempty cases');
   await mkdir(join(dir, 'proposals'), { recursive: true });
   await writeFile(assertSafePath(REPO_ROOT, join(dir, 'proposals', `${skill}.md`)), proposalText);
-  await writeFile(assertSafePath(REPO_ROOT, join(dir, 'proposals', `${skill}.rationale.md`)), reason.trim() + '\n');
+  const rationale = reason.trim() + '\n' + (linked.length ? `\n## Принятые уроки\n\n${linked.map((l) => `FACT: ${l.title} — ${l.problem} [finding: ${l.id}, accepted by ${l.acceptedBy}]`).join('\n')}\n` : '');
+  await writeFile(assertSafePath(REPO_ROOT, join(dir, 'proposals', `${skill}.rationale.md`)), rationale);
   for (const f of evalFiles) {
     const target = assertSafePath(REPO_ROOT, join(dir, 'evals', f.target));
     await mkdir(dirname(target), { recursive: true });
     await writeFile(target, Buffer.from(f.text, 'base64'));
   }
-  const record = { version: 1, runId, skill, created_at: new Date().toISOString(), target: base.path, reason: reason.trim(), base, base_hash: hash(base), eval_source: evalSource, eval_source_hash: evalSourceHash };
+  const record = { version: 1, runId, skill, created_at: new Date().toISOString(), target: base.path, reason: reason.trim(), findings: linked.map(({ id, status, updatedAt }) => ({ id, status, updatedAt })), base, base_hash: hash(base), eval_source: evalSource, eval_source_hash: evalSourceHash };
   await writeJson(join(dir, 'proposal.json'), record);
   await appendRun({ kind: 'propose', run_id: runId, skill, started_at: record.created_at });
-  return { runId, runDir: dir, skill, target: base.path, status: 'proposed', reason: record.reason };
+  return { runId, runDir: dir, skill, target: base.path, status: 'proposed', reason: record.reason, findings: record.findings };
 }
 
 async function resolvedCaseFile(c, inputPath) {

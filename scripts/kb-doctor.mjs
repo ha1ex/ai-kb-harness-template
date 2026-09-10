@@ -20,10 +20,12 @@ import { existsSync, statSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve, relative, extname, dirname, normalize as pnormalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { appendJournal } from './lib/journal.mjs';
-import { parseFrontmatter, parseRelatedList } from './lib/frontmatter.mjs';
+import { parseFrontmatter, parseRelatedList, parseDocDate } from './lib/frontmatter.mjs';
+import { spawnSync } from 'node:child_process';
 import { doctorFindings, upsertFinding } from './lib/findings.mjs';
+import { approvalConfig, checkApproval } from './lib/approval.mjs';
 
-import { KB_ROOT, KB_DB_PATH } from './lib/kb-root.mjs';
+import { KB_ROOT, KB_DB_PATH, loadKbConfig } from './lib/kb-root.mjs';
 
 // Целевая KB: env KB_ROOT/KB_DB_PATH (мультипроектность) или репо самой оснастки.
 const REPO_ROOT = KB_ROOT;
@@ -34,7 +36,10 @@ const asJson = argv.includes('--json');
 const fixDryrun = argv.includes('--fix-dryrun');
 const recordFindings = argv.includes('--record-findings');
 
-const STALE_DAYS = 60;
+const kbConfig = await loadKbConfig();
+// Проект может сдвинуть порог (kb.config.mjs → doctor.staleDays); дефолт совпадает с прежним хардкодом.
+const STALE_DAYS = Number(kbConfig.doctor?.staleDays) > 0 ? Number(kbConfig.doctor.staleDays) : 60;
+const APPROVAL = approvalConfig(kbConfig);
 const INBOX_STALE_DAYS = 14;  // .context/inbox: needs-review старше этого — залежавшаяся память (advisory)
 const NOW = Date.now();
 
@@ -100,6 +105,7 @@ const issues = {
   staleInbox: [],   // advisory (L4): не гейтит — .context эфемерна и отсутствует в CI
   staleAnswers: [], // advisory (N2): verified answer-card, чей источник изменился после verified_at
   stubCards: [],    // advisory (D3): status stub/deprecated — скрыты из retrieval, дозаполнить или удалить
+  approvalIssues: [], // advisory (P9): решение со статусом «принято» без подписи эффекта или с устаревшей подписью
 };
 
 const allFiles = new Map(); // relPath → { layer, fields, related, mtimeMs }
@@ -118,6 +124,10 @@ for (const layer of Object.keys(LAYERS)) {
 
     if (fields.status === 'stub' || fields.status === 'deprecated') {
       issues.stubCards.push({ file: rel, status: fields.status });
+    }
+    if (APPROVAL.layers.includes(layer)) {
+      const check = checkApproval(text, { approval: APPROVAL });
+      if (check.status === 'unsigned' || check.status === 'stale') issues.approvalIssues.push({ file: rel, status: check.status, reason: check.reason });
     }
     allFiles.set(rel, {
       layer,
@@ -145,12 +155,11 @@ for (const layer of Object.keys(LAYERS)) {
       }
     }
 
-    // 4. stale synthesis (sub-checks ниже после полного обхода — нужно знать mtime всех)
-    if (rules.staleCheck) {
-      const ageDays = Math.floor((NOW - stat.mtimeMs) / 86_400_000);
-      if (ageDays >= STALE_DAYS) {
-        issues.staleSynthesis.push({ file: rel, age_days: ageDays });
-      }
+    // 4. stale synthesis — возраст знания, а не файла: дата frontmatter → последний коммит → mtime.
+    //    mtime на свежем checkout всегда «сегодня», поэтому один он гейт не держит. status: living не стареет.
+    if (rules.staleCheck && String(fields.status || '').toLowerCase() !== 'living') {
+      const { ageDays, basis } = documentAge(rel, fields, stat.mtimeMs);
+      if (ageDays >= STALE_DAYS) issues.staleSynthesis.push({ file: rel, age_days: ageDays, basis });
     }
   }
 }
@@ -165,6 +174,15 @@ for (const layer of Object.keys(LAYERS)) {
 //      ① как от REPO_ROOT (для `AGENTS.md`, `tools/...`, `03_wiki/...`);
 //      ② если не нашёлся — как relative от dirname(src).
 //   Берём первый существующий вариант, в репорт пишем оба пробных пути.
+function documentAge(rel, fields, mtimeMs) {
+  const fromFm = parseDocDate(fields);
+  if (fromFm) return { ageDays: Math.floor((NOW - Date.parse(fromFm)) / 86_400_000), basis: 'frontmatter' };
+  const git = spawnSync('git', ['log', '-1', '--format=%cI', '--', rel], { cwd: REPO_ROOT, encoding: 'utf8', timeout: 10_000 });
+  const committed = git.status === 0 ? Date.parse(git.stdout.trim()) : NaN;
+  if (!Number.isNaN(committed)) return { ageDays: Math.floor((NOW - committed) / 86_400_000), basis: 'git' };
+  return { ageDays: Math.floor((NOW - mtimeMs) / 86_400_000), basis: 'mtime' };
+}
+
 function resolveRelated(src, dst) {
   if (/^https?:\/\//i.test(dst)) {
     const m = dst.match(/github\.com\/[^/]+\/[^/]+\/(?:blob|tree)\/[^/]+\/(.+)$/);
@@ -280,6 +298,7 @@ const summary = {
   stale_inbox: issues.staleInbox.length,
   stale_answers: issues.staleAnswers.length,
   stub_cards: issues.stubCards.length,
+  approval_issues: issues.approvalIssues.length,
 };
 
 // Inspection is read-only. Recording findings/journal entries is an explicit action.
@@ -308,6 +327,7 @@ console.log(`  Ghost в индексе:         ${summary.ghost_in_index}`);
 console.log(`  Stale inbox (advisory):  ${summary.stale_inbox}`);
 console.log(`  Stale answers (advisory):${summary.stale_answers}`);
 console.log(`  Stub-карточки (advisory):${summary.stub_cards}`);
+console.log(`  Подпись решений (advisory): ${summary.approval_issues}`);
 if (recordFindings) console.log(`  Записано наблюдений:    ${recordedFindings.length} → pnpm kb:findings list`);
 console.log('');
 
@@ -326,6 +346,15 @@ if (issues.staleAnswers.length > 0) {
   console.log('─'.repeat(60));
   for (const it of issues.staleAnswers.slice(0, 20)) console.log(`  • ${it.file}   verified_at=${it.verified_at}   изменились: ${it.changed.join(', ')}`);
   console.log('  → перепроверь ответ (kb_promote заново или правка) и обнови verified_at, либо status: stale.');
+  console.log('');
+}
+
+if (issues.approvalIssues.length > 0) {
+  console.log('─'.repeat(60));
+  console.log(`  ⚠ Решения со статусом «принято» без действующей подписи эффекта  (${issues.approvalIssues.length})`);
+  console.log('─'.repeat(60));
+  for (const it of issues.approvalIssues.slice(0, 20)) console.log(`  • ${it.file}   ${it.status}: ${it.reason}`);
+  console.log('  → pnpm kb:approve --file <путь> --by <human> --reference <ref> либо верните status: proposed.');
   console.log('');
 }
 

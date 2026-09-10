@@ -19,6 +19,7 @@ import { appendRun, estimateCost } from "../storage/metrics.mjs";
 import { runDirectory, readJson, canonicalContext } from './snapshot.mjs';
 import { assertSafePath, validateSkillText } from '../../lib/skills.mjs';
 import { runPropose } from './lifecycle.mjs';
+import { selectLessons, lessonsSection } from '../../lib/lessons.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REFLECT_PROMPT_PATH = resolve(__dirname, "..", "prompts", "reflect.md");
@@ -78,7 +79,8 @@ export async function runReflect({ runId, adapter, config = {}, force = false, e
     }
 
     const skillFile = await readSkillFile(skill);
-    const userPrompt = buildUserPrompt({ skill, skillFile, skillTraces, summary });
+    const lessons = selectLessons(REPO_ROOT, { skill });
+    const userPrompt = buildUserPrompt({ skill, skillFile, skillTraces, summary, lessons });
     if (!execute) {
       results.push({ skill, prompt: { system: systemPrompt, user: userPrompt } });
       continue;
@@ -110,6 +112,11 @@ export async function runReflect({ runId, adapter, config = {}, force = false, e
         error: "rationale без обязательных меток FACT: и RECOMMENDATION: — отвергнут",
         rationale_preview: parsed.rationale.slice(0, 400),
       });
+      continue;
+    }
+
+    if (lessons.length && !/\bKNOWN-ERRORS-CHECK:/.test(parsed.rationale)) {
+      results.push({ skill, error: 'rationale без строки KNOWN-ERRORS-CHECK: при известных поправках куратора — отвергнут', rationale_preview: parsed.rationale.slice(0, 400) });
       continue;
     }
 
@@ -162,7 +169,7 @@ export async function runReflect({ runId, adapter, config = {}, force = false, e
   return { executed: execute, results, cost_usd: cost, runDir };
 }
 
-function buildUserPrompt({ skill, skillFile, skillTraces, summary }) {
+function buildUserPrompt({ skill, skillFile, skillTraces, summary, lessons = [] }) {
   const lines = [];
   lines.push(`# Skill под оптимизацию: ${skill}`);
   lines.push("");
@@ -205,6 +212,7 @@ function buildUserPrompt({ skill, skillFile, skillTraces, summary }) {
     }
     lines.push("");
   }
+  if (lessons.length) lines.push(lessonsSection(lessons));
   lines.push("---");
   lines.push("");
   lines.push("Выдай RATIONALE (с метками) + новую версию SKILL.md по контракту в системной инструкции.");

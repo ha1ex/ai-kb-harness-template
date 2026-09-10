@@ -15,7 +15,7 @@
  *   body   — текст после frontmatter (или весь текст, если его нет).
  */
 export function parseFrontmatter(text) {
-  const s = String(text);
+  const s = String(text).replace(/\r\n?/g, '\n');
   const m = s.match(/^---\s*\n([\s\S]*?)\n---\s*(?:\n|$)([\s\S]*)$/);
   if (!m) return { raw: null, fields: {}, body: s };
   const fields = {};
@@ -27,6 +27,18 @@ export function parseFrontmatter(text) {
     fields[km[1]] = v;
   }
   return { raw: m[1], fields, body: m[2] };
+}
+
+/**
+ * Дата документа из frontmatter: первый из ключей с префиксом YYYY-MM-DD, иначе null.
+ * Один helper для kb-doctor и think: свежесть считается по знанию, не по mtime файла.
+ */
+export function parseDocDate(fields, keys = ['updated', 'date', 'ingested']) {
+  for (const key of keys) {
+    const m = String(fields?.[key] ?? '').match(/^(\d{4}-\d{2}-\d{2})/);
+    if (m && !Number.isNaN(Date.parse(m[1]))) return m[1];
+  }
+  return null;
 }
 
 /**

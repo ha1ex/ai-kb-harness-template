@@ -20,6 +20,7 @@
     "docs/releases",
     "docs/assets",
     "docs/work-system.md",
+    "docs/automation.md",
     "docs/research.md"
   ],
   "projectOwned": [
@@ -90,7 +91,10 @@
       "/scripts/kb:profile",
       "/scripts/kb:findings",
       "/scripts/kb:research",
-      "/scripts/kb:roster"
+      "/scripts/kb:roster",
+      "/scripts/kb:approve",
+      "/scripts/kb:inbox",
+      "/scripts/kb:invariants"
     ]
   },
   "demoPaths": [

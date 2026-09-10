@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, existsSync, rmSync, symlinkSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, existsSync, rmSync, symlinkSync, cpSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { spawnSync, spawn } from 'node:child_process';
@@ -230,4 +230,96 @@ test('first-pass reviews count each stage separately and never credit a successf
   assert.equal(metric.sampleSize, 2);
   assert.equal(metric.passed, 1);
   assert.equal(metric.value, 0.5);
+});
+
+test('papercut records one durable friction line and counts repeats in the digest', (t) => {
+  const root = fixture(t);
+  assert.notEqual(cli(root, 'kb-findings.mjs', 'papercut', '   ').status, 0, 'empty friction text is refused');
+  const first = JSON.parse(ok(cli(root, 'kb-findings.mjs', 'papercut', 'Команда kb:index нестабильна после смены ветки', '--role', 'librarian', '--json')));
+  const second = JSON.parse(ok(cli(root, 'kb-findings.mjs', 'papercut', 'Команда kb:index нестабильна после смены ветки', '--role', 'librarian', '--json')));
+  assert.equal(first.id, second.id, 'the same friction is one finding');
+  assert.equal(second.kind, 'feedback'); assert.equal(second.code, 'papercut'); assert.equal(second.status, 'open');
+  assert.equal(second.observations.length, 2, 'repeats add observations instead of new records');
+  assert.equal(list(root).length, 1);
+  const digest = ok(cli(root, 'kb-digest.mjs'));
+  assert.match(digest, /Papercuts \(не бэклог\)/); assert.match(digest, /×2 команда kb:index нестабильна/);
+  assert.match(digest, /Повторяющиеся замечания без предложения навыка/); assert.match(digest, /UNKNOWN: «команда kb:index/);
+});
+
+test('from-reviews turns reviewer corrections in task handoffs into open feedback only on --record', (t) => {
+  const root = fixture(t);
+  mkdirSync(join(root, '.remember/tasks'), { recursive: true });
+  writeFileSync(join(root, 'answer.md'), 'Draft answer\n');
+  writeFileSync(join(root, '.remember/tasks/t1.json'), JSON.stringify({ task: 't1', owner: 'author', status: 'active', workflow: 'research', stages: [
+    { id: 'synthesize', status: 'active', result: '', artifacts: [{ name: 'answer', path: 'answer.md' }], review: { mode: 'independent', status: 'changes-requested', reviewer: 'reviewer-02', contextId: 'c2', authorContextId: 'c1' }, reviewAttempt: 1 },
+  ] }));
+  const preview = JSON.parse(ok(cli(root, 'kb-findings.mjs', 'from-reviews', '--json')));
+  assert.equal(preview.length, 1); assert.equal(preview[0].code, 'review:t1/synthesize'); assert.equal(preview[0].task, 't1'); assert.equal(preview[0].kind, 'feedback');
+  assert.equal(list(root).length, 0, 'preview records nothing');
+  const recorded = JSON.parse(ok(cli(root, 'kb-findings.mjs', 'from-reviews', '--record', '--json')));
+  assert.equal(recorded[0].status, 'open');
+  assert.equal(list(root).length, 1);
+  assert.equal(JSON.parse(ok(cli(root, 'kb-findings.mjs', 'from-reviews', '--record', '--json')))[0].observations.length, 1, 'same evidence is not duplicated');
+});
+
+test('doctor freshness follows the document date, not the checkout mtime', (t) => {
+  const root = fixture(t);
+  mkdirSync(join(root, '04_synthesis'), { recursive: true });
+  writeFileSync(join(root, '04_synthesis/old.md'), '---\ntype: synthesis\nupdated: 2020-01-01\n---\n# Old\n\nOld synthesis text.\n');
+  writeFileSync(join(root, '04_synthesis/living.md'), '---\ntype: synthesis\nstatus: living\nupdated: 2020-01-01\n---\n# Living\n\nAlways current.\n');
+  writeFileSync(join(root, '04_synthesis/fresh.md'), `---\ntype: synthesis\nupdated: ${new Date().toISOString().slice(0, 10)}\n---\n# Fresh\n\nFresh text.\n`);
+  let report = JSON.parse(ok(cli(root, 'kb-doctor.mjs', '--json')));
+  const stale = report.issues.staleSynthesis;
+  assert.ok(stale.some((i) => i.file === '04_synthesis/old.md' && i.basis === 'frontmatter' && i.age_days > 365), JSON.stringify(stale));
+  assert.ok(!stale.some((i) => i.file === '04_synthesis/living.md'), 'living documents never go stale');
+  assert.ok(!stale.some((i) => i.file === '04_synthesis/fresh.md'));
+  writeFileSync(join(root, 'kb.config.mjs'), 'export default { doctor: { staleDays: 100000 } };\n');
+  report = JSON.parse(ok(cli(root, 'kb-doctor.mjs', '--json')));
+  assert.equal(report.issues.staleSynthesis.length, 0, 'project-owned threshold is honoured');
+});
+
+test('kb:inbox lists everything waiting for a human with one command per card, and the digest shows it', (t) => {
+  const root = fixture(t);
+  cpSync(join(repo, 'harness'), join(root, 'harness'), { recursive: true });
+  assert.deepEqual(JSON.parse(ok(cli(root, 'kb-inbox.mjs', '--json'))).cards, [], 'a clean project waits for nothing');
+  mkdirSync(join(root, '05_decisions')); writeFileSync(join(root, '05_decisions/p.md'), '---\ntype: decision\nstatus: proposed\ndate: 2026-01-01\n---\nDECISION: draft. [source: /02_sources/review.md]\n');
+  mkdirSync(join(root, '.remember/tasks'), { recursive: true });
+  writeFileSync(join(root, '.remember/tasks/t2.json'), JSON.stringify({ task: 't2', owner: 'a', status: 'active', workflow: 'decision', updatedAt: '2026-01-01T00:00:00Z', stages: ['options', 'review', 'propose'].map((id) => ({ id, status: 'complete', result: 'done', artifacts: [] })) }));
+  mkdirSync(join(root, '.context/skillopt/run-1'), { recursive: true }); writeFileSync(join(root, '.context/skillopt/run-1/comparison.json'), JSON.stringify({ passed: true, skill: 'demo' })); writeFileSync(join(root, '.context/skillopt/run-1/proposal.json'), JSON.stringify({ skill: 'demo' }));
+  mkdirSync(join(root, '.context/work-system'), { recursive: true }); writeFileSync(join(root, '.context/work-system/proposal.json'), JSON.stringify({ profile: { purpose: 'Study' }, createdAt: '2026-01-01T00:00:00Z' }));
+  mkdirSync(join(root, '.context/inbox'), { recursive: true }); writeFileSync(join(root, '.context/inbox/c.md'), '---\ntitle: Candidate\n---\nnote\n');
+  add(root, input(root));
+  const inbox = JSON.parse(ok(cli(root, 'kb-inbox.mjs', '--json')));
+  const kinds = new Set(inbox.cards.map((c) => c.kind));
+  for (const kind of ['decision-proposed', 'task-awaiting-approval', 'skill-awaiting-approval', 'profile-awaiting-apply', 'inbox-candidate', 'finding-open']) assert.ok(kinds.has(kind), `missing card ${kind}: ${[...kinds]}`);
+  assert.ok(inbox.cards.every((c) => c.action && c.where), 'every card names a place and a command');
+  assert.ok(inbox.summary.olderThan >= 2, 'old items are counted as overdue');
+  assert.match(inbox.cards.find((c) => c.kind === 'decision-proposed').action, /pnpm kb:approve --file 05_decisions\/p\.md/);
+  const digest = ok(cli(root, 'kb-digest.mjs'));
+  assert.match(digest, /\[decision-proposed\]/); assert.match(digest, /ждут дольше 7 дней/); assert.match(digest, /локальные предложения/);
+  assert.match(ok(cli(root, 'kb-metrics.mjs')), /Ждут человека: \d+/);
+});
+
+test('silence is not success: the digest shows a failed doctor, the night loop and --strict turns warnings into exit 1', (t) => {
+  const root = fixture(t);
+  const r = spawnSync(process.execPath, [join(repo, 'scripts/kb-digest.mjs')], { cwd: root, env: { ...env(root), KB_DIGEST_DOCTOR_TIMEOUT_MS: '1' }, encoding: 'utf8', timeout: 60_000 });
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /## Ночной контур/); assert.match(r.stdout, /тренды неизвестны: журнал отключён/);
+  assert.match(r.stdout, /## Health \(kb-doctor\)/); assert.match(r.stdout, /⚠ kb-doctor не запустился/);
+  const strict = spawnSync(process.execPath, [join(repo, 'scripts/kb-digest.mjs'), '--strict'], { cwd: root, env: { ...env(root), KB_DIGEST_DOCTOR_TIMEOUT_MS: '1' }, encoding: 'utf8', timeout: 60_000 });
+  assert.equal(strict.status, 1, 'strict mode refuses to stay green with a failed doctor');
+});
+
+test('a manual dream run and a zero-file verify scan leave visible traces instead of green silence', (t) => {
+  const root = fixture(t);
+  const live = { ...env(root), KB_JOURNAL: '1' };
+  const dream = spawnSync(process.execPath, [join(repo, 'scripts/dream-cycle.mjs'), '--execute'], { cwd: root, env: live, encoding: 'utf8', timeout: 60_000 });
+  assert.equal(dream.status, 0, dream.stderr);
+  const journal = readFileSync(join(root, '.context/kb-journal.jsonl'), 'utf8');
+  assert.match(journal, /"kind":"run","step":"dream","status":"skipped","reason":"manual-provider"/);
+  const digest = spawnSync(process.execPath, [join(repo, 'scripts/kb-digest.mjs')], { cwd: root, env: live, encoding: 'utf8', timeout: 60_000 });
+  assert.match(digest.stdout, /- dream: .* ручной режим \(manual-provider\)/);
+  const scan = cli(root, 'semantic/verify.mjs', '--scan', '--no-semantic', '--layers', '03_wiki');
+  assert.equal(scan.status, 0, scan.stdout + scan.stderr); assert.match(scan.stdout, /⚠ скан проверил 0 файлов/);
+  assert.equal(cli(root, 'semantic/verify.mjs', '--scan', '--no-semantic', '--layers', '03_wiki', '--require-files').status, 1);
 });

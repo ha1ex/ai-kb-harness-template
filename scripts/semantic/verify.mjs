@@ -39,6 +39,8 @@ import {
   getChunkEmbeddings,
 } from './lib.mjs';
 import { appendJournal } from '../lib/journal.mjs';
+import { loadKbConfig } from '../lib/kb-root.mjs';
+import { approvalConfig, checkApproval } from '../lib/approval.mjs';
 import {
   maskExamples,
   cleanCitePath,
@@ -361,7 +363,7 @@ if (isMain()) {
   let threshold = VERIFY_THRESHOLD;
   let asJson = false, allowCorpus = false, semantic = true, requireCoverage = false;
   let fromStdin = false, file = null, layersArg = null;
-  let scan = false, provenance = false;
+  let scan = false, provenance = false, requireFiles = false;
   const textParts = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -372,6 +374,7 @@ if (isMain()) {
     else if (a === '--stdin') fromStdin = true;
     else if (a === '--scan') scan = true;
     else if (a === '--provenance') provenance = true;
+    else if (a === '--require-files') requireFiles = true;
     else if (a === '--threshold') threshold = parseFloat(argv[++i]);
     else if (a === '--file') file = argv[++i];
     else if (a === '--layers') layersArg = argv[++i];
@@ -398,9 +401,25 @@ if (isMain()) {
       semantic: Boolean(scanDb), db: scanDb, embed: scanEmbed, threshold,
     });
     if (scanDb) scanDb.close();
+    // Подпись эффекта решений (P9): stale — гейт всегда; unsigned — advisory, гейт при approval.required.
+    const approvalCfg = approvalConfig(await loadKbConfig());
+    const approvalLayers = approvalCfg.layers.filter((l) => scanLayersList.includes(l));
+    const approvalRes = { layers: approvalLayers, files: 0, stale: [], unsigned: [], required: approvalCfg.required };
+    for (const f of walkMarkdown(REPO_ROOT, approvalLayers)) {
+      const basename = f.relPath.split('/').pop().toLowerCase();
+      if (['decision-log.md', 'rejected-options.md', 'assumptions.md', 'readme.md'].includes(basename)) continue;
+      approvalRes.files++;
+      let text = '';
+      try { text = readFileSync(f.absPath, 'utf8'); } catch { continue; }
+      const check = checkApproval(text, { approval: approvalCfg });
+      if (check.status === 'stale') approvalRes.stale.push({ file: f.relPath, reason: check.reason });
+      else if (check.status === 'unsigned') approvalRes.unsigned.push({ file: f.relPath, reason: check.reason });
+    }
+    res.approval = approvalRes;
+    res.failedFiles += approvalRes.stale.length + (approvalCfg.required ? approvalRes.unsigned.length : 0);
     await appendJournal({
       kind: 'verify-scan', ts: new Date(t0).toISOString(), timing_ms: Date.now() - t0,
-      scan: { layers: scanLayersList, provenance, files: res.files, failed: res.failedFiles },
+      scan: { layers: scanLayersList, provenance, files: res.files, failed: res.failedFiles, approval_stale: approvalRes.stale.length, approval_unsigned: approvalRes.unsigned.length },
     });
     if (asJson) {
       console.log(JSON.stringify(res, null, 2));
@@ -409,13 +428,16 @@ if (isMain()) {
       console.log(`Скан слоёв [${scanLayersList.join(', ')}]${provenance ? ' +provenance' : ''}: ` +
         `${res.files} файлов · external-пропущено ${res.exempted}` +
         `${res.coverageExempted ? ` · coverage-exempt ${res.coverageExempted}` : ''} · ` +
-        `${res.failedFiles ? `❌ ${res.failedFiles} с проблемами` : '✅ чисто'}`);
+        `${res.failedFiles ? `❌ ${res.failedFiles} с проблемами` : res.files === 0 ? '⚠ 0 файлов' : '✅ чисто'}`);
+      if (res.files === 0) console.log(`  ⚠ скан проверил 0 файлов в [${scanLayersList.join(', ')}] — проверьте KB_ROOT, --layers или kb.config layers${requireFiles ? '' : ' (гейт: --require-files)'}`);
       if (res.advisory) {
         console.log(`  advisory FACT-поддержка (НЕ гейт): strong=${res.advisory.strong} weak=${res.advisory.weak} none=${res.advisory.none}`);
         for (const a of res.advisory.files.slice(0, 20)) {
           console.log(`    ⚠ ${a.file}: weak=${a.weak} none=${a.none} → node scripts/kb-critic.mjs --file ${a.file}`);
         }
       }
+      for (const a of res.approval.stale) console.log(`  ❌ ${a.file}\n       approval: ${a.reason} → pnpm kb:approve --file ${a.file} … или верните status: proposed`);
+      for (const a of res.approval.unsigned) console.log(`  ${res.approval.required ? '❌' : '⚠'} ${a.file}: ${a.reason}${res.approval.required ? '' : ' (advisory; approval.required: true делает это гейтом)'}`);
       for (const p of res.problems) {
         console.log(`  ❌ ${p.file}`);
         if (p.tier1_failed) console.log(`       Tier-1: ${p.tier1_failed} битых цитат (запусти: verify.mjs --file ${p.file})`);
@@ -424,7 +446,7 @@ if (isMain()) {
       }
       console.log('');
     }
-    process.exit(res.failedFiles ? 1 : 0);
+    process.exit(res.failedFiles || (requireFiles && res.files === 0) ? 1 : 0);
   }
 
   let text = '';

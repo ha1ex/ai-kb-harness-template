@@ -31,6 +31,8 @@ import {
   INDEXABLE_LAYERS,
 } from './lib.mjs';
 import { appendJournal, compactResults } from '../lib/journal.mjs';
+import { parseFrontmatter, parseDocDate } from '../lib/frontmatter.mjs';
+import { loadKbConfig } from '../lib/kb-root.mjs';
 
 const argv = process.argv.slice(2);
 if (argv.length === 0) {
@@ -86,16 +88,21 @@ const db = openDb();
 const embed = await createEmbedder();
 const { results: fused } = await searchHybrid(db, embed, question, { topK, layer, graph });
 
-// Свежесть источников: уникальные файлы → их mtime из таблицы files (это секунды UNIX*1000).
+// Свежесть источников: дата документа из frontmatter (updated/date/ingested), иначе mtime файла.
+// Тот же порог, что у kb-doctor (kb.config.mjs → doctor.staleDays, дефолт 60).
 const uniqueFiles = Array.from(new Set(fused.map((r) => r.file)));
 const fileMeta = new Map();
 const now = Date.now();
-const STALE_DAYS = 90;
+const thinkConfig = await loadKbConfig();
+const STALE_DAYS = Number(thinkConfig.doctor?.staleDays) > 0 ? Number(thinkConfig.doctor.staleDays) : 60;
 let allStale = uniqueFiles.length > 0;
 for (const f of uniqueFiles) {
   let mtimeMs = 0;
   const abs = join(REPO_ROOT, f);
-  try { mtimeMs = statSync(abs).mtimeMs; } catch { mtimeMs = 0; }
+  try {
+    const docDate = parseDocDate(parseFrontmatter(readFileSync(abs, 'utf8')).fields);
+    mtimeMs = docDate ? Date.parse(docDate) : statSync(abs).mtimeMs;
+  } catch { mtimeMs = 0; }
   const ageDays = mtimeMs ? Math.floor((now - mtimeMs) / 86_400_000) : null;
   if (ageDays !== null && ageDays < STALE_DAYS) allStale = false;
   fileMeta.set(f, { mtimeMs, ageDays });

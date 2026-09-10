@@ -50,7 +50,8 @@ export async function runApply({ runId, skillFilter = null } = {}) {
   applied[0].git_staged = true;
   for (const path of applied[0].paths) path.index_entry = git('ls-files', '--stage', '--', path.path);
   await writeJson(summaryPath, record);
-  return { applied, skipped: [], summaryPath, nextSteps: ['pnpm harness:setup', 'pnpm harness:check'] };
+  const linked = proposal.findings ?? [];
+  return { applied, skipped: [], summaryPath, findings: linked, nextSteps: ['pnpm harness:setup', 'pnpm harness:check', ...linked.map((f) => `pnpm kb:findings transition --id ${f.id} --status resolved --by <human> --note "skill run ${runId}"`)] };
 }
 
 export async function runRevert({ runId, skillFilter = null } = {}) {

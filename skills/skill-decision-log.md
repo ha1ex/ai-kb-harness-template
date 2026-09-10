@@ -46,7 +46,7 @@ Frontmatter:
 ```yaml
 ---
 type: decision
-status: approved | proposed | rejected
+status: proposed | accepted | rejected   # accepted ставит человек: pnpm kb:approve --file … --by … --reference …
 date: YYYY-MM-DD
 owner: <BL / стейкхолдер>
 confidence: high | medium | low
@@ -91,6 +91,12 @@ related:
 
 <что делать, если решение не сработает>
 ```
+
+## Шаг 3.5 — Подтверждение человеком
+
+Карточка создаётся со `status: proposed`. После реального согласования владелец выполняет
+`pnpm kb:approve --file 05_decisions/<file>.md --by <человек> --reference <основание>`: команда проставляет
+`status: accepted` и подпись эффекта (`approved_*`). Правка тела после этого требует повторного подтверждения.
 
 ## Шаг 4 — Обновить decision-log
 

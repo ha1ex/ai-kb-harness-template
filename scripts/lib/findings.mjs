@@ -170,6 +170,7 @@ export function doctorFindings(report) {
     staleInbox: ['Inbox observation awaits review', 'Read the candidate and its sources, then decide whether to ingest or dismiss it.'],
     staleAnswers: ['Answer source changed after verification', 'Recheck the answer against the changed source before renewing verification.'],
     stubCards: ['Incomplete or deprecated source card', 'Review the source and decide whether to complete or retain this card.'],
+    approvalIssues: ['Decision approval missing or stale', 'Confirm the decision with pnpm kb:approve or return it to status: proposed.'],
   };
   const out = [];
   for (const [code, [label, suggestedAction]] of Object.entries(definitions)) {
@@ -197,7 +198,9 @@ export function findingsMetrics(findings, records = []) {
     if (!reviews.has(sample)) reviews.set(sample, item.passed);
   }
   const passed = [...reviews.values()].filter(Boolean).length;
+  const papercuts = feedback.filter((finding) => finding.code === 'papercut').map((finding) => ({ id: finding.id, title: finding.title, count: finding.observations.length })).sort((a, b) => b.count - a.count || a.title.localeCompare(b.title));
   return {
+    papercuts: { total: papercuts.length, repeated3plus: papercuts.filter((item) => item.count >= 3).length, top: papercuts.slice(0, 5) },
     findings: { total: findings.length, byStatus, byKind },
     repeatedFeedback: { status: sampleSize ? 'observed' : 'insufficient-data', value: sampleSize ? repeated / sampleSize : null, sampleSize, repeated: sampleSize ? repeated : null, basis: 'Distinct evidence sets per feedback issue; duplicate ingestion is excluded.' },
     firstPassCompletion: { status: reviews.size ? 'observed' : 'insufficient-data', value: reviews.size ? passed / reviews.size : null, sampleSize: reviews.size, passed: reviews.size ? passed : null, basis: 'Independent review first attempts per (task, stage), or per task for legacy records without a stage. Requires explicit task-review entries with attempt: 1 and boolean passed; excludes retries and ordinary verify runs. This is not human acceptance or task completion.' },

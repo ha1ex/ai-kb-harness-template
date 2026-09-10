@@ -39,6 +39,9 @@
     "kb:profile": "node scripts/kb-profile.mjs",
     "kb:findings": "node scripts/kb-findings.mjs",
     "kb:research": "node scripts/kb-research.mjs",
-    "kb:roster": "node scripts/kb-roster.mjs"
+    "kb:roster": "node scripts/kb-roster.mjs",
+    "kb:approve": "node scripts/kb-approve.mjs",
+    "kb:inbox": "node scripts/kb-inbox.mjs",
+    "kb:invariants": "node scripts/check-invariants.mjs"
   }
 }

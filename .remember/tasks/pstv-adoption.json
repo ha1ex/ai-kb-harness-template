@@ -48,18 +48,51 @@
     "scripts/lib/docs-drift.mjs",
     "scripts/lib/roster.mjs",
     "scripts/skillopt/runner/scaffold.mjs",
-    "test/docs-drift.test.mjs"
+    "test/docs-drift.test.mjs",
+    "05_decisions/walkthrough-decision-pilot-scope.md",
+    "docs/automation.md",
+    "docs/human-interface.md",
+    "harness/evals/scenarios.json",
+    "harness/rules/evidence.md",
+    "kb.config.mjs",
+    "scripts/dream-cycle.mjs",
+    "scripts/git-hooks/check.mjs",
+    "scripts/kb-doctor.mjs",
+    "scripts/kb-findings.mjs",
+    "scripts/kb-metrics.mjs",
+    "scripts/lib/findings.mjs",
+    "scripts/lib/frontmatter.mjs",
+    "scripts/lib/journal.mjs",
+    "scripts/semantic/think.mjs",
+    "scripts/semantic/verify.mjs",
+    "scripts/skillopt/prompts/reflect.md",
+    "scripts/skillopt/runner/edit.mjs",
+    "scripts/skillopt/runner/lifecycle.mjs",
+    "scripts/skillopt/runner/reflect.mjs",
+    "skills/skill-decision-log.md",
+    "test/knowledge-findings.test.mjs",
+    "harness/invariants.json",
+    "scripts/check-invariants.mjs",
+    "scripts/kb-approve.mjs",
+    "scripts/kb-inbox.mjs",
+    "scripts/lib/approval.mjs",
+    "scripts/lib/check-runner.mjs",
+    "scripts/lib/inbox.mjs",
+    "scripts/lib/lessons.mjs",
+    "test/approval.test.mjs",
+    "test/check-runner.test.mjs",
+    "test/invariants.test.mjs"
   ],
   "checks": [
     {
       "command": "pnpm test",
       "outcome": "passed",
-      "evidence": "162 tests, 0 fail (в т.ч. новые: skill new, skill status/version, additive role fields, roster/consumers, docs-drift ×3)"
+      "evidence": "177 tests, 0 fail (новые: skill new, status/version, additive role fields, roster, docs-drift ×3, papercut, from-reviews, doctor freshness, from-findings, approval ×4, inbox, silence ×2, check-runner ×2, invariants ×2)"
     },
     {
       "command": "pnpm check",
       "outcome": "passed",
-      "evidence": "harness OK; spaces 0 errors; portability 769 files; readability 9 advisory; verify --scan --provenance: 7 файлов, чисто"
+      "evidence": "6 проверок: 6 ok (harness, spaces, portability, readability advisory, verify --scan --provenance чисто, invariants: 6 инвариантов, храповик не сдвинулся)"
     },
     {
       "command": "pnpm harness:check",
@@ -69,7 +102,7 @@
     {
       "command": "pnpm kb:verify --scan --provenance --no-semantic",
       "outcome": "passed",
-      "evidence": "Скан слоёв [04_synthesis, 05_decisions, 06_outputs] +provenance: чисто, coverage-exempt 2"
+      "evidence": "Скан слоёв [04_synthesis, 05_decisions, 06_outputs] +provenance: чисто, coverage-exempt 2, подписи решений без нарушений"
     },
     {
       "command": "node scripts/semantic/test-retrieval.mjs; test-control.mjs; test-gate.mjs",
@@ -79,7 +112,7 @@
     {
       "command": "pnpm kb:release:baseline && pnpm kb:release:check",
       "outcome": "passed",
-      "evidence": "Baseline 0.6.0: 235 managed files; version and baseline match"
+      "evidence": "Baseline 0.6.0: 247 managed files; version and baseline match"
     }
   ],
   "openQuestions": [
@@ -91,21 +124,19 @@
     "Подключать ли skill-ingest и skill-decision-log в профиль шаблона (сейчас kb:roster показывает их как не подключённые)?"
   ],
   "status": "active",
-  "result": "Волна 0 (источник, саммари, синтез, log, index) и волна 1 (P5-carve-out, P1, P2, P6) внедрены; тесты и проверки зелёные; изменения не закоммичены",
-  "goal": "Перенести в шаблон применимые практики из статьи «Агенты PartyStation»: зафиксировать анализ в KB и внедрить волну 1 (эталон навыка, статус/версия навыка, стабильный отпечаток роли, реестр навыков, тест дрейфа документации)",
+  "result": "Волны 0–3 внедрены и проверены; изменения волны 1 запушены в main (2cfc279), волны 2–3 — следующим коммитом",
+  "goal": "Перенести в шаблон применимые практики из статьи «Агенты PartyStation»: зафиксировать анализ в KB и внедрить волны 1–3 дорожной карты 04_synthesis/pstv-agents-adoption.md",
   "acceptanceCriteria": [
     "Саммари и синтез по статье лежат в 02_sources и 04_synthesis; log.md и index.md обновлены",
-    "pnpm skill new создаёт черновик из harness/templates/skill только в .context и проходит propose",
-    "status/version навыка читаются; deprecated недостижим для ролей, этапов и профиля и не копируется клиентам",
-    "Дополнительные поля роли не инвалидируют завершённые этапы; изменение навыков роли — инвалидирует",
-    "pnpm kb:roster показывает потребителей; harness:check предупреждает о неподключённых проектных навыках при активном профиле",
-    "test/docs-drift.test.mjs зелёный; таблица «Слои контроля» покрывает гейты pre-push, хуков и CI",
-    "pnpm test, pnpm check, pnpm kb:release:check зелёные",
-    "Волны 2 и 3 из 04_synthesis/pstv-agents-adoption.md внедрены или явно отложены решением владельца"
+    "Волна 1: pnpm skill new из эталона; status/version навыка (deprecated недостижим и не копируется); стабильный отпечаток роли; pnpm kb:roster и used-by; test/docs-drift.test.mjs и таблица «Слои контроля»",
+    "Волна 2: kb:findings papercut и from-reviews; skill propose --from-findings; уроки в reflect; свежесть по дате документа; kb:inbox и карточки в дайджесте; kb:approve с хуком и гейтом verify --scan",
+    "Волна 3: записи run ночного контура, секция «Ночной контур», доставка webhook с exit 1, --strict, verify --scan с предупреждением о нуле файлов, сводка pnpm check; harness/invariants.json + kb:invariants",
+    "pnpm test, pnpm check, pnpm kb:release:check зелёные; изменения запушены в main",
+    "Отложенные пункты (P4, P5, P7-фаза 2, P11, P12, P13-хвост, P1-хвост) явно перечислены в синтезе с условием «когда»; релиз версии — решение владельца"
   ],
   "decisions": [],
-  "nextStep": "Волна 2 по 04_synthesis/pstv-agents-adoption.md: kb:findings papercut, skill propose --from-findings и kb:findings from-reviews, свежесть по дате документа в kb-doctor/think, kb:inbox в дайджесте, подпись решений kb:approve; перед этим — ответы владельца на открытые вопросы и коммит волны 1",
+  "nextStep": "Решение владельца: выпустить как 0.7.0 (CHANGELOG Unreleased → версия, docs/releases/0.7.0.md, README) и ответить на открытые вопросы; затем отложенные пункты по условиям «когда» из 04_synthesis/pstv-agents-adoption.md",
   "task": "pstv-adoption",
   "owner": "claude-fable",
-  "updatedAt": "2026-09-10T06:21:59.172Z"
+  "updatedAt": "2026-09-10T06:50:05.610Z"
 }
