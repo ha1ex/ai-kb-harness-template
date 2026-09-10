@@ -66,10 +66,10 @@ export function loadWorkSystem(root, { checkDraft = false, checkContext = false,
     }
     for (const id of profile.roles) if (!roles[id]) throw Error(`Unknown profile role: ${id}`);
     for (const id of profile.workflows) if (!workflows[id]) throw Error(`Unknown profile workflow: ${id}`);
-    for (const id of profile.skills) if (!skills.has(id)) throw Error(`Unknown profile skill: ${id}`);
+    for (const id of profile.skills) { if (!skills.has(id)) throw Error(`Unknown profile skill: ${id}`); if (skills.get(id).status==='deprecated') throw Error(`Profile references deprecated skill: ${id}`); }
   }
   for (const role of Object.values(roles)) {
-    for (const name of role.skills) if (!skills.has(name)) throw Error(`Role ${role.id} references missing skill: ${name}`);
+    for (const name of role.skills) { if (!skills.has(name)) throw Error(`Role ${role.id} references missing skill: ${name}`); if (skills.get(name).status==='deprecated') throw Error(`Role ${role.id} references deprecated skill: ${name}`); }
     for (const path of [...role.requiredContext,...role.optionalContext]) assertSafePath(root,path);
     if (checkContext && selected && profile.customRoles[role.id]) for (const path of role.requiredContext) {
       const file=assertSafePath(root,path);
@@ -78,7 +78,7 @@ export function loadWorkSystem(root, { checkDraft = false, checkContext = false,
   }
   for (const workflow of Object.values(workflows)) for (const stage of workflow.stages) {
     if (!roles[stage.role]) throw Error(`Workflow ${workflow.id}/${stage.id} references unknown role: ${stage.role}`);
-    for (const name of stage.skills) if (!skills.has(name)) throw Error(`Workflow ${workflow.id}/${stage.id} references missing skill: ${name}`);
+    for (const name of stage.skills) { if (!skills.has(name)) throw Error(`Workflow ${workflow.id}/${stage.id} references missing skill: ${name}`); if (skills.get(name).status==='deprecated') throw Error(`Workflow ${workflow.id}/${stage.id} references deprecated skill: ${name}`); }
   }
   return {profile,roles,workflows,skills};
 }

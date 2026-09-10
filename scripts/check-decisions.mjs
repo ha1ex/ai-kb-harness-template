@@ -101,7 +101,7 @@ const msg = [
   'Чтобы избежать создания decision-карточки без evidence:',
   ...errors.map((e) => `  • ${e}`),
   '',
-  'Рекомендация: следовать `skills/skill-decision-log.md` и шаблону `99_templates/decision-template.md`.',
+  'Рекомендация: следовать `skills/skill-decision-log.md` (шаги 2–3 содержат шаблон карточки).',
   'Если это не decision-карточка (например, индекс/обновление другого формата) — переименуйте файл',
   'или добавьте в список исключений в `scripts/check-decisions.mjs`.',
 ].join('\n');

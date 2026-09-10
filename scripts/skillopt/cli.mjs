@@ -6,6 +6,7 @@ import { runReflect } from './runner/reflect.mjs';
 import { runDiff } from './runner/diff.mjs';
 import { runApply, runRevert } from './runner/edit.mjs';
 import { runPropose, runCompare, runApprove } from './runner/lifecycle.mjs';
+import { runNew } from './runner/scaffold.mjs';
 import { listSkillsWithEvals } from './evals/loader.mjs';
 import { listRuns } from './storage/metrics.mjs';
 
@@ -41,7 +42,11 @@ try {
     case 'list': {
       const skills = await listSkillsWithEvals();
       if (flags.json) output(skills);
-      else for (const skill of skills) console.log(`${skill.skill}  ${skill.source}  evals=${skill.caseCount}  ${skill.path}${skill.errors.length ? `  ERRORS: ${skill.errors.join('; ')}` : ''}`);
+      else for (const skill of skills) {
+        const consumers = skill.usedBy ? [...skill.usedBy.roles, ...skill.usedBy.stages, ...(skill.usedBy.profile ? [`profile:${skill.usedBy.profile}`] : [])] : null;
+        const usedBy = !skill.usedBy ? 'unknown (contract errors; see pnpm kb:roster)' : skill.unreferenced ? 'none (not in kb:context; clients may still load by description)' : consumers.length ? consumers.join(';') : '—';
+        console.log(`${skill.skill}  ${skill.source}  status=${skill.status ?? 'unset'}${skill.version ? ` v${skill.version}` : ''}  evals=${skill.caseCount}  used-by=${usedBy}  ${skill.path}${skill.status === 'verified' && !skill.caseCount ? '  WARN: verified without evals' : ''}${skill.errors.length ? `  ERRORS: ${skill.errors.join('; ')}` : ''}`);
+      }
       break;
     }
     case 'eval':
@@ -59,6 +64,11 @@ try {
       const result = await runReflect({ ...runtime, runId: first, execute: flags.execute, force: flags.force });
       output(result);
       if (result.results?.some(r => r.error)) process.exitCode = 1;
+      break;
+    }
+    case 'new': {
+      if (!first) throw Error('Usage: skill new <name> [--to <dir>]');
+      output(await runNew({ name: first, to: flags.to }));
       break;
     }
     case 'propose': output(await runPropose({ skill: first, file: flags.file, reason: flags.reason, evals: flags.evals })); break;
@@ -85,6 +95,7 @@ try {
   pnpm skill rollout <skill> [--execute]       Alias for eval
   pnpm skill score <run-id>                   Offline rescoring
   pnpm skill reflect <run-id> [--execute] [--force]
+  pnpm skill new <name> [--to <dir>]           Scaffold a project skill draft from harness/templates/skill into .context/
   pnpm skill propose <skill> --file <SKILL.md> --reason <text> [--evals <file|directory>]
   pnpm skill diff <run-id>
   pnpm skill compare <run-id> [--execute]
@@ -95,6 +106,7 @@ try {
 
 No LLM calls without --execute. Configure an explicit provider in .skillopt.json.
 New skills require --evals; existing skills use their current eval directory.
+Optional frontmatter status: draft | verified | deprecated (deprecated skills are unreachable and not copied to clients).
 Comparison uses identical frozen cases and canonical context, and reports sample sizes.
 Apply requires zero errors, all mandatory cases passing, no regression and exact-hash approval.
 Approval records stated authorization locally; it does not verify identity or authority.

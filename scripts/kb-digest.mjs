@@ -23,6 +23,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { readJournal, summarizeJournal } from './lib/journal.mjs';
 import { readFindings, findingsMetrics } from './lib/findings.mjs';
+import { buildRoster } from './lib/roster.mjs';
 import { safePath } from './lib/template-state.mjs';
 import { KB_ROOT } from './lib/kb-root.mjs';
 
@@ -112,6 +113,13 @@ add();
 add('## Ждут человека');
 add(`- .context/inbox: ${inboxCount} кандидатов${inboxCount ? ' → разбор через skill-ingest' : ' ✅'}`);
 if (dreamReport) add(`- свежий dream-report: .context/${dreamReport} (проверьте содержимое; старые файлы могут содержать только промпт)`);
+try {
+  const roster = buildRoster(KB_ROOT);
+  if (roster.contractsInstalled) {
+    const s = roster.summary;
+    add(`- Реестр: навыков ${s.skills}, подключено ${s.connected}, с проверками ${s.withEvals}${s.unreferenced.length ? `, не подключено: ${s.unreferenced.join(', ')} → добавьте в profile.skills или этап сценария` : ''} (pnpm kb:roster)`);
+  }
+} catch (e) { add(`- Реестр недоступен: ${e.message}`); }
 add();
 add('Команды: pnpm kb:metrics (тренды) · pnpm kb:dream (аудит) · node scripts/kb-critic.mjs --file <f> (правка цитат)');
 

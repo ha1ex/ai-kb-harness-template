@@ -30,15 +30,7 @@ export function validateSkillText(input, { name, legacy = false } = {}) {
   let text = String(input).replace(/\r\n/g, '\n');
   let fm = text.match(/^---\n([\s\S]*?)\n---(?:\n|$)/);
   if (text.startsWith('---') && !fm) throw Error(`Invalid skill frontmatter: ${name}`);
-  const fields = {};
-  if (fm) {
-    for (const line of fm[1].split('\n')) {
-      if (!line.trim() || /^\s|^#/.test(line)) continue;
-      const match = line.match(/^([A-Za-z][A-Za-z0-9_-]*):(?:[ \t]+(.*)|[ \t]*)$/);
-      if (!match || Object.hasOwn(fields, match[1])) throw Error(`Invalid skill metadata: ${name}`);
-      fields[match[1]] = (match[2] ?? '').trim();
-    }
-  }
+  const fields = fm ? parseFields(fm[1], name) : {};
   const missing = [];
   for (const key of ['name', 'description']) {
     if (!Object.hasOwn(fields, key)) {
@@ -67,6 +59,39 @@ export function validateSkillText(input, { name, legacy = false } = {}) {
   if (missing.length) text = fm ? text.replace(/^---\n/, `---\n${missing.join('\n')}\n`) : `---\n${missing.join('\n')}\n---\n\n${text}`;
   if (!text.replace(/^---\n[\s\S]*?\n---/, '').trim()) throw Error(`Empty skill body: ${name}`);
   return text;
+}
+
+function parseFields(block, name) {
+  const fields = {};
+  for (const line of block.split('\n')) {
+    if (!line.trim() || /^\s|^#/.test(line)) continue;
+    const match = line.match(/^([A-Za-z][A-Za-z0-9_-]*):(?:[ \t]+(.*)|[ \t]*)$/);
+    if (!match || Object.hasOwn(fields, match[1])) throw Error(`Invalid skill metadata: ${name}`);
+    fields[match[1]] = (match[2] ?? '').trim();
+  }
+  return fields;
+}
+
+export const SKILL_STATUSES = ['draft', 'verified', 'deprecated'];
+// Optional lifecycle metadata. Absence means "not set"; an unknown value fails closed with a hint.
+// Only `deprecated` has an effect: roles, workflows and profiles cannot reference it and clients do not receive it.
+export function skillMetadata(input, { name } = {}) {
+  const text = String(input).replace(/\r\n/g, '\n');
+  const fm = text.match(/^---\n([\s\S]*?)\n---(?:\n|$)/);
+  const fields = fm ? parseFields(fm[1], name) : {};
+  const scalar = value => value.replace(/^["']|["']$/g, '').replace(/\s+#.*$/, '').trim();
+  const meta = { status: null, version: null };
+  if (Object.hasOwn(fields, 'status')) {
+    const status = scalar(fields.status);
+    if (!SKILL_STATUSES.includes(status)) throw Error(`Invalid skill status "${status}" in ${name}; use one of ${SKILL_STATUSES.join(', ')}`);
+    meta.status = status;
+  }
+  if (Object.hasOwn(fields, 'version')) {
+    const version = scalar(fields.version);
+    if (!/^[1-9][0-9]*$/.test(version)) throw Error(`Invalid skill version "${version}" in ${name}; use a positive integer`);
+    meta.version = Number(version);
+  }
+  return meta;
 }
 
 export function discoverSkills(root) {
@@ -104,7 +129,8 @@ export function discoverSkills(root) {
           if (dir) checkTree(assertSafePath(root, dir));
           const path = hasFlat ? flat : standard;
           const text = validateSkillText(readFileSync(assertSafePath(root, path), 'utf8'), { name, legacy: hasFlat });
-          skills.push({ name, path, dir, source, legacy: hasFlat, text });
+          const { status, version } = skillMetadata(text, { name });
+          skills.push({ name, path, dir, source, legacy: hasFlat, text, status, version });
         } catch (e) { errors.push(e.message); }
       }
     } catch (e) { errors.push(e.message); }

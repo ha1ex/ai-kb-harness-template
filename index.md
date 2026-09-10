@@ -22,6 +22,7 @@
 ## Источники
 
 - [Все source summaries](./02_sources/)
+- [Агенты PartyStation: как устроена система — саммари](./02_sources/2026-09-09-pstv-agents-system.md)
 
 ## Wiki (концепты)
 
@@ -31,6 +32,7 @@
 
 - [Open questions](./04_synthesis/open-questions.md) — известные пробелы, требующие закрытия
 - [Contradictions](./04_synthesis/contradictions.md) — конфликты в источниках, зафиксированные дословно
+- [PartyStation → наш харнесс](./04_synthesis/pstv-agents-adoption.md) — что взять из системы агентов PartyStation поверх 0.6.0 (adopt now / later / not)
 
 ## Decisions
 

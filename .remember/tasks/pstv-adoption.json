@@ -1,0 +1,111 @@
+{
+  "constraints": [
+    "Markdown-first, без обязательного рантайма",
+    "Advisory, не mutation: черновики навыков только в .context до apply",
+    "LLM off by default",
+    "Граница template-owned/project-owned по .template-manifest.json; baseline регенерирован"
+  ],
+  "sources": [
+    "01_raw/harness-research/2026-09-09-pstv-agents-system.txt",
+    "02_sources/2026-09-09-pstv-agents-system.md",
+    "https://pstv-agents-system.birta.link/"
+  ],
+  "changedFiles": [
+    ".template-baseline.json",
+    ".template-manifest.json",
+    "CHANGELOG.md",
+    "docs/architecture.md",
+    "docs/compatibility.md",
+    "docs/contributing.md",
+    "docs/upgrades.md",
+    "docs/work-system.md",
+    "harness/README.md",
+    "harness/roles/README.md",
+    "harness/rules/workflow.md",
+    "index.md",
+    "log.md",
+    "package.json",
+    "scripts/README.md",
+    "scripts/check-decisions.mjs",
+    "scripts/check-harness.mjs",
+    "scripts/kb-digest.mjs",
+    "scripts/lib/skills.mjs",
+    "scripts/lib/work-context.mjs",
+    "scripts/lib/work-system.mjs",
+    "scripts/lib/workflow-state.mjs",
+    "scripts/semantic/README.md",
+    "scripts/skillopt/cli.mjs",
+    "scripts/skillopt/evals/loader.mjs",
+    "skills/README.md",
+    "test/agents-runtime.test.mjs",
+    "test/skill-lifecycle.test.mjs",
+    "test/work-system.test.mjs",
+    "01_raw/harness-research",
+    "02_sources/2026-09-09-pstv-agents-system.md",
+    "04_synthesis/pstv-agents-adoption.md",
+    "harness/templates/skill",
+    "scripts/kb-roster.mjs",
+    "scripts/lib/docs-drift.mjs",
+    "scripts/lib/roster.mjs",
+    "scripts/skillopt/runner/scaffold.mjs",
+    "test/docs-drift.test.mjs"
+  ],
+  "checks": [
+    {
+      "command": "pnpm test",
+      "outcome": "passed",
+      "evidence": "162 tests, 0 fail (в т.ч. новые: skill new, skill status/version, additive role fields, roster/consumers, docs-drift ×3)"
+    },
+    {
+      "command": "pnpm check",
+      "outcome": "passed",
+      "evidence": "harness OK; spaces 0 errors; portability 769 files; readability 9 advisory; verify --scan --provenance: 7 файлов, чисто"
+    },
+    {
+      "command": "pnpm harness:check",
+      "outcome": "passed",
+      "evidence": "Harness configuration OK (no clients selected; live sessions not tested)"
+    },
+    {
+      "command": "pnpm kb:verify --scan --provenance --no-semantic",
+      "outcome": "passed",
+      "evidence": "Скан слоёв [04_synthesis, 05_decisions, 06_outputs] +provenance: чисто, coverage-exempt 2"
+    },
+    {
+      "command": "node scripts/semantic/test-retrieval.mjs; test-control.mjs; test-gate.mjs",
+      "outcome": "passed",
+      "evidence": "8 / 6 / 12 проверок пройдено"
+    },
+    {
+      "command": "pnpm kb:release:baseline && pnpm kb:release:check",
+      "outcome": "passed",
+      "evidence": "Baseline 0.6.0: 235 managed files; version and baseline match"
+    }
+  ],
+  "openQuestions": [
+    "Где хранить инструкции проектной роли: соглашение .remember/roles/<id>.md (задокументировано) или harness/templates/role/?",
+    "Менять ли позицию 0.5.0 «роли ≠ разрешения» на проверку границы humanOnly при завершении задачи (P5)?",
+    "Подпись решений (P9): приемлем ли дефолт approval.required: false?",
+    "Доставка дайджеста (P8): допустим ли exit 1 при недоставке webhook?",
+    "Ревью этапов (P11): строить на reviewer-роли kb:research или отдельной командой?",
+    "Подключать ли skill-ingest и skill-decision-log в профиль шаблона (сейчас kb:roster показывает их как не подключённые)?"
+  ],
+  "status": "active",
+  "result": "Волна 0 (источник, саммари, синтез, log, index) и волна 1 (P5-carve-out, P1, P2, P6) внедрены; тесты и проверки зелёные; изменения не закоммичены",
+  "goal": "Перенести в шаблон применимые практики из статьи «Агенты PartyStation»: зафиксировать анализ в KB и внедрить волну 1 (эталон навыка, статус/версия навыка, стабильный отпечаток роли, реестр навыков, тест дрейфа документации)",
+  "acceptanceCriteria": [
+    "Саммари и синтез по статье лежат в 02_sources и 04_synthesis; log.md и index.md обновлены",
+    "pnpm skill new создаёт черновик из harness/templates/skill только в .context и проходит propose",
+    "status/version навыка читаются; deprecated недостижим для ролей, этапов и профиля и не копируется клиентам",
+    "Дополнительные поля роли не инвалидируют завершённые этапы; изменение навыков роли — инвалидирует",
+    "pnpm kb:roster показывает потребителей; harness:check предупреждает о неподключённых проектных навыках при активном профиле",
+    "test/docs-drift.test.mjs зелёный; таблица «Слои контроля» покрывает гейты pre-push, хуков и CI",
+    "pnpm test, pnpm check, pnpm kb:release:check зелёные",
+    "Волны 2 и 3 из 04_synthesis/pstv-agents-adoption.md внедрены или явно отложены решением владельца"
+  ],
+  "decisions": [],
+  "nextStep": "Волна 2 по 04_synthesis/pstv-agents-adoption.md: kb:findings papercut, skill propose --from-findings и kb:findings from-reviews, свежесть по дате документа в kb-doctor/think, kb:inbox в дайджесте, подпись решений kb:approve; перед этим — ответы владельца на открытые вопросы и коммит волны 1",
+  "task": "pstv-adoption",
+  "owner": "claude-fable",
+  "updatedAt": "2026-09-10T06:21:59.172Z"
+}

@@ -10,10 +10,14 @@ export function artifactHash(root,path) {
   if (!content.length || !content.toString('utf8').trim()) throw Error(`Empty artifact: ${path}`);
   return hashContent(content);
 }
+// Only fields that change what a stage requires enter the fingerprint. Additive role metadata
+// (metrics, autonomy hints, notes) must not reopen completed checkpoints.
+const ROLE_CONTRACT_FIELDS=['id','version','skills','requiredContext','optionalContext','boundaries','qualityCriteria','inputs','outputs'];
 function stageContractHash(system,stage) {
   const role=system.roles[stage.role];
   const names=[...new Set([...role.skills,...stage.skills])];
-  return hashContent(JSON.stringify({stage,role,skills:names.map(name=>({name,text:system.skills.get(name).text}))}));
+  const contract=Object.fromEntries(ROLE_CONTRACT_FIELDS.filter(k=>role[k]!==undefined).map(k=>[k,role[k]]));
+  return hashContent(JSON.stringify({stage,role:contract,skills:names.map(name=>({name,text:system.skills.get(name).text}))}));
 }
 export function staleArtifacts(root,task,system=loadWorkSystem(root)) {
   const stale=researchStaleness(root,task);

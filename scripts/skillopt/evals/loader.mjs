@@ -24,6 +24,7 @@ import { existsSync } from "node:fs";
 import { join, basename, dirname, relative } from "node:path";
 import { KB_ROOT } from "../../lib/kb-root.mjs";
 import { discoverSkills, assertSafePath, assertSkillName } from "../../lib/skills.mjs";
+import { buildRoster } from "../../lib/roster.mjs";
 import yaml from "js-yaml";
 import { z } from "zod";
 
@@ -186,9 +187,13 @@ export async function discoverEvals({ skillFilter = null, caseFilter = null, roo
 
 export async function listSkillsWithEvals({ root = REPO_ROOT } = {}) {
   const out = [];
+  // Consumers come from the shared roster; contract errors leave usedBy unknown instead of failing the list.
+  let roster = null;
+  try { roster = buildRoster(root); } catch { roster = null; }
   for (const s of requireSkills(root)) {
     const cases = s.dir ? await loadEvalDirectory(join(root, s.dir, 'evals'), { root, skill: s.name }) : [];
-    out.push({ skill: s.name, path: s.path, source: s.source, legacy: s.legacy, skillFileExists: true, caseCount: cases.length, errors: cases.filter(c => c.error).map(c => c.error) });
+    const entry = roster?.skills.find(x => x.name === s.name) ?? null;
+    out.push({ skill: s.name, path: s.path, source: s.source, legacy: s.legacy, status: s.status ?? null, version: s.version ?? null, skillFileExists: true, caseCount: cases.length, usedBy: entry?.usedBy ?? null, unreferenced: entry?.unreferenced ?? null, errors: cases.filter(c => c.error).map(c => c.error) });
   }
   return out;
 }

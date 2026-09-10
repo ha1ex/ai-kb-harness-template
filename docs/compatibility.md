@@ -26,7 +26,7 @@ Setup has no dependency on API keys. Choose `codex`, `claude`, `opencode`, `gemi
 
 Read-only checking never changes client state or Git configuration. It succeeds with zero selected clients in a clean generic clone. Hash checks cover generated copies; source layout is checked when the relevant client is selected.
 
-Optional hooks: `node scripts/check-harness.mjs --setup --hooks`. This refuses an existing foreign `core.hooksPath` or non-sample default hooks. The common gate is `node scripts/git-hooks/check.mjs`, independent of any client. Pre-push runs deterministic structural, citation and presentation checks; missing dependencies cause an explicit failure and are not downloaded. Post-checkout/merge/rewrite provide nonblocking checks; `HARNESS_SYNC_SKILLS=1` explicitly enables protected regeneration. Hooks do not replace CI.
+Optional hooks: `node scripts/check-harness.mjs --setup --hooks`. This refuses an existing foreign `core.hooksPath` or non-sample default hooks. The common gate is `node scripts/git-hooks/check.mjs`, independent of any client. Pre-push runs deterministic structural, citation and presentation checks; missing dependencies cause an explicit failure and are not downloaded. Post-checkout/merge/rewrite provide nonblocking checks; `HARNESS_SYNC_SKILLS=1` explicitly enables protected regeneration. Hooks do not replace CI. The «Слои контроля» table in `docs/architecture.md` lists every gate, its layer (code gate, advisory, human confirmation) and where it runs.
 
 ## Session transfer
 

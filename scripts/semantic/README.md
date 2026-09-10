@@ -160,7 +160,7 @@ node scripts/kb-critic.mjs --file ans.md [--execute --rounds 2]      # revision-
 | `backlinks.mjs` | Обратные / прямые связи между файлами |
 | `eval.mjs` | Retrieval-eval (recall@k/MRR) + регрессия vs baseline; флаги `--graph/--no-graph/--rerank` |
 | `test-retrieval.mjs` | Офлайн-юнит-тесты graph/temporal на фикстурах (без модели/сети) |
-| `mcp-server.mjs` | MCP-сервер (stdio): `kb_search`/`kb_think`/`kb_backlinks`/`kb_verify`/`kb_retain` |
+| `mcp-server.mjs` | MCP-сервер (stdio): `kb_search`/`kb_think`/`kb_backlinks`/`kb_verify`/`kb_retain`/`kb_promote` |
 | `package.json` | Зависимости (изолированы от корня репо) |
 
 ### Модель и префиксы

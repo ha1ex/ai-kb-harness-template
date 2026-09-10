@@ -1,7 +1,7 @@
 ---
 type: reference
 title: "Архитектура AI KB Harness"
-version: v0.4
+version: v0.6
 ---
 
 # Архитектура AI KB Harness
@@ -55,6 +55,31 @@ Markdown остаётся переносимым первичным формат
 Проверка существования ссылки подтверждает путь, но не истинность утверждения. Семантическое совпадение даёт сигнал для ревью, а не доказательство. `audience` управляет навигацией и не ограничивает доступ. Локальный поиск не означает, что подключённая LLM работает локально.
 
 Специализированные редакторы P&L, оргструктуры, процессов и дорожных карт не входят в универсальное ядро. Их возможные контракты перечислены в [каталоге расширений](./extensions.md).
+
+## Слои контроля
+
+Три слоя, как и в любой системе «агент предлагает, код проверяет, человек одобряет»: детерминированный код-гейт блокирует, advisory-проверка советует, подтверждение человека — отдельная запись. Умолчание для содержания базы — «к человеку»: предложение становится решением только после записи подтверждения. Изменили гейт или хук — обновите эту таблицу в том же изменении; тест `test/docs-drift.test.mjs` сверяет её с `scripts/git-hooks/check.mjs`, хуками `.claude/settings.json` и CI.
+
+| Проверка | Слой | При провале | Где запускается | Клиенто-независимо |
+|---|---|---|---|---|
+| `scripts/check-decisions.mjs` — метка `DECISION:` и ссылка на источник в `05_decisions` | код-гейт | блок записи; сбой самого хука — fail-open с записью `hook-error` в журнал | PreToolUse Claude Code | нет (только Claude Code); pre-push и CI покрывают `verify --scan` |
+| `scripts/check-md-frontmatter.mjs` — обязательные поля frontmatter по слоям | код-гейт | блок записи; fail-open наблюдаемый | PreToolUse Claude Code | нет |
+| `scripts/check-provenance.mjs` — синтез и решения цитируют только нижние слои | код-гейт | блок записи; fail-open наблюдаемый | PreToolUse Claude Code; те же правила в `verify --provenance` | частично |
+| `scripts/check-harness.mjs` — контракты ролей, сценариев, профиль, копии навыков у клиентов | код-гейт + advisory (`warnings`) | ошибка конфигурации — exit 1; навыки без потребителя — предупреждение | pre-push, CI (`pnpm check`), вручную | да |
+| `scripts/check-spaces.mjs`, `scripts/check-portability.mjs` | код-гейт | exit 1 | pre-push, CI | да |
+| `scripts/check-readability.mjs` | advisory (`--strict` — гейт для нового текста) | советы | pre-push, CI | да |
+| `scripts/semantic/verify.mjs --scan --provenance --no-semantic` — живые цитаты, claim-coverage, происхождение | код-гейт (Tier-1); семантический Tier-2 — только advisory (`kb-advisory`) | exit 1 | pre-push, CI | да |
+| `scripts/semantic/test-retrieval.mjs`, `scripts/semantic/test-control.mjs`, `scripts/semantic/test-gate.mjs` | код-гейт (офлайн-тесты и adversarial-сьют) | красный CI | CI | да |
+| `scripts/kb-doctor.mjs` — здоровье базы | код-гейт для списка GATING, остальное advisory; только читает | exit 1 по GATING | CI, вручную, ночной контур | да |
+| `scripts/semantic/eval.mjs` — retrieval против `eval-baseline.json` | код-гейт на регрессию | красный CI | CI | да |
+| `pnpm test` — контракты ролей, сценариев, навыков, обновления, дрейф документации (`test/`) | код-гейт | красный CI | CI, вручную | да |
+| `scripts/kb-session.mjs` — завершение этапа и задачи | код-гейт по структуре: непустые артефакты, порядок этапов, независимое ревью, `approval.by/reference` для `requiresApproval` | отказ сохранить | при каждом `save` | да |
+| `scripts/kb-findings.mjs transition --by --note` | подтверждение человека | урок не попадает в контекст без `accepted` | вручную | да |
+| `scripts/skillopt/cli.mjs compare → approve --by → apply` | код-гейт (регрессия, устаревшие хеши) + подтверждение человека | `apply` отклонён | вручную | да |
+| `scripts/kb-profile.mjs apply --by --note` | подтверждение человека | профиль остаётся черновиком | вручную | да |
+| `scripts/kb-research.mjs` — reviewer на frontier-тире, лимиты | код-гейт по политике + независимое ревью | задача не завершается | вручную или `--execute` | да |
+
+Записи подтверждения фиксируют факт согласования локально и не удостоверяют личность. Разрешения и хуки Claude Code — ранняя обратная связь для одного клиента, не гарантия для других: общий гейт — `pnpm check` и CI (см. [совместимость](./compatibility.md)).
 
 ## Рабочая система проекта
 

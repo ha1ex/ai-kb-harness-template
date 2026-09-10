@@ -19,8 +19,9 @@
 | `pnpm kb:metrics` | `kb-metrics.mjs` | тренды качества из журнала по неделям (D1) |
 | `pnpm kb:digest` | `kb-digest.mjs` | утренний дайджест состояния KB (D4; см. `../docs/automation.md`) |
 | `pnpm kb:research` | `kb-research.mjs` | ограниченное исследование по ролям: ручные промпты или явный `--execute`, квоты, чеки и независимое ревью |
+| `pnpm kb:roster` | `kb-roster.mjs` | реестр ролей, сценариев и навыков с потребителями: что есть, что подключено, где копии у клиентов (read-only) |
 | `pnpm kb:update` | `kb-update.mjs` | обновление ядра от upstream по `.template-manifest.json` (C3) |
-| — | `kb-critic.mjs` | revision-промпт по битым цитатам; `--execute` запускает verify→revise через выбранный LLM-адаптер (N1) |
+| `pnpm kb:critic` | `kb-critic.mjs` | revision-промпт по битым цитатам; `--execute` запускает verify→revise через выбранный LLM-адаптер (N1) |
 | `pnpm kb:dream` | `dream-cycle.mjs` | еженедельный LLM-аудит + fact-консолидация (пишет в `.context/`) |
 | — | `suggest-links.mjs` | advisory-предложения `related:` (on-device, в `.context/`) |
 | — | `parse-raw.mjs` | бинарный артефакт (PDF/docx) → черновик `02_sources` (markitdown, опц.) |
@@ -28,7 +29,8 @@
 | — | `semantic/test-retrieval.mjs` | офлайн-юнит-тесты graph/temporal (CI-гейт) |
 | — | `semantic/test-control.mjs` | офлайн-тесты critique/provenance/маскирования цитат (CI-гейт) |
 | — | `semantic/test-gate.mjs` | adversarial-сьют контура доверия — векторы обхода гейта (A3, CI-гейт) |
-| `pnpm skill` | `skillopt/cli.mjs` | SkillOpt CLI (rollout/reflect/diff/apply) |
+| — | `skillopt/mcp-server.mjs` | read-only MCP SkillOpt: `skill_list_runs`, `skill_get_trace`, `skill_get_proposal`, `skill_list_evals`, `skill_get_eval`, `skill_get_comparison`; мутации — только через `pnpm skill` |
+| `pnpm skill` | `skillopt/cli.mjs` | SkillOpt CLI: `new` (эталон → `.context/`), `list`, `eval`/`rollout`, `reflect`, `propose`, `compare`, `approve`, `diff`, `apply`, `revert`, `runs` |
 | — | `check-decisions.mjs`, `check-md-frontmatter.mjs`, `check-provenance.mjs`, `session-start-context.mjs` | hook-скрипты (`.claude/settings.json`) |
 | — | `git-hooks/pre-push` | локальный гейт цитат до CI (`git config core.hooksPath scripts/git-hooks`) |
 | — | `lib/kb-root.mjs`, `lib/provenance.mjs`, `lib/journal.mjs`, `lib/frontmatter.mjs` | shared dependency-free утилиты (корень/конфиг, provenance, журнал, frontmatter) |

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, symlinkSync, existsSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, symlinkSync, existsSync, cpSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve, dirname } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -367,4 +367,72 @@ test('missing, duplicate and mismatched eval cases cannot create a passing compa
   put(f.root, `${f.evalDir}/one.yaml`, evalCase(f.name));
   put(f.root, `${f.evalDir}/one.yml`, evalCase(f.name));
   assert.equal(command(f.root, 'compare', runId, '--execute').status, 1);
+});
+
+test('skill new scaffolds only into .context from the template and chains into propose', (t) => {
+  const f = fixture(t);
+  cpSync(resolve('harness/templates/skill'), join(f.root, 'harness/templates/skill'), { recursive: true });
+  git(f.root, 'add', '.'); git(f.root, '-c', 'user.name=Test', '-c', 'user.email=test@example.invalid', 'commit', '-qm', 'template');
+  const created = json(f.root, 'new', 'demo-summary');
+  assert.equal(created.dir, '.context/skills/demo-summary');
+  for (const p of ['SKILL.md', 'evals/happy-path.yaml', 'evals/no-fabrication.yaml', 'evals/_fixtures/sample-source.md']) assert.ok(existsSync(join(f.root, created.dir, p)), p);
+  const text = readFileSync(join(f.root, created.dir, 'SKILL.md'), 'utf8');
+  assert.match(text, /^---\nname: demo-summary\n/); assert.match(text, /\nstatus: draft\n/); assert.doesNotMatch(text, /__SKILL_NAME__/);
+  for (const y of ['happy-path.yaml', 'no-fabrication.yaml']) assert.match(readFileSync(join(f.root, created.dir, 'evals', y), 'utf8'), /\nskill: demo-summary\n/);
+  // Nothing outside gitignored .context changes: the scaffold is advisory until propose/compare/approve/apply.
+  assert.equal(git(f.root, 'status', '--porcelain').trim(), '');
+  assert.ok(created.nextSteps.some(s => /skill propose demo-summary/.test(s)));
+  assert.ok(created.nextSteps.some(s => /profile\.skills/.test(s)));
+  const run = json(f.root, 'propose', 'demo-summary', '--file', join(created.dir, 'SKILL.md'), '--evals', join(created.dir, 'evals'), '--reason', 'New procedure drafted from the template.');
+  assert.equal(run.status, 'proposed');
+  assert.notEqual(command(f.root, 'new', 'demo-summary').status, 0, 'existing scaffold directory must not be overwritten');
+  assert.notEqual(command(f.root, 'new', f.name).status, 0, 'an existing skill name must be refused');
+});
+
+test('skill status and version are discovered; deprecated skills are unreachable and not copied', async (t) => {
+  const f = fixture(t);
+  const { discoverSkills } = await import(discoveryPath);
+  put(f.root, 'skills/verified-one/SKILL.md', `---\nname: verified-one\ndescription: Verified procedure.\nstatus: verified\nversion: 2\n---\n\n# Procedure\nGOOD\n`);
+  put(f.root, 'skills/old-one/SKILL.md', `---\nname: old-one\ndescription: Retired procedure.\nstatus: deprecated\n---\n\n# Procedure\nOLD\n`);
+  let result = discoverSkills(f.root);
+  assert.deepEqual(result.errors, []);
+  const byName = Object.fromEntries(result.skills.map(s => [s.name, s]));
+  assert.equal(byName['verified-one'].status, 'verified'); assert.equal(byName['verified-one'].version, 2);
+  assert.equal(byName['old-one'].status, 'deprecated'); assert.equal(byName['project-check'].status, null); assert.equal(byName['project-check'].version, null);
+  const listed = json(f.root, 'list');
+  assert.equal(listed.find(s => s.skill === 'verified-one').status, 'verified');
+  assert.equal(listed.find(s => s.skill === 'verified-one').version, 2);
+  put(f.root, 'skills/bogus-one/SKILL.md', `---\nname: bogus-one\ndescription: Bad status.\nstatus: shipped\n---\n\n# Procedure\nX\n`);
+  result = discoverSkills(f.root);
+  assert.ok(result.errors.some(e => /status/.test(e) && /bogus-one/.test(e)), result.errors.join('\n'));
+  rmSync(join(f.root, 'skills/bogus-one'), { recursive: true });
+  // A role that depends on a deprecated skill fails to load instead of silently dropping the procedure.
+  const role = (skills) => JSON.stringify({ version: 1, id: 'researcher', title: 'Researcher', purpose: 'Collect evidence', inputs: ['Question'], outputs: ['Findings'], skills, requiredContext: [], optionalContext: [], boundaries: [], qualityCriteria: ['Sources cited'] });
+  put(f.root, 'harness/roles/researcher.json', role(['old-one']));
+  const { loadWorkSystem } = await import(resolve('scripts/lib/work-system.mjs'));
+  assert.throws(() => loadWorkSystem(f.root), /deprecated skill: old-one/);
+  put(f.root, 'harness/roles/researcher.json', role(['verified-one']));
+  assert.doesNotThrow(() => loadWorkSystem(f.root));
+  // Clients receive only live procedures; deprecated copies fall into the existing retired cleanup.
+  const setup = spawnSync(process.execPath, [resolve('scripts/check-harness.mjs'), '--setup', '--client', 'codex'], { cwd: f.root, env: { ...process.env, KB_ROOT: f.root }, encoding: 'utf8' });
+  assert.equal(setup.status, 0, setup.stderr + setup.stdout);
+  assert.ok(existsSync(join(f.root, '.agents/skills/verified-one/SKILL.md')));
+  assert.ok(!existsSync(join(f.root, '.agents/skills/old-one/SKILL.md')));
+});
+
+test('list reports consumers of each skill and flags unreferenced project skills', (t) => {
+  const f = fixture(t);
+  put(f.root, 'harness/skills/canonical/SKILL.md', skill('canonical'));
+  const role = JSON.stringify({ version: 1, id: 'researcher', title: 'Researcher', purpose: 'Collect evidence', inputs: ['Question'], outputs: ['Findings'], skills: ['canonical'], requiredContext: [], optionalContext: [], boundaries: [], qualityCriteria: ['Sources cited'] });
+  put(f.root, 'harness/roles/researcher.json', role);
+  put(f.root, 'harness/workflows/research.json', JSON.stringify({ version: 1, id: 'research', title: 'Research', stages: [{ id: 'gather', title: 'Gather', role: 'researcher', skills: [], requiredArtifacts: ['findings'], requiresReview: false, requiresApproval: false }] }));
+  let listed = json(f.root, 'list');
+  const canonical = listed.find(s => s.skill === 'canonical'), project = listed.find(s => s.skill === f.name);
+  assert.deepEqual(canonical.usedBy, { roles: ['researcher'], stages: [], profile: null }); assert.equal(canonical.unreferenced, false);
+  assert.deepEqual(project.usedBy, { roles: [], stages: [], profile: null }); assert.equal(project.unreferenced, true, 'a project skill nobody references is built but not connected');
+  assert.match(ok(f.root, 'list'), /project-check .*used-by=none \(not in kb:context/);
+  put(f.root, '00_context/work-system.json', JSON.stringify({ version: 1, status: 'active', purpose: 'Study', roles: ['researcher'], workflows: ['research'], skills: [f.name], customRoles: {}, customWorkflows: {} }));
+  listed = json(f.root, 'list');
+  assert.equal(listed.find(s => s.skill === f.name).usedBy.profile, 'active');
+  assert.equal(listed.find(s => s.skill === f.name).unreferenced, false);
 });

@@ -429,3 +429,28 @@ test("legacy flat skills synthesize missing discovery fields without editing sou
   assert.ok(copy.endsWith(original));
   assert.equal(readFileSync(file, "utf8"), original);
 });
+test("roster lists consumers; harness check warns about unconnected project skills only with an active profile", () => {
+  const root = fixture();
+  mkdirSync(join(root, "skills"), { recursive: true });
+  writeFileSync(join(root, "skills/orphan-check.md"), "# Orphan procedure\nUse when requested.\n");
+  let r = cli(root, "kb-roster.mjs", ["--json"]);
+  assert.equal(r.status, 0, r.stderr);
+  const roster = JSON.parse(r.stdout);
+  assert.equal(roster.contractsInstalled, true);
+  assert.equal(roster.skills.find((s) => s.name === "orphan-check").unreferenced, true);
+  assert.ok(roster.skills.find((s) => s.name === "harness-evidence").usedBy.roles.includes("librarian"));
+  assert.deepEqual(roster.summary.unreferenced, ["orphan-check"]);
+  let check = JSON.parse(cli(root, "check-harness.mjs", ["--json"]).stdout);
+  assert.deepEqual(check.warnings, [], "without an active profile the registry stays quiet");
+  mkdirSync(join(root, "00_context"), { recursive: true });
+  writeFileSync(join(root, "00_context/work-system.json"), JSON.stringify({ version: 1, status: "active", purpose: "Study", roles: ["researcher"], workflows: ["research"], skills: [], customRoles: {}, customWorkflows: {} }));
+  r = cli(root, "check-harness.mjs", ["--json"]);
+  check = JSON.parse(r.stdout);
+  assert.equal(r.status, 0, check.errors.join("\n"));
+  assert.ok(check.warnings.some((w) => /orphan-check/.test(w)), JSON.stringify(check.warnings));
+  assert.match(cli(root, "check-harness.mjs").stdout, /WARN: .*orphan-check/);
+  const md = cli(root, "kb-roster.mjs", ["--md"]);
+  assert.equal(md.status, 0, md.stderr);
+  assert.equal(md.stdout, cli(root, "kb-roster.mjs", ["--md"]).stdout, "markdown registry is deterministic");
+  assert.match(md.stdout, /orphan-check .*не подключён/);
+});

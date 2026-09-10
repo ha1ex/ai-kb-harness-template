@@ -51,7 +51,7 @@ export function buildWorkContext(root,{task=null,taskId=task?.task,role:roleId,w
   for(const name of names){
     const skill=system.skills.get(name);
     add(skill.path,true,'skill',skill.text);
-    skills.push({name:skill.name,path:skill.path,source:skill.source,loaded:documents.some(d=>d.path===skill.path)});
+    skills.push({name:skill.name,path:skill.path,source:skill.source,status:skill.status??null,version:skill.version??null,loaded:documents.some(d=>d.path===skill.path)});
   }
   for(const path of ['.remember/core.md','.remember/preferences.md',...role.optionalContext])add(path,false,'memory');
   const sourcePaths=[...(task?.sources??[]),...(task?.stages??[]).flatMap(s=>(s.artifacts??[]).map(a=>a.path))];

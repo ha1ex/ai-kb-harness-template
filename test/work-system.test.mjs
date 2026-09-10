@@ -160,3 +160,14 @@ test('a plain external KB_ROOT still gets legacy session context without new con
   const r=cli(root,'session-start-context.mjs',['--json']);assert.equal(r.status,0,r.stderr);const c=JSON.parse(r.stdout);assert.equal(c.core,'Existing external KB');assert.equal(c.work.available,false);
   assert.equal(cli(root,'session-start-context.mjs',['--workflow','research','--json']).status,1);
 });
+test('additive role fields do not stale completed checkpoints but changed skills do',t=>{
+  const root=fixture(t);write(root,'brief.md','Question');
+  assert.equal(save(root,{workflow:'research',stages:[{id:'scope',status:'complete',result:'Scoped',artifacts:[{name:'brief',path:'brief.md'}]}]}).status,0);
+  const path='harness/roles/coordinator.json',role=JSON.parse(readFileSync(join(root,path),'utf8'));
+  write(root,path,{...role,frozenMetric:null,notes:'additive field'});
+  let c=JSON.parse(cli(root,'session-start-context.mjs',['--task','research-one','--json']).stdout);
+  assert.deepEqual(c.work.staleArtifacts,[]);
+  write(root,path,{...role,skills:role.skills.filter(s=>s!=='harness-handoff')});
+  c=JSON.parse(cli(root,'session-start-context.mjs',['--task','research-one','--json']).stdout);
+  assert.ok(c.work.staleArtifacts.some(a=>a.stage==='scope'&&/contract/i.test(a.reason)));
+});

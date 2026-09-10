@@ -1,0 +1,26 @@
+---
+type: eval-case
+version: v0.1
+skill: __SKILL_NAME__
+grader: label-presence
+tags: [regression, happy-path]
+budget:
+  max_tokens: 4000
+  timeout_ms: 90000
+owner: project
+---
+
+# Input
+
+Новый материал для процедуры __SKILL_NAME__:
+
+```markdown
+{{file:sample-source.md}}
+```
+
+Действуй по навыку __SKILL_NAME__: перечисли списком, какие файлы создашь или обновишь и какие утверждения вынесешь, с метками.
+
+# Expected
+
+- required labels: FACT, INFERENCE
+- at least: 2 distinct

@@ -22,11 +22,11 @@
       "mode": "100644"
     },
     ".template-manifest.json": {
-      "sha256": "840b51ea3d989061ca408cce35c19874e81fc0fed847c2192cd8c8d2832faa72",
+      "sha256": "8226b0a01eb94f0bd4a75485de5c25bf6da4cac80d8d61d3265f3e6dd07b1d89",
       "mode": "100644"
     },
     "docs/architecture.md": {
-      "sha256": "3a85d956f7552e532060e81febe1f474429c5e327a46e05d2a8b4b14405dc01c",
+      "sha256": "394df2f2a2713d4d3ca030a4588a433017b55be23459d9f4c6186613201543f6",
       "mode": "100644"
     },
     "docs/assets/viewer-light.png": {
@@ -34,11 +34,11 @@
       "mode": "100644"
     },
     "docs/compatibility.md": {
-      "sha256": "ce462d0314eea6430089d5051ce17c4e03e3d4fe6c8e5abcb1368b7924cfe63a",
+      "sha256": "5a714d1841b28c23f7c6bb5f16e5c1bb838cbba368c569f57ba29e9d63ce7ce2",
       "mode": "100644"
     },
     "docs/contributing.md": {
-      "sha256": "6c299e8c7ef1994976e1df4b3133da246985b66bb5fb09a7c78e8956bd8d5ee4",
+      "sha256": "1cc7afecc6e1b434db2e3cea85aa148e6cbc924dc068047b21901c6ec3ecc99d",
       "mode": "100644"
     },
     "docs/extensions.md": {
@@ -70,15 +70,15 @@
       "mode": "100644"
     },
     "docs/upgrades.md": {
-      "sha256": "38424c0f6bff01fd1cfe15d6e9241f68c86cd85eefeb145c71a3c3d2b92ba49d",
+      "sha256": "f053b2c0761a648231a799c722808a64ddcd0680654b3a953053ce3bef3135a1",
       "mode": "100644"
     },
     "docs/work-system.md": {
-      "sha256": "3664d7c98e1cbba5a7ea9ad4f6b7236f31db35aa5b18bee1397475007faed636",
+      "sha256": "8c8f8b64907fc7098da33422b8e336b1c056f4df13b0c00a3bf074e9beb59fdd",
       "mode": "100644"
     },
     "harness/README.md": {
-      "sha256": "9be9e60dfb3fe8ac951115b690f513519261049e1486d1bacea4631baef28829",
+      "sha256": "323e16f037aa9de0acb5cc7b14c9fac26036cfe4e12f58abb595ff1e9be822db",
       "mode": "100644"
     },
     "harness/adapters/CLAUDE.md": {
@@ -118,7 +118,7 @@
       "mode": "100644"
     },
     "harness/roles/README.md": {
-      "sha256": "ad698720a3bebdb0e98827403ddffbc6850a6ff9b526413f662acee82e7992cf",
+      "sha256": "c08802aefa3c48d2fc3ef9eae319c47ceef2b1dc1483a084348c92c21510037a",
       "mode": "100644"
     },
     "harness/roles/coordinator.json": {
@@ -146,7 +146,7 @@
       "mode": "100644"
     },
     "harness/rules/workflow.md": {
-      "sha256": "c985a5f9e6bf7133e6a0fb5e1d1d4a918df370436a53de37c869d2d368530a9e",
+      "sha256": "063a6394c559ad590c6b7fa213d4a91e493bd9e13fe7aec17c5257064d3965f3",
       "mode": "100644"
     },
     "harness/skills/economical-research/SKILL.md": {
@@ -185,6 +185,22 @@
       "sha256": "3ac255aa9a07765af1f8f7d8f33b8d8c4117255202c82283e40f8166c69e8ffd",
       "mode": "100644"
     },
+    "harness/templates/skill/SKILL.md": {
+      "sha256": "5898f6bdbb49836e3f78b77cd013b76dfd77bca58b1354b1a9f448e3411b7f51",
+      "mode": "100644"
+    },
+    "harness/templates/skill/evals/_fixtures/sample-source.md": {
+      "sha256": "e40e4b2163f606a2eb3c3dee2c6a03f68966d23eb3233ecca5688d4250a20766",
+      "mode": "100644"
+    },
+    "harness/templates/skill/evals/happy-path.yaml": {
+      "sha256": "aec5b099a06d54aa3f277813cb126c6a7518f1ee1cd83a555bb56bfff6e3fd64",
+      "mode": "100644"
+    },
+    "harness/templates/skill/evals/no-fabrication.yaml": {
+      "sha256": "c28c26cf84b4a6bdff7f5ee0bef3b823ad0cc0d737566d34b00c0a8acb3b7b8c",
+      "mode": "100644"
+    },
     "harness/templates/work-system.json": {
       "sha256": "369d614c9d1e00fc572d3f0e39ebfa7ee1a9bc934c80e60916c06298edcfb3aa",
       "mode": "100644"
@@ -206,15 +222,15 @@
       "mode": "100644"
     },
     "scripts/README.md": {
-      "sha256": "5aa0f757d3aa4bedc975ce407587d62712f16c8b90e296a4f06aece7e4935d10",
+      "sha256": "40713b1d7089c60aa9d4c7b0acc19149610562eb67f35253567856d51ccce80d",
       "mode": "100644"
     },
     "scripts/check-decisions.mjs": {
-      "sha256": "455517880067f2c39d9e225ff61b5ca17b05da7824b51968c7e256ef04522c44",
+      "sha256": "11f7984d2b09a15067791fa2fade29b7b2726815b06946bda908652512286510",
       "mode": "100644"
     },
     "scripts/check-harness.mjs": {
-      "sha256": "1c8dbbfae742c8bab34e59ec91a0e3327928502dabae5788dd631cbde686f724",
+      "sha256": "9fa85d632c1ffa0b750b08eaa1fc6d95bcb38bc9a868b633f67785bc76416673",
       "mode": "100644"
     },
     "scripts/check-md-frontmatter.mjs": {
@@ -290,7 +306,7 @@
       "mode": "100644"
     },
     "scripts/kb-digest.mjs": {
-      "sha256": "5c4e046319d465d277bd2e303838fe1a1acafcd887388e39900c60e4e9abc575",
+      "sha256": "788db8a308febef98b68fcf8e1ec7d030b38cc0d4a104d872e5141060fed0391",
       "mode": "100644"
     },
     "scripts/kb-doctor.mjs": {
@@ -317,6 +333,10 @@
       "sha256": "18537ceca73d10c96a3cad0d2ed03b68fa8adec7c5cc4d879adc1892a8163189",
       "mode": "100644"
     },
+    "scripts/kb-roster.mjs": {
+      "sha256": "677e1446441f27b39a47a8e0d15f89cbe628bbea6ccc141ef0243923dd618f73",
+      "mode": "100644"
+    },
     "scripts/kb-session.mjs": {
       "sha256": "682c16df0babfacbdfe3ccec6edf3d168998287162325dd450a9f42de7261b45",
       "mode": "100644"
@@ -327,6 +347,10 @@
     },
     "scripts/lib/agent-context.mjs": {
       "sha256": "bb71739a5a7194b143c327d7ef295a43a02e55db5d172e3abfdd30ac10f066ce",
+      "mode": "100644"
+    },
+    "scripts/lib/docs-drift.mjs": {
+      "sha256": "0dbc303a08fe17fbdf687534c1799c79c335ae5358b1209a599e72caafeea189",
       "mode": "100644"
     },
     "scripts/lib/findings.mjs": {
@@ -365,8 +389,12 @@
       "sha256": "0a1ed5fb87e5a86b5633dc13077ff2a860a6212a3167c40feb1ad633e36ec04d",
       "mode": "100644"
     },
+    "scripts/lib/roster.mjs": {
+      "sha256": "7697621817c2b7bcd336b9011ac095b88ae6878ef42f1b7b7fc33032d72bbb25",
+      "mode": "100644"
+    },
     "scripts/lib/skills.mjs": {
-      "sha256": "afc356dba51f365a917103771fecfaecc7c1dc84d1b88fc14c2d28d1c9b501dd",
+      "sha256": "3b83fe423deade05f906b9291ac597047b079615a6ef0ba43ef2a4155134204b",
       "mode": "100644"
     },
     "scripts/lib/template-state.mjs": {
@@ -374,15 +402,15 @@
       "mode": "100644"
     },
     "scripts/lib/work-context.mjs": {
-      "sha256": "40a9945136a5d73f9d358bcbb45546589e8709c4ae0dd77677ea2fd2d3744ba7",
+      "sha256": "74a72d97b4a3b5e272c3ce8a3387a91512f0dcf17c3a5c276f964441fdd439d5",
       "mode": "100644"
     },
     "scripts/lib/work-system.mjs": {
-      "sha256": "fa24ddf307f23729f8ecffdf322569d345a2c4d1b09ee62e2c8d71a9913fd8f3",
+      "sha256": "bf6d4ae0b43c3f03c33c4b1db65b78bff10cba1dda7aeb0b7edc4f73db97dc09",
       "mode": "100644"
     },
     "scripts/lib/workflow-state.mjs": {
-      "sha256": "14a9c3672bd55d1a169ae6f8ab2e7b81cc64ba5718ba6f9157770a6844e47441",
+      "sha256": "6564f75b30fd9a669ded53b3a9c18f68c9dc010048c1a25f46ea28e653af3a50",
       "mode": "100644"
     },
     "scripts/parse-raw.mjs": {
@@ -402,7 +430,7 @@
       "mode": "100644"
     },
     "scripts/semantic/README.md": {
-      "sha256": "350c42eef4969144170b4f981b744c99c1a1c9cff56e471c91dde88040bfe52d",
+      "sha256": "3615162f08e1aa95b5a87198bf43fb271989ba98701b1addbd9dffb32fed82c5",
       "mode": "100644"
     },
     "scripts/semantic/backlinks.mjs": {
@@ -482,7 +510,7 @@
       "mode": "100644"
     },
     "scripts/skillopt/cli.mjs": {
-      "sha256": "5768370922402ada77819434810b610bfef9d32aa361be03af8940a64826d7c1",
+      "sha256": "5a7f6e0dc3c9acf5382cfc525cef913ba0203e9afc16b61682c504d747cd2b45",
       "mode": "100644"
     },
     "scripts/skillopt/config.mjs": {
@@ -510,7 +538,7 @@
       "mode": "100644"
     },
     "scripts/skillopt/evals/loader.mjs": {
-      "sha256": "82a3ec9adbec597f71df30b9496c162184653a5fb551864c02bbc5617cf52b0a",
+      "sha256": "7cf318833f9a267aea4775c48ae5c50241d917d0f6edad5a4295fe48e57de4dd",
       "mode": "100644"
     },
     "scripts/skillopt/llm/adapter.mjs": {
@@ -569,6 +597,10 @@
       "sha256": "36de3055fac10231b10b11a718e12931906cae86e6e3ecb179862181f5913725",
       "mode": "100644"
     },
+    "scripts/skillopt/runner/scaffold.mjs": {
+      "sha256": "19b5fc5920d4a23b4137697f6fe3284fac23a255e900a5a594064810062d9b3b",
+      "mode": "100644"
+    },
     "scripts/skillopt/runner/snapshot.mjs": {
       "sha256": "2a5e8e15a75d522439509b3900010a4ed3492e62d0e8936f0e9aac0a9d055fc3",
       "mode": "100644"
@@ -590,11 +622,15 @@
       "mode": "100644"
     },
     "test/agents-runtime.test.mjs": {
-      "sha256": "ab32c4879dcc4db87f88aa95cf6dd263357aedae22b5253d58970086a25bf23e",
+      "sha256": "d79b9434795804db6136adac6e29c6a69b8133eafcbd4fce5049a43f33575e8e",
       "mode": "100644"
     },
     "test/content-quality.test.mjs": {
       "sha256": "c0a946e8f9495a16ba9c93ca37e32a4b18f626ca4e0ce6a504d176e2bf6c6b39",
+      "mode": "100644"
+    },
+    "test/docs-drift.test.mjs": {
+      "sha256": "2d6e153731a3a271f80dc1346e4bbb396d8a982fc96612f4cb7a28add7237059",
       "mode": "100644"
     },
     "test/knowledge-findings.test.mjs": {
@@ -614,7 +650,7 @@
       "mode": "100644"
     },
     "test/skill-lifecycle.test.mjs": {
-      "sha256": "b65ca4953952140a7959b65ef762d146e3486fed43582fbbb12b7bbff0cc0ba9",
+      "sha256": "eb07acfe410c05b60d2b01632a4becba40f3f3d8390b40d3ae412eca03876ccf",
       "mode": "100644"
     },
     "test/template-init.test.mjs": {
@@ -626,7 +662,7 @@
       "mode": "100644"
     },
     "test/work-system.test.mjs": {
-      "sha256": "efbaeb9c8e659e0e6a4aaedb94144d7699b8ee15201513da3e98ee9a93ef1af7",
+      "sha256": "b82b458730398aff28b87c8ade3c869db25137319bb966c6e1a6303dafe29192",
       "mode": "100644"
     },
     "tools/viewer/.gitignore": {
@@ -1010,6 +1046,9 @@
       },
       "/scripts/kb:research": {
         "value": "node scripts/kb-research.mjs"
+      },
+      "/scripts/kb:roster": {
+        "value": "node scripts/kb-roster.mjs"
       }
     }
   },
@@ -1772,7 +1811,7 @@
   },
   "seedFiles": {
     "00_context/spaces.json": "24b68d40880ef1e8f3839d72758ef40457cc851d7fc0136a99ffaa337a0f5cd6",
-    "index.md": "bd2a47387554b1781d027c5068d05964a2538c79513990d8d06ea8a796d97302",
+    "index.md": "dbbf338f52d1dd9ac9064a5f6b4b2f3b91624a7ddcfe021517a4ae752859da60",
     ".claude/settings.json": "bc919c999fae1b4c8555501920120f1a202db9fbf823ca6aaffc41a683750bd1"
   }
 }

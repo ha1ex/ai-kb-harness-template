@@ -38,6 +38,7 @@
     "viewer:test": "pnpm -C tools/viewer test",
     "kb:profile": "node scripts/kb-profile.mjs",
     "kb:findings": "node scripts/kb-findings.mjs",
-    "kb:research": "node scripts/kb-research.mjs"
+    "kb:research": "node scripts/kb-research.mjs",
+    "kb:roster": "node scripts/kb-roster.mjs"
   }
 }

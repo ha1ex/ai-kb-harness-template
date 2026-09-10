@@ -16,6 +16,7 @@ import { createHash } from "node:crypto";
 import { discoverSkills } from "./lib/skills.mjs";
 import { loadResearchPolicy } from "./lib/research-policy.mjs";
 import { loadWorkSystem } from "./lib/work-system.mjs";
+import { buildRoster } from "./lib/roster.mjs";
 import { spawnSync } from "node:child_process";
 const args = process.argv.slice(2);
 // URL decoding and KB_ROOT are handled explicitly for paths containing spaces.
@@ -149,6 +150,8 @@ if (!errors.length) {
     const discovery = discoverSkills(base);
     errors.push(...discovery.errors);
     for (const skill of discovery.skills) {
+      // Deprecated procedures fall into the existing retired-copy cleanup.
+      if (skill.status === "deprecated") continue;
       manage(`${dir}/${skill.name}/SKILL.md`, skill.text);
       if (!skill.dir) continue;
       const bundle = join(base, skill.dir);
@@ -251,11 +254,24 @@ if (!errors.length) {
     }
   }
 }
+// Advisory: with an active profile, a project skill that no role, stage or the profile references is
+// "built but not connected" — it never reaches kb:context. Warnings never change the exit code.
+const warnings = [];
+try {
+  const roster = buildRoster(base);
+  if (roster.profile?.status === "active" && roster.summary.unreferenced.length)
+    warnings.push(
+      `Project skills without a consumer (role, stage or active profile): ${roster.summary.unreferenced.join(", ")} — add them to profile.skills or a workflow stage; clients may still load them by description`,
+    );
+} catch (e) {
+  warnings.push(`Roster unavailable: ${e.message}`);
+}
 const report = {
   clients: state.clients,
   setup,
   actions,
   errors: [...new Set(errors)],
+  warnings,
   liveClientsVerified: false,
 };
 console.log(
@@ -264,6 +280,7 @@ console.log(
     : [
         ...actions.map((x) => `Updated: ${x}`),
         ...report.errors.map((x) => `ERROR: ${x}`),
+        ...warnings.map((x) => `WARN: ${x}`),
         report.errors.length
           ? "Harness check failed."
           : `Harness configuration OK (${state.clients.join(", ") || "no clients selected"}; live sessions not tested).`,

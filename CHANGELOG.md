@@ -7,6 +7,24 @@
 
 ## [Unreleased]
 
+### Added
+
+- Эталон проектного навыка `harness/templates/skill/` (SKILL.md из пяти секций и два проверочных случая) и команда `pnpm skill new <name>`: черновик создаётся только из шаблона и только в `.context/`, дальше — обычный `propose → compare → approve → apply`.
+- Необязательные поля `status: draft|verified|deprecated` и `version` во frontmatter навыка; `pnpm skill list` и пакет `kb:context` показывают их. Навык со статусом `deprecated` нельзя назначить роли, этапу или профилю, и он не копируется клиентам.
+- Реестр `pnpm kb:roster` (`--json|--md`): роли, этапы сценариев, навыки, их потребители, проверки и копии у клиентов; `pnpm skill list` показывает `used-by`; `pnpm harness:check` предупреждает о проектных навыках без потребителя при активном профиле; строка реестра в дайджесте.
+- Тест `test/docs-drift.test.mjs`: команды `pnpm`, пути и имена MCP-инструментов в template-owned документации сверяются с `package.json`, файлами и `registerTool`; таблица «Слои контроля» в `docs/architecture.md` покрывает все гейты из pre-push, хуков и CI. Исправлены найденные расхождения (`kb:critic`, `kb_promote`, инструменты `skill_*`, плейсхолдер в `docs/upgrades.md`).
+- Источник и синтез по статье «Агенты PartyStation: как устроена система»: `02_sources/2026-09-09-pstv-agents-system.md`, `04_synthesis/pstv-agents-adoption.md` — что перенести в шаблон поверх 0.5.0/0.6.0.
+
+### Changed
+
+- Отпечаток контракта этапа учитывает только поля роли, меняющие требования (`id`, `version`, `skills`, `requiredContext`, `optionalContext`, `boundaries`, `qualityCriteria`, `inputs`, `outputs`); дополнительные поля роли не переоткрывают завершённые этапы.
+- Сообщение хука `check-decisions` больше не ссылается на несуществующий `99_templates/decision-template.md`.
+
+### Migration
+
+- Завершённые этапы задач, сохранённые до обновления, один раз покажутся устаревшими по контракту (`staleArtifacts`): переоткройте и перепроверьте их.
+- Неизвестное значение `status:` во frontmatter навыка теперь ошибка обнаружения; используйте `draft`, `verified`, `deprecated` или удалите поле.
+
 ## [0.6.0] - 2026-09-09
 
 ### Added

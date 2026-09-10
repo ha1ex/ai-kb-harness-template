@@ -45,3 +45,10 @@
 - harness | 0.4.0: общие правила и адаптеры агентов, передача задач, общий LLM runtime, проверки контента, обновление по исходной базе файлов.
 - viewer | переносимые тематические разделы и читаемые документы, локальный и статический режимы, настраиваемый экспорт raw.
 - docs | назначение, начало работы, правила интерфейса, совместимость, миграция и выпуск шаблона.
+
+## 2026-09-10
+
+- 01_raw/harness-research | дамп статьи «Агенты PartyStation: как устроена система» (immutable) → `2026-09-09-pstv-agents-system.txt`.
+- 02_sources | саммари статьи по разделам → `2026-09-09-pstv-agents-system.md`.
+- 04_synthesis | `pstv-agents-adoption.md` — что взять из системы агентов PartyStation поверх 0.5.0/0.6.0: adopt now / later / not, три волны, открытые вопросы владельцу.
+- harness (Skills) | эталон навыка `harness/templates/skill/` + `pnpm skill new`; поля `status`/`version` навыка (`deprecated` недостижим для ролей и не копируется клиентам); стабильный отпечаток контракта роли в `workflow-state.mjs`; хук `check-decisions` без ссылки на `99_templates`; реестр `pnpm kb:roster` + `used-by` в `skill list` + предупреждение `harness:check` о неподключённых навыках; тест дрейфа документации `test/docs-drift.test.mjs` + таблица «Слои контроля» в `docs/architecture.md`.

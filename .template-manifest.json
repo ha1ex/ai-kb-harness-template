@@ -89,7 +89,8 @@
       "/scripts/viewer:test",
       "/scripts/kb:profile",
       "/scripts/kb:findings",
-      "/scripts/kb:research"
+      "/scripts/kb:research",
+      "/scripts/kb:roster"
     ]
   },
   "demoPaths": [
