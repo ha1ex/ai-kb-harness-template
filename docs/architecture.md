@@ -1,7 +1,7 @@
 ---
 type: reference
 title: "Архитектура AI KB Harness"
-version: v0.6
+version: v0.7
 ---
 
 # Архитектура AI KB Harness

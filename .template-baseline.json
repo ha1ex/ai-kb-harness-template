@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "templateVersion": "0.6.0",
+  "templateVersion": "0.7.0",
   "repository": "https://github.com/ha1ex/ai-kb-harness-template.git",
-  "sourceRef": "v0.6.0",
+  "sourceRef": "v0.7.0",
   "sourceCommit": null,
   "files": {
     ".github/workflows/ci.yml": {
@@ -22,11 +22,11 @@
       "mode": "100644"
     },
     ".template-manifest.json": {
-      "sha256": "f76ed6e1cd1f98156d75977ef00868031c329dbb648e15871a30d0c3b54567e5",
+      "sha256": "5110a9010cbf579a2885f8d6293a1d70e7acfb29cb91ea4eec0c17d390f41236",
       "mode": "100644"
     },
     "docs/architecture.md": {
-      "sha256": "032a6c1380a6af1281496c3e8fa8c23f28d722f818b9d163f7ed5515b62a8c2e",
+      "sha256": "1c1387be4d910596150fe14a15620106249d26d219c2772d2e8efcb100306a78",
       "mode": "100644"
     },
     "docs/assets/viewer-light.png": {
@@ -67,6 +67,10 @@
     },
     "docs/releases/0.6.0.md": {
       "sha256": "1c0d3f138ad8405148f94de4c5a08d8551a50d2839436495b92bfd661cbecce8",
+      "mode": "100644"
+    },
+    "docs/releases/0.7.0.md": {
+      "sha256": "b5faa9a15ce583d4687c33e273db97467ce023011184773955e5a97f9f4398e3",
       "mode": "100644"
     },
     "docs/research.md": {

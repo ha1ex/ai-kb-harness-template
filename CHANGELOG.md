@@ -7,6 +7,8 @@
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-09-10
+
 ### Added
 
 - Эталон проектного навыка `harness/templates/skill/` (SKILL.md из пяти секций и два проверочных случая) и команда `pnpm skill new <name>`: черновик создаётся только из шаблона и только в `.context/`, дальше — обычный `propose → compare → approve → apply`.
@@ -182,6 +184,9 @@
 - **interviewer-agent** — скил с коротким триггером «интервью» / «interview»
   для auto-trigger в `.claude/skills`.
 
-[Unreleased]: https://github.com/ha1ex/ai-kb-harness-template/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/ha1ex/ai-kb-harness-template/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/ha1ex/ai-kb-harness-template/releases/tag/v0.7.0
+[0.6.0]: https://github.com/ha1ex/ai-kb-harness-template/releases/tag/v0.6.0
+[0.5.0]: https://github.com/ha1ex/ai-kb-harness-template/releases/tag/v0.5.0
 [0.4.0]: https://github.com/ha1ex/ai-kb-harness-template/releases/tag/v0.4.0
 [0.2.0]: https://github.com/ha1ex/ai-kb-harness-template/releases/tag/v0.2.0

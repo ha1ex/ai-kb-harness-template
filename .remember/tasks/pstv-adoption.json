@@ -81,7 +81,9 @@
     "scripts/lib/lessons.mjs",
     "test/approval.test.mjs",
     "test/check-runner.test.mjs",
-    "test/invariants.test.mjs"
+    "test/invariants.test.mjs",
+    "README.md",
+    "docs/releases/0.7.0.md"
   ],
   "checks": [
     {
@@ -113,6 +115,11 @@
       "command": "pnpm kb:release:baseline && pnpm kb:release:check",
       "outcome": "passed",
       "evidence": "Baseline 0.6.0: 247 managed files; version and baseline match"
+    },
+    {
+      "command": "pnpm kb:release:baseline && pnpm kb:release:check (0.7.0)",
+      "outcome": "passed",
+      "evidence": "Baseline 0.7.0: 248 managed files; version and baseline match"
     }
   ],
   "openQuestions": [
@@ -124,7 +131,7 @@
     "Подключать ли skill-ingest и skill-decision-log в профиль шаблона (сейчас kb:roster показывает их как не подключённые)?"
   ],
   "status": "active",
-  "result": "Волны 0–3 внедрены и проверены; изменения волны 1 запушены в main (2cfc279), волны 2–3 — следующим коммитом",
+  "result": "Волны 0–3 внедрены и выпущены как 0.7.0 (CHANGELOG, docs/releases/0.7.0.md, README обновлён целиком, baseline 0.7.0, тег v0.7.0); тесты 177/177, pnpm check 6/6",
   "goal": "Перенести в шаблон применимые практики из статьи «Агенты PartyStation»: зафиксировать анализ в KB и внедрить волны 1–3 дорожной карты 04_synthesis/pstv-agents-adoption.md",
   "acceptanceCriteria": [
     "Саммари и синтез по статье лежат в 02_sources и 04_synthesis; log.md и index.md обновлены",
@@ -135,8 +142,8 @@
     "Отложенные пункты (P4, P5, P7-фаза 2, P11, P12, P13-хвост, P1-хвост) явно перечислены в синтезе с условием «когда»; релиз версии — решение владельца"
   ],
   "decisions": [],
-  "nextStep": "Решение владельца: выпустить как 0.7.0 (CHANGELOG Unreleased → версия, docs/releases/0.7.0.md, README) и ответить на открытые вопросы; затем отложенные пункты по условиям «когда» из 04_synthesis/pstv-agents-adoption.md",
+  "nextStep": "Ответить на открытые вопросы владельца и по условиям «когда» из 04_synthesis/pstv-agents-adoption.md браться за отложенные пункты (P4, P5, P7-фаза 2, P11, P12, P13-хвост, P1-хвост); проекты обновляются pnpm kb:update --ref v0.7.0",
   "task": "pstv-adoption",
   "owner": "claude-fable",
-  "updatedAt": "2026-09-10T06:50:05.610Z"
+  "updatedAt": "2026-09-10T07:11:06.112Z"
 }
