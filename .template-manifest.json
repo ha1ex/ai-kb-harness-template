@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "templateVersion": "0.8.0",
+  "templateVersion": "0.8.1",
   "upstream": "https://github.com/ha1ex/ai-kb-harness-template.git",
   "templateOwned": [
     "harness",

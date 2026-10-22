@@ -8,6 +8,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const { failed } = runChecks(
   [
     ["scripts/check-harness.mjs"],
+    ["scripts/kb-doctor.mjs"],
     ["scripts/check-spaces.mjs"],
     ["scripts/check-documents.mjs"],
     ["scripts/check-portability.mjs"],

@@ -107,6 +107,9 @@ export default {
     // Порог свежести synthesis в днях: считается по дате документа (updated/date/ingested), затем по последнему
     // коммиту, затем по mtime. status: living не стареет. Дефолт 60.
     staleDays: 60,
+    // Synthetic walkthroughs teach the format; their historical dates are not project freshness.
+    // Exact paths only; metadata, source links and provenance checks remain enabled.
+    excludePaths: ['04_synthesis/walkthrough-pilot-hypotheses.md'],
   },
 
   decisions: {

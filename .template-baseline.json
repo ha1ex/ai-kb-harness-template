@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "templateVersion": "0.8.0",
+  "templateVersion": "0.8.1",
   "repository": "https://github.com/ha1ex/ai-kb-harness-template.git",
-  "sourceRef": "v0.8.0",
+  "sourceRef": "v0.8.1",
   "sourceCommit": null,
   "files": {
     ".github/workflows/ci.yml": {
@@ -22,11 +22,11 @@
       "mode": "100644"
     },
     ".template-manifest.json": {
-      "sha256": "0b496de4d54fbd30dd84a7a028db34c285f831225b74917d3b11588d3d52a81a",
+      "sha256": "6bbd7053a7b07fbb3e223aed32360b47ccade256433a2d3900569b384b6d796c",
       "mode": "100644"
     },
     "docs/architecture.md": {
-      "sha256": "13597b39df9cfffb897b2f283a4be5df14862cc2bd7273e8b451ca25ac38d429",
+      "sha256": "2bb9a8f0ccf34f5991163b50276b4d5735cc1d0a2462a556f6e9f5bf712a57c0",
       "mode": "100644"
     },
     "docs/assets/viewer-light.png": {
@@ -91,6 +91,10 @@
     },
     "docs/releases/0.8.0.md": {
       "sha256": "a01b9b881f866eb761e788decbe73e3795fbe519b0b2093729dea544fe50fd02",
+      "mode": "100644"
+    },
+    "docs/releases/0.8.1.md": {
+      "sha256": "547c65d2e2a1aa476aa068a63877fda5d2732e0fa760f5eb651f4b6e874bf473",
       "mode": "100644"
     },
     "docs/research.md": {
@@ -262,7 +266,7 @@
       "mode": "100644"
     },
     "scripts/README.md": {
-      "sha256": "8e594c769370b230b12bfea466f12060bc46ccb57545405930510631a71a4bc4",
+      "sha256": "f614807f778ff5e70d5bb79a91833bebd9e658ab8ebd7dee0d5d718a49b7798e",
       "mode": "100644"
     },
     "scripts/build-document.mjs": {
@@ -318,7 +322,7 @@
       "mode": "100644"
     },
     "scripts/git-hooks/check.mjs": {
-      "sha256": "47b1a002d86ce709d4cbd1afe32ddcc4965353453930bd230a6a20604db5e3af",
+      "sha256": "97377332def10c9423885be30173c2f970c46a9dd68a701e140a88e0e3193c57",
       "mode": "100644"
     },
     "scripts/git-hooks/post-checkout": {
@@ -366,7 +370,7 @@
       "mode": "100644"
     },
     "scripts/kb-doctor.mjs": {
-      "sha256": "2d0bd5d706d0ff5887d131f2fff2f57dbe6a3224c0489a873ac4bbbe3c9566b2",
+      "sha256": "18b400596fd03bbd2bb9d05217e1d914751cb0bd0ebd35a021a674141d7e4b83",
       "mode": "100644"
     },
     "scripts/kb-findings.mjs": {
@@ -730,7 +734,7 @@
       "mode": "100644"
     },
     "test/knowledge-findings.test.mjs": {
-      "sha256": "c566380050f658c0c16cc7163437a44de22f7dc6c68417a4e61f14721af2e5cf",
+      "sha256": "cb0fe8e73aa03acc5a53889195078d3ea96ae3253a21f0525024f1d2900086b6",
       "mode": "100644"
     },
     "test/research-execution.test.mjs": {
@@ -1228,23 +1232,6 @@
     }
   },
   "demoFiles": {
-    "06_outputs/documents/archive/demo-note-v0-1.md": "6344ffdfa130ef4926d40f53e37b2846abeebfb6048a885345be4dda936f7745",
-    "06_outputs/documents/demo-appendix.md": "902ea23c5a15da9a02014b8cd71c03f0bcf4bbd259d96d44b77f692fb79106bb",
-    "06_outputs/documents/demo-note-print.html": "5d9cca58e824b9623678eeefbd871bce7963b7acd01f1d8c63a2e75cc8eb8e5e",
-    "06_outputs/documents/demo-note.export.json": "ada4ef9706ef26e0dfd010c3e497df391107b0022d16ee7bead1dcaadc7221de",
-    "06_outputs/documents/demo-note.md": "2495fd429cdbc4006dd29d95e3dadeb81c4316a4d255267df37b7998d28562d1",
-    "06_outputs/documents/demo-note.pdf": "e411c13ebfeeeeb967563eed353391b7272e8fc553de4f3e373dd6ea169d8c0f",
-    "06_outputs/maps/_registry.json": "fd8a6afd90a21d7bbf280f5b65bd9e62347bd091e215ae732119fc07d9572981",
-    "06_outputs/methods/_registry.json": "3c31f72fa646faea77f5dbbee6ee81560b7adbd0609ccd40ebc338fb71ee2a74",
-    "06_outputs/methods/demo-evidence/_method.md": "5b162cb74d0e494f403a88f50d66ca881f16349491174f966ef3772028b9250d",
-    "06_outputs/methods/google-slides/_method.md": "aa9e56b62e820af38d9f9f761ed3d236f0d062ad956f9b89f96bddd3967ff51c",
-    "06_outputs/methods/hypothesis-mapping/_method.md": "0a5e4d556be7c9c9afe56bca606650f276a58129e0d3bb09e0e222507110e195",
-    "06_outputs/methods/nmt/_method.md": "4a03a584c932299f1a8cf30ae99103608e6c0652f09159ed3b1f5fad0f228b30",
-    "06_outputs/methods/ooda/_method.md": "05d3d1d435cba0f558fb9df1fee41b513fc3ac9ef8dc00ef8d59b87960370124",
-    "06_outputs/methods/pm-os/_method.md": "ba505457494fe3b50f4249d0e6065ab848724b556cd0927c4a6988563f80d0d2",
-    "06_outputs/methods/sociotech-skills/_method.md": "dfbd978d96401436ed54a549e4d02159f6e14ed2b3c851fdb0799782e40b9cee",
-    "06_outputs/methods/xpm/_method.md": "68e84596a681dc6cb7d5361321a95e7fc70185ec582f6284437efab66bfc831c",
-    "06_outputs/research/_registry.json": "de12429ab7c9aedaa9a7660f078dd42cd9bb41d0bf274878d3a17ecc34a01211",
     "00_context/walkthrough-product.md": "762d25f6ec0c7325a7bbf4b0b8b60d94012b1e1823a6bddec263e9f54fd163f5",
     "01_raw/walkthrough/2026-06-30-interview-cto.md": "2d0d37169c693872c6ecb0228f6dc933716aa726c139fe0be8f438bfd7028eef",
     "02_sources/2026-06-30-walkthrough-interview-cto.md": "4e5224bf4eece06aa9c23ac80065fccf04cff15e791ec32a1bf91050d96a2f79",
@@ -1776,6 +1763,12 @@
     "06_outputs/cybos-cases/11-data-bi/C-141-what-changed-why-so-what-now-what-analysis-discipline.md": "7187acaafc3476be2bba3cfa9c80a757ed3a77a44d4f72f4ca9c0b917cfb8c81",
     "06_outputs/cybos-cases/_categories.md": "b96a2b33cd457f275a37ecc9df87ffbb005389356f566808027d0b8e94333596",
     "06_outputs/cybos-cases/_index.md": "57aff9cec23e924fa240fc8e579ac14d96e2d09906f61e780a8489a8e48af291",
+    "06_outputs/documents/archive/demo-note-v0-1.md": "6344ffdfa130ef4926d40f53e37b2846abeebfb6048a885345be4dda936f7745",
+    "06_outputs/documents/demo-appendix.md": "902ea23c5a15da9a02014b8cd71c03f0bcf4bbd259d96d44b77f692fb79106bb",
+    "06_outputs/documents/demo-note-print.html": "5d9cca58e824b9623678eeefbd871bce7963b7acd01f1d8c63a2e75cc8eb8e5e",
+    "06_outputs/documents/demo-note.export.json": "ada4ef9706ef26e0dfd010c3e497df391107b0022d16ee7bead1dcaadc7221de",
+    "06_outputs/documents/demo-note.md": "2495fd429cdbc4006dd29d95e3dadeb81c4316a4d255267df37b7998d28562d1",
+    "06_outputs/documents/demo-note.pdf": "e411c13ebfeeeeb967563eed353391b7272e8fc553de4f3e373dd6ea169d8c0f",
     "06_outputs/fabric-patterns/01-engineering-productivity/FAB-001-coding-master.md": "a93408f787a06cbdcb490efa3df7ca481459926957f11113b042caea3b24c3c4",
     "06_outputs/fabric-patterns/01-engineering-productivity/FAB-002-create-bd-issue.md": "6b5e50d173f7997fbe95e06198b8fa160af3430c90b34ae747a8624a372de4f1",
     "06_outputs/fabric-patterns/01-engineering-productivity/FAB-003-create-coding-feature.md": "212a2213c31453dcd5ff30c04d000a0ef82454f7c14bc108880ca6be5c4d1991",
@@ -1996,6 +1989,17 @@
     "06_outputs/fabric-patterns/13-cybersecurity/FAB-218-write-semgrep-rule.md": "f708839cda48cc93acf546457d12dbe5d1cb0517befecc709c4be2b7578d90fa",
     "06_outputs/fabric-patterns/_categories.md": "7f56fd061f61201e31269855457963308bb7ac2e8b41b709107365b743de364b",
     "06_outputs/fabric-patterns/_index.md": "38f2883eb6663154e044718d379895879d7de442e6c797caab6d52e9436bcfd7",
+    "06_outputs/maps/_registry.json": "fd8a6afd90a21d7bbf280f5b65bd9e62347bd091e215ae732119fc07d9572981",
+    "06_outputs/methods/_registry.json": "3c31f72fa646faea77f5dbbee6ee81560b7adbd0609ccd40ebc338fb71ee2a74",
+    "06_outputs/methods/demo-evidence/_method.md": "5b162cb74d0e494f403a88f50d66ca881f16349491174f966ef3772028b9250d",
+    "06_outputs/methods/google-slides/_method.md": "aa9e56b62e820af38d9f9f761ed3d236f0d062ad956f9b89f96bddd3967ff51c",
+    "06_outputs/methods/hypothesis-mapping/_method.md": "0a5e4d556be7c9c9afe56bca606650f276a58129e0d3bb09e0e222507110e195",
+    "06_outputs/methods/nmt/_method.md": "4a03a584c932299f1a8cf30ae99103608e6c0652f09159ed3b1f5fad0f228b30",
+    "06_outputs/methods/ooda/_method.md": "05d3d1d435cba0f558fb9df1fee41b513fc3ac9ef8dc00ef8d59b87960370124",
+    "06_outputs/methods/pm-os/_method.md": "ba505457494fe3b50f4249d0e6065ab848724b556cd0927c4a6988563f80d0d2",
+    "06_outputs/methods/sociotech-skills/_method.md": "dfbd978d96401436ed54a549e4d02159f6e14ed2b3c851fdb0799782e40b9cee",
+    "06_outputs/methods/xpm/_method.md": "68e84596a681dc6cb7d5361321a95e7fc70185ec582f6284437efab66bfc831c",
+    "06_outputs/research/_registry.json": "de12429ab7c9aedaa9a7660f078dd42cd9bb41d0bf274878d3a17ecc34a01211",
     "docs/examples/audit-report-2026-05-29.md": "4aea07b78d05a22b074c22ab3c672ff8e969707f119de3a96070304302a9aa52",
     "docs/examples/dedup-report.md": "086377797a7662f369cb474040aab0832beefe9594a529a7cf10b91df236b53e",
     "docs/examples/eval-report.md": "c93c285f30e2ae88d5d69dc014a63441fca4a192e2f124e518535b8ac3c39040",

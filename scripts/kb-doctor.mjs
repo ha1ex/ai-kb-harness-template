@@ -39,6 +39,8 @@ const recordFindings = argv.includes('--record-findings');
 const kbConfig = await loadKbConfig();
 // Проект может сдвинуть порог (kb.config.mjs → doctor.staleDays); дефолт совпадает с прежним хардкодом.
 const STALE_DAYS = Number(kbConfig.doctor?.staleDays) > 0 ? Number(kbConfig.doctor.staleDays) : 60;
+// Only exact, explicitly configured example paths skip age checks. Other health checks remain active.
+const STALE_EXCLUDES = new Set(Array.isArray(kbConfig.doctor?.excludePaths) ? kbConfig.doctor.excludePaths.filter(p => typeof p === 'string').map(p => p.replace(/^\/+/, '')) : []);
 const APPROVAL = approvalConfig(kbConfig);
 const INBOX_STALE_DAYS = 14;  // .context/inbox: needs-review старше этого — залежавшаяся память (advisory)
 const NOW = Date.now();
@@ -157,7 +159,7 @@ for (const layer of Object.keys(LAYERS)) {
 
     // 4. stale synthesis — возраст знания, а не файла: дата frontmatter → последний коммит → mtime.
     //    mtime на свежем checkout всегда «сегодня», поэтому один он гейт не держит. status: living не стареет.
-    if (rules.staleCheck && String(fields.status || '').toLowerCase() !== 'living') {
+    if (rules.staleCheck && !STALE_EXCLUDES.has(rel) && String(fields.status || '').toLowerCase() !== 'living') {
       const { ageDays, basis } = documentAge(rel, fields, stat.mtimeMs);
       if (ageDays >= STALE_DAYS) issues.staleSynthesis.push({ file: rel, age_days: ageDays, basis });
     }

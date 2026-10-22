@@ -16,7 +16,7 @@
 | `pnpm kb:search` | `semantic/search.mjs` | hybrid-поиск (vector + BM25 + RRF + graph + temporal; stub/deprecated скрыты) |
 | `pnpm kb:think` | `semantic/think.mjs` | промпт-синтез с цитатами |
 | `pnpm kb:eval` | `semantic/eval.mjs` | retrieval-eval (recall@k/MRR) + регрессия vs baseline + D3-гейт (stub в топах); A/B `--graph/--rerank` |
-| `pnpm kb:doctor` | `kb-doctor.mjs` | health-check KB (+ advisory: stale inbox/answer-cards, stub-карточки) |
+| `pnpm kb:doctor` | `kb-doctor.mjs` | health-check KB; явные исключения учебных дат через doctor.excludePaths (+ advisory: stale inbox/answer-cards, stub-карточки) |
 | `pnpm kb:verify` | `semantic/verify.mjs` | проверка цитат `[source:]` (Tier-1 gate: traversal/coverage + FACT-advisory + critique); `--scan --provenance` — CI-гейт (N3/N4); `--scan` без `--no-semantic` — Tier-2 из индекса (D2) |
 | `pnpm kb:metrics` | `kb-metrics.mjs` | тренды качества из журнала по неделям (D1) |
 | `pnpm kb:digest` | `kb-digest.mjs` | утренний дайджест состояния KB (D4; см. `../docs/automation.md`) |

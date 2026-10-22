@@ -323,3 +323,12 @@ test('a manual dream run and a zero-file verify scan leave visible traces instea
   assert.equal(scan.status, 0, scan.stdout + scan.stderr); assert.match(scan.stdout, /⚠ скан проверил 0 файлов/);
   assert.equal(cli(root, 'semantic/verify.mjs', '--scan', '--no-semantic', '--layers', '03_wiki', '--require-files').status, 1);
 });
+
+test('freshness exclusions are explicit and leave ordinary stale synthesis visible', t=>{
+ const root=fixture(t);mkdirSync(join(root,'04_synthesis'));
+ for(const name of ['example','actual'])writeFileSync(join(root,'04_synthesis',name+'.md'),'---\ntype: synthesis\ndate: 2020-01-01\n---\n# A document\n\nText.\n');
+ writeFileSync(join(root,'kb.config.mjs'),"export default {doctor:{excludePaths:['04_synthesis/example.md']}};");
+ const report=JSON.parse(ok(cli(root,'kb-doctor.mjs','--json')));
+ assert.deepEqual(report.issues.staleSynthesis.map(item=>item.file),['04_synthesis/actual.md']);
+ assert.equal(report.summary.broken_related,0);
+});
