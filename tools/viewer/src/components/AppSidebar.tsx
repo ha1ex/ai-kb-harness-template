@@ -11,6 +11,10 @@ export function AppSidebar() {
           Главная
         </NavLink>
         <NavLink to="/search">Поиск</NavLink>
+        <NavLink to="/documents">Документы</NavLink>
+        <NavLink to="/research">Исследования</NavLink>
+        <NavLink to="/maps">Схемы</NavLink>
+        <NavLink to="/methods">Методологии</NavLink>
         <p className="eyebrow">Разделы</p>
         {data?.spaces.map((s) => (
           <NavTree

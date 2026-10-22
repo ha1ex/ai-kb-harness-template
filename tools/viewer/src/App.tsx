@@ -18,6 +18,9 @@ import { GraphPage } from "@/routes/Graph";
 import { OpenQuestions } from "@/routes/OpenQuestions";
 import { SkillOpt } from "@/routes/SkillOpt";
 import "./styles/workspace.css";
+import { Documents, PublishedDocument } from "@/routes/Documents";
+import { Maps } from "@/routes/Maps";
+import { Methods, Research } from "@/routes/Methods";
 export default function App() {
   const { isDark } = useTheme();
   const [data, setData] = useState<Catalog | null>(null);
@@ -63,6 +66,13 @@ export default function App() {
             ) : (
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/documents" element={<Documents />} />
+                <Route path="/documents/:id" element={<PublishedDocument />} />
+                <Route path="/maps" element={<Maps />} />
+                <Route path="/maps/:id" element={<Maps />} />
+                <Route path="/methods" element={<Methods />} />
+                <Route path="/research" element={<Research />} />
+                <Route path="/research/:id" element={<Research />} />
                 <Route path="/library" element={<Library />} />
                 <Route path="/space/:id" element={<SpacePage />} />
                 <Route path="/layer/:layer" element={<KbLayer />} />

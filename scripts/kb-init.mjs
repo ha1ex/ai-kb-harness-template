@@ -126,8 +126,25 @@ try {
     let removed = 0,
       retained = 0;
     const emptyCandidates = new Set();
+    // Connected examples must remain usable when the owner has customized any member.
+    const preserved = new Set();
+    for (const group of manifest.demoGroups ?? []) {
+      if (
+        group.some(
+          (p) =>
+            seed.demoFiles?.[p] &&
+            existsSync(safePath(KB_ROOT, p)) &&
+            digest(readFileSync(safePath(KB_ROOT, p))) !== seed.demoFiles[p],
+        )
+      )
+        for (const p of group) preserved.add(p);
+    }
     for (const [p, expected] of Object.entries(seed.demoFiles ?? {})) {
       if (flags.keepWalkthrough && /walkthrough/.test(p)) continue;
+      if (preserved.has(p)) {
+        retained++;
+        continue;
+      }
       const abs = safePath(KB_ROOT, p);
       if (!existsSync(abs)) continue;
       if (digest(readFileSync(abs)) !== expected) {

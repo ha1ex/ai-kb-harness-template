@@ -1,12 +1,41 @@
 import { useEffect, useState } from "react";
+import { flushSync } from "react-dom";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { api, type DocFull } from "@/api";
 import { MarkdownDoc } from "@/v2/components/MarkdownDoc";
+import { useCatalog } from "@/components/CatalogContext";
+import { DocumentActions } from "@/components/DocumentActions";
+import {
+  documentHome,
+  publicationHref,
+  normalizePublishedPath,
+} from "../../publication.mjs";
 export function DocumentView() {
   const path = useParams()["*"] || "";
   const location = useLocation();
+  const catalog = useCatalog();
+  const home = documentHome(path, {
+    items: catalog?.publication?.items,
+    research: catalog?.research,
+    methods: catalog?.methods,
+  });
   const navigate = useNavigate();
   const [doc, setDoc] = useState<DocFull | null>(null);
+  const currentPath = normalizePublishedPath(doc?.frontmatter.supersededBy);
+  const current = catalog?.publication?.items.find(
+    (i) => i.path === currentPath,
+  );
+  const [printMode, setPrintMode] = useState(false);
+  useEffect(() => {
+    const before = () => flushSync(() => setPrintMode(true));
+    const after = () => setPrintMode(false);
+    window.addEventListener("beforeprint", before);
+    window.addEventListener("afterprint", after);
+    return () => {
+      window.removeEventListener("beforeprint", before);
+      window.removeEventListener("afterprint", after);
+    };
+  }, []);
   const [err, setErr] = useState("");
   const [toc, setToc] = useState<{ id: string; title: string }[]>([]);
   useEffect(() => {
@@ -67,13 +96,22 @@ export function DocumentView() {
         >
           ← Назад
         </button>
-        <Link to="/library">Библиотека</Link>
+        <Link to={home.href}>{home.title}</Link>
         <span>{path}</span>
       </div>
       {err && <p role="alert">{err}</p>}
       {!doc && !err && <p>Загрузка документа…</p>}
       {doc && (
         <>
+          {current && (
+            <p className="archive-notice">
+              Прежняя версия.{" "}
+              <Link to={publicationHref(current)}>
+                Действующая редакция: {current.title}
+              </Link>
+            </p>
+          )}
+          <DocumentActions doc={doc} catalog={catalog} />
           <dl className="doc-meta">
             {["status", "date", "owner", "confidence"]
               .filter((k) => doc.frontmatter[k] != null)
@@ -86,7 +124,7 @@ export function DocumentView() {
           </dl>
           <div className="document-grid">
             <div id="document-body">
-              <MarkdownDoc source={doc.body} />
+              <MarkdownDoc source={doc.body} printMode={printMode} />
               {doc.backlinks.length > 0 && (
                 <section>
                   <h2>Ссылки на этот документ</h2>

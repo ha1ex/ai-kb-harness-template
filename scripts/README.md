@@ -9,6 +9,8 @@
 
 | Команда | Файл | Назначение |
 |---|---|---|
+| `pnpm kb:document:build` | `build-document.mjs` | создать печатный HTML, PDF и паспорт из опубликованного Markdown |
+| `pnpm kb:documents` | `check-documents.mjs` | проверить каталог, реестры и свежесть экспортов |
 | `pnpm kb:init` | `kb-init.mjs` | параметризация клона: цель проекта → AGENTS.md/core.md, `--strip-demo`, `--level 0..3` |
 | `pnpm kb:index` | `semantic/index.mjs` | построить/обновить гибридный индекс (+ `doc_date`, `status`) |
 | `pnpm kb:search` | `semantic/search.mjs` | hybrid-поиск (vector + BM25 + RRF + graph + temporal; stub/deprecated скрыты) |

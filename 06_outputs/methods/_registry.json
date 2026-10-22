@@ -1,0 +1,97 @@
+{
+  "methods": [
+    {
+      "id": "demo-evidence",
+      "title": "Учебный метод: проверка основания",
+      "lens": "evidence",
+      "question": "Достаточно ли основания, чтобы сделать вывод?",
+      "card": "06_outputs/methods/demo-evidence/_method.md",
+      "source": "https://github.com/ha1ex/ai-kb-harness-template",
+      "license": "MIT",
+      "revision": "0.8.0"
+    },
+    {
+      "id": "nmt",
+      "title": "Next Move Theory / Advanced JTBD",
+      "lens": "product",
+      "question": "Какую работу делает продукт и для кого?",
+      "card": "06_outputs/methods/nmt/_method.md",
+      "source": "https://github.com/zamesin/Next-Move-Theory-Canon-and-Skills/tree/259bc127b2732ca3e19387ea91956c64b3347dc6",
+      "license": "CC-BY-NC-SA-4.0",
+      "mode": "reference",
+      "attribution": "Ivan Zamesin",
+      "revision": "259bc127b2732ca3e19387ea91956c64b3347dc6"
+    },
+    {
+      "id": "xpm",
+      "title": "Карта процесса-опыта (КПО / XPM)",
+      "lens": "process",
+      "question": "Как устроен путь участника и где он прерывается?",
+      "card": "06_outputs/methods/xpm/_method.md",
+      "source": "https://github.com/x-raizor/xpm/tree/9e3a41a4942dc70b0aa6226cca3c749ef83a8f05",
+      "license": "AGPL-3.0",
+      "mode": "reference",
+      "attribution": "Андрей Шапиро",
+      "revision": "9e3a41a4942dc70b0aa6226cca3c749ef83a8f05"
+    },
+    {
+      "id": "hypothesis-mapping",
+      "title": "Карта гипотез",
+      "lens": "strategy",
+      "question": "Как цель связана с действиями и проверками?",
+      "card": "06_outputs/methods/hypothesis-mapping/_method.md",
+      "source": "https://github.com/Byndyusoft/hypothesismapping/tree/046c76b405ef7d14dc1bea3a4ad6c2a7b6c1bf49",
+      "license": "AGPL-3.0",
+      "mode": "reference",
+      "attribution": "Александр Бындю, Byndyusoft",
+      "revision": "046c76b405ef7d14dc1bea3a4ad6c2a7b6c1bf49"
+    },
+    {
+      "id": "pm-os",
+      "title": "Операционная система менеджера (Knowledge Work Plugins)",
+      "lens": "management",
+      "question": "Как довести согласованную работу до результата?",
+      "card": "06_outputs/methods/pm-os/_method.md",
+      "source": "https://github.com/anthropics/knowledge-work-plugins/tree/77961df00a4626bc3b83850064289decd5a3b977",
+      "license": "Apache-2.0",
+      "mode": "reference",
+      "attribution": "Anthropic",
+      "revision": "77961df00a4626bc3b83850064289decd5a3b977"
+    },
+    {
+      "id": "google-slides",
+      "title": "Сборка презентации по шаблону (skill google-slides)",
+      "lens": "presentation",
+      "question": "Как показать вывод читателю презентации?",
+      "card": "06_outputs/methods/google-slides/_method.md",
+      "source": "https://github.com/openai/plugins/tree/1e285826e604f66f7208f7ac4dba0fe8341d1f57",
+      "license": "MIT",
+      "mode": "reference",
+      "attribution": "OpenAI",
+      "revision": "1e285826e604f66f7208f7ac4dba0fe8341d1f57"
+    },
+    {
+      "id": "sociotech-skills",
+      "title": "Скиллы Социотеха — исполняемый слой нотаций",
+      "lens": "strategy",
+      "question": "Как проверить нотацию схемы?",
+      "card": "06_outputs/methods/sociotech-skills/_method.md",
+      "source": "https://github.com/Byndyusoft/sociotech-ai-skills/tree/e57047edc305f5e366f0542898defab4cc377fca",
+      "license": "GPL-3.0",
+      "mode": "reference",
+      "attribution": "Александр Бындю, Byndyusoft",
+      "revision": "e57047edc305f5e366f0542898defab4cc377fca"
+    },
+    {
+      "id": "ooda",
+      "title": "Цикл OODA — решения в неопределённости",
+      "lens": "adaptation",
+      "question": "Как выбрать следующий шаг при новых данных?",
+      "card": "06_outputs/methods/ooda/_method.md",
+      "source": "https://www.airuniversity.af.edu/Portals/10/AUPress/Books/B_0151_Boyd_Discourse_Winning_Losing.pdf",
+      "license": "Условия первоисточника",
+      "mode": "reference",
+      "attribution": "John R. Boyd"
+    }
+  ]
+}

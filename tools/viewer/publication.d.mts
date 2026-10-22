@@ -1,0 +1,9 @@
+export type Edition={path:string;title:string;version:string;date:string};
+export type Publication={id:string;path:string;artifact:string;title:string;description:string;category:string;version:string;date:string;status:string;parentId:string|null;order:number;editions:Edition[];print?:string;pdf?:string};
+export type Category={id:string;title:string};
+export const DEFAULT_CATEGORIES:Category[];
+export function normalizePublishedPath(value:unknown):string|null;
+export function publicationHref(item:Publication):string;
+export function publishedHref(path:string):string;
+export function collectPublications(docs:unknown[],config?:unknown,assets?:string[]):{items:Publication[];categories:Category[];errors:string[]};
+export function documentHome(path:string,options?:{items?:Publication[];research?:{id:string;title:string;results:string[]}[];methods?:{card:string}[]}):{title:string;href:string};

@@ -2,6 +2,13 @@ import { readFile, readdir, stat, realpath } from "node:fs/promises";
 import { resolve, relative, join, dirname } from "node:path";
 import { pathToFileURL } from "node:url";
 import matter from "gray-matter";
+import { validateMaps } from "./maps.mjs";
+import { collectPublications, normalizePublishedPath } from "./publication.mjs";
+import {
+  safeProjectFile,
+  safeProjectDirectory,
+  readRegistry,
+} from "./published-files.mjs";
 export async function buildCatalog(root) {
   root = await realpath(root);
   let settings = {};
@@ -41,6 +48,31 @@ export async function buildCatalog(root) {
       ...(settings.viewer?.includeRaw ? ["01_raw"] : []),
     ]),
   ];
+  const methods = await readRegistry(
+    root,
+    settings.viewer?.registries?.methods ?? "06_outputs/methods/_registry.json",
+    "methods",
+  );
+  const research = await readRegistry(
+    root,
+    settings.viewer?.registries?.research ??
+      "06_outputs/research/_registry.json",
+    "research",
+  );
+  const maps = await readRegistry(
+    root,
+    settings.viewer?.registries?.maps ?? "06_outputs/maps/_registry.json",
+    "maps",
+  );
+  const excluded = [
+    ...(settings.viewer?.excludePaths ?? []),
+    ...research.map((r) => r.workdir).filter(Boolean),
+  ];
+  const excludedPath = (path) =>
+    excluded.some(
+      (prefix) =>
+        path === prefix || path.startsWith(prefix.replace(/\/$/, "") + "/"),
+    );
   const docs = [];
   async function walk(dir, layer) {
     let entries;
@@ -59,7 +91,8 @@ export async function buildCatalog(root) {
         continue;
       const abs = join(dir, entry.name);
       const rel = relative(root, await realpath(abs));
-      if (rel.startsWith("..") || rel.startsWith("/")) continue;
+      if (rel.startsWith("..") || rel.startsWith("/") || excludedPath(rel))
+        continue;
       if (entry.isDirectory()) await walk(abs, layer);
       else if (entry.isFile() && entry.name.endsWith(".md")) {
         const raw = await readFile(abs, "utf8");
@@ -88,7 +121,8 @@ export async function buildCatalog(root) {
       layer.startsWith("/")
     )
       throw Error("Invalid viewer layer");
-    await walk(resolve(root, layer), layer);
+    const directory = await safeProjectDirectory(root, layer);
+    if (directory) await walk(directory, layer);
   }
   docs.sort((a, b) => a.path.localeCompare(b.path));
   let spaces = [];
@@ -134,5 +168,83 @@ export async function buildCatalog(root) {
         .map(({ raw, body, backlinks, ...meta }) => meta),
     ]),
   );
-  return { config, spaces, docs, layers, tree, builtAt: Date.now() };
+  const assets = [];
+  for (const doc of docs) {
+    if (doc.frontmatter.status === "archived" || doc.frontmatter.supersededBy)
+      continue;
+    for (const key of ["artifact", "print", "pdf"]) {
+      const path = normalizePublishedPath(doc.frontmatter[key]);
+      if (
+        !path ||
+        path.endsWith(".md") ||
+        excludedPath(path) ||
+        !layers.some((layer) => path.startsWith(layer + "/"))
+      )
+        continue;
+      if (await safeProjectFile(root, path)) assets.push(path);
+    }
+  }
+  const publishedAssets = [...new Set(assets)].sort();
+  const publication = collectPublications(
+    docs,
+    settings.viewer?.documents,
+    publishedAssets,
+  );
+  const registryErrors = validateMaps(
+    maps,
+    docs.map((d) => d.path),
+  );
+  for (const [kind, entries] of [
+    ["methods", methods],
+    ["research", research],
+  ]) {
+    const seen = new Set();
+    for (const entry of entries) {
+      if (
+        !/^[a-z0-9][a-z0-9-]*$/.test(entry.id) ||
+        seen.has(entry.id) ||
+        !entry.title
+      )
+        registryErrors.push(`${kind}: invalid or duplicate id/title`);
+      seen.add(entry.id);
+      if (kind === "methods") {
+        if (
+          !byPath.has(entry.card) ||
+          !/^https?:\/\//.test(entry.source ?? "") ||
+          !entry.license ||
+          !entry.lens
+        )
+          registryErrors.push(
+            `methods: ${entry.id} needs a published card, lens, source and license`,
+          );
+      } else {
+        if (
+          !Array.isArray(entry.results) ||
+          entry.results.some((path) => !byPath.has(path))
+        )
+          registryErrors.push(`research: ${entry.id} has unpublished results`);
+      }
+    }
+  }
+  const resultHomes = new Set();
+  for (const topic of research)
+    for (const path of topic.results ?? []) {
+      if (resultHomes.has(path))
+        registryErrors.push(`research: multiple homes for ${path}`);
+      resultHomes.add(path);
+    }
+  return {
+    config,
+    spaces,
+    docs,
+    layers,
+    tree,
+    publication,
+    assets: publishedAssets,
+    methods,
+    research,
+    maps,
+    registryErrors,
+    builtAt: Date.now(),
+  };
 }

@@ -18,9 +18,12 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import matter from "gray-matter";
 import { buildCatalog } from "./data.mjs";
+import { loadPublishedFile } from "./published-files.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(process.env.REPO_ROOT || process.env.KB_ROOT || join(__dirname, "..", ".."));
+const REPO_ROOT = resolve(
+  process.env.REPO_ROOT || process.env.KB_ROOT || join(__dirname, "..", ".."),
+);
 const PORT = Number(process.env.VIEWER_PORT) || 3001;
 // Безопасность: по умолчанию слушаем только loopback. Для доступа из сети
 // явно задайте VIEWER_HOST=0.0.0.0 (на свой риск — API читает файлы и спавнит node).
@@ -36,7 +39,13 @@ const INDEXABLE_LAYERS = [
   "06_outputs",
 ];
 
-const SKIP_DIRS = new Set(["node_modules", ".git", ".context", ".remember", ".claude"]);
+const SKIP_DIRS = new Set([
+  "node_modules",
+  ".git",
+  ".context",
+  ".remember",
+  ".claude",
+]);
 
 // ---------- helpers ----------
 
@@ -67,7 +76,10 @@ type DocMeta = {
   frontmatter: Record<string, unknown>;
 };
 
-async function readDocMeta(abs: string, layer: string): Promise<DocMeta | null> {
+async function readDocMeta(
+  abs: string,
+  layer: string,
+): Promise<DocMeta | null> {
   try {
     const st = await stat(abs);
     const raw = await readFile(abs, "utf8");
@@ -90,12 +102,20 @@ async function readDocMeta(abs: string, layer: string): Promise<DocMeta | null> 
   }
 }
 
-function sendJson(res: import("node:http").ServerResponse, status: number, body: unknown) {
+function sendJson(
+  res: import("node:http").ServerResponse,
+  status: number,
+  body: unknown,
+) {
   res.writeHead(status, { "Content-Type": "application/json; charset=utf-8" });
   res.end(JSON.stringify(body));
 }
 
-function sendText(res: import("node:http").ServerResponse, status: number, body: string) {
+function sendText(
+  res: import("node:http").ServerResponse,
+  status: number,
+  body: string,
+) {
   res.writeHead(status, { "Content-Type": "text/plain; charset=utf-8" });
   res.end(body);
 }
@@ -103,13 +123,17 @@ function sendText(res: import("node:http").ServerResponse, status: number, body:
 // ---------- handlers ----------
 
 async function handleTree(): Promise<unknown> {
-  const {layers,tree,builtAt}=await buildCatalog(REPO_ROOT);
-  return {layers,tree,builtAt};
+  const { layers, tree, builtAt } = await buildCatalog(REPO_ROOT);
+  return { layers, tree, builtAt };
 }
 
 async function handleDoc(relPath: string): Promise<unknown | null> {
   // Serve only catalogued Markdown; the catalog rejects symlink and hidden paths.
-  return (await buildCatalog(REPO_ROOT)).docs.find(doc=>doc.path===relPath.replace(/^\/+/, ""))??null;
+  return (
+    (await buildCatalog(REPO_ROOT)).docs.find(
+      (doc) => doc.path === relPath.replace(/^\/+/, ""),
+    ) ?? null
+  );
 }
 
 async function loadBacklinks(targetPath: string): Promise<string[]> {
@@ -134,12 +158,15 @@ async function loadBacklinks(targetPath: string): Promise<string[]> {
 
 async function handleGraph(): Promise<unknown> {
   const dbPath = join(REPO_ROOT, ".semantic-index.sqlite");
-  if (!existsSync(dbPath)) return { nodes: [], edges: [], hint: "no .semantic-index.sqlite" };
+  if (!existsSync(dbPath))
+    return { nodes: [], edges: [], hint: "no .semantic-index.sqlite" };
   try {
     const Database = (await import("better-sqlite3")).default;
     const db = new Database(dbPath, { readonly: true });
     try {
-      const files = db.prepare("SELECT path FROM files ORDER BY path").all() as { path: string }[];
+      const files = db
+        .prepare("SELECT path FROM files ORDER BY path")
+        .all() as { path: string }[];
       const links = db.prepare("SELECT src, dst, type FROM links").all() as {
         src: string;
         dst: string;
@@ -167,12 +194,17 @@ async function handleGraph(): Promise<unknown> {
 
 async function handleSkillOptRuns(limit: number): Promise<unknown> {
   const runsFile = join(REPO_ROOT, ".context", "skillopt", "runs.jsonl");
-  if (!existsSync(runsFile)) return { runs: [], hint: "no .context/skillopt/runs.jsonl" };
+  if (!existsSync(runsFile))
+    return { runs: [], hint: "no .context/skillopt/runs.jsonl" };
   const raw = await readFile(runsFile, "utf8");
   const lines = raw.split("\n").filter(Boolean);
   const runs: unknown[] = [];
   for (let i = lines.length - 1; i >= 0 && runs.length < limit; i--) {
-    try { runs.push(JSON.parse(lines[i])); } catch { /* skip */ }
+    try {
+      runs.push(JSON.parse(lines[i]));
+    } catch {
+      /* skip */
+    }
   }
   return { runs };
 }
@@ -183,7 +215,13 @@ const RUN_ID_RE = /^[A-Za-z0-9._-]+$/;
 
 async function handleSkillOptRunSummary(runId: string): Promise<unknown> {
   if (!RUN_ID_RE.test(runId)) return null;
-  const summaryPath = join(REPO_ROOT, ".context", "skillopt", runId, "summary.json");
+  const summaryPath = join(
+    REPO_ROOT,
+    ".context",
+    "skillopt",
+    runId,
+    "summary.json",
+  );
   if (!existsSync(summaryPath)) return null;
   const summary = JSON.parse(await readFile(summaryPath, "utf8"));
   // Список traces
@@ -195,14 +233,24 @@ async function handleSkillOptRunSummary(runId: string): Promise<unknown> {
       if (!f.endsWith(".json")) continue;
       const t = JSON.parse(await readFile(join(tracesDir, f), "utf8"));
       traces.push({
-        case_id: t.case_id, skill: t.skill, passed: t.passed,
-        score: t.score, latency_ms: t.latency_ms, error: t.error,
+        case_id: t.case_id,
+        skill: t.skill,
+        passed: t.passed,
+        score: t.score,
+        latency_ms: t.latency_ms,
+        error: t.error,
         output_preview: t.output ? String(t.output).slice(0, 300) : null,
       });
     }
   }
   // Список proposals (если есть)
-  const proposalsDir = join(REPO_ROOT, ".context", "skillopt", runId, "proposals");
+  const proposalsDir = join(
+    REPO_ROOT,
+    ".context",
+    "skillopt",
+    runId,
+    "proposals",
+  );
   let proposals: string[] = [];
   if (existsSync(proposalsDir)) {
     const pFiles = await readdir(proposalsDir);
@@ -213,11 +261,24 @@ async function handleSkillOptRunSummary(runId: string): Promise<unknown> {
   return { runId, summary, traces, proposals };
 }
 
-function handleSearch(query: string, mode = "hybrid", top = 10): Promise<unknown> {
+function handleSearch(
+  query: string,
+  mode = "hybrid",
+  top = 10,
+): Promise<unknown> {
   return new Promise((res) => {
     const script = join(REPO_ROOT, "scripts", "semantic", "search.mjs");
-    if (!existsSync(script)) return res({ error: "scripts/semantic/search.mjs not found" });
-    const args = [script, query, "--mode", mode, "--top", String(top), "--json"];
+    if (!existsSync(script))
+      return res({ error: "scripts/semantic/search.mjs not found" });
+    const args = [
+      script,
+      query,
+      "--mode",
+      mode,
+      "--top",
+      String(top),
+      "--json",
+    ];
     const proc = spawn("node", args, { cwd: REPO_ROOT });
     let stdout = "";
     let stderr = "";
@@ -240,10 +301,50 @@ const server = createServer(async (req, res) => {
   const url = new URL(req.url || "/", `http://localhost:${PORT}`);
   res.setHeader("Cache-Control", "no-store");
   try {
-    if (url.pathname === "/api/health") return sendJson(res, 200, { ok: true, repo: REPO_ROOT });
-    if (url.pathname === "/api/viewer") return sendJson(res, 200, await buildCatalog(REPO_ROOT));
-    if (url.pathname === "/api/tree") return sendJson(res, 200, await handleTree());
-    if (url.pathname === "/api/graph") return sendJson(res, 200, await handleGraph());
+    if (url.pathname.startsWith("/published/")) {
+      const path = decodeURIComponent(url.pathname.slice("/published/".length));
+      const catalog = await buildCatalog(REPO_ROOT);
+      const body = await loadPublishedFile(
+        REPO_ROOT,
+        path,
+        catalog.assets ?? [],
+      );
+      if (!body) return sendText(res, 404, "not found");
+      res.setHeader(
+        "Content-Type",
+        path.endsWith(".pdf") ? "application/pdf" : "text/html; charset=utf-8",
+      );
+      res.setHeader("X-Content-Type-Options", "nosniff");
+      if (path.endsWith(".html"))
+        res.setHeader(
+          "Content-Security-Policy",
+          "sandbox allow-scripts allow-popups allow-popups-to-escape-sandbox",
+        );
+      res.end(body);
+      return;
+    }
+    if (url.pathname === "/api/health")
+      return sendJson(res, 200, { ok: true, repo: REPO_ROOT });
+    if (url.pathname === "/api/viewer")
+      return sendJson(res, 200, await buildCatalog(REPO_ROOT));
+    if (url.pathname === "/api/tree")
+      return sendJson(res, 200, await handleTree());
+    if (url.pathname === "/api/graph") {
+      const graph = (await handleGraph()) as {
+        nodes?: { id: string }[];
+        edges?: { source: string; target: string }[];
+      };
+      const paths = new Set(
+        (await buildCatalog(REPO_ROOT)).docs.map((d) => d.path),
+      );
+      return sendJson(res, 200, {
+        ...graph,
+        nodes: graph.nodes?.filter((n) => paths.has(n.id)),
+        edges: graph.edges?.filter(
+          (e) => paths.has(e.source) && paths.has(e.target),
+        ),
+      });
+    }
     if (url.pathname.startsWith("/api/doc/")) {
       const p = decodeURIComponent(url.pathname.slice("/api/doc/".length));
       const doc = await handleDoc(p);
@@ -255,14 +356,31 @@ const server = createServer(async (req, res) => {
       if (!q.trim()) return sendJson(res, 400, { error: "missing ?q=" });
       const mode = url.searchParams.get("mode") || "hybrid";
       const top = Number(url.searchParams.get("top") || 10);
-      return sendJson(res, 200, await handleSearch(q, mode, top));
+      const result = (await handleSearch(q, mode, top)) as {
+        results?: { file: string }[];
+      };
+      const paths = new Set(
+        (await buildCatalog(REPO_ROOT)).docs.map((d) => d.path),
+      );
+      return sendJson(res, 200, {
+        ...result,
+        ...(result.results
+          ? {
+              results: result.results.filter((r) =>
+                paths.has(r.file.replace(/^\//, "")),
+              ),
+            }
+          : {}),
+      });
     }
     if (url.pathname === "/api/skillopt/runs") {
       const limit = Number(url.searchParams.get("limit") || 30);
       return sendJson(res, 200, await handleSkillOptRuns(limit));
     }
     if (url.pathname.startsWith("/api/skillopt/run/")) {
-      const runId = decodeURIComponent(url.pathname.slice("/api/skillopt/run/".length));
+      const runId = decodeURIComponent(
+        url.pathname.slice("/api/skillopt/run/".length),
+      );
       const info = await handleSkillOptRunSummary(runId);
       if (!info) return sendJson(res, 404, { error: "run not found", runId });
       return sendJson(res, 200, info);
@@ -274,5 +392,7 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`[viewer-server] http://${HOST}:${PORT}   REPO_ROOT=${REPO_ROOT}`);
+  console.log(
+    `[viewer-server] http://${HOST}:${PORT}   REPO_ROOT=${REPO_ROOT}`,
+  );
 });

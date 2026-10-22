@@ -104,6 +104,34 @@ export type Catalog = TreeResponse & {
   };
   spaces: Space[];
   docs: (DocMeta & DocFull)[];
+  publication?: {
+    items: import("../publication.mjs").Publication[];
+    categories: import("../publication.mjs").Category[];
+    errors: string[];
+  };
+  assets?: string[];
+  methods?: {
+    id: string;
+    title: string;
+    card: string;
+    source: string;
+    license: string;
+    lens: string;
+    question?: string;
+    revision?: string;
+    mode?: "reference" | "mirror";
+    attribution?: string;
+  }[];
+  research?: {
+    id: string;
+    title: string;
+    question?: string;
+    status?: string;
+    results: string[];
+    workdir?: string;
+  }[];
+  registryErrors?: string[];
+  maps?: import("../maps.mjs").KnowledgeMap[];
 };
 let catalogPromise: Promise<Catalog> | undefined;
 export function getCatalog(): Promise<Catalog> {

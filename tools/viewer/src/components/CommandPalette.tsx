@@ -26,6 +26,10 @@ export function CommandPalette() {
   const links = [
     { title: "Главная", path: "/" },
     { title: "Библиотека", path: "/library" },
+    { title: "Документы", path: "/documents" },
+    { title: "Исследования", path: "/research" },
+    { title: "Методологии", path: "/methods" },
+    { title: "Схемы", path: "/maps" },
     ...(data?.spaces || []).map((s) => ({
       title: s.title,
       path: "/space/" + s.id,

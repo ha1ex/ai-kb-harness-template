@@ -453,3 +453,264 @@ kbd {
   font-size: 12px;
   margin-top: 10px;
 }
+/* Shared document surfaces. Keep widths fluid and controls usable on touch. */
+.publication-card {
+  border-top: 1px solid var(--border);
+  padding: 24px 0;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.publication-card h2 {
+  font-size: 22px;
+  margin: 8px 0;
+}
+.publication-card p {
+  margin: 10px 0;
+}
+.document-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 20px 0;
+}
+.document-actions a,
+.document-actions button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--background);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.document-actions a:hover,
+.document-actions button:hover {
+  background: var(--muted);
+}
+.document-frame {
+  width: 100%;
+  height: 75vh;
+  border: 1px solid var(--border);
+  background: white;
+}
+.library-filters label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+.library-filters input,
+.library-filters select {
+  min-height: 44px;
+  max-width: 100%;
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 8px;
+}
+.archive-notice {
+  padding: 16px;
+  border: 1px solid var(--border);
+}
+@media print {
+  @page {
+    size: A4;
+    margin: 18mm;
+  }
+  .workspace-header,
+  .workspace-sidebar,
+  .document-breadcrumb,
+  .document-actions,
+  .toc-panel,
+  .source-disclosure,
+  .skip-link {
+    display: none !important;
+  }
+  .workspace-layout,
+  .document-grid {
+    display: block !important;
+  }
+  .workspace,
+  .workspace-page {
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  .document-page details {
+    display: block;
+  }
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+  table,
+  pre,
+  blockquote {
+    break-inside: avoid;
+  }
+  a {
+    color: inherit !important;
+  }
+}
+.map-controls {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0 12px;
+}
+.map-controls label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+}
+.map-controls button,
+.map-controls input,
+.map-controls select,
+.map-inspector button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--background);
+  color: var(--foreground);
+  font: inherit;
+  max-width: 100%;
+}
+.map-help {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin: 14px 0;
+}
+.map-viewport {
+  height: 500px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  touch-action: none;
+  background: var(--muted);
+  cursor: grab;
+}
+.map-viewport:active {
+  cursor: grabbing;
+}
+.map-world {
+  position: absolute;
+  transform-origin: 0 0;
+}
+.map-edges {
+  position: absolute;
+  inset: 0;
+  color: var(--project-accent);
+  pointer-events: none;
+}
+.map-edges text {
+  font-size: 12px;
+  fill: var(--foreground);
+}
+.map-node {
+  position: absolute;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--foreground);
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.map-node[aria-pressed="true"] {
+  border: 2px solid var(--project-accent);
+}
+.map-node span {
+  font-size: 13px;
+  line-height: 1.4;
+}
+.map-inspector {
+  border: 1px solid var(--border);
+  padding: 18px;
+  margin: 18px 0;
+}
+.map-table {
+  margin: 24px 0;
+}
+.table-scroll {
+  overflow-x: auto;
+}
+.map-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+.map-table td,
+.map-table th {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  min-width: 110px;
+}
+.map-table summary {
+  padding: 12px 0;
+  cursor: pointer;
+}
+@media (max-width: 600px) {
+  .map-viewport {
+    height: 420px;
+  }
+  .map-controls {
+    align-items: stretch;
+  }
+}
+@media print {
+  .map-controls,
+  .map-help,
+  .map-viewport,
+  .map-inspector {
+    display: none;
+  }
+  .map-table > summary {
+    display: none;
+  }
+  .map-table::details-content {
+    display: block;
+    content-visibility: visible;
+  }
+  .map-table table {
+    font-size: 9pt;
+  }
+}
+.map-node {
+  overflow: hidden;
+}
+.map-node strong,
+.map-node span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.map-results {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+.map-results button {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--background);
+  color: var(--foreground);
+}

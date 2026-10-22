@@ -52,3 +52,6 @@ playwright-report/
 # Finding write locks and interrupted atomic writes
 .remember/findings/*.lock
 .remember/findings/*.tmp
+
+# Local browser verification artifacts
+.playwright-cli/

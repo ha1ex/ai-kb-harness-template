@@ -130,3 +130,103 @@ test("static search needs no API and reports local text mode", async () => {
   assert.equal(result.mode, "local text");
   assert.equal(result.results.length, 1);
 });
+
+test("publications expose only explicit files, methods and research results, with private workdirs excluded", async (t) => {
+  const root = await mkdtemp(join(tmpdir(), "viewer-publications-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const put = async (path, body) => {
+    await mkdir(join(root, path, ".."), { recursive: true });
+    await writeFile(join(root, path), body);
+  };
+  await put(
+    "kb.config.mjs",
+    `export default {layers:{indexable:['reports']},viewer:{registries:{methods:'methods.json',research:'research.json'}}}`,
+  );
+  await put(
+    "reports/report.md",
+    "---\nartifact: reports/report.md\nprint: reports/report-print.html\n---\n# Report",
+  );
+  await put("reports/report-print.html", "<!doctype html><h1>Report</h1>");
+  await put("reports/undeclared.html", "Private");
+  await put("reports/work/private.md", "# Private draft");
+  await put(
+    "methods.json",
+    JSON.stringify({
+      methods: [
+        {
+          id: "method",
+          title: "Method",
+          card: "reports/report.md",
+          source: "https://example.com",
+          license: "CC0",
+          lens: "product",
+        },
+      ],
+    }),
+  );
+  await put(
+    "research.json",
+    JSON.stringify({
+      research: [
+        {
+          id: "study",
+          title: "Study",
+          results: ["reports/report.md"],
+          workdir: "reports/work",
+        },
+      ],
+    }),
+  );
+  const c = await buildCatalog(root);
+  assert.deepEqual(c.publication.errors, []);
+  assert.equal(c.publication.items.length, 1);
+  assert.deepEqual(c.assets, ["reports/report-print.html"]);
+  assert.equal(c.methods[0].id, "method");
+  assert.equal(
+    c.docs.some((d) => d.path.includes("work/")),
+    false,
+  );
+});
+test("declared assets cannot expose raw, excluded paths or symlinked directories", async (t) => {
+  const root = await mkdtemp(join(tmpdir(), "viewer-assets-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(join(root, "reports"), { recursive: true });
+  await mkdir(join(root, "01_raw"), { recursive: true });
+  await writeFile(
+    join(root, "kb.config.mjs"),
+    `export default {layers:{indexable:['reports']},viewer:{excludePaths:['reports/private']}}`,
+  );
+  await writeFile(join(root, "01_raw/a.html"), "SECRET");
+  await symlink(join(root, "01_raw"), join(root, "reports/linked"));
+  await mkdir(join(root, "reports/private"));
+  await writeFile(join(root, "reports/private/a.html"), "SECRET");
+  for (const [name, path] of [
+    ["raw", "01_raw/a.html"],
+    ["link", "reports/linked/a.html"],
+    ["excluded", "reports/private/a.html"],
+  ])
+    await writeFile(
+      join(root, "reports", name + ".md"),
+      `---\nartifact: ${path}\n---\n# Document`,
+    );
+  const c = await buildCatalog(root);
+  assert.equal(c.assets.length, 0);
+  assert.equal(c.publication.items.length, 0);
+  assert.equal(c.publication.errors.length, 3);
+});
+
+test("layer roots reject symlink aliases and hidden ancestor segments", async (t) => {
+  const root = await mkdtemp(join(tmpdir(), "viewer-layer-root-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(join(root, "01_raw"));
+  await writeFile(join(root, "01_raw/private.md"), "SECRET");
+  await symlink(join(root, "01_raw"), join(root, "reports"));
+  await mkdir(join(root, "out/.hidden"), { recursive: true });
+  await writeFile(join(root, "out/.hidden/private.md"), "SECRET");
+  await writeFile(
+    join(root, "kb.config.mjs"),
+    "export default {layers:{indexable:['reports','out/.hidden']}}",
+  );
+  const c = await buildCatalog(root);
+  assert.deepEqual(c.docs, []);
+});

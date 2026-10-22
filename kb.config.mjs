@@ -14,63 +14,87 @@
 export default {
   // Project identity is initialized in 00_context/project.json. Explicit overrides here win.
   viewer: {
+    // registries: { methods: '06_outputs/methods/_registry.json', research: '06_outputs/research/_registry.json', maps: '06_outputs/maps/_registry.json' },
+    // documents: { categories: [{id:'reports',title:'Отчёты'},{id:'other',title:'Другие документы'}] },
+    // excludePaths: ['06_outputs/research/workdir'], // Excluded from the published catalog and viewer search.
     // name: 'My research project', description: 'Purpose and audience',
     // status: 'Research in progress', accent: '#457c72',
     // includeRaw: false, // Publish original raw Markdown only when explicitly intended.
   },
   // Executing synthesis is opt-in. No provider means a portable prompt, no model request.
-  llm: { provider: 'manual', timeout_ms: 300000, max_retries: 0 },
+  llm: { provider: "manual", timeout_ms: 300000, max_retries: 0 },
 
   layers: {
     // Слои, которые индексирует семантический поиск (порядок = каноническая иерархия).
     // Своя структура? Например: ['docs', 'adr', 'notes'] для существующего репо (уровень L0).
-    indexable: ['00_context', '02_sources', '03_wiki', '04_synthesis', '05_decisions', '06_outputs'],
+    indexable: [
+      "00_context",
+      "02_sources",
+      "03_wiki",
+      "04_synthesis",
+      "05_decisions",
+      "06_outputs",
+    ],
     // Файлы в корне репо, попадающие в индекс (не слои; не цитируются как [source:]).
-    rootFiles: ['log.md'],
+    rootFiles: ["log.md"],
     // Директории, в которые walker не заходит.
-    skipDirs: ['node_modules', '.git', '.context', '.remember', '.claude', 'scripts', 'docs'],
+    skipDirs: [
+      "node_modules",
+      ".git",
+      ".context",
+      ".remember",
+      ".claude",
+      "scripts",
+      "docs",
+    ],
     // Ранг слоя в пирамиде (меньше = ближе к evidence). Питает provenance-порядок.
     rank: {
-      '00_context': 0,
-      '01_raw': 1,
-      '02_sources': 2,
-      '03_wiki': 3,
-      '04_synthesis': 4,
-      '05_decisions': 5,
-      '06_outputs': 6,
+      "00_context": 0,
+      "01_raw": 1,
+      "02_sources": 2,
+      "03_wiki": 3,
+      "04_synthesis": 4,
+      "05_decisions": 5,
+      "06_outputs": 6,
     },
   },
 
   provenance: {
     // Слои-ИСТОЧНИКИ, для которых enforce порядок пирамиды (цитировать только строго ниже).
-    enforced: ['04_synthesis', '05_decisions'],
+    enforced: ["04_synthesis", "05_decisions"],
     // Слои, где метки FACT:/DECISION: обязаны иметь цитату в абзаце (claim-coverage, гейт CI).
-    coverageLayers: ['04_synthesis', '05_decisions'],
+    coverageLayers: ["04_synthesis", "05_decisions"],
     // Зеркала внешних библиотек в 06_outputs — внутренние [source:] к ним неприменимы.
-    externalCorpusDirs: ['anthropics-skills', 'claude-cookbooks', 'cybos-cases', 'fabric-patterns', 'mcp-catalog'],
+    externalCorpusDirs: [
+      "anthropics-skills",
+      "claude-cookbooks",
+      "cybos-cases",
+      "fabric-patterns",
+      "mcp-catalog",
+    ],
   },
 
   frontmatter: {
     // Слой → обязательные поля frontmatter (PreToolUse-хук check-md-frontmatter).
     rules: {
-      '02_sources': ['type'],
-      '03_wiki': ['type'],
-      '04_synthesis': ['type'],
-      '05_decisions': ['type'],
-      '06_outputs': ['type', 'version'],
+      "02_sources": ["type"],
+      "03_wiki": ["type"],
+      "04_synthesis": ["type"],
+      "05_decisions": ["type"],
+      "06_outputs": ["type", "version"],
     },
     // Имена файлов, освобождённые от frontmatter-требований.
-    exemptBasenames: ['readme.md', 'index.md', 'nav.md', '_toc.md', 'log.md'],
+    exemptBasenames: ["readme.md", "index.md", "nav.md", "_toc.md", "log.md"],
   },
 
   approval: {
     // Подпись эффекта решений: status из acceptedStatuses требует approved_by/approved_at/approved_ref/approved_hash
     // (pnpm kb:approve). Несовпадающий хеш — гейт в verify --scan; отсутствие подписи — advisory,
     // гейт только при required: true (включает проект).
-    layers: ['05_decisions'],
+    layers: ["05_decisions"],
     required: false,
-    acceptedStatuses: ['accepted', 'approved'],
-    proposedStatuses: ['proposed', 'draft'],
+    acceptedStatuses: ["accepted", "approved"],
+    proposedStatuses: ["proposed", "draft"],
   },
 
   invariants: {
@@ -87,12 +111,17 @@ export default {
 
   decisions: {
     // Файлы в 05_decisions, освобождённые от требования метки DECISION: (check-decisions).
-    exemptBasenames: ['decision-log.md', 'rejected-options.md', 'assumptions.md', 'README.md'],
+    exemptBasenames: [
+      "decision-log.md",
+      "rejected-options.md",
+      "assumptions.md",
+      "README.md",
+    ],
   },
 
   embedder: {
     // Смена модели требует пересборки индекса: rm .semantic-index.sqlite && pnpm kb:index.
-    model: 'Xenova/multilingual-e5-small',
+    model: "Xenova/multilingual-e5-small",
     dim: 384,
   },
 };

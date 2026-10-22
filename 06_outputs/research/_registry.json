@@ -1,0 +1,14 @@
+{
+  "research": [
+    {
+      "id": "demo-review",
+      "title": "Учебная тема: проверка документа",
+      "question": "Как читатель проверит комплект и его источники?",
+      "status": "Учебный пример",
+      "results": [
+        "06_outputs/documents/demo-note.md"
+      ],
+      "workdir": "06_outputs/research/workdir/demo-review"
+    }
+  ]
+}

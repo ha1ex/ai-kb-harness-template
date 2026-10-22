@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "sourcePath": "06_outputs/documents/demo-note.md",
+  "sourceSha256": "2495fd429cdbc4006dd29d95e3dadeb81c4316a4d255267df37b7998d28562d1",
+  "rendererSha256": "7697c3d72b3596fcc75da242f6d49c924956ccf1d2fe4078532033144cea2f3a",
+  "printPath": "06_outputs/documents/demo-note-print.html",
+  "printSha256": "5d9cca58e824b9623678eeefbd871bce7963b7acd01f1d8c63a2e75cc8eb8e5e",
+  "pdfPath": "06_outputs/documents/demo-note.pdf",
+  "pdfSha256": "e411c13ebfeeeeb967563eed353391b7272e8fc553de4f3e373dd6ea169d8c0f",
+  "builtAt": "2026-10-22T17:42:35.256Z"
+}

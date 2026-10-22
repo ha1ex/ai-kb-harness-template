@@ -27,6 +27,7 @@ type Props = {
   source: string;
   className?: string;
   showCopy?: boolean;
+  printMode?: boolean;
 };
 
 type CalloutKind = "note" | "tip" | "warning" | "info" | "success" | "danger";
@@ -108,7 +109,12 @@ function extractText(children: ReactNode): string {
   return out;
 }
 
-export function MarkdownDoc({ source, className, showCopy = true }: Props) {
+export function MarkdownDoc({
+  source,
+  className,
+  showCopy = true,
+  printMode = false,
+}: Props) {
   const location = useLocation();
   function documentHref(href: string | undefined) {
     if (
@@ -188,6 +194,34 @@ export function MarkdownDoc({ source, className, showCopy = true }: Props) {
               "kb-folder": KbFolder as unknown as Components["div"],
               "kb-file": KbFile as unknown as Components["div"],
               "kb-linkcard": KbLinkCard as unknown as Components["div"],
+              ...(printMode
+                ? {
+                    "kb-tabs": ({ children }: any) => <div>{children}</div>,
+                    "kb-tab": ({ label, children }: any) => (
+                      <section>
+                        <h3>{label}</h3>
+                        {children}
+                      </section>
+                    ),
+                    "kb-accordion": ({ children }: any) => (
+                      <div>{children}</div>
+                    ),
+                    "kb-accordion-item": ({ title, children }: any) => (
+                      <section>
+                        <h3>{title}</h3>
+                        {children}
+                      </section>
+                    ),
+                    "kb-tree": ({ children }: any) => <ul>{children}</ul>,
+                    "kb-folder": ({ name, children }: any) => (
+                      <li>
+                        <strong>{name}</strong>
+                        <ul>{children}</ul>
+                      </li>
+                    ),
+                    "kb-file": ({ name }: any) => <li>{name}</li>,
+                  }
+                : {}),
               h1: ({ children, id }) => (
                 <h1
                   id={id}
@@ -453,9 +487,10 @@ export function MarkdownDoc({ source, className, showCopy = true }: Props) {
                   {children}
                 </td>
               ),
-              details: ({ children, id }) => (
+              details: ({ children, id, open }) => (
                 <details
                   id={id}
+                  open={printMode || open}
                   className="my-4 rounded-md border border-border-soft bg-muted/30 px-4 py-2 [&[open]>summary]:mb-2"
                 >
                   {children}

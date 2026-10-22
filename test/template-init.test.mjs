@@ -221,3 +221,25 @@ test("init personalizes the shipped durable context and prunes only empty demo d
   assert.equal(existsSync(join(f.dir, "06_outputs/demo-library")), false);
   assert.equal(f.read("01_raw/walkthrough/my-notes.md"), "my notes");
 });
+
+test("strip-demo preserves a connected publication group when one example was edited", (t) => {
+  const f = fixture(t);
+  const paths = [
+    "06_outputs/documents/demo.md",
+    "06_outputs/documents/demo.pdf",
+    "06_outputs/methods/_registry.json",
+  ];
+  const manifest = JSON.parse(f.read(".template-manifest.json"));
+  manifest.demoGroups = [paths];
+  f.put(".template-manifest.json", JSON.stringify(manifest));
+  const seed = JSON.parse(f.read(".template-baseline.json"));
+  for (const path of paths) {
+    f.put(path, "original " + path);
+    seed.demoFiles[path] = hash("original " + path);
+  }
+  f.put(".template-baseline.json", JSON.stringify(seed));
+  f.put(paths[0], "edited document");
+  const result = f.run("--strip-demo", "--yes");
+  assert.equal(result.status, 0, result.stderr + result.stdout);
+  for (const path of paths) assert.ok(existsSync(join(f.dir, path)), path);
+});

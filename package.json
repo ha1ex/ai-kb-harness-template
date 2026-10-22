@@ -1,8 +1,8 @@
 {
   "name": "ai-kb-harness-template",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
-  "description": "Переиспользуемая база знаний для людей и AI-агентов: источники, проверяемые выводы, переносимые навыки, веб-витрина и обновления шаблона.",
+  "description": "\u041f\u0435\u0440\u0435\u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0435\u043c\u0430\u044f \u0431\u0430\u0437\u0430 \u0437\u043d\u0430\u043d\u0438\u0439 \u0434\u043b\u044f \u043b\u044e\u0434\u0435\u0439 \u0438 AI-\u0430\u0433\u0435\u043d\u0442\u043e\u0432: \u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a\u0438, \u043f\u0440\u043e\u0432\u0435\u0440\u044f\u0435\u043c\u044b\u0435 \u0432\u044b\u0432\u043e\u0434\u044b, \u043f\u0435\u0440\u0435\u043d\u043e\u0441\u0438\u043c\u044b\u0435 \u043d\u0430\u0432\u044b\u043a\u0438, \u0432\u0435\u0431-\u0432\u0438\u0442\u0440\u0438\u043d\u0430 \u0438 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f \u0448\u0430\u0431\u043b\u043e\u043d\u0430.",
   "packageManager": "pnpm@9.15.0",
   "engines": {
     "node": ">=20 <23"
@@ -42,6 +42,8 @@
     "kb:roster": "node scripts/kb-roster.mjs",
     "kb:approve": "node scripts/kb-approve.mjs",
     "kb:inbox": "node scripts/kb-inbox.mjs",
-    "kb:invariants": "node scripts/check-invariants.mjs"
+    "kb:invariants": "node scripts/check-invariants.mjs",
+    "kb:document:build": "node scripts/build-document.mjs",
+    "kb:documents": "node scripts/check-documents.mjs"
   }
 }

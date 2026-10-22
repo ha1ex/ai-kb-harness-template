@@ -9,6 +9,7 @@ const { failed } = runChecks(
   [
     ["scripts/check-harness.mjs"],
     ["scripts/check-spaces.mjs"],
+    ["scripts/check-documents.mjs"],
     ["scripts/check-portability.mjs"],
     ["scripts/check-readability.mjs"],
     ["scripts/semantic/verify.mjs", "--scan", "--provenance", "--no-semantic"],

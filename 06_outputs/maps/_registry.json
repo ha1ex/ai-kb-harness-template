@@ -1,0 +1,20 @@
+{
+  "maps": [{
+    "id": "demo-evidence-flow",
+    "title": "Учебная схема: от источника к документу",
+    "description": "Синтетический пример. Поиск, масштаб, связи и источники работают на канвасе.",
+    "source": "06_outputs/documents/demo-note.md",
+    "nodes": [
+      {"id":"source","label":"Сохранить источник","summary":"Оригинал остаётся основанием вывода.","source":"06_outputs/documents/demo-note.md","x":30,"y":70},
+      {"id":"summary","label":"Проверить вывод","summary":"Автор связывает утверждение с основанием.","source":"06_outputs/documents/demo-note.md","x":350,"y":70},
+      {"id":"document","label":"Подготовить документ","summary":"Читатель видит результат и ограничения.","source":"06_outputs/documents/demo-appendix.md","x":670,"y":70},
+      {"id":"export","label":"Собрать PDF","summary":"Паспорт подтверждает редакцию исходника.","source":"06_outputs/documents/demo-note.md","x":350,"y":300}
+    ],
+    "edges": [
+      {"id":"source-summary","from":"source","to":"summary","label":"основание","kind":"Доказательства"},
+      {"id":"summary-document","from":"summary","to":"document","label":"вывод","kind":"Доказательства"},
+      {"id":"summary-export","from":"summary","to":"export","label":"редакция","kind":"Публикация"},
+      {"id":"export-document","from":"export","to":"document","label":"PDF","kind":"Публикация"}
+    ]
+  }]
+}

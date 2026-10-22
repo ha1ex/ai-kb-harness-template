@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "templateVersion": "0.7.0",
+  "templateVersion": "0.8.0",
   "upstream": "https://github.com/ha1ex/ai-kb-harness-template.git",
   "templateOwned": [
     "harness",
@@ -21,7 +21,12 @@
     "docs/assets",
     "docs/work-system.md",
     "docs/automation.md",
-    "docs/research.md"
+    "docs/research.md",
+    "docs/documents.md",
+    "docs/methods.md",
+    "docs/design-system.md",
+    "docs/superpowers",
+    "docs/maps.md"
   ],
   "projectOwned": [
     "kb.config.mjs",
@@ -94,7 +99,9 @@
       "/scripts/kb:roster",
       "/scripts/kb:approve",
       "/scripts/kb:inbox",
-      "/scripts/kb:invariants"
+      "/scripts/kb:invariants",
+      "/scripts/kb:document:build",
+      "/scripts/kb:documents"
     ]
   },
   "demoPaths": [
@@ -112,6 +119,44 @@
     "02_sources/2026-06-30-walkthrough-interview-cto.md",
     "03_wiki/walkthrough-deflection-rate.md",
     "04_synthesis/walkthrough-pilot-hypotheses.md",
-    "05_decisions/walkthrough-decision-pilot-scope.md"
+    "05_decisions/walkthrough-decision-pilot-scope.md",
+    "06_outputs/documents/demo-note.md",
+    "06_outputs/documents/demo-note-print.html",
+    "06_outputs/documents/demo-note.pdf",
+    "06_outputs/documents/demo-note.export.json",
+    "06_outputs/documents/demo-appendix.md",
+    "06_outputs/documents/archive/demo-note-v0-1.md",
+    "06_outputs/methods/demo-evidence/_method.md",
+    "06_outputs/methods/_registry.json",
+    "06_outputs/research/_registry.json",
+    "06_outputs/maps/_registry.json",
+    "06_outputs/methods/nmt/_method.md",
+    "06_outputs/methods/xpm/_method.md",
+    "06_outputs/methods/hypothesis-mapping/_method.md",
+    "06_outputs/methods/pm-os/_method.md",
+    "06_outputs/methods/google-slides/_method.md",
+    "06_outputs/methods/sociotech-skills/_method.md",
+    "06_outputs/methods/ooda/_method.md"
+  ],
+  "demoGroups": [
+    [
+      "06_outputs/documents/demo-note.md",
+      "06_outputs/documents/demo-note-print.html",
+      "06_outputs/documents/demo-note.pdf",
+      "06_outputs/documents/demo-note.export.json",
+      "06_outputs/documents/demo-appendix.md",
+      "06_outputs/documents/archive/demo-note-v0-1.md",
+      "06_outputs/methods/demo-evidence/_method.md",
+      "06_outputs/methods/_registry.json",
+      "06_outputs/research/_registry.json",
+      "06_outputs/maps/_registry.json",
+      "06_outputs/methods/nmt/_method.md",
+      "06_outputs/methods/xpm/_method.md",
+      "06_outputs/methods/hypothesis-mapping/_method.md",
+      "06_outputs/methods/pm-os/_method.md",
+      "06_outputs/methods/google-slides/_method.md",
+      "06_outputs/methods/sociotech-skills/_method.md",
+      "06_outputs/methods/ooda/_method.md"
+    ]
   ]
 }
